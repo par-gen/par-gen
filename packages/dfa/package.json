@@ -1,0 +1,15 @@
+{
+  "name": "@knisterpeter/expound-dfa",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./types/index.d.ts",
+  "jest": {
+    "displayName": "dfa",
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/types/"
+    ]
+  }
+}

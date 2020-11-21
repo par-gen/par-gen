@@ -25,6 +25,9 @@
   "references": [
     {
       "path": "packages/nfa"
+    },
+    {
+      "path": "packages/dfa"
     }
   ]
 }
