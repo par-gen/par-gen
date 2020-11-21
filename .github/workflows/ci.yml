@@ -1,4 +1,4 @@
-name: node.js CI
+name: check types and test
 
 on:
   push:
