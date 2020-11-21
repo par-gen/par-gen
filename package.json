@@ -38,5 +38,10 @@
     "projects": [
       "<rootDir>/packages/*"
     ]
+  },
+  "renovate": {
+    "extends": [
+      "config:base"
+    ]
   }
 }
