@@ -1,0 +1,15 @@
+{
+  "name": "@knisterpeter/expound-nfa",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./types/index.d.ts",
+  "jest": {
+    "displayName": "nfa",
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/types/"
+    ]
+  }
+}

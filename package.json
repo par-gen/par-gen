@@ -1,0 +1,42 @@
+{
+  "private": true,
+  "name": "@knisterpeter/expound-root",
+  "version": "0.1.0",
+  "description": "Fast JavaScript/TypeScript LR(1) parser generator",
+  "main": "./lib/index.js",
+  "types": "./types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KnisterPeter/expound.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KnisterPeter/expound/issues"
+  },
+  "homepage": "https://github.com/KnisterPeter/expound#readme",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "check": "tsc -b .",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "engines": {
+    "node": ">=14",
+    "pnpm": ">=5"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.7",
+    "cross-env": "7.0.2",
+    "eslint": "^7.13.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.1.2",
+    "typescript": "^4.0.5"
+  },
+  "jest": {
+    "projects": [
+      "<rootDir>/packages/*"
+    ]
+  }
+}
