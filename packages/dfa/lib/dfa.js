@@ -1,5 +1,6 @@
 import { ok } from "assert";
 
+import { hopcroft } from "./hopcroft.js";
 import { fromNFA } from "./powerset.js";
 
 /**
@@ -71,6 +72,13 @@ export class DFA {
         );
       });
     });
+  }
+
+  /**
+   * @returns {DFA}
+   */
+  minimal() {
+    return new DFA(hopcroft(this));
   }
 
   /**

@@ -150,4 +150,30 @@ describe("DFA", () => {
       ).toBeTruthy();
     });
   });
+
+  describe("minimal", () => {
+    it("should return a minimal compatible DFA", () => {
+      const nfa = NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*");
+
+      const dfa = DFA.fromNFA(nfa).minimal();
+
+      expect(
+        dfa.test([
+          "a",
+          "b",
+          "c",
+          "f",
+          "f",
+          "g",
+          "h",
+          "m",
+          "n",
+          "i",
+          "j",
+          "m",
+          "n",
+        ])
+      ).toBeTruthy();
+    });
+  });
 });
