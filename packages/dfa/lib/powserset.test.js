@@ -9,28 +9,18 @@ describe("fromNFA", () => {
     const description = fromNFA(nfa);
 
     expect(description).toEqual({
-      states: ["S0", "S1", "S2", "S3"],
+      states: ["S0", "S1", "S2"],
       symbols: ["a", "b"],
       transitions: {
         S0: {
           a: "S1",
-          b: "S2",
         },
         S1: {
-          a: "S2",
-          b: "S3",
-        },
-        S2: {
-          a: "S2",
-          b: "S2",
-        },
-        S3: {
-          a: "S2",
           b: "S2",
         },
       },
       start: "S0",
-      finals: ["S3"],
+      finals: ["S2"],
     });
   });
 });
