@@ -1,3 +1,5 @@
+import { NFA } from "@knisterpeter/expound-nfa";
+
 import { DFA } from "./dfa.js";
 
 describe("DFA", () => {
@@ -121,5 +123,31 @@ describe("DFA", () => {
     });
 
     expect(dfa.test(["a", "b"])).toBeTruthy();
+  });
+
+  describe("fromNFA", () => {
+    it("should be able to create a DFA from a given NFA", () => {
+      const nfa = NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*");
+
+      const dfa = DFA.fromNFA(nfa);
+
+      expect(
+        dfa.test([
+          "a",
+          "b",
+          "c",
+          "f",
+          "f",
+          "g",
+          "h",
+          "m",
+          "n",
+          "i",
+          "j",
+          "m",
+          "n",
+        ])
+      ).toBeTruthy();
+    });
   });
 });

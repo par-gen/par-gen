@@ -1,5 +1,7 @@
 import { ok } from "assert";
 
+import { fromNFA } from "./powerset.js";
+
 /**
  * @typedef {Object} DFADescription
  * @property {string[]} states
@@ -10,6 +12,14 @@ import { ok } from "assert";
  */
 
 export class DFA {
+  /**
+   * @param {import('@knisterpeter/expound-nfa').NFA} nfa
+   * @returns {DFA}
+   */
+  static fromNFA(nfa) {
+    return new DFA(fromNFA(nfa));
+  }
+
   /**
    * @param {DFADescription} description
    */
@@ -27,8 +37,8 @@ export class DFA {
   _validate(description) {
     const { states, symbols, transitions, start, finals } = description;
 
-    ok(states.length, `Must be created with a list of states`);
-    ok(symbols.length, `Must be created with a list of symbols`);
+    ok(states.length > 0, `Must be created with a list of states`);
+    ok(symbols.length > 0, `Must be created with a list of symbols`);
     ok(
       states.includes(start),
       `Start state '${start}' must be included in list of states`

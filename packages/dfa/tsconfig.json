@@ -4,5 +4,10 @@
     "rootDir": "lib",
     "outDir": "types"
   },
-  "include": ["lib/"]
+  "include": ["lib/"],
+  "references": [
+    {
+      "path": "../nfa"
+    }
+  ]
 }

@@ -4,6 +4,9 @@
   "type": "module",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
+  "dependencies": {
+    "@knisterpeter/expound-nfa": "workspace:0.1.0"
+  },
   "jest": {
     "displayName": "dfa",
     "transform": {},
