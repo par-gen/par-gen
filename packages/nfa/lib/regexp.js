@@ -3,6 +3,7 @@ export const ops = {
   match: Symbol("regexp.match"),
   optional: Symbol("regexp.optional"),
   choice: Symbol("regexp.choice"),
+  any: Symbol("regexp.any"),
 };
 
 /**
@@ -61,6 +62,17 @@ function seq(input) {
  */
 function next(stack, input) {
   switch (input[0]) {
+    case ".": {
+      stack.push({
+        op: ops.any,
+        value: undefined,
+        node: undefined,
+        nodes: undefined,
+        left: undefined,
+        right: undefined,
+      });
+      return 1;
+    }
     case "(": {
       const [n, node] = seq(input.slice(1));
       stack.push(node);

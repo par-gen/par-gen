@@ -21,6 +21,17 @@ describe("regexp", () => {
     });
   });
 
+  it("should parse an any character", () => {
+    expect(parse(".")).toEqual({
+      op: ops.sequence,
+      nodes: [
+        {
+          op: ops.any,
+        },
+      ],
+    });
+  });
+
   it("should parse an optional expression", () => {
     expect(parse("a*")).toEqual({
       op: ops.sequence,
