@@ -82,6 +82,48 @@ export class DFA {
   }
 
   /**
+   * @returns {(input: Uint8Array) => boolean}
+   */
+  automata() {
+    const state = this.description.states.indexOf(this.description.start);
+
+    const table = Object.entries(this.description.transitions)
+      .map(([from, transition]) => [
+        this.description.states.indexOf(from),
+        Object.fromEntries(
+          Object.entries(transition).map(([char, to]) => [
+            char.charCodeAt(0),
+            this.description.states.indexOf(to),
+          ])
+        ),
+      ])
+      .map((entry) => entry[1]);
+
+    const finals = this.description.finals.map((final) =>
+      this.description.states.indexOf(final)
+    );
+
+    const automata =
+      /** @type {() => (input: Uint8Array) => boolean} */
+      (new Function(
+        `'use strict';
+
+          const table = ${JSON.stringify(table)};
+          const finals = ${JSON.stringify(finals)};
+
+          return (input) => {
+            let state = ${state};
+            for (let i = 0, l = input.length; i < l; i++) {
+              state = table[state][input[i]];
+            }
+            return finals.includes(state);
+          };
+        `
+      ))();
+    return automata;
+  }
+
+  /**
    * Just a very simple non-exhausting test algorithm.
    *
    * @internal

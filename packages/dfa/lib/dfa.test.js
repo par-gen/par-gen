@@ -176,4 +176,18 @@ describe("DFA", () => {
       ).toBeTruthy();
     });
   });
+
+  describe("generate", () => {
+    it("should return the dfa code", () => {
+      const automata = DFA.fromNFA(
+        NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
+      )
+        .minimal()
+        .automata();
+
+      expect(
+        automata(Uint8Array.from(Buffer.from("abcffghmnijmn")))
+      ).toBeTruthy();
+    });
+  });
 });
