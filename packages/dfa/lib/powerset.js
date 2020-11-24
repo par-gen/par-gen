@@ -112,10 +112,6 @@ function construct(nfa) {
         .filter(Boolean);
       const statesWithEpsilon = getEpsilonClosure(nfa, states);
 
-      if (statesWithEpsilon.length === 0) {
-        return;
-      }
-
       const nextDState = getDState(dstates, statesWithEpsilon) ?? {
         name: `S${index++}`,
         nstates: statesWithEpsilon,
