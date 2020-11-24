@@ -1,3 +1,4 @@
+import { performance } from "perf_hooks";
 import { NFA } from "@knisterpeter/expound-nfa";
 
 import { DFA } from "./dfa.js";
@@ -177,7 +178,7 @@ describe("DFA", () => {
     });
   });
 
-  describe("generate", () => {
+  describe("automata", () => {
     it("should return the dfa code", () => {
       const automata = DFA.fromNFA(
         NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
@@ -188,6 +189,59 @@ describe("DFA", () => {
       expect(
         automata(Uint8Array.from(Buffer.from("abcffghmnijmn")))
       ).toBeTruthy();
+    });
+
+    it("should be fast", () => {
+      /**
+       * @param {string} name
+       * @param {() => void} fn
+       * @returns {[string, number]}
+       */
+      const time = (name, fn) => {
+        const start = performance.now();
+        fn();
+        const end = performance.now();
+        return [name, end - start];
+      };
+
+      const automata = DFA.fromNFA(
+        NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
+      )
+        .minimal()
+        .automata();
+
+      const string = "abcffghmnijmn";
+      const input = Uint8Array.from(Buffer.from(string));
+      const iterations = 25_000_000;
+
+      // make the function hot
+      for (let i = 0; i < 1_000; i++) {
+        automata(input);
+      }
+
+      const dfaResult = time("dfa", () => {
+        for (let i = 0; i < iterations; i++) {
+          automata(input);
+        }
+      });
+
+      const regexp = new RegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*");
+      // make the expr hot
+      for (let i = 0; i < 1_000; i++) {
+        regexp.test(string);
+      }
+
+      const nativeResult = time("native", () => {
+        for (let i = 0; i < iterations; i++) {
+          regexp.test(string);
+        }
+      });
+
+      console.log(`
+Executing in a loop with ${iterations.toLocaleString()} iterations:
+- Running ${dfaResult[0]} took ${dfaResult[1].toFixed(2)} ms
+- Running ${nativeResult[0]} took ${nativeResult[1].toFixed(2)} ms
+`);
     });
   });
 });

@@ -87,18 +87,6 @@ export class DFA {
   automata() {
     const state = this.description.states.indexOf(this.description.start);
 
-    const table = Object.entries(this.description.transitions)
-      .map(([from, transition]) => [
-        this.description.states.indexOf(from),
-        Object.fromEntries(
-          Object.entries(transition).map(([char, to]) => [
-            char.charCodeAt(0),
-            this.description.states.indexOf(to),
-          ])
-        ),
-      ])
-      .map((entry) => entry[1]);
-
     const finals = this.description.finals.map((final) =>
       this.description.states.indexOf(final)
     );
@@ -108,13 +96,31 @@ export class DFA {
       (new Function(
         `'use strict';
 
-          const table = ${JSON.stringify(table)};
+          const column = 256;
+          const states = ${JSON.stringify(this.description.states)};
+          const data = new ArrayBuffer(column * ${
+            this.description.states.length
+          });
+          const table = new Uint8Array(data);
+          Object.entries(${JSON.stringify(
+            this.description.transitions
+          )}).forEach(
+            ([from, transition]) => {
+              const row = states.indexOf(from);
+              Object.entries(transition).forEach(([symbol, to]) => {
+                const col = symbol.charCodeAt(0);
+                const value = states.indexOf(to);
+                table[col + row * 256] = value;
+              });
+            }
+          );
+            
           const finals = ${JSON.stringify(finals)};
 
           return (input) => {
             let state = ${state};
             for (let i = 0, l = input.length; i < l; i++) {
-              state = table[state][input[i]];
+              state = table[state * 256 + input[i]];
             }
             return finals.includes(state);
           };
