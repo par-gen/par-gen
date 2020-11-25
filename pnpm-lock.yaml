@@ -2,7 +2,7 @@ importers:
   .:
     devDependencies:
       '@types/jest': 26.0.15
-      '@types/node': 14.14.9
+      '@types/node': 14.14.10
       cross-env: 7.0.2
       eslint: 7.14.0
       jest: 26.6.3
@@ -10,7 +10,7 @@ importers:
       typescript: 4.1.2
     specifiers:
       '@types/jest': 26.0.15
-      '@types/node': 14.14.9
+      '@types/node': 14.14.10
       cross-env: 7.0.2
       eslint: 7.14.0
       jest: 26.6.3
@@ -599,6 +599,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-s2VMReFXRg9XXxV+CW9e5Nz8fH2K1aEhwgjUqPPbQd7g95T0laAcvLv032EhFHIa5GHsZ8W7iJEQVaJq6k3Gog==
+  /@types/node/14.14.10:
+    dev: true
+    resolution:
+      integrity: sha512-J32dgx2hw8vXrSbu4ZlVhn1Nm3GbeCFNw2FWL8S5QKucHGY0cyNwjdQdO+KMBZ4wpmC7KhLCiNsdk1RFRIYUQQ==
   /@types/node/14.14.9:
     dev: true
     resolution:
