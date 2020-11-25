@@ -25,6 +25,9 @@
   "include": [],
   "references": [
     {
+      "path": "packages/grammar"
+    },
+    {
       "path": "packages/nfa"
     },
     {
