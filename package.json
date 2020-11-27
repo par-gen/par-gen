@@ -37,6 +37,9 @@
   "jest": {
     "projects": [
       "<rootDir>/packages/*"
+    ],
+    "testPathIgnorePatterns": [
+      "/packages/"
     ]
   },
   "renovate": {

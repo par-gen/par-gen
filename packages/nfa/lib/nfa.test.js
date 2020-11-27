@@ -7,7 +7,7 @@ describe("NFA", () => {
         new NFA({
           states: [],
           symbols: ["a"],
-          transitions: {},
+          transitions: new Map(),
           start: "",
           finals: [],
         })
@@ -20,7 +20,7 @@ describe("NFA", () => {
         new NFA({
           states: ["A", "B"],
           symbols: ["a"],
-          transitions: {},
+          transitions: new Map(),
           start: "C",
           finals: [],
         })
@@ -33,7 +33,7 @@ describe("NFA", () => {
         new NFA({
           states: ["A", "B"],
           symbols: ["a"],
-          transitions: {},
+          transitions: new Map(),
           start: "A",
           finals: ["C"],
         })
@@ -46,7 +46,7 @@ describe("NFA", () => {
         new NFA({
           states: ["A", "B"],
           symbols: ["a"],
-          transitions: {},
+          transitions: new Map(),
           start: "A",
           finals: [],
         })
@@ -59,7 +59,7 @@ describe("NFA", () => {
         new NFA({
           states: ["A", "B"],
           symbols: [],
-          transitions: {},
+          transitions: new Map(),
           start: "A",
           finals: [],
         })
@@ -72,10 +72,10 @@ describe("NFA", () => {
         new NFA({
           states: ["A"],
           symbols: ["a"],
-          transitions: {
-            A: {},
-            B: {},
-          },
+          transitions: new Map([
+            ["A", new Map()],
+            ["B", new Map()],
+          ]),
           start: "A",
           finals: ["A"],
         })
@@ -88,15 +88,16 @@ describe("NFA", () => {
         new NFA({
           states: ["A", "B"],
           symbols: ["a"],
-          transitions: {
-            A: {
-              a: [],
-            },
-            B: {
-              a: [],
-              b: ["A"],
-            },
-          },
+          transitions: new Map([
+            ["A", new Map([["a", []]])],
+            [
+              "B",
+              new Map([
+                ["a", []],
+                ["b", ["A"]],
+              ]),
+            ],
+          ]),
           start: "A",
           finals: ["A"],
         })
@@ -109,16 +110,22 @@ describe("NFA", () => {
         new NFA({
           states: ["A", "B"],
           symbols: ["a", "b"],
-          transitions: {
-            A: {
-              a: [],
-              b: [],
-            },
-            B: {
-              a: [],
-              b: ["C"],
-            },
-          },
+          transitions: new Map([
+            [
+              "A",
+              new Map([
+                ["a", []],
+                ["b", []],
+              ]),
+            ],
+            [
+              "B",
+              new Map([
+                ["a", []],
+                ["b", ["C"]],
+              ]),
+            ],
+          ]),
           start: "A",
           finals: ["A"],
         })
@@ -129,14 +136,10 @@ describe("NFA", () => {
     const nfa = new NFA({
       states: ["A", "B"],
       symbols: ["a"],
-      transitions: {
-        A: {
-          a: ["B"],
-        },
-        B: {
-          a: [],
-        },
-      },
+      transitions: new Map([
+        ["A", new Map([["a", ["B"]]])],
+        ["B", new Map([["a", []]])],
+      ]),
       start: "A",
       finals: ["B"],
     });
@@ -148,15 +151,16 @@ describe("NFA", () => {
     const nfa = new NFA({
       states: ["A", "B"],
       symbols: ["a"],
-      transitions: {
-        A: {
-          [NFA.Epsilon]: ["B"],
-          a: [],
-        },
-        B: {
-          a: [],
-        },
-      },
+      transitions: new Map([
+        [
+          "A",
+          new Map([
+            [NFA.Epsilon, ["B"]],
+            /** @type {[string|symbol, string[]]} */ (["a", []]),
+          ]),
+        ],
+        ["B", new Map()],
+      ]),
       start: "A",
       finals: ["B"],
     });

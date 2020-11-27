@@ -7,7 +7,7 @@ import { fromRegExp } from "./thompson.js";
  * @typedef {Object} NFADescription
  * @property {string[]} states
  * @property {string[]} symbols
- * @property {{[state: string]: {[Epsilon]?: string[]; [symbol: string]: string[]}}} transitions
+ * @property {Map<string, Map<Epsilon|string, string[]>>} transitions
  * @property {string} start
  * @property {string[]} finals
  */
@@ -78,16 +78,16 @@ export class NFA {
       );
     });
 
-    Object.values(transitions).forEach((row) => {
-      Object.values(row).forEach((column) =>
+    for (const row of transitions.values()) {
+      for (const column of row.values()) {
         column.forEach((state) =>
           ok(
             states.includes(state),
             `Transitions contain unknown target state '${state}'`
           )
-        )
-      );
-    });
+        );
+      }
+    }
   }
 
   /**
@@ -112,9 +112,11 @@ export class NFA {
       let symbol = input[0];
       let useEpsilon = false;
 
-      let ways = this.description.transitions[current][symbol];
+      let ways = this.description.transitions.get(current)?.get(symbol);
       if (!ways) {
-        const maybeEmptyWays = this.description.transitions[current][Epsilon];
+        const maybeEmptyWays = this.description.transitions
+          .get(current)
+          ?.get(Epsilon);
         if (!maybeEmptyWays) {
           return this.description.finals.includes(current);
         }

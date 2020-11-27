@@ -26,8 +26,8 @@ export function fromRegExp(regexp) {
 
   return {
     states: def.states,
-    symbols: def.symbols,
-    transitions: def.transition,
+    symbols: Array.from(new Set(def.symbols)),
+    transitions: def.transitions,
     start: def.start,
     finals: [def.final],
   };
@@ -38,7 +38,7 @@ export function fromRegExp(regexp) {
  * @property {number} counter
  * @property {string[]} states
  * @property {string[]} symbols
- * @property {import('./nfa').NFADescription['transitions']} transition
+ * @property {import('./nfa').NFADescription['transitions']} transitions
  * @property {string} start
  * @property {string} final
  */
@@ -58,11 +58,7 @@ function sequence(counter, tree) {
     counter: counter + 2,
     states: [start, final],
     symbols: [],
-    transition: {
-      [start]: {
-        [Epsilon]: [final],
-      },
-    },
+    transitions: new Map([[start, new Map([[Epsilon, [final]]])]]),
     start,
     final,
   };
@@ -76,14 +72,12 @@ function sequence(counter, tree) {
       counter: b.counter,
       states: [...a.states, ...b.states],
       symbols: [...a.symbols, ...b.symbols],
-      transition: {
-        ...a.transition,
-        ...b.transition,
-        [a.final]: {
-          [Epsilon]: [b.start],
-        },
-        [b.final]: {},
-      },
+      transitions: new Map([
+        ...a.transitions,
+        ...b.transitions,
+        [a.final, new Map([[Epsilon, [b.start]]])],
+        [b.final, new Map()],
+      ]),
       start: a.start,
       final: b.final,
     });
@@ -122,11 +116,7 @@ function match(counter, tree) {
     counter: counter + 2,
     states: [start, final],
     symbols: [value],
-    transition: {
-      [start]: {
-        [value]: [final],
-      },
-    },
+    transitions: new Map([[start, new Map([[value, [final]]])]]),
     start,
     final,
   };
@@ -174,20 +164,14 @@ function choice(counter, tree) {
     counter: rightPartial.counter,
     states: [start, final, ...leftPartial.states, ...rightPartial.states],
     symbols: [...leftPartial.symbols, ...rightPartial.symbols],
-    transition: {
-      ...leftPartial.transition,
-      ...rightPartial.transition,
-      [start]: {
-        [Epsilon]: [leftPartial.start, rightPartial.start],
-      },
-      [leftPartial.final]: {
-        [Epsilon]: [final],
-      },
-      [rightPartial.final]: {
-        [Epsilon]: [final],
-      },
-      [final]: {},
-    },
+    transitions: new Map([
+      ...leftPartial.transitions,
+      ...rightPartial.transitions,
+      [start, new Map([[Epsilon, [leftPartial.start, rightPartial.start]]])],
+      [leftPartial.final, new Map([[Epsilon, [final]]])],
+      [rightPartial.final, new Map([[Epsilon, [final]]])],
+      [final, new Map()],
+    ]),
     start,
     final,
   };
@@ -225,16 +209,12 @@ function optional(counter, tree) {
     counter: partial.counter,
     states: [start, final, ...partial.states],
     symbols: partial.symbols,
-    transition: {
-      ...partial.transition,
-      [start]: {
-        [Epsilon]: [partial.start, final],
-      },
-      [partial.final]: {
-        [Epsilon]: [final, partial.start],
-      },
-      [final]: {},
-    },
+    transitions: new Map([
+      ...partial.transitions,
+      [start, new Map([[Epsilon, [final, partial.start]]])],
+      [partial.final, new Map([[Epsilon, [final, partial.start]]])],
+      [final, new Map()],
+    ]),
     start,
     final,
   };

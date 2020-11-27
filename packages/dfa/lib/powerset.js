@@ -48,8 +48,8 @@ function getEpsilonClosure(nfa, states) {
     if (!state) {
       continue;
     }
-    const transitions = nfa.description.transitions[state];
-    const next = transitions[Epsilon];
+    const transitions = nfa.description.transitions.get(state);
+    const next = transitions?.get(Epsilon);
     if (!next) {
       continue;
     }
@@ -108,8 +108,12 @@ function construct(nfa) {
 
     nfa.description.symbols.forEach((symbol) => {
       const states = dstate.nstates
-        .flatMap((state) => nfa.description.transitions[state][symbol])
-        .filter(Boolean);
+        .flatMap((state) => nfa.description.transitions.get(state)?.get(symbol))
+        .filter(
+          /** @type {(states: string | undefined) => states is string} */ ((
+            states
+          ) => Boolean(states))
+        );
       const statesWithEpsilon = getEpsilonClosure(nfa, states);
 
       const nextDState = getDState(dstates, statesWithEpsilon) ?? {
