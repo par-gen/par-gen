@@ -18,7 +18,8 @@
   "homepage": "https://github.com/KnisterPeter/expound#readme",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "check": "tsc -b .",
+    "check": "tsc --build .",
+    "check-watch": "tsc --build . --watch",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "engines": {
