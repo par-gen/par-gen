@@ -2,8 +2,23 @@ import { Epsilon } from "./constants.js";
 import { parse, ops } from "./regexp.js";
 
 /**
+ * @template VALUE
+ * @typedef {import('./regexp').ParseTree<VALUE>} ParseTree
+ */
+
+/**
+ * @template STATE, VALUE
+ * @typedef {import('./nfa').NFADescription<STATE, VALUE>} NFADescription
+ */
+
+/**
+ * @template STATE, VALUE
+ * @typedef {(n: number, tree: ParseTree<VALUE>) => STATE} StateFactory
+ */
+
+/**
  * @param {string} regexp regular expression to create a NFA from
- * @returns {import('./nfa').NFADescription<string, string>}
+ * @returns {NFADescription<string, string>}
  */
 export function fromRegExp(regexp) {
   const tree = parse(regexp);
@@ -13,9 +28,9 @@ export function fromRegExp(regexp) {
 
 /**
  * @template STATE, VALUE
- * @param {import('./regexp').ParseTree<VALUE>} tree regular expression parse tree
- * @param {(n: number) => STATE} stateFactory
- * @returns {import('./nfa').NFADescription<STATE, VALUE>}
+ * @param {ParseTree<VALUE>} tree regular expression parse tree
+ * @param {StateFactory<STATE, VALUE>} stateFactory
+ * @returns {NFADescription<STATE, VALUE>}
  */
 export function fromRegExpParseTree(tree, stateFactory) {
   let counter = 0;
@@ -49,7 +64,7 @@ export function fromRegExpParseTree(tree, stateFactory) {
  * @property {number} counter
  * @property {STATE[]} states
  * @property {VALUE[]} symbols
- * @property {import('./nfa').NFADescription<STATE, VALUE>['transitions']} transitions
+ * @property {NFADescription<STATE, VALUE>['transitions']} transitions
  * @property {STATE} start
  * @property {STATE} final
  */
@@ -57,14 +72,14 @@ export function fromRegExpParseTree(tree, stateFactory) {
 /**
  * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree<VALUE>} tree
- * @param {(n: number) => STATE} stateFactory
+ * @param {ParseTree<VALUE>} tree
+ * @param {StateFactory<STATE, VALUE>} stateFactory
  * @returns {PartialNFA<STATE, VALUE>}
  */
 function sequence(counter, tree, stateFactory) {
   const nodes = tree.nodes ?? [];
-  const start = stateFactory(counter);
-  const final = stateFactory(counter + 1);
+  const start = stateFactory(counter, tree);
+  const final = stateFactory(counter + 1, tree);
 
   /** @type {PartialNFA<STATE, VALUE>} */
   const partialStart = {
@@ -115,8 +130,8 @@ function sequence(counter, tree, stateFactory) {
 /**
  * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree<VALUE>} tree
- * @param {(n: number) => STATE} stateFactory
+ * @param {ParseTree<VALUE>} tree
+ * @param {StateFactory<STATE, VALUE>} stateFactory
  * @returns {PartialNFA<STATE, VALUE>}
  */
 function match(counter, tree, stateFactory) {
@@ -124,8 +139,8 @@ function match(counter, tree, stateFactory) {
   if (!value) {
     throw new Error("Illegal state");
   }
-  const start = stateFactory(counter);
-  const final = stateFactory(counter + 1);
+  const start = stateFactory(counter, tree);
+  const final = stateFactory(counter + 1, tree);
 
   return {
     counter: counter + 2,
@@ -140,8 +155,8 @@ function match(counter, tree, stateFactory) {
 /**
  * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree<VALUE>} tree
- * @param {(n: number) => STATE} stateFactory
+ * @param {ParseTree<VALUE>} tree
+ * @param {StateFactory<STATE, VALUE>} stateFactory
  * @returns {PartialNFA<STATE, VALUE>}
  */
 function choice(counter, tree, stateFactory) {
@@ -153,12 +168,12 @@ function choice(counter, tree, stateFactory) {
   if (!right) {
     throw new Error("Illegal state");
   }
-  const start = stateFactory(counter);
-  const final = stateFactory(counter + 1);
+  const start = stateFactory(counter, tree);
+  const final = stateFactory(counter + 1, tree);
 
   /**
    * @param {number} counter
-   * @param {import('./regexp').ParseTree<VALUE>} node
+   * @param {ParseTree<VALUE>} node
    */
   const cratePartial = (counter, node) => {
     switch (node.op) {
@@ -197,8 +212,8 @@ function choice(counter, tree, stateFactory) {
 /**
  * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree<VALUE>} tree
- * @param {(n: number) => STATE} stateFactory
+ * @param {ParseTree<VALUE>} tree
+ * @param {StateFactory<STATE, VALUE>} stateFactory
  * @returns {PartialNFA<STATE, VALUE>}
  */
 function optional(counter, tree, stateFactory) {
@@ -206,8 +221,8 @@ function optional(counter, tree, stateFactory) {
   if (!node) {
     throw new Error("Illegal state");
   }
-  const start = stateFactory(counter);
-  const final = stateFactory(counter + 1);
+  const start = stateFactory(counter, tree);
+  const final = stateFactory(counter + 1, tree);
   const nextCounter = counter + 2;
 
   const partial = ((node) => {
