@@ -25,7 +25,7 @@ describe("hopcroft", () => {
       finals: ["4", "5"],
     });
 
-    const minimal = hopcroft(dfa);
+    const minimal = hopcroft(dfa, (n) => `S${n}`);
 
     expect(minimal).toEqual({
       states: ["S0", "S1", "S2"],
