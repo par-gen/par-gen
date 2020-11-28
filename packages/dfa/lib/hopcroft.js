@@ -1,5 +1,6 @@
 /**
- * @typedef {import('./dfa').DFA} DFA
+ * @template STATE, SYMBOL
+ * @typedef {import('./dfa').DFA<STATE, SYMBOL>} DFA
  */
 
 /**
@@ -13,11 +14,12 @@
  */
 
 /**
- * @param {DFA} dfa
- * @param {StateMapper<string, string>} [stateMapper]
- * @return {DFADescription<string, string>}
+ * @template STATE, NEW_STATE, SYMBOL
+ * @param {DFA<STATE, SYMBOL>} dfa
+ * @param {StateMapper<STATE, NEW_STATE>} stateMapper
+ * @return {DFADescription<NEW_STATE, SYMBOL>}
  */
-export function hopcroft(dfa, stateMapper = (n) => `S${n}`) {
+export function hopcroft(dfa, stateMapper) {
   const { states, symbols, transitions, finals } = dfa.description;
 
   const partitions = [
@@ -71,7 +73,7 @@ export function hopcroft(dfa, stateMapper = (n) => `S${n}`) {
   }
 
   /**
-   * @param {string} state
+   * @param {STATE} state
    * @return {number}
    */
   const newStateIndex = (state) =>
@@ -82,8 +84,8 @@ export function hopcroft(dfa, stateMapper = (n) => `S${n}`) {
   ]);
 
   /**
-   * @param {string} oldState
-   * @return {string[]}
+   * @param {STATE} oldState
+   * @return {STATE[]}
    */
   const oldStates = (oldState) => {
     const partition = partitions.find((partition) =>
@@ -112,10 +114,10 @@ export function hopcroft(dfa, stateMapper = (n) => `S${n}`) {
       );
       return accumulator;
     },
-    /** @type {DFADescription<string, string>['transitions']} */ (new Map())
+    /** @type {DFADescription<NEW_STATE, SYMBOL>['transitions']} */ (new Map())
   );
 
-  /** @type {DFADescription<string, string>} */
+  /** @type {DFADescription<NEW_STATE, SYMBOL>} */
   const description = {
     states: Array.from(minimalTransitions.keys()),
     symbols: symbols,

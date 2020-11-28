@@ -6,7 +6,7 @@ describe("fromNFA", () => {
   it("should create a DFA from a given NFA", () => {
     const nfa = NFA.fromRegExp("ab");
 
-    const description = fromNFA(nfa);
+    const description = fromNFA(nfa, (n) => `S${n}`);
 
     expect(description).toEqual({
       states: ["S0", "S1", "S2", "S3"],

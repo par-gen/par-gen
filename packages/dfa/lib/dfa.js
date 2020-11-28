@@ -18,17 +18,21 @@ import { fromNFA } from "./powerset.js";
  * @property {STATE[]} finals
  */
 
+/**
+ * @template STATE, SYMBOL
+ */
 export class DFA {
   /**
-   * @param {NFA<string, string>} nfa
-   * @returns {DFA}
+   * @template STATE, SYMBOL
+   * @param {NFA<STATE, SYMBOL>} nfa
+   * @returns {DFA<STATE, SYMBOL>}
    */
   static fromNFA(nfa) {
-    return new DFA(fromNFA(nfa));
+    return new DFA(fromNFA(nfa, (n) => /** @type {any} */ (`S${n}`)));
   }
 
   /**
-   * @param {DFADescription<string, string>} description
+   * @param {DFADescription<STATE, SYMBOL>} description
    */
   constructor(description) {
     this._validate(description);
@@ -39,7 +43,7 @@ export class DFA {
   /**
    * @internal
    * @private
-   * @param {DFADescription<string, string>} description
+   * @param {DFADescription<STATE, SYMBOL>} description
    */
   _validate(description) {
     const { states, symbols, transitions, start, finals } = description;
@@ -81,10 +85,10 @@ export class DFA {
   }
 
   /**
-   * @returns {DFA}
+   * @returns {DFA<STATE, SYMBOL>}
    */
   minimal() {
-    return new DFA(hopcroft(this));
+    return new DFA(hopcroft(this, (n) => /** @type {any} */ (`S${n}`)));
   }
 
   /**
@@ -126,7 +130,7 @@ export class DFA {
               });
             }
           );
-            
+
           const finals = ${JSON.stringify(finals)};
 
           return (input) => {
@@ -145,7 +149,7 @@ export class DFA {
    * Just a very simple non-exhausting test algorithm.
    *
    * @internal
-   * @param {string[]} input
+   * @param {SYMBOL[]} input
    * @return {boolean}
    */
   test(input) {
@@ -156,8 +160,8 @@ export class DFA {
     });
 
     /**
-     * @param {string[]} input
-     * @param {string} current
+     * @param {SYMBOL[]} input
+     * @param {STATE} current
      * @returns {boolean}
      */
     const step = (input, current) => {

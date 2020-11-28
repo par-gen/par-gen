@@ -11,9 +11,10 @@ import { Epsilon } from "@knisterpeter/expound-nfa";
  */
 
 /**
+ * @template STATE, NEW_STATE
  * @typedef {Object} DState
- * @property {string} name
- * @property {string[]} nstates
+ * @property {NEW_STATE} name
+ * @property {STATE[]} nstates
  */
 
 /**
@@ -22,40 +23,31 @@ import { Epsilon } from "@knisterpeter/expound-nfa";
  */
 
 /**
- * @param {NFA<string, string>} nfa
- * @param {StateMapper<string, string>} [stateMapper]
- * @returns {DFADescription<string, string>}
+ * @template STATE, NEW_STATE, SYMBOL
+ * @param {NFA<STATE, SYMBOL>} nfa
+ * @param {StateMapper<STATE, NEW_STATE>} stateMapper
+ * @returns {DFADescription<NEW_STATE, SYMBOL>}
  */
-export function fromNFA(nfa, stateMapper = (n) => `S${n}`) {
+export function fromNFA(nfa, stateMapper) {
   const { dstates, transitions, start, finals } = construct(nfa, stateMapper);
 
   return {
     states: dstates.map((dstate) => dstate.name),
     symbols: nfa.description.symbols,
-    transitions: new Map(
-      Object.entries(transitions).map(([state, transition]) => {
-        return [
-          state,
-          new Map(
-            Object.entries(transition).map(([symbol, dstate]) => {
-              return [symbol, dstate.name];
-            })
-          ),
-        ];
-      })
-    ),
+    transitions,
     start: start.name,
     finals: finals.map((final) => final.name),
   };
 }
 
 /**
- * @param {NFA<string, string>} nfa
- * @param {string[]} states
- * @returns {string[]}
+ * @template STATE, SYMBOL
+ * @param {NFA<STATE, SYMBOL>} nfa
+ * @param {STATE[]} states
+ * @returns {STATE[]}
  */
 function getEpsilonClosure(nfa, states) {
-  /** @type {string[]} */
+  /** @type {STATE[]} */
   const selected = [];
   const open = [...states];
 
@@ -82,9 +74,10 @@ function getEpsilonClosure(nfa, states) {
 }
 
 /**
- * @param {DState[]} dstates
- * @param {string[]} states
- * @returns {DState | undefined}
+ * @template STATE, NEW_STATE
+ * @param {DState<STATE, NEW_STATE>[]} dstates
+ * @param {STATE[]} states
+ * @returns {DState<STATE, NEW_STATE> | undefined}
  */
 function getDState(dstates, states) {
   return dstates.find(
@@ -95,9 +88,10 @@ function getDState(dstates, states) {
 }
 
 /**
- * @param {NFA<string, string>} nfa
- * @param {StateMapper<string, string>} stateMapper
- * @returns {{ dstates: DState[], transitions: { [state: string]: { [symbol: string]: DState } }, start: DState, finals: DState[] }}
+ * @template STATE, NEW_STATE, SYMBOL
+ * @param {NFA<STATE, SYMBOL>} nfa
+ * @param {StateMapper<STATE, NEW_STATE>} stateMapper
+ * @returns {{ dstates: DState<STATE, NEW_STATE>[], transitions: Map<NEW_STATE, Map<SYMBOL, NEW_STATE>>, start: DState<STATE, NEW_STATE>, finals: DState<STATE, NEW_STATE>[] }}
  */
 function construct(nfa, stateMapper) {
   let index = 0;
@@ -106,14 +100,14 @@ function construct(nfa, stateMapper) {
     name: stateMapper(index++, [nfa.description.start]),
     nstates: getEpsilonClosure(nfa, [nfa.description.start]),
   };
-  /** @type {DState[]} */
+  /** @type {DState<STATE, NEW_STATE>[]} */
   const dstates = [start];
 
-  /** @type {DState[]} */
+  /** @type {DState<STATE, NEW_STATE>[]} */
   const marked = [];
 
-  /** @type {{[state: string]: {[symbol: string]: DState}}} */
-  const transitions = {};
+  /** @type {Map<NEW_STATE, Map<SYMBOL, NEW_STATE>>} */
+  const transitions = new Map();
 
   while (true) {
     const next = dstates.find((state) => !marked.includes(state));
@@ -127,7 +121,7 @@ function construct(nfa, stateMapper) {
       const states = dstate.nstates
         .flatMap((state) => nfa.description.transitions.get(state)?.get(symbol))
         .filter(
-          /** @type {(states: string | undefined) => states is string} */ ((
+          /** @type {(states: STATE | undefined) => states is STATE} */ ((
             states
           ) => Boolean(states))
         );
@@ -138,10 +132,13 @@ function construct(nfa, stateMapper) {
         nstates: statesWithEpsilon,
       };
 
-      transitions[dstate.name] = {
-        ...transitions[dstate.name],
-        [symbol]: nextDState,
-      };
+      transitions.set(
+        dstate.name,
+        new Map([
+          ...Array.from(transitions.get(dstate.name)?.entries() ?? []),
+          [symbol, nextDState.name],
+        ])
+      );
 
       if (!dstates.includes(nextDState)) {
         dstates.push(nextDState);
