@@ -3,7 +3,7 @@ import { parse, ops } from "./regexp.js";
 
 /**
  * @param {string} regexp regular expression to create a NFA from
- * @returns {import('./nfa').NFADescription}
+ * @returns {import('./nfa').NFADescription<string, string>}
  */
 export function fromRegExp(regexp) {
   const tree = parse(regexp);
@@ -38,7 +38,7 @@ export function fromRegExp(regexp) {
  * @property {number} counter
  * @property {string[]} states
  * @property {string[]} symbols
- * @property {import('./nfa').NFADescription['transitions']} transitions
+ * @property {import('./nfa').NFADescription<string, string>['transitions']} transitions
  * @property {string} start
  * @property {string} final
  */
