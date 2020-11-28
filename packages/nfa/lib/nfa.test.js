@@ -145,7 +145,7 @@ describe("NFA", () => {
       finals: ["B"],
     });
 
-    expect(nfa.test(["a"])).toBeTruthy();
+    expect(nfa.test(["a"])).toBe(true);
   });
 
   it("should allow epsilon transitions", () => {
@@ -166,7 +166,7 @@ describe("NFA", () => {
       finals: ["B"],
     });
 
-    expect(nfa.test([])).toBeTruthy();
+    expect(nfa.test([])).toBe(true);
   });
 
   describe("fromRegExp", () => {
@@ -175,7 +175,7 @@ describe("NFA", () => {
 
       const result = nfa.test(["a"]);
 
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
   });
 
@@ -194,6 +194,6 @@ describe("NFA", () => {
 
     const result = nfa.test([a]);
 
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 });

@@ -97,7 +97,7 @@ describe("DFA", () => {
     );
   });
 
-  it("should accept a define valid sentence", () => {
+  it("should accept a valid sentence", () => {
     const dfa = new DFA({
       states: ["A", "B", "C"],
       symbols: ["a", "b"],
@@ -109,7 +109,7 @@ describe("DFA", () => {
       finals: ["C"],
     });
 
-    expect(dfa.test(["a", "b"])).toBeTruthy();
+    expect(dfa.test(["a", "b"])).toBe(true);
   });
 
   describe("fromNFA", () => {
@@ -134,7 +134,7 @@ describe("DFA", () => {
           "m",
           "n",
         ])
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 
@@ -160,7 +160,7 @@ describe("DFA", () => {
           "m",
           "n",
         ])
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 
@@ -172,9 +172,9 @@ describe("DFA", () => {
         .minimal()
         .automata();
 
-      expect(
-        automata(Uint8Array.from(Buffer.from("abcffghmnijmn")))
-      ).toBeTruthy();
+      expect(automata(Uint8Array.from(Buffer.from("abcffghmnijmn")))).toBe(
+        true
+      );
     });
 
     it("should be fast", () => {

@@ -13,7 +13,7 @@ describe("fromRegExp", () => {
 
     const nfa = new NFA(description);
 
-    expect(nfa.test(["a", "b", "c"])).toBeTruthy();
+    expect(nfa.test(["a", "b", "c"])).toBe(true);
   });
 
   it("should create a NFA from an optional regular expression", () => {
@@ -21,8 +21,8 @@ describe("fromRegExp", () => {
 
     const nfa = new NFA(description);
 
-    expect(nfa.test(["a", "a", "a"])).toBeTruthy();
-    expect(nfa.test([])).toBeTruthy();
+    expect(nfa.test(["a", "a", "a"])).toBe(true);
+    expect(nfa.test([])).toBe(true);
   });
 
   it("should create a NFA from a choice regular expression", () => {
@@ -30,8 +30,8 @@ describe("fromRegExp", () => {
 
     const nfa = new NFA(description);
 
-    expect(nfa.test(["a"])).toBeTruthy();
-    expect(nfa.test(["b"])).toBeTruthy();
+    expect(nfa.test(["a"])).toBe(true);
+    expect(nfa.test(["b"])).toBe(true);
   });
 
   it("should create a NFA from a complex regular expression", () => {
@@ -39,9 +39,9 @@ describe("fromRegExp", () => {
 
     const nfa = new NFA(description);
 
-    expect(nfa.test(["a", "a", "a", "a", "b", "b", "c", "c"])).toBeTruthy();
-    expect(nfa.test(["a", "a", "b", "b", "c", "c"])).toBeTruthy();
-    expect(nfa.test(["a", "a", "c", "c"])).toBeTruthy();
+    expect(nfa.test(["a", "a", "a", "a", "b", "b", "c", "c"])).toBe(true);
+    expect(nfa.test(["a", "a", "b", "b", "c", "c"])).toBe(true);
+    expect(nfa.test(["a", "a", "c", "c"])).toBe(true);
   });
 
   it("should create a NFA with custom symbols and states", () => {
@@ -72,6 +72,6 @@ describe("fromRegExp", () => {
     const nfa = new NFA(description);
     const result = nfa.test([1]);
 
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 });
