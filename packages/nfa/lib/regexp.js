@@ -9,6 +9,7 @@ export const ops = {
 /**
  * @template VALUE
  * @typedef {Object} ParseTree
+ * @property {ParseTree<VALUE> | undefined} parent
  * @property {symbol} op
  * @property {VALUE | undefined} value
  * @property {ParseTree<VALUE> | undefined} node
@@ -43,17 +44,18 @@ function seq(input) {
     i = i + n;
   }
 
-  return [
-    i,
-    {
-      op: ops.sequence,
-      value: undefined,
-      node: undefined,
-      nodes: stack,
-      left: undefined,
-      right: undefined,
-    },
-  ];
+  const node = {
+    parent: undefined,
+    op: ops.sequence,
+    value: undefined,
+    node: undefined,
+    nodes: stack,
+    left: undefined,
+    right: undefined,
+  };
+  node.nodes.forEach((child) => (child.parent = node));
+
+  return [i, node];
 }
 
 /**
@@ -65,6 +67,7 @@ function next(stack, input) {
   switch (input[0]) {
     case ".": {
       stack.push({
+        parent: undefined,
         op: ops.any,
         value: undefined,
         node: undefined,
@@ -84,36 +87,56 @@ function next(stack, input) {
     }
     case "|": {
       const [n, right] = seq(input.slice(1));
-      stack.splice(0, stack.length, {
+
+      const nodes = [...stack];
+      /** @type {ParseTree<string>} */
+      const left = {
+        parent: undefined,
+        op: ops.sequence,
+        value: undefined,
+        node: undefined,
+        nodes,
+        left: undefined,
+        right: undefined,
+      };
+      nodes.forEach((child) => (child.parent = left));
+
+      const node = {
+        parent: undefined,
         op: ops.choice,
         value: undefined,
         node: undefined,
         nodes: undefined,
-        left: {
-          op: ops.sequence,
-          value: undefined,
-          node: undefined,
-          nodes: [...stack],
-          left: undefined,
-          right: undefined,
-        },
+        left,
         right,
-      });
+      };
+      left.parent = node;
+      right.parent = node;
+
+      stack.splice(0, stack.length, node);
       return n + 1;
     }
     case "*": {
-      stack.push({
+      const child = stack.pop();
+      if (!child) {
+        throw new Error("Illegal state");
+      }
+      const node = {
+        parent: undefined,
         op: ops.optional,
         value: undefined,
-        node: stack.pop(),
+        node: child,
         nodes: undefined,
         left: undefined,
         right: undefined,
-      });
+      };
+      child.parent = node;
+      stack.push(node);
       return 1;
     }
     default: {
       stack.push({
+        parent: undefined,
         op: ops.match,
         value: input[0],
         node: undefined,
