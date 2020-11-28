@@ -6,7 +6,8 @@ import { Epsilon } from "@knisterpeter/expound-nfa";
  */
 
 /**
- * @typedef {import('./dfa').DFADescription} DFADescription
+ * @template STATE, SYMBOL
+ * @typedef {import('./dfa').DFADescription<STATE, SYMBOL>} DFADescription
  */
 
 /**
@@ -17,7 +18,7 @@ import { Epsilon } from "@knisterpeter/expound-nfa";
 
 /**
  * @param {NFA<string, string>} nfa
- * @returns {DFADescription}
+ * @returns {DFADescription<string, string>}
  */
 export function fromNFA(nfa) {
   const { dstates, transitions, start, finals } = construct(nfa);

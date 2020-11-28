@@ -9,12 +9,13 @@ import { fromNFA } from "./powerset.js";
  */
 
 /**
+ * @template STATE, SYMBOL
  * @typedef {Object} DFADescription
- * @property {string[]} states
- * @property {string[]} symbols
- * @property {Map<string, Map<string, string>>} transitions
- * @property {string} start
- * @property {string[]} finals
+ * @property {STATE[]} states
+ * @property {SYMBOL[]} symbols
+ * @property {Map<STATE, Map<SYMBOL, STATE>>} transitions
+ * @property {STATE} start
+ * @property {STATE[]} finals
  */
 
 export class DFA {
@@ -27,7 +28,7 @@ export class DFA {
   }
 
   /**
-   * @param {DFADescription} description
+   * @param {DFADescription<string, string>} description
    */
   constructor(description) {
     this._validate(description);
@@ -38,7 +39,7 @@ export class DFA {
   /**
    * @internal
    * @private
-   * @param {DFADescription} description
+   * @param {DFADescription<string, string>} description
    */
   _validate(description) {
     const { states, symbols, transitions, start, finals } = description;
