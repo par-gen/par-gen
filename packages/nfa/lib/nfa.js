@@ -4,28 +4,31 @@ import { Epsilon } from "./constants.js";
 import { fromRegExp } from "./thompson.js";
 
 /**
+ * @template STATE
+ * @template SYMBOL
  * @typedef {Object} NFADescription
- * @property {string[]} states
- * @property {string[]} symbols
- * @property {Map<string, Map<Epsilon|string, string[]>>} transitions
- * @property {string} start
- * @property {string[]} finals
+ * @property {STATE[]} states
+ * @property {SYMBOL[]} symbols
+ * @property {Map<STATE, Map<SYMBOL|typeof Epsilon, STATE[]>>} transitions
+ * @property {STATE} start
+ * @property {STATE[]} finals
  */
 
-  /**
- *
-   */
+/**
+ * @template STATE
+ * @template SYMBOL
+ */
 export class NFA {
   /**
    * @param {string} regexp regular expression to create a NFA from
-   * @returns {NFA}
+   * @returns {NFA<string, string>}
    */
   static fromRegExp(regexp) {
     return new NFA(fromRegExp(regexp));
   }
 
   /**
-   * @param {NFADescription} description
+   * @param {NFADescription<STATE, SYMBOL>} description
    */
   constructor(description) {
     this._validate(description);
@@ -36,7 +39,7 @@ export class NFA {
   /**
    * @internal
    * @private
-   * @param {NFADescription} description
+   * @param {NFADescription<STATE, SYMBOL>} description
    */
   _validate(description) {
     const { states, symbols, transitions, start, finals } = description;
@@ -66,15 +69,15 @@ export class NFA {
       ok(
         states.includes(state),
         `Transitions contain unknown state '${state}'`
-    );
+      );
     }
 
     for (const row of transitions.values()) {
       for (const symbol of row.keys()) {
         ok(
           symbol === Epsilon || symbols.includes(symbol),
-          `Transitions contain unknown symbol '${symbol.toString()}'`
-      );
+          `Transitions contain unknown symbol '${String(symbol)}'`
+        );
       }
     }
 
@@ -94,7 +97,7 @@ export class NFA {
    * Just a very simple non-exhausting test algorithm.
    *
    * @internal
-   * @param {string[]} input
+   * @param {SYMBOL[]} input
    */
   test(input) {
     input.forEach((symbol) => {
@@ -104,8 +107,8 @@ export class NFA {
     });
 
     /**
-     * @param {string[]} input
-     * @param {string} current
+     * @param {SYMBOL[]} input
+     * @param {STATE} current
      * @returns {boolean}
      */
     const step = (input, current) => {

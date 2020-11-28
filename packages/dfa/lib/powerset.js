@@ -7,7 +7,7 @@ import { Epsilon } from "@knisterpeter/expound-nfa";
  */
 
 /**
- * @param {import('@knisterpeter/expound-nfa').NFA} nfa
+ * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
  * @returns {import('./dfa').DFADescription}
  */
 export function fromNFA(nfa) {
@@ -34,7 +34,7 @@ export function fromNFA(nfa) {
 }
 
 /**
- * @param {import('@knisterpeter/expound-nfa').NFA} nfa
+ * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
  * @param {string[]} states
  * @returns {string[]}
  */
@@ -79,7 +79,7 @@ function getDState(dstates, states) {
 }
 
 /**
- * @param {import('@knisterpeter/expound-nfa').NFA} nfa
+ * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
  * @returns {{ dstates: DState[], transitions: { [state: string]: { [symbol: string]: DState } }, start: DState, finals: DState[] }}
  */
 function construct(nfa) {

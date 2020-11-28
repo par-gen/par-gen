@@ -14,7 +14,7 @@ import { fromNFA } from "./powerset.js";
 
 export class DFA {
   /**
-   * @param {import('@knisterpeter/expound-nfa').NFA} nfa
+   * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
    * @returns {DFA}
    */
   static fromNFA(nfa) {

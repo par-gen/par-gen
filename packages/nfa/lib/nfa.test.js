@@ -178,4 +178,22 @@ describe("NFA", () => {
       expect(result).toBeTruthy();
     });
   });
+
+  it("should create a NFA with non string states and symbols", () => {
+    const A = { type: "a" };
+    const B = { type: "b" };
+    const a = { type: "symbol" };
+
+    const nfa = new NFA({
+      states: [A, B],
+      symbols: [a],
+      transitions: new Map([[A, new Map([[a, [B]]])]]),
+      start: A,
+      finals: [B],
+    });
+
+    const result = nfa.test([a]);
+
+    expect(result).toBeTruthy();
+  });
 });
