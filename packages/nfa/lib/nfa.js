@@ -62,18 +62,21 @@ export class NFA {
       )
     );
 
-    Object.keys(transitions).forEach((state) =>
-      ok(states.includes(state), `Transitions contain unknown state '${state}'`)
+    for (const state of transitions.keys()) {
+      ok(
+        states.includes(state),
+        `Transitions contain unknown state '${state}'`
     );
+    }
 
-    Object.values(transitions).forEach((row) => {
-      Object.keys(row).forEach((symbol) =>
+    for (const row of transitions.values()) {
+      for (const symbol of row.keys()) {
         ok(
-          symbols.includes(symbol),
-          `Transitions contain unknown symbol '${symbol}'`
-        )
+          symbol === Epsilon || symbols.includes(symbol),
+          `Transitions contain unknown symbol '${symbol.toString()}'`
       );
-    });
+      }
+    }
 
     for (const row of transitions.values()) {
       for (const column of row.values()) {
