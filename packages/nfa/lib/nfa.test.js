@@ -1,3 +1,4 @@
+import { Epsilon } from "./constants";
 import { NFA } from "./nfa";
 
 describe("NFA", () => {
@@ -155,7 +156,7 @@ describe("NFA", () => {
         [
           "A",
           new Map([
-            [NFA.Epsilon, ["B"]],
+            [Epsilon, ["B"]],
             /** @type {[string|symbol, string[]]} */ (["a", []]),
           ]),
         ],
