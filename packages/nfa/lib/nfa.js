@@ -12,13 +12,10 @@ import { fromRegExp } from "./thompson.js";
  * @property {string[]} finals
  */
 
-export class NFA {
   /**
-   * @type {unique symbol}
-   * @readonly
+ *
    */
-  static Epsilon = Epsilon;
-
+export class NFA {
   /**
    * @param {string} regexp regular expression to create a NFA from
    * @returns {NFA}
