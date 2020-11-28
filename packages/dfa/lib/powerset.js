@@ -1,14 +1,23 @@
 import { Epsilon } from "@knisterpeter/expound-nfa";
 
 /**
+ * @template STATE, SYMBOL
+ * @typedef {import('@knisterpeter/expound-nfa').NFA<STATE, SYMBOL>} NFA
+ */
+
+/**
+ * @typedef {import('./dfa').DFADescription} DFADescription
+ */
+
+/**
  * @typedef {Object} DState
  * @property {string} name
  * @property {string[]} nstates
  */
 
 /**
- * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
- * @returns {import('./dfa').DFADescription}
+ * @param {NFA<string, string>} nfa
+ * @returns {DFADescription}
  */
 export function fromNFA(nfa) {
   const { dstates, transitions, start, finals } = construct(nfa);
@@ -16,11 +25,11 @@ export function fromNFA(nfa) {
   return {
     states: dstates.map((dstate) => dstate.name),
     symbols: nfa.description.symbols,
-    transitions: Object.fromEntries(
+    transitions: new Map(
       Object.entries(transitions).map(([state, transition]) => {
         return [
           state,
-          Object.fromEntries(
+          new Map(
             Object.entries(transition).map(([symbol, dstate]) => {
               return [symbol, dstate.name];
             })
@@ -34,7 +43,7 @@ export function fromNFA(nfa) {
 }
 
 /**
- * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
+ * @param {NFA<string, string>} nfa
  * @param {string[]} states
  * @returns {string[]}
  */
@@ -79,7 +88,7 @@ function getDState(dstates, states) {
 }
 
 /**
- * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
+ * @param {NFA<string, string>} nfa
  * @returns {{ dstates: DState[], transitions: { [state: string]: { [symbol: string]: DState } }, start: DState, finals: DState[] }}
  */
 function construct(nfa) {

@@ -1,6 +1,14 @@
 /**
- * @param {import('./dfa').DFA} dfa
- * @return {import('./dfa').DFADescription}
+ * @typedef {import('./dfa').DFA} DFA
+ */
+
+/**
+ * @typedef {import('./dfa').DFADescription} DFADescription
+ */
+
+/**
+ * @param {DFA} dfa
+ * @return {DFADescription}
  */
 export function hopcroft(dfa) {
   const { states, symbols, transitions, finals } = dfa.description;
@@ -19,9 +27,9 @@ export function hopcroft(dfa) {
     const partitionSet = item;
 
     symbols.forEach((c) => {
-      const X = Object.entries(transitions)
+      const X = Array.from(transitions.entries() ?? [])
         .filter(([, transition]) =>
-          Object.entries(transition).some(
+          Array.from(transition.entries() ?? []).some(
             ([symbol, target]) => c === symbol && partitionSet.includes(target)
           )
         )
@@ -59,36 +67,35 @@ export function hopcroft(dfa) {
     partition.includes(dfa.description.start)
   )}`;
 
-  /** @type {import('./dfa').DFADescription['transitions']} */
+  /**
+   * @param {[string, string]} param
+   * @return {[string, string]}
+   */
+  const oldStateToNewState = ([symbol, state]) => [
+    symbol,
+    `S${partitions.findIndex((partition) => partition.includes(state))}`,
+  ];
+
   const minimalTransitions = partitions.reduce(
-    (accumulator, partition, index) => ({
-      ...accumulator,
-      ...partition.reduce(
-        (accumulator, oldState) => ({
-          ...accumulator,
-          [`S${index}`]: {
-            ...accumulator[`S${index}`],
-            ...Object.fromEntries(
-              Object.entries(
-                transitions[oldState]
-              ).map(([symbol, oldTarget]) => [
-                symbol,
-                `S${partitions.findIndex((partition) =>
-                  partition.includes(oldTarget)
-                )}`,
-              ])
-            ),
-          },
-        }),
-        /** @type {import('./dfa').DFADescription['transitions']} */ ({})
-      ),
-    }),
-    {}
+    (accumulator, partition, index) => {
+      accumulator.set(
+        `S${index}`,
+        new Map(
+          partition.flatMap((state) => {
+            return Array.from(transitions.get(state)?.entries() ?? []).map(
+              oldStateToNewState
+            );
+          })
+        )
+      );
+      return accumulator;
+    },
+    /** @type {DFADescription['transitions']} */ (new Map())
   );
 
-  /** @type {import('./dfa').DFADescription} */
+  /** @type {DFADescription} */
   const description = {
-    states: Object.keys(minimalTransitions),
+    states: Array.from(minimalTransitions.keys()),
     symbols: symbols,
     transitions: minimalTransitions,
     start,
