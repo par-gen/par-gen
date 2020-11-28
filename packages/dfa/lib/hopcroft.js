@@ -3,12 +3,13 @@
  */
 
 /**
- * @typedef {import('./dfa').DFADescription} DFADescription
+ * @template STATE, SYMBOL
+ * @typedef {import('./dfa').DFADescription<STATE, SYMBOL>} DFADescription
  */
 
 /**
  * @param {DFA} dfa
- * @return {DFADescription}
+ * @return {DFADescription<string, string>}
  */
 export function hopcroft(dfa) {
   const { states, symbols, transitions, finals } = dfa.description;
@@ -90,10 +91,10 @@ export function hopcroft(dfa) {
       );
       return accumulator;
     },
-    /** @type {DFADescription['transitions']} */ (new Map())
+    /** @type {DFADescription<string, string>['transitions']} */ (new Map())
   );
 
-  /** @type {DFADescription} */
+  /** @type {DFADescription<string, string>} */
   const description = {
     states: Array.from(minimalTransitions.keys()),
     symbols: symbols,
