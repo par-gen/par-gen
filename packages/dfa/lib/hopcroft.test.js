@@ -7,24 +7,19 @@ describe("hopcroft", () => {
     const dfa = new DFA({
       states: ["1", "2", "3", "4", "5"],
       symbols: ["a", "b", "c", "d"],
-      transitions: {
-        1: {
-          a: "2",
-          b: "3",
-        },
-        2: {
-          c: "4",
-        },
-        3: {
-          c: "5",
-        },
-        4: {
-          d: "4",
-        },
-        5: {
-          d: "5",
-        },
-      },
+      transitions: new Map([
+        [
+          "1",
+          new Map([
+            ["a", "2"],
+            ["b", "3"],
+          ]),
+        ],
+        ["2", new Map([["c", "4"]])],
+        ["3", new Map([["c", "5"]])],
+        ["4", new Map([["d", "4"]])],
+        ["5", new Map([["d", "5"]])],
+      ]),
       start: "1",
       finals: ["4", "5"],
     });
@@ -34,18 +29,17 @@ describe("hopcroft", () => {
     expect(minimal).toEqual({
       states: ["S0", "S1", "S2"],
       symbols: ["a", "b", "c", "d"],
-      transitions: {
-        S0: {
-          d: "S0",
-        },
-        S1: {
-          c: "S0",
-        },
-        S2: {
-          a: "S1",
-          b: "S1",
-        },
-      },
+      transitions: new Map([
+        ["S0", new Map([["d", "S0"]])],
+        ["S1", new Map([["c", "S0"]])],
+        [
+          "S2",
+          new Map([
+            ["a", "S1"],
+            ["b", "S1"],
+          ]),
+        ],
+      ]),
       start: "S2",
       finals: ["S0"],
     });

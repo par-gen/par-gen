@@ -4,17 +4,22 @@ import { hopcroft } from "./hopcroft.js";
 import { fromNFA } from "./powerset.js";
 
 /**
+ * @template STATE, SYMBOL
+ * @typedef {import('@knisterpeter/expound-nfa').NFA<STATE, SYMBOL>} NFA
+ */
+
+/**
  * @typedef {Object} DFADescription
  * @property {string[]} states
  * @property {string[]} symbols
- * @property {{[state: string]: {[symbol: string]: string}}} transitions
+ * @property {Map<string, Map<string, string>>} transitions
  * @property {string} start
  * @property {string[]} finals
  */
 
 export class DFA {
   /**
-   * @param {import('@knisterpeter/expound-nfa').NFA<string, string>} nfa
+   * @param {NFA<string, string>} nfa
    * @returns {DFA}
    */
   static fromNFA(nfa) {
@@ -50,28 +55,28 @@ export class DFA {
         `Final state '${final}' must be included in list of states`
       );
     });
-    Object.keys(transitions).forEach((state) => {
+    for (const state of transitions.keys()) {
       ok(
         states.includes(state),
         `Transition contains unknown state '${state}'`
       );
-    });
-    Object.entries(transitions).forEach(([state, row]) => {
-      Object.keys(row).forEach((symbol) => {
+    }
+    for (const [state, row] of transitions.entries()) {
+      for (const symbol of row.keys()) {
         ok(
           symbols.includes(symbol),
           `Transition from '${state}' contains unknown symbol '${symbol}'`
         );
-      });
-    });
-    Object.entries(transitions).forEach(([state, row]) => {
-      Object.entries(row).forEach(([symbol, target]) => {
+      }
+    }
+    for (const [state, row] of transitions.entries()) {
+      for (const [symbol, target] of row.entries()) {
         ok(
           states.includes(target),
           `Transition from '${state}' with symbol '${symbol}' contains unknown target state '${target}'`
         );
-      });
-    });
+      }
+    }
   }
 
   /**
@@ -85,10 +90,18 @@ export class DFA {
    * @returns {(input: Uint8Array) => boolean}
    */
   automata() {
-    const state = this.description.states.indexOf(this.description.start);
+    const start = this.description.states.indexOf(this.description.start);
 
     const finals = this.description.finals.map((final) =>
       this.description.states.indexOf(final)
+    );
+
+    const transitions = Object.fromEntries(
+      Array.from(this.description.transitions.entries()).map(
+        ([state, transition]) => {
+          return [state, Object.fromEntries(Array.from(transition.entries()))];
+        }
+      )
     );
 
     const automata =
@@ -102,9 +115,7 @@ export class DFA {
             this.description.states.length
           });
           const table = new Uint8Array(data);
-          Object.entries(${JSON.stringify(
-            this.description.transitions
-          )}).forEach(
+          Object.entries(${JSON.stringify(transitions)}).forEach(
             ([from, transition]) => {
               const row = states.indexOf(from);
               Object.entries(transition).forEach(([symbol, to]) => {
@@ -118,7 +129,7 @@ export class DFA {
           const finals = ${JSON.stringify(finals)};
 
           return (input) => {
-            let state = ${state};
+            let state = ${start};
             for (let i = 0, l = input.length; i < l; i++) {
               state = table[state * 256 + input[i]];
             }
@@ -153,7 +164,7 @@ export class DFA {
         return this.description.finals.includes(current);
       }
 
-      let way = this.description.transitions[current][input[0]];
+      let way = this.description.transitions.get(current)?.get(input[0]);
       if (!way) {
         return this.description.finals.includes(current);
       }

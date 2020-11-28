@@ -10,7 +10,7 @@ describe("DFA", () => {
         new DFA({
           states: [],
           symbols: [],
-          transitions: {},
+          transitions: new Map(),
           start: "",
           finals: [],
         })
@@ -23,7 +23,7 @@ describe("DFA", () => {
         new DFA({
           states: ["A"],
           symbols: [],
-          transitions: {},
+          transitions: new Map(),
           start: "A",
           finals: [],
         })
@@ -36,7 +36,7 @@ describe("DFA", () => {
         new DFA({
           states: ["A"],
           symbols: ["a"],
-          transitions: {},
+          transitions: new Map(),
           start: "B",
           finals: [],
         })
@@ -49,7 +49,7 @@ describe("DFA", () => {
         new DFA({
           states: ["A"],
           symbols: ["a"],
-          transitions: {},
+          transitions: new Map(),
           start: "A",
           finals: ["B"],
         })
@@ -62,9 +62,7 @@ describe("DFA", () => {
         new DFA({
           states: ["A"],
           symbols: ["a"],
-          transitions: {
-            B: {},
-          },
+          transitions: new Map([["B", new Map()]]),
           start: "A",
           finals: ["A"],
         })
@@ -77,11 +75,7 @@ describe("DFA", () => {
         new DFA({
           states: ["A"],
           symbols: ["a"],
-          transitions: {
-            A: {
-              b: "A",
-            },
-          },
+          transitions: new Map([["A", new Map([["b", "A"]])]]),
           start: "A",
           finals: ["A"],
         })
@@ -94,11 +88,7 @@ describe("DFA", () => {
         new DFA({
           states: ["A"],
           symbols: ["a"],
-          transitions: {
-            A: {
-              a: "B",
-            },
-          },
+          transitions: new Map([["A", new Map([["a", "B"]])]]),
           start: "A",
           finals: ["A"],
         })
@@ -111,14 +101,10 @@ describe("DFA", () => {
     const dfa = new DFA({
       states: ["A", "B", "C"],
       symbols: ["a", "b"],
-      transitions: {
-        A: {
-          a: "B",
-        },
-        B: {
-          b: "C",
-        },
-      },
+      transitions: new Map([
+        ["A", new Map([["a", "B"]])],
+        ["B", new Map([["b", "C"]])],
+      ]),
       start: "A",
       finals: ["C"],
     });
@@ -179,7 +165,7 @@ describe("DFA", () => {
   });
 
   describe("automata", () => {
-    it("should return the dfa code", () => {
+    it("should return a minimal compatible compiled DFA", () => {
       const automata = DFA.fromNFA(
         NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
       )
