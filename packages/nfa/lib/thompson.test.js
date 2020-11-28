@@ -2,6 +2,11 @@ import { NFA } from "./nfa.js";
 import { ops } from "./regexp.js";
 import { fromRegExp, fromRegExpParseTree } from "./thompson.js";
 
+/**
+ * @template VALUE
+ * @typedef {import('./regexp').ParseTree<VALUE>} ParseTree
+ * */
+
 describe("fromRegExp", () => {
   it("should create a NFA from a sequence regular expression", () => {
     const description = fromRegExp("abc");
@@ -40,13 +45,15 @@ describe("fromRegExp", () => {
   });
 
   it("should create a NFA with custom symbols and states", () => {
-    /** @type {import('./regexp').ParseTree<number>} */
+    /** @type {ParseTree<number>} */
     const tree = {
+      parent: undefined,
       op: ops.sequence,
       value: undefined,
       node: undefined,
       nodes: [
         {
+          parent: undefined,
           op: ops.match,
           value: 1,
           node: undefined,
