@@ -147,7 +147,7 @@ describe("NFA", () => {
     expect(nfa.test(["a"])).toBeTruthy();
   });
 
-  it.only("should allow epsilon transitions", () => {
+  it("should allow epsilon transitions", () => {
     const nfa = new NFA({
       states: ["A", "B"],
       symbols: ["a"],
