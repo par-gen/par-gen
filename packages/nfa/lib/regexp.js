@@ -7,18 +7,19 @@ export const ops = {
 };
 
 /**
+ * @template VALUE
  * @typedef {Object} ParseTree
  * @property {symbol} op
- * @property {string | undefined} value
- * @property {ParseTree | undefined} node
- * @property {ParseTree[] | undefined} nodes
- * @property {ParseTree | undefined} left
- * @property {ParseTree | undefined} right
+ * @property {VALUE | undefined} value
+ * @property {ParseTree<VALUE> | undefined} node
+ * @property {ParseTree<VALUE>[] | undefined} nodes
+ * @property {ParseTree<VALUE> | undefined} left
+ * @property {ParseTree<VALUE> | undefined} right
  */
 
 /**
  * @param {string} input
- * @returns {ParseTree}
+ * @returns {ParseTree<string>}
  */
 export function parse(input) {
   return seq(input)[1];
@@ -26,10 +27,10 @@ export function parse(input) {
 
 /**
  * @param {string} input
- * @returns {[number, ParseTree]}
+ * @returns {[number, ParseTree<string>]}
  */
 function seq(input) {
-  /** @type {ParseTree[]} */
+  /** @type {ParseTree<string>[]} */
   const stack = [];
   let i = 0;
 
@@ -56,7 +57,7 @@ function seq(input) {
 }
 
 /**
- * @param {ParseTree[]} stack
+ * @param {ParseTree<string>[]} stack
  * @param {string} input
  * @returns {number}
  */

@@ -8,18 +8,28 @@ import { parse, ops } from "./regexp.js";
 export function fromRegExp(regexp) {
   const tree = parse(regexp);
 
+  return fromRegExpParseTree(tree, (n) => `S${n}`);
+}
+
+/**
+ * @template STATE, VALUE
+ * @param {import('./regexp').ParseTree<VALUE>} tree regular expression parse tree
+ * @param {(n: number) => STATE} stateFactory
+ * @returns {import('./nfa').NFADescription<STATE, VALUE>}
+ */
+export function fromRegExpParseTree(tree, stateFactory) {
   let counter = 0;
 
   const def = ((node) => {
     switch (node.op) {
       case ops.sequence:
-        return sequence(counter, node);
+        return sequence(counter, node, stateFactory);
       case ops.choice:
-        return choice(counter, node);
+        return choice(counter, node, stateFactory);
       case ops.optional:
-        return optional(counter, node);
+        return optional(counter, node, stateFactory);
       case ops.match:
-        return match(counter, node);
+        return match(counter, node, stateFactory);
     }
     throw new Error(`Unknown op code '${node.op.toString()}'`);
   })(tree);
@@ -34,26 +44,29 @@ export function fromRegExp(regexp) {
 }
 
 /**
+ * @template STATE, VALUE
  * @typedef {Object} PartialNFA
  * @property {number} counter
- * @property {string[]} states
- * @property {string[]} symbols
- * @property {import('./nfa').NFADescription<string, string>['transitions']} transitions
- * @property {string} start
- * @property {string} final
+ * @property {STATE[]} states
+ * @property {VALUE[]} symbols
+ * @property {import('./nfa').NFADescription<STATE, VALUE>['transitions']} transitions
+ * @property {STATE} start
+ * @property {STATE} final
  */
 
 /**
+ * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree} tree
- * @returns {PartialNFA}
+ * @param {import('./regexp').ParseTree<VALUE>} tree
+ * @param {(n: number) => STATE} stateFactory
+ * @returns {PartialNFA<STATE, VALUE>}
  */
-function sequence(counter, tree) {
+function sequence(counter, tree, stateFactory) {
   const nodes = tree.nodes ?? [];
-  const start = `S${counter}`;
-  const final = `S${counter + 1}`;
+  const start = stateFactory(counter);
+  const final = stateFactory(counter + 1);
 
-  /** @type {PartialNFA} */
+  /** @type {PartialNFA<STATE, VALUE>} */
   const partialStart = {
     counter: counter + 2,
     states: [start, final],
@@ -64,11 +77,11 @@ function sequence(counter, tree) {
   };
 
   /**
-   * @param {PartialNFA} a
-   * @param {PartialNFA} b
+   * @param {PartialNFA<STATE, VALUE>} a
+   * @param {PartialNFA<STATE, VALUE>} b
    */
   const merge = (a, b) => {
-    return /** @type {PartialNFA} */ ({
+    return /** @type {PartialNFA<STATE, VALUE>} */ ({
       counter: b.counter,
       states: [...a.states, ...b.states],
       symbols: [...a.symbols, ...b.symbols],
@@ -86,13 +99,13 @@ function sequence(counter, tree) {
   return nodes.reduce((partial, node) => {
     switch (node.op) {
       case ops.sequence:
-        return merge(partial, sequence(partial.counter, node));
+        return merge(partial, sequence(partial.counter, node, stateFactory));
       case ops.choice:
-        return merge(partial, choice(partial.counter, node));
+        return merge(partial, choice(partial.counter, node, stateFactory));
       case ops.optional:
-        return merge(partial, optional(partial.counter, node));
+        return merge(partial, optional(partial.counter, node, stateFactory));
       case ops.match:
-        return merge(partial, match(partial.counter, node));
+        return merge(partial, match(partial.counter, node, stateFactory));
     }
 
     throw new Error(`Unknown op code '${node.op.toString()}'`);
@@ -100,17 +113,19 @@ function sequence(counter, tree) {
 }
 
 /**
+ * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree} tree
- * @returns {PartialNFA}
+ * @param {import('./regexp').ParseTree<VALUE>} tree
+ * @param {(n: number) => STATE} stateFactory
+ * @returns {PartialNFA<STATE, VALUE>}
  */
-function match(counter, tree) {
+function match(counter, tree, stateFactory) {
   const value = tree.value;
   if (!value) {
     throw new Error("Illegal state");
   }
-  const start = `S${counter}`;
-  const final = `S${counter + 1}`;
+  const start = stateFactory(counter);
+  const final = stateFactory(counter + 1);
 
   return {
     counter: counter + 2,
@@ -123,11 +138,13 @@ function match(counter, tree) {
 }
 
 /**
+ * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree} tree
- * @returns {PartialNFA}
+ * @param {import('./regexp').ParseTree<VALUE>} tree
+ * @param {(n: number) => STATE} stateFactory
+ * @returns {PartialNFA<STATE, VALUE>}
  */
-function choice(counter, tree) {
+function choice(counter, tree, stateFactory) {
   const left = tree.left;
   if (!left) {
     throw new Error("Illegal state");
@@ -136,23 +153,23 @@ function choice(counter, tree) {
   if (!right) {
     throw new Error("Illegal state");
   }
-  const start = `S${counter}`;
-  const final = `S${counter + 1}`;
+  const start = stateFactory(counter);
+  const final = stateFactory(counter + 1);
 
   /**
    * @param {number} counter
-   * @param {import('./regexp').ParseTree} node
+   * @param {import('./regexp').ParseTree<VALUE>} node
    */
   const cratePartial = (counter, node) => {
     switch (node.op) {
       case ops.sequence:
-        return sequence(counter, node);
+        return sequence(counter, node, stateFactory);
       case ops.choice:
-        return choice(counter, node);
+        return choice(counter, node, stateFactory);
       case ops.optional:
-        return optional(counter, node);
+        return optional(counter, node, stateFactory);
       case ops.match:
-        return match(counter, node);
+        return match(counter, node, stateFactory);
     }
     throw new Error(`Unknown op code '${node.op.toString()}'`);
   };
@@ -178,29 +195,31 @@ function choice(counter, tree) {
 }
 
 /**
+ * @template STATE, VALUE
  * @param {number} counter
- * @param {import('./regexp').ParseTree} tree
- * @returns {PartialNFA}
+ * @param {import('./regexp').ParseTree<VALUE>} tree
+ * @param {(n: number) => STATE} stateFactory
+ * @returns {PartialNFA<STATE, VALUE>}
  */
-function optional(counter, tree) {
+function optional(counter, tree, stateFactory) {
   const node = tree.node;
   if (!node) {
     throw new Error("Illegal state");
   }
-  const start = `S${counter}`;
-  const final = `S${counter + 1}`;
+  const start = stateFactory(counter);
+  const final = stateFactory(counter + 1);
   const nextCounter = counter + 2;
 
   const partial = ((node) => {
     switch (node.op) {
       case ops.sequence:
-        return sequence(nextCounter, node);
+        return sequence(nextCounter, node, stateFactory);
       case ops.choice:
-        return choice(nextCounter, node);
+        return choice(nextCounter, node, stateFactory);
       case ops.optional:
-        return optional(nextCounter, node);
+        return optional(nextCounter, node, stateFactory);
       case ops.match:
-        return match(nextCounter, node);
+        return match(nextCounter, node, stateFactory);
     }
     throw new Error(`Unknown op code '${node.op.toString()}'`);
   })(node);
