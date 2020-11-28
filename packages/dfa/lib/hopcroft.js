@@ -9,7 +9,7 @@
 
 /**
  * @template OLD_STATE, NEW_STATE
- * @typedef {(n: number, state: OLD_STATE[] | undefined) => NEW_STATE} StateMapper
+ * @typedef {(n: number, state: OLD_STATE[]) => NEW_STATE} StateMapper
  */
 
 /**
@@ -81,21 +81,32 @@ export function hopcroft(dfa, stateMapper = (n) => `S${n}`) {
     dfa.description.start,
   ]);
 
+  /**
+   * @param {string} oldState
+   * @return {string[]}
+   */
+  const oldStates = (oldState) => {
+    const partition = partitions.find((partition) =>
+      partition.includes(oldState)
+    );
+    if (!partition) {
+      throw new Error("Illegal state");
+    }
+    return partition;
+  };
+
   const minimalTransitions = partitions.reduce(
     (accumulator, partition, index) => {
       accumulator.set(
         stateMapper(index, partition),
         new Map(
           partition.flatMap((state) => {
-            return Array.from(transitions.get(state)?.entries() ?? []).map(
-              ([symbol, oldState]) => [
-                symbol,
-                stateMapper(
-                  newStateIndex(oldState),
-                  partitions.find((partition) => partition.includes(oldState))
-                ),
-              ]
-            );
+            return Array.from(
+              transitions.get(state)?.entries() ?? []
+            ).map(([symbol, oldState]) => [
+              symbol,
+              stateMapper(newStateIndex(oldState), oldStates(oldState)),
+            ]);
           })
         )
       );

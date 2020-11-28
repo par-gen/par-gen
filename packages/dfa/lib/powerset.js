@@ -17,11 +17,17 @@ import { Epsilon } from "@knisterpeter/expound-nfa";
  */
 
 /**
+ * @template OLD_STATE, NEW_STATE
+ * @typedef {(n: number, state: OLD_STATE[]) => NEW_STATE} StateMapper
+ */
+
+/**
  * @param {NFA<string, string>} nfa
+ * @param {StateMapper<string, string>} [stateMapper]
  * @returns {DFADescription<string, string>}
  */
-export function fromNFA(nfa) {
-  const { dstates, transitions, start, finals } = construct(nfa);
+export function fromNFA(nfa, stateMapper = (n) => `S${n}`) {
+  const { dstates, transitions, start, finals } = construct(nfa, stateMapper);
 
   return {
     states: dstates.map((dstate) => dstate.name),
@@ -90,13 +96,14 @@ function getDState(dstates, states) {
 
 /**
  * @param {NFA<string, string>} nfa
+ * @param {StateMapper<string, string>} stateMapper
  * @returns {{ dstates: DState[], transitions: { [state: string]: { [symbol: string]: DState } }, start: DState, finals: DState[] }}
  */
-function construct(nfa) {
+function construct(nfa, stateMapper) {
   let index = 0;
 
   const start = {
-    name: `S${index++}`,
+    name: stateMapper(index++, [nfa.description.start]),
     nstates: getEpsilonClosure(nfa, [nfa.description.start]),
   };
   /** @type {DState[]} */
@@ -127,7 +134,7 @@ function construct(nfa) {
       const statesWithEpsilon = getEpsilonClosure(nfa, states);
 
       const nextDState = getDState(dstates, statesWithEpsilon) ?? {
-        name: `S${index++}`,
+        name: stateMapper(index++, statesWithEpsilon),
         nstates: statesWithEpsilon,
       };
 
