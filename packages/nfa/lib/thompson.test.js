@@ -1,5 +1,6 @@
 import { NFA } from "./nfa.js";
-import { fromRegExp } from "./thompson.js";
+import { ops } from "./regexp.js";
+import { fromRegExp, fromRegExpParseTree } from "./thompson.js";
 
 describe("fromRegExp", () => {
   it("should create a NFA from a sequence regular expression", () => {
@@ -28,7 +29,7 @@ describe("fromRegExp", () => {
     expect(nfa.test(["b"])).toBeTruthy();
   });
 
-  it("should create a NFA from a complex regular expression ", () => {
+  it("should create a NFA from a complex regular expression", () => {
     const description = fromRegExp("aa(aa|bb)*cc");
 
     const nfa = new NFA(description);
@@ -36,5 +37,34 @@ describe("fromRegExp", () => {
     expect(nfa.test(["a", "a", "a", "a", "b", "b", "c", "c"])).toBeTruthy();
     expect(nfa.test(["a", "a", "b", "b", "c", "c"])).toBeTruthy();
     expect(nfa.test(["a", "a", "c", "c"])).toBeTruthy();
+  });
+
+  it("should create a NFA with custom symbols and states", () => {
+    /** @type {import('./regexp').ParseTree<number>} */
+    const tree = {
+      op: ops.sequence,
+      value: undefined,
+      node: undefined,
+      nodes: [
+        {
+          op: ops.match,
+          value: 1,
+          node: undefined,
+          nodes: undefined,
+          left: undefined,
+          right: undefined,
+        },
+      ],
+      left: undefined,
+      right: undefined,
+    };
+    /** @param {number} n */
+    const stateFactory = (n) => ({ n });
+
+    const description = fromRegExpParseTree(tree, stateFactory);
+    const nfa = new NFA(description);
+    const result = nfa.test([1]);
+
+    expect(result).toBeTruthy();
   });
 });
