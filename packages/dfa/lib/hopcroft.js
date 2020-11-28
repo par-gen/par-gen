@@ -8,10 +8,16 @@
  */
 
 /**
+ * @template OLD_STATE, NEW_STATE
+ * @typedef {(n: number, state: OLD_STATE[] | undefined) => NEW_STATE} StateMapper
+ */
+
+/**
  * @param {DFA} dfa
+ * @param {StateMapper<string, string>} [stateMapper]
  * @return {DFADescription<string, string>}
  */
-export function hopcroft(dfa) {
+export function hopcroft(dfa, stateMapper = (n) => `S${n}`) {
   const { states, symbols, transitions, finals } = dfa.description;
 
   const partitions = [
@@ -64,27 +70,31 @@ export function hopcroft(dfa) {
     });
   }
 
-  const start = `S${partitions.findIndex((partition) =>
-    partition.includes(dfa.description.start)
-  )}`;
-
   /**
-   * @param {[string, string]} param
-   * @return {[string, string]}
+   * @param {string} state
+   * @return {number}
    */
-  const oldStateToNewState = ([symbol, state]) => [
-    symbol,
-    `S${partitions.findIndex((partition) => partition.includes(state))}`,
-  ];
+  const newStateIndex = (state) =>
+    partitions.findIndex((partition) => partition.includes(state));
+
+  const start = stateMapper(newStateIndex(dfa.description.start), [
+    dfa.description.start,
+  ]);
 
   const minimalTransitions = partitions.reduce(
     (accumulator, partition, index) => {
       accumulator.set(
-        `S${index}`,
+        stateMapper(index, partition),
         new Map(
           partition.flatMap((state) => {
             return Array.from(transitions.get(state)?.entries() ?? []).map(
-              oldStateToNewState
+              ([symbol, oldState]) => [
+                symbol,
+                stateMapper(
+                  newStateIndex(oldState),
+                  partitions.find((partition) => partition.includes(oldState))
+                ),
+              ]
             );
           })
         )
@@ -105,7 +115,7 @@ export function hopcroft(dfa) {
         (partition) =>
           finals.filter((final) => partition.includes(final)).length > 0
       )
-      .map((_, index) => `S${index}`),
+      .map((_, index) => stateMapper(index, finals)),
   };
 
   return description;

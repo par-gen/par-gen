@@ -1,3 +1,4 @@
+import { NFA } from "@knisterpeter/expound-nfa";
 import { DFA } from "./dfa.js";
 
 import { hopcroft } from "./hopcroft.js";
@@ -42,6 +43,24 @@ describe("hopcroft", () => {
       ]),
       start: "S2",
       finals: ["S0"],
+    });
+  });
+
+  it("should allow to create custom states", () => {
+    const dfa = DFA.fromNFA(NFA.fromRegExp("a"));
+
+    const minimal = hopcroft(dfa, (n, s) => `S${n} <- Nfa(${s})`);
+
+    expect(minimal).toEqual({
+      states: ["S0 <- Nfa(S1)", "S1 <- Nfa(S0)", "S2 <- Nfa(S2)"],
+      symbols: ["a"],
+      transitions: new Map([
+        ["S0 <- Nfa(S1)", new Map([["a", "S2 <- Nfa(S2)"]])],
+        ["S1 <- Nfa(S0)", new Map([["a", "S0 <- Nfa(S1)"]])],
+        ["S2 <- Nfa(S2)", new Map([["a", "S2 <- Nfa(S2)"]])],
+      ]),
+      start: "S1 <- Nfa(S0)",
+      finals: ["S0 <- Nfa(S1)"],
     });
   });
 });
