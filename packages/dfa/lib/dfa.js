@@ -1,6 +1,6 @@
 import { ok } from "assert";
 
-import { hopcroft } from "./hopcroft.js";
+import { minimize } from "./hopcroft.js";
 import { fromNFA } from "./powerset.js";
 
 /**
@@ -88,7 +88,7 @@ export class DFA {
    * @returns {DFA<STATE, SYMBOL>}
    */
   minimal() {
-    return new DFA(hopcroft(this, (n) => /** @type {any} */ (`S${n}`)));
+    return new DFA(minimize(this, (n) => /** @type {any} */ (`S${n}`)));
   }
 
   /**

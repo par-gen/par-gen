@@ -19,7 +19,7 @@
  * @param {StateMapper<STATE, NEW_STATE>} stateMapper
  * @return {DFADescription<NEW_STATE, SYMBOL>}
  */
-export function hopcroft(dfa, stateMapper) {
+export function minimize(dfa, stateMapper) {
   const { states, symbols, transitions, finals } = dfa.description;
 
   const partitions = [

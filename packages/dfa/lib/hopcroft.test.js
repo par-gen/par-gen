@@ -1,9 +1,9 @@
 import { NFA } from "@knisterpeter/expound-nfa";
 import { DFA } from "./dfa.js";
 
-import { hopcroft } from "./hopcroft.js";
+import { minimize } from "./hopcroft.js";
 
-describe("hopcroft", () => {
+describe("minimize", () => {
   it("should create an equivalent minimal DFA", () => {
     const dfa = new DFA({
       states: ["1", "2", "3", "4", "5"],
@@ -25,7 +25,7 @@ describe("hopcroft", () => {
       finals: ["4", "5"],
     });
 
-    const minimal = hopcroft(dfa, (n) => `S${n}`);
+    const minimal = minimize(dfa, (n) => `S${n}`);
 
     expect(minimal).toEqual({
       states: ["S0", "S1", "S2"],
@@ -49,7 +49,7 @@ describe("hopcroft", () => {
   it("should allow to create custom states", () => {
     const dfa = DFA.fromNFA(NFA.fromRegExp("a"));
 
-    const minimal = hopcroft(dfa, (n, s) => `S${n} <- Nfa(${s})`);
+    const minimal = minimize(dfa, (n, s) => `S${n} <- Nfa(${s})`);
 
     expect(minimal).toEqual({
       states: ["S0 <- Nfa(S1)", "S1 <- Nfa(S0)", "S2 <- Nfa(S2)"],
