@@ -19,6 +19,66 @@ export const ops = {
  */
 
 /**
+ * @template VALUE
+ * @param {ParseTree<VALUE>} left
+ * @param {ParseTree<VALUE>} right
+ * @returns {ParseTree<VALUE>}
+ */
+export function choice(left, right) {
+  const node = {
+    parent: undefined,
+    op: ops.choice,
+    value: undefined,
+    node: undefined,
+    nodes: undefined,
+    left,
+    right,
+  };
+  left.parent = node;
+  right.parent = node;
+  return node;
+}
+
+/**
+ * @template U, V
+ * @param {ParseTree<U>} tree
+ * @param {(value: U | undefined) => V} mapper
+ * @returns {ParseTree<V>}
+ */
+export function convertNode(tree, mapper) {
+  const value = mapper(tree.value);
+  const node = tree.node ? convertNode(tree.node, mapper) : undefined;
+  const nodes = tree.nodes
+    ? tree.nodes.map((node) => convertNode(node, mapper))
+    : undefined;
+  const left = tree.left ? convertNode(tree.left, mapper) : undefined;
+  const right = tree.right ? convertNode(tree.right, mapper) : undefined;
+
+  const result = {
+    parent: undefined,
+    op: tree.op,
+    value,
+    node,
+    nodes,
+    left,
+    right,
+  };
+  if (node) {
+    node.parent = result;
+  }
+  if (nodes) {
+    nodes.forEach((node) => (node.parent = result));
+  }
+  if (left) {
+    left.parent = result;
+  }
+  if (right) {
+    right.parent = result;
+  }
+  return result;
+}
+
+/**
  * @param {string} input
  * @returns {ParseTree<string>}
  */
