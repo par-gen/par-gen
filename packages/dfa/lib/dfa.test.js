@@ -1,7 +1,20 @@
 import { performance } from "perf_hooks";
-import { NFA } from "@knisterpeter/expound-nfa";
+import {
+  NFA,
+  parseRegExp,
+  fromRegExpParseTree,
+  convertNode,
+  createChoiceTree,
+} from "@knisterpeter/expound-nfa";
 
 import { DFA } from "./dfa.js";
+import { fromNFA } from "./powerset.js";
+import { minimize } from "./hopcroft.js";
+
+/**
+ * @template T
+ * @typedef {import('@knisterpeter/expound-nfa/types/regexp').ParseTree<T>} ParseTree
+ */
 
 describe("DFA", () => {
   it("should throw if no states are given", () => {
@@ -170,10 +183,13 @@ describe("DFA", () => {
         NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
       )
         .minimal()
-        .automata();
+        .automata((symbol) => symbol.charCodeAt(0));
 
-      expect(automata(Uint8Array.from(Buffer.from("abcffghmnijmn")))).toBe(
-        true
+      expect(automata(Uint8Array.from(Buffer.from("abcffghmnijmn")))).toEqual(
+        expect.objectContaining({
+          match: true,
+          length: 13,
+        })
       );
     });
 
@@ -194,11 +210,11 @@ describe("DFA", () => {
         NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
       )
         .minimal()
-        .automata();
+        .automata((symbol) => symbol.charCodeAt(0));
 
       const string = "abcffghmnijmn";
       const input = Uint8Array.from(Buffer.from(string));
-      const iterations = 25_000_000;
+      const iterations = 10_000_000;
 
       // make the function hot
       for (let i = 0; i < 1_000; i++) {
@@ -211,7 +227,7 @@ describe("DFA", () => {
         }
       });
 
-      const regexp = new RegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*");
+      const regexp = new RegExp("ab(?:c|d)(?:e|f)*(?:(?:gh|ij)(?:kl|mn))*");
       // make the expr hot
       for (let i = 0; i < 1_000; i++) {
         regexp.test(string);
@@ -228,6 +244,93 @@ Executing in a loop with ${iterations.toLocaleString()} iterations:
 - Running ${dfaResult[0]} took ${dfaResult[1].toFixed(2)} ms
 - Running ${nativeResult[0]} took ${nativeResult[1].toFixed(2)} ms
 `);
+
+      expect(dfaResult[1]).toBeLessThanOrEqual(nativeResult[1] * 3);
+    });
+  });
+
+  it("should be able to create an automata which identifies the input regexp by tag", () => {
+    /**
+     * @param {string} name
+     */
+    const tagTree = (name) => {
+      /**
+       * @param {string | undefined} value
+       * @returns {{name: string, value: string | undefined}}
+       */
+      const fn = (value) => ({ name, value });
+      return fn;
+    };
+
+    const tree = createChoiceTree(
+      convertNode(parseRegExp("a"), tagTree("A")),
+      convertNode(parseRegExp("b"), tagTree("B"))
+    );
+
+    const nfa = new NFA(
+      fromRegExpParseTree(tree, (n, tree) => ({
+        name: tree.value?.name,
+        n,
+      }))
+    );
+
+    const dfa = new DFA(
+      fromNFA(nfa, (n, states) => ({
+        n,
+        names: states.map((state) => state.name).filter(Boolean),
+      }))
+    );
+
+    const optimizedStateMapper = () => {
+      /**
+       * @type {Map<number, {n: number, names: ((string | undefined)[])}>}
+       */
+      const cache = new Map();
+      /**
+       * @param {number} n
+       * @param {{ n: number; names: (string | undefined)[]; }[]} states
+       */
+      const fn = (n, states) => {
+        let state = cache.get(n);
+        if (!state) {
+          state = {
+            n,
+            names: states.flatMap((s) => s.names),
+          };
+          cache.set(n, state);
+        }
+        return state;
+      };
+      return fn;
+    };
+
+    const optimized = new DFA(
+      minimize(dfa, {
+        partitionizer() {
+          return [
+            ...dfa.description.finals.map((final) => [final]),
+            dfa.description.states.filter(
+              (state) => !dfa.description.finals.includes(state)
+            ),
+          ];
+        },
+        stateMapper: optimizedStateMapper(),
+      })
+    );
+
+    const automata = optimized.automata(
+      (symbol) => symbol.value?.charCodeAt(0) ?? -1
+    );
+
+    expect(automata(Uint8Array.from(Buffer.from("a")))).toEqual({
+      match: true,
+      length: 1,
+      visited: new Uint8Array([2, 0]),
+    });
+    expect(automata(Uint8Array.from(Buffer.from("b")))).toEqual({
+      match: true,
+      length: 1,
+      visited: new Uint8Array([2, 1]),
     });
   });
 });
