@@ -16,17 +16,19 @@
 /**
  * @template STATE, NEW_STATE, SYMBOL
  * @param {DFA<STATE, SYMBOL>} dfa
- * @param {StateMapper<STATE, NEW_STATE>} stateMapper
+ * @param {{partitionizer?: () => STATE[][], stateMapper: StateMapper<STATE, NEW_STATE>}} options
  * @return {DFADescription<NEW_STATE, SYMBOL>}
  */
-export function minimize(dfa, stateMapper) {
+export function minimize(dfa, { partitionizer, stateMapper }) {
   const { states, symbols, transitions, finals } = dfa.description;
 
-  const partitions = [
+  const initial = partitionizer?.() ?? [
     finals,
     states.filter((state) => !finals.includes(state)),
   ];
-  const queue = [finals, states.filter((state) => !finals.includes(state))];
+
+  const partitions = [...initial.map((array) => [...array])];
+  const queue = [...initial.map((array) => [...array])];
 
   while (queue.length > 0) {
     const item = queue.shift();
@@ -128,7 +130,7 @@ export function minimize(dfa, stateMapper) {
         (partition) =>
           finals.filter((final) => partition.includes(final)).length > 0
       )
-      .map((_, index) => stateMapper(index, finals)),
+      .map((partition, index) => stateMapper(index, partition)),
   };
 
   return description;

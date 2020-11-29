@@ -25,7 +25,7 @@ describe("minimize", () => {
       finals: ["4", "5"],
     });
 
-    const minimal = minimize(dfa, (n) => `S${n}`);
+    const minimal = minimize(dfa, { stateMapper: (n) => `S${n}` });
 
     expect(minimal).toEqual({
       states: ["S0", "S1", "S2"],
@@ -49,7 +49,9 @@ describe("minimize", () => {
   it("should allow to create custom states", () => {
     const dfa = DFA.fromNFA(NFA.fromRegExp("a"));
 
-    const minimal = minimize(dfa, (n, s) => `S${n} <- Nfa(${s})`);
+    const minimal = minimize(dfa, {
+      stateMapper: (n, s) => `S${n} <- Nfa(${s})`,
+    });
 
     expect(minimal).toEqual({
       states: ["S0 <- Nfa(S1)", "S1 <- Nfa(S0)", "S2 <- Nfa(S2)"],

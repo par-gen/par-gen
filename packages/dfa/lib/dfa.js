@@ -88,60 +88,75 @@ export class DFA {
    * @returns {DFA<STATE, SYMBOL>}
    */
   minimal() {
-    return new DFA(minimize(this, (n) => /** @type {any} */ (`S${n}`)));
+    return new DFA(
+      minimize(this, { stateMapper: (n) => /** @type {any} */ (`S${n}`) })
+    );
   }
 
   /**
-   * @returns {(input: Uint8Array) => boolean}
+   * @param {(symbol: SYMBOL) => number} symbolMapper
+   * @returns {(input: Uint8Array) => {match: boolean, length: number, visited: number[]}}
    */
-  automata() {
-    const start = this.description.states.indexOf(this.description.start);
+  automata(symbolMapper) {
+    const d = this.description;
 
-    const finals = this.description.finals.map((final) =>
-      this.description.states.indexOf(final)
+    const start = d.states.indexOf(d.start);
+
+    const finals = d.finals.map((final) => d.states.indexOf(final));
+
+    const transitions = Array.from(d.transitions.entries()).map(
+      ([from, transition]) =>
+        /** @type {[number, [number, number][]]} */ ([
+          d.states.indexOf(from),
+          /** @type {[number, number][]} */ Array.from(
+            transition.entries()
+          ).map(([symbol, to]) => [symbolMapper(symbol), d.states.indexOf(to)]),
+        ])
     );
 
-    const transitions = Object.fromEntries(
-      Array.from(this.description.transitions.entries()).map(
-        ([state, transition]) => {
-          return [state, Object.fromEntries(Array.from(transition.entries()))];
+    const errorState = transitions
+      .filter(([from, transition]) => transition.every(([, to]) => from === to))
+      .map(([state]) => state)
+      .find((state) => !finals.includes(state));
+
+    const error = errorState ?? -1;
+
+    const code = `'use strict';
+      const column = 256;
+      const states = ${JSON.stringify(d.states)};
+      const data = new ArrayBuffer(column * ${d.states.length});
+      const table = new Uint8Array(data).fill(${error});
+      ${JSON.stringify(transitions)}.forEach(([from, transition]) => {
+        transition.forEach(([symbol, to]) => {
+          table[symbol + from * 256] = to;
+        });
+      });
+
+      const finals = ${JSON.stringify(finals)};
+
+      const visitedData = new ArrayBuffer(1024);
+      const visited = new Uint8Array(visitedData);
+
+      return (input) => {
+        let state = ${start};
+        let i = 0, l = input.length;
+        visited[i] = state;
+        while (i < l) {
+          state = table[state * 256 + input[i]];
+          i++;
+          visited[i] = state;
         }
-      )
-    );
+        return {
+          match: finals.includes(state),
+          length: i,
+          visited: visited.subarray(0, i + 1),
+        };
+      };
+    `;
 
     const automata =
-      /** @type {() => (input: Uint8Array) => boolean} */
-      (new Function(
-        `'use strict';
-
-          const column = 256;
-          const states = ${JSON.stringify(this.description.states)};
-          const data = new ArrayBuffer(column * ${
-            this.description.states.length
-          });
-          const table = new Uint8Array(data);
-          Object.entries(${JSON.stringify(transitions)}).forEach(
-            ([from, transition]) => {
-              const row = states.indexOf(from);
-              Object.entries(transition).forEach(([symbol, to]) => {
-                const col = symbol.charCodeAt(0);
-                const value = states.indexOf(to);
-                table[col + row * 256] = value;
-              });
-            }
-          );
-
-          const finals = ${JSON.stringify(finals)};
-
-          return (input) => {
-            let state = ${start};
-            for (let i = 0, l = input.length; i < l; i++) {
-              state = table[state * 256 + input[i]];
-            }
-            return finals.includes(state);
-          };
-        `
-      ))();
+      /** @type {() => (input: Uint8Array) => {match: boolean, length: number, visited: number[]}} */
+      (new Function(code))();
     return automata;
   }
 
