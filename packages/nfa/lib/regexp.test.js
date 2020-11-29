@@ -1,4 +1,4 @@
-import { parse, ops } from "./regexp.js";
+import { parse, ops, convertNode } from "./regexp.js";
 
 /**
  * @template T
@@ -6,8 +6,9 @@ import { parse, ops } from "./regexp.js";
  */
 
 /**
- * @param {Partial<ParseTree<string>>} template
- * @returns {ParseTree<string>}
+ * @template T
+ * @param {Partial<ParseTree<T>>} template
+ * @returns {ParseTree<T>}
  */
 const node = (template) => {
   const parent = {
@@ -35,7 +36,7 @@ const node = (template) => {
   return parent;
 };
 
-describe("regexp", () => {
+describe("parse", () => {
   it("should parse a sequence of characters", () => {
     expect(parse("abc")).toEqual(
       node({
@@ -207,6 +208,156 @@ describe("regexp", () => {
           node({
             op: ops.match,
             value: "c",
+          }),
+        ],
+      })
+    );
+  });
+});
+
+describe("convertNode", () => {
+  it("should convert an any node", () => {
+    expect(
+      convertNode(
+        node({
+          op: ops.any,
+          value: undefined,
+        }),
+        (value) => ({
+          name: "name",
+          value: value,
+        })
+      )
+    ).toEqual(
+      node({
+        op: ops.any,
+        value: {
+          name: "name",
+          value: undefined,
+        },
+      })
+    );
+  });
+
+  it("should convert a match node", () => {
+    expect(
+      convertNode(
+        node({
+          op: ops.match,
+          value: "a",
+        }),
+        (value) => ({
+          name: "name",
+          value: value,
+        })
+      )
+    ).toEqual(
+      node({
+        op: ops.match,
+        value: {
+          name: "name",
+          value: "a",
+        },
+      })
+    );
+  });
+
+  it("should convert a choice node", () => {
+    expect(
+      convertNode(
+        node({
+          op: ops.choice,
+          left: node({}),
+          right: node({}),
+        }),
+        (value) => ({
+          name: "name",
+          value: value,
+        })
+      )
+    ).toEqual(
+      node({
+        op: ops.choice,
+        value: {
+          name: "name",
+          value: undefined,
+        },
+        left: node({
+          value: {
+            name: "name",
+            value: undefined,
+          },
+        }),
+        right: node({
+          value: {
+            name: "name",
+            value: undefined,
+          },
+        }),
+      })
+    );
+  });
+
+  it("should convert an optional node", () => {
+    expect(
+      convertNode(
+        node({
+          op: ops.optional,
+          node: node({}),
+        }),
+        (value) => ({
+          name: "name",
+          value: value,
+        })
+      )
+    ).toEqual(
+      node({
+        op: ops.optional,
+        value: {
+          name: "name",
+          value: undefined,
+        },
+        node: node({
+          value: {
+            name: "name",
+            value: undefined,
+          },
+        }),
+      })
+    );
+  });
+
+  it("should convert an sequence node", () => {
+    expect(
+      convertNode(
+        node({
+          op: ops.sequence,
+          nodes: [node({}), node({})],
+        }),
+        (value) => ({
+          name: "name",
+          value: value,
+        })
+      )
+    ).toEqual(
+      node({
+        op: ops.sequence,
+        value: {
+          name: "name",
+          value: undefined,
+        },
+        nodes: [
+          node({
+            value: {
+              name: "name",
+              value: undefined,
+            },
+          }),
+          node({
+            value: {
+              name: "name",
+              value: undefined,
+            },
           }),
         ],
       })
