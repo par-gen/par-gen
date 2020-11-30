@@ -97,7 +97,7 @@ export class DFA {
    * @param {(symbol: SYMBOL) => number} symbolMapper
    * @returns {(input: Uint8Array) => {match: boolean, length: number, visited: number[]}}
    */
-  automata(symbolMapper) {
+  compile(symbolMapper) {
     const d = this.description;
 
     const start = d.states.indexOf(d.start);

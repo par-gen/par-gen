@@ -177,15 +177,15 @@ describe("DFA", () => {
     });
   });
 
-  describe("automata", () => {
+  describe("compile", () => {
     it("should return a minimal compatible compiled DFA", () => {
-      const automata = DFA.fromNFA(
+      const compiled = DFA.fromNFA(
         NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
       )
         .minimal()
-        .automata((symbol) => symbol.charCodeAt(0));
+        .compile((symbol) => symbol.charCodeAt(0));
 
-      expect(automata(Uint8Array.from(Buffer.from("abcffghmnijmn")))).toEqual(
+      expect(compiled(Uint8Array.from(Buffer.from("abcffghmnijmn")))).toEqual(
         expect.objectContaining({
           match: true,
           length: 13,
@@ -206,11 +206,11 @@ describe("DFA", () => {
         return [name, end - start];
       };
 
-      const automata = DFA.fromNFA(
+      const compiled = DFA.fromNFA(
         NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
       )
         .minimal()
-        .automata((symbol) => symbol.charCodeAt(0));
+        .compile((symbol) => symbol.charCodeAt(0));
 
       const string = "abcffghmnijmn";
       const input = Uint8Array.from(Buffer.from(string));
@@ -218,12 +218,12 @@ describe("DFA", () => {
 
       // make the function hot
       for (let i = 0; i < 1_000; i++) {
-        automata(input);
+        compiled(input);
       }
 
       const dfaResult = time("dfa", () => {
         for (let i = 0; i < iterations; i++) {
-          automata(input);
+          compiled(input);
         }
       });
 
@@ -318,16 +318,16 @@ Executing in a loop with ${iterations.toLocaleString()} iterations:
       })
     );
 
-    const automata = optimized.automata(
+    const compiled = optimized.compile(
       (symbol) => symbol.value?.charCodeAt(0) ?? -1
     );
 
-    expect(automata(Uint8Array.from(Buffer.from("a")))).toEqual({
+    expect(compiled(Uint8Array.from(Buffer.from("a")))).toEqual({
       match: true,
       length: 1,
       visited: new Uint8Array([2, 0]),
     });
-    expect(automata(Uint8Array.from(Buffer.from("b")))).toEqual({
+    expect(compiled(Uint8Array.from(Buffer.from("b")))).toEqual({
       match: true,
       length: 1,
       visited: new Uint8Array([2, 1]),
