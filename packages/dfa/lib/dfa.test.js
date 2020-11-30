@@ -235,6 +235,7 @@ describe("DFA", () => {
 
       const nativeResult = time("native", () => {
         for (let i = 0; i < iterations; i++) {
+          // string.match(regexp);
           regexp.test(string);
         }
       });

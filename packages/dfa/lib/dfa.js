@@ -121,18 +121,17 @@ export class DFA {
 
     const error = errorState ?? -1;
 
+    const columns = 256;
+
     const code = `'use strict';
-      const column = 256;
       const states = ${JSON.stringify(d.states)};
-      const data = new ArrayBuffer(column * ${d.states.length});
+      const data = new ArrayBuffer(${columns} * ${d.states.length});
       const table = new Uint8Array(data).fill(${error});
       ${JSON.stringify(transitions)}.forEach(([from, transition]) => {
         transition.forEach(([symbol, to]) => {
-          table[symbol + from * 256] = to;
+          table[symbol + from * ${columns}] = to;
         });
       });
-
-      const finals = ${JSON.stringify(finals)};
 
       const visitedData = new ArrayBuffer(1024);
       const visited = new Uint8Array(visitedData);
@@ -142,12 +141,12 @@ export class DFA {
         let i = 0, l = input.length;
         visited[i] = state;
         while (i < l) {
-          state = table[state * 256 + input[i]];
+          state = table[state * ${columns} + input[i]];
           i++;
           visited[i] = state;
         }
         return {
-          match: finals.includes(state),
+          match: ${JSON.stringify(finals)}.indexOf(state) > -1,
           length: i,
           visited: visited.subarray(0, i + 1),
         };
