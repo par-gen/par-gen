@@ -7,12 +7,17 @@ import { parse, ops } from "./regexp.js";
  */
 
 /**
- * @template STATE, VALUE
- * @typedef {import('./nfa').NFADescription<STATE, VALUE>} NFADescription
+ * @template STATE, SYMBOL
+ * @typedef {import('./nfa').NFADescription<STATE, SYMBOL>} NFADescription
  */
 
 /**
- * @template STATE, VALUE
+ * @template INPUT, OUTPUT
+ * @typedef {(input: INPUT | undefined) => OUTPUT | undefined} SymbolMapper
+ */
+
+/**
+ * @template VALUE, STATE
  * @typedef {(n: number, tree: ParseTree<VALUE>) => STATE} StateFactory
  */
 
@@ -23,28 +28,31 @@ import { parse, ops } from "./regexp.js";
 export function fromRegExp(regexp) {
   const tree = parse(regexp);
 
-  return fromRegExpParseTree(tree, (n) => `S${n}`);
+  return fromRegExpParseTree(tree, {
+    symbolMapper: (value) => value,
+    stateFactory: (n) => `S${n}`,
+  });
 }
 
 /**
- * @template STATE, VALUE
+ * @template STATE, VALUE, SYMBOL
  * @param {ParseTree<VALUE>} tree regular expression parse tree
- * @param {StateFactory<STATE, VALUE>} stateFactory
- * @returns {NFADescription<STATE, VALUE>}
+ * @param {{symbolMapper: SymbolMapper<VALUE, SYMBOL>, stateFactory: StateFactory<VALUE, STATE>}} options
+ * @returns {NFADescription<STATE, SYMBOL>}
  */
-export function fromRegExpParseTree(tree, stateFactory) {
+export function fromRegExpParseTree(tree, { symbolMapper, stateFactory }) {
   let counter = 0;
 
   const def = ((node) => {
     switch (node.op) {
       case ops.sequence:
-        return sequence(counter, node, stateFactory);
+        return sequence(counter, node, symbolMapper, stateFactory);
       case ops.choice:
-        return choice(counter, node, stateFactory);
+        return choice(counter, node, symbolMapper, stateFactory);
       case ops.optional:
-        return optional(counter, node, stateFactory);
+        return optional(counter, node, symbolMapper, stateFactory);
       case ops.match:
-        return match(counter, node, stateFactory);
+        return match(counter, node, symbolMapper, stateFactory);
     }
     throw new Error(`Unknown op code '${node.op.toString()}'`);
   })(tree);
@@ -59,29 +67,30 @@ export function fromRegExpParseTree(tree, stateFactory) {
 }
 
 /**
- * @template STATE, VALUE
+ * @template STATE, SYMBOL
  * @typedef {Object} PartialNFA
  * @property {number} counter
  * @property {STATE[]} states
- * @property {VALUE[]} symbols
- * @property {NFADescription<STATE, VALUE>['transitions']} transitions
+ * @property {SYMBOL[]} symbols
+ * @property {NFADescription<STATE, SYMBOL>['transitions']} transitions
  * @property {STATE} start
  * @property {STATE} final
  */
 
 /**
- * @template STATE, VALUE
+ * @template STATE, VALUE, SYMBOL
  * @param {number} counter
  * @param {ParseTree<VALUE>} tree
- * @param {StateFactory<STATE, VALUE>} stateFactory
- * @returns {PartialNFA<STATE, VALUE>}
+ * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
+ * @param {StateFactory<VALUE, STATE>} stateFactory
+ * @returns {PartialNFA<STATE, SYMBOL>}
  */
-function sequence(counter, tree, stateFactory) {
+function sequence(counter, tree, symbolMapper, stateFactory) {
   const nodes = tree.nodes ?? [];
   const start = stateFactory(counter, tree);
   const final = stateFactory(counter + 1, tree);
 
-  /** @type {PartialNFA<STATE, VALUE>} */
+  /** @type {PartialNFA<STATE, SYMBOL>} */
   const partialStart = {
     counter: counter + 2,
     states: [start, final],
@@ -92,11 +101,11 @@ function sequence(counter, tree, stateFactory) {
   };
 
   /**
-   * @param {PartialNFA<STATE, VALUE>} a
-   * @param {PartialNFA<STATE, VALUE>} b
+   * @param {PartialNFA<STATE, SYMBOL>} a
+   * @param {PartialNFA<STATE, SYMBOL>} b
    */
   const merge = (a, b) => {
-    return /** @type {PartialNFA<STATE, VALUE>} */ ({
+    return /** @type {PartialNFA<STATE, SYMBOL>} */ ({
       counter: b.counter,
       states: [...a.states, ...b.states],
       symbols: [...a.symbols, ...b.symbols],
@@ -114,13 +123,25 @@ function sequence(counter, tree, stateFactory) {
   return nodes.reduce((partial, node) => {
     switch (node.op) {
       case ops.sequence:
-        return merge(partial, sequence(partial.counter, node, stateFactory));
+        return merge(
+          partial,
+          sequence(partial.counter, node, symbolMapper, stateFactory)
+        );
       case ops.choice:
-        return merge(partial, choice(partial.counter, node, stateFactory));
+        return merge(
+          partial,
+          choice(partial.counter, node, symbolMapper, stateFactory)
+        );
       case ops.optional:
-        return merge(partial, optional(partial.counter, node, stateFactory));
+        return merge(
+          partial,
+          optional(partial.counter, node, symbolMapper, stateFactory)
+        );
       case ops.match:
-        return merge(partial, match(partial.counter, node, stateFactory));
+        return merge(
+          partial,
+          match(partial.counter, node, symbolMapper, stateFactory)
+        );
     }
 
     throw new Error(`Unknown op code '${node.op.toString()}'`);
@@ -128,14 +149,15 @@ function sequence(counter, tree, stateFactory) {
 }
 
 /**
- * @template STATE, VALUE
+ * @template STATE, VALUE, SYMBOL
  * @param {number} counter
  * @param {ParseTree<VALUE>} tree
- * @param {StateFactory<STATE, VALUE>} stateFactory
- * @returns {PartialNFA<STATE, VALUE>}
+ * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
+ * @param {StateFactory<VALUE, STATE>} stateFactory
+ * @returns {PartialNFA<STATE, SYMBOL>}
  */
-function match(counter, tree, stateFactory) {
-  const value = tree.value;
+function match(counter, tree, symbolMapper, stateFactory) {
+  const value = symbolMapper(tree.value);
   if (!value) {
     throw new Error("Illegal state");
   }
@@ -153,13 +175,14 @@ function match(counter, tree, stateFactory) {
 }
 
 /**
- * @template STATE, VALUE
+ * @template STATE, VALUE, SYMBOL
  * @param {number} counter
  * @param {ParseTree<VALUE>} tree
- * @param {StateFactory<STATE, VALUE>} stateFactory
- * @returns {PartialNFA<STATE, VALUE>}
+ * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
+ * @param {StateFactory<VALUE, STATE>} stateFactory
+ * @returns {PartialNFA<STATE, SYMBOL>}
  */
-function choice(counter, tree, stateFactory) {
+function choice(counter, tree, symbolMapper, stateFactory) {
   const left = tree.left;
   if (!left) {
     throw new Error("Illegal state");
@@ -178,13 +201,13 @@ function choice(counter, tree, stateFactory) {
   const cratePartial = (counter, node) => {
     switch (node.op) {
       case ops.sequence:
-        return sequence(counter, node, stateFactory);
+        return sequence(counter, node, symbolMapper, stateFactory);
       case ops.choice:
-        return choice(counter, node, stateFactory);
+        return choice(counter, node, symbolMapper, stateFactory);
       case ops.optional:
-        return optional(counter, node, stateFactory);
+        return optional(counter, node, symbolMapper, stateFactory);
       case ops.match:
-        return match(counter, node, stateFactory);
+        return match(counter, node, symbolMapper, stateFactory);
     }
     throw new Error(`Unknown op code '${node.op.toString()}'`);
   };
@@ -210,13 +233,14 @@ function choice(counter, tree, stateFactory) {
 }
 
 /**
- * @template STATE, VALUE
+ * @template STATE, VALUE, SYMBOL
  * @param {number} counter
  * @param {ParseTree<VALUE>} tree
- * @param {StateFactory<STATE, VALUE>} stateFactory
- * @returns {PartialNFA<STATE, VALUE>}
+ * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
+ * @param {StateFactory<VALUE, STATE>} stateFactory
+ * @returns {PartialNFA<STATE, SYMBOL>}
  */
-function optional(counter, tree, stateFactory) {
+function optional(counter, tree, symbolMapper, stateFactory) {
   const node = tree.node;
   if (!node) {
     throw new Error("Illegal state");
@@ -228,13 +252,13 @@ function optional(counter, tree, stateFactory) {
   const partial = ((node) => {
     switch (node.op) {
       case ops.sequence:
-        return sequence(nextCounter, node, stateFactory);
+        return sequence(nextCounter, node, symbolMapper, stateFactory);
       case ops.choice:
-        return choice(nextCounter, node, stateFactory);
+        return choice(nextCounter, node, symbolMapper, stateFactory);
       case ops.optional:
-        return optional(nextCounter, node, stateFactory);
+        return optional(nextCounter, node, symbolMapper, stateFactory);
       case ops.match:
-        return match(nextCounter, node, stateFactory);
+        return match(nextCounter, node, symbolMapper, stateFactory);
     }
     throw new Error(`Unknown op code '${node.op.toString()}'`);
   })(node);

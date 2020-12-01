@@ -4,8 +4,7 @@ import { Epsilon } from "./constants.js";
 import { fromRegExp } from "./thompson.js";
 
 /**
- * @template STATE
- * @template SYMBOL
+ * @template STATE, SYMBOL
  * @typedef {Object} NFADescription
  * @property {STATE[]} states
  * @property {SYMBOL[]} symbols

@@ -2,11 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": "lib",
-    "outDir": "types",
-    "composite": true
+    "outDir": "types"
   },
   "include": ["lib/"],
   "references": [
+    {
+      "path": "../dfa"
+    },
     {
       "path": "../nfa"
     }

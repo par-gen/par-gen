@@ -65,10 +65,17 @@ describe("fromRegExp", () => {
       left: undefined,
       right: undefined,
     };
-    /** @param {number} n */
+    /** @param {number | undefined} v */
+    const symbolMapper = (v) => v;
+    /**
+     * @param {number} n
+     */
     const stateFactory = (n) => ({ n });
 
-    const description = fromRegExpParseTree(tree, stateFactory);
+    const description = fromRegExpParseTree(tree, {
+      symbolMapper,
+      stateFactory,
+    });
     const nfa = new NFA(description);
     const result = nfa.test([1]);
 
