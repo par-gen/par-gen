@@ -2,13 +2,19 @@ import { lexer } from "./lexer.js";
 
 describe("lexer", () => {
   it("should create a lexer which is executable as evaluated function", () => {
-    const code = lexer({ codegen: { module: "function" } });
+    const grammar = `
+      A := ab|ac;
+      B := b;
+      C := c;
+      D := d;
+    `;
+    const code = lexer(grammar, { codegen: { module: "function" } });
     /**
      * @type {{next(input: Uint8Array): {success: boolean, state?: string, value?: string}}}
      */
     const { next } = Function(code)();
 
-    const input = new Uint8Array(Buffer.from("ab z"));
+    const input = new Uint8Array(Buffer.from("abbz"));
     let view = input.subarray(0);
 
     [
@@ -21,7 +27,7 @@ describe("lexer", () => {
       // match
       {
         success: true,
-        state: "WS",
+        state: "B",
         value: input.subarray(2, 3),
       },
       // miss

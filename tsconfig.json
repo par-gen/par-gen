@@ -25,16 +25,16 @@
   "include": [],
   "references": [
     {
-      "path": "packages/grammar"
-    },
-    {
-      "path": "packages/nfa"
-    },
-    {
       "path": "packages/dfa"
     },
     {
+      "path": "packages/grammar"
+    },
+    {
       "path": "packages/lexer"
+    },
+    {
+      "path": "packages/nfa"
     }
   ]
 }
