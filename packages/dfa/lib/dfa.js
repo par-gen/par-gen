@@ -95,14 +95,16 @@ export class DFA {
 
   /**
    * @param {(symbol: SYMBOL) => number} symbolMapper
-   * @returns {(input: Uint8Array) => {match: boolean, length: number, visited: number[]}}
+   * @returns {(input: Uint8Array) => boolean}
    */
   compile(symbolMapper) {
     const d = this.description;
 
-    const start = d.states.indexOf(d.start);
+    const columns = 256;
 
-    const finals = d.finals.map((final) => d.states.indexOf(final));
+    const start = d.states.indexOf(d.start) * columns;
+
+    const finals = d.finals.map((final) => d.states.indexOf(final) * columns);
 
     const transitions = Array.from(d.transitions.entries()).map(
       ([from, transition]) =>
@@ -121,40 +123,29 @@ export class DFA {
 
     const error = errorState ?? -1;
 
-    const columns = 256;
-
     const code = `'use strict';
-      const states = ${JSON.stringify(d.states)};
-      const data = new ArrayBuffer(${columns} * ${d.states.length});
-      const table = new Uint8Array(data).fill(${error});
-      ${JSON.stringify(transitions)}.forEach(([from, transition]) => {
-        transition.forEach(([symbol, to]) => {
-          table[symbol + from * ${columns}] = to;
-        });
-      });
+      const table = new Uint8Array(${columns * d.states.length}).fill(${error});
 
-      const visitedData = new ArrayBuffer(1024);
-      const visited = new Uint8Array(visitedData);
-
+      ${transitions
+        .flatMap(([from, transition]) =>
+          transition.map(
+            ([symbol, to]) =>
+              `table[${symbol + from * columns}] = ${to * columns};`
+          )
+        )
+        .join("\n")}
+  
       return (input) => {
         let state = ${start};
-        let i = 0, l = input.length;
-        visited[i] = state;
-        while (i < l) {
-          state = table[state * ${columns} + input[i]];
-          i++;
-          visited[i] = state;
+        for (let i = 0, l = input.length; i < l; i++) {
+          state = table[state + input[i]];
         }
-        return {
-          match: ${JSON.stringify(finals)}.indexOf(state) > -1,
-          length: i,
-          visited: visited.subarray(0, i + 1),
-        };
+        return ${JSON.stringify(finals)}.indexOf(state) > -1;
       };
     `;
 
     const automata =
-      /** @type {() => (input: Uint8Array) => {match: boolean, length: number, visited: number[]}} */
+      /** @type {() => (input: Uint8Array) => boolean} */
       (new Function(code))();
     return automata;
   }

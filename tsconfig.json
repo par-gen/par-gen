@@ -32,6 +32,9 @@
     },
     {
       "path": "packages/dfa"
+    },
+    {
+      "path": "packages/lexer"
     }
   ]
 }

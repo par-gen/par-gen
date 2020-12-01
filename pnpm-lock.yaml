@@ -21,6 +21,13 @@ importers:
       '@knisterpeter/expound-nfa': 'link:../nfa'
     specifiers:
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
+  packages/lexer:
+    dependencies:
+      '@knisterpeter/expound-dfa': 'link:../dfa'
+      '@knisterpeter/expound-nfa': 'link:../nfa'
+    specifiers:
+      '@knisterpeter/expound-dfa': 'workspace:0.1.0'
+      '@knisterpeter/expound-nfa': 'workspace:0.1.0'
   packages/nfa:
     specifiers: {}
 lockfileVersion: 5.2
