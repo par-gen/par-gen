@@ -118,6 +118,7 @@ function createOptimalDFA(nfa) {
  * @param {Object} options
  * @param {Object} options.codegen
  * @param {'esm' | 'commonjs' | 'function'} options.codegen.module
+ * @returns {string}
  */
 export function lexer(options) {
   const tree = createCombinedExpression(
@@ -197,16 +198,13 @@ export function lexer(options) {
 
     const visited = new Uint16Array(1024);
 
-    let i = 0;
-    let input;
-
-    const next = (_input) => {
-      input = _input;
+    const next = (input) => {
       // ${start / columns}
       let state = ${start};
       visited[0] = ${start};
 
-      i = 0;
+      // try to find match
+      let i = 0;
       let l = input.length;
       while (i < l) {
         state = table[state + input[i]];
@@ -214,6 +212,7 @@ export function lexer(options) {
         visited[i] = state;
       }
 
+      // track back to last matched final state
       let success = false;
       let n = i;
       while (!success && n > 0) {
@@ -224,7 +223,7 @@ export function lexer(options) {
 
       return {
         success,
-        s: success ? states[visited[n] / ${columns}] : undefined,
+        state: success ? states[visited[n] / ${columns}] : undefined,
         value: success ? input.subarray(0, n) : undefined,
       };
     };
