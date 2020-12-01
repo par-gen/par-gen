@@ -27,7 +27,7 @@
     "pnpm": ">=5"
   },
   "devDependencies": {
-    "@types/jest": "26.0.15",
+    "@types/jest": "26.0.16",
     "@types/node": "14.14.10",
     "cross-env": "7.0.2",
     "eslint": "7.14.0",
