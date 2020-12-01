@@ -1,4 +1,5 @@
 import { DFA, fromNFA, minimize } from "@knisterpeter/expound-dfa";
+import { parse } from "@knisterpeter/expound-grammar";
 import {
   NFA,
   parseRegExp,
@@ -115,18 +116,14 @@ function createOptimalDFA(nfa) {
 }
 
 /**
- * @param {Object} options
- * @param {Object} options.codegen
- * @param {'esm' | 'commonjs' | 'function'} options.codegen.module
- * @returns {string}
+ * @param {string} grammar
+ * @returns {StringDFA}
  */
-export function lexer(options) {
+function createAutomata(grammar) {
+  const { tokens } = parse(grammar);
+
   const tree = createCombinedExpression(
-    parseTerminalRule("WS", " "),
-    parseTerminalRule("A", "ab|ac"),
-    parseTerminalRule("B", "b"),
-    parseTerminalRule("C", "c"),
-    parseTerminalRule("D", "d")
+    ...tokens.map((token) => parseTerminalRule(token.name, token.expr))
   );
 
   const nfa = new NFA(
@@ -139,7 +136,18 @@ export function lexer(options) {
     })
   );
 
-  const dfa = createOptimalDFA(nfa);
+  return createOptimalDFA(nfa);
+}
+
+/**
+ * @param {string} grammar
+ * @param {Object} options
+ * @param {Object} options.codegen
+ * @param {'esm' | 'commonjs' | 'function'} options.codegen.module
+ * @returns {string}
+ */
+export function lexer(grammar, options) {
+  const dfa = createAutomata(grammar);
 
   const d = dfa.description;
 

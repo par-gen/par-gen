@@ -21,12 +21,16 @@ importers:
       '@knisterpeter/expound-nfa': 'link:../nfa'
     specifiers:
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
+  packages/grammar:
+    specifiers: {}
   packages/lexer:
     dependencies:
       '@knisterpeter/expound-dfa': 'link:../dfa'
+      '@knisterpeter/expound-grammar': 'link:../grammar'
       '@knisterpeter/expound-nfa': 'link:../nfa'
     specifiers:
       '@knisterpeter/expound-dfa': 'workspace:0.1.0'
+      '@knisterpeter/expound-grammar': 'workspace:0.1.0'
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
   packages/nfa:
     specifiers: {}
