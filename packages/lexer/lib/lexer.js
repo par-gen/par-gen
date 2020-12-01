@@ -114,8 +114,14 @@ function createOptimalDFA(nfa) {
   return new DFA(minimal);
 }
 
-export function lexer() {
+/**
+ * @param {Object} options
+ * @param {Object} options.codegen
+ * @param {'esm' | 'commonjs' | 'function'} options.codegen.module
+ */
+export function lexer(options) {
   const tree = createCombinedExpression(
+    parseTerminalRule("WS", " "),
     parseTerminalRule("A", "ab|ac"),
     parseTerminalRule("B", "b"),
     parseTerminalRule("C", "c"),
@@ -139,15 +145,18 @@ export function lexer() {
   const columns = 256;
 
   const start = d.states.indexOf(d.start) * columns;
-  const finals = d.finals.map((final) => d.states.indexOf(final));
+  const finals = d.finals.map((final) => d.states.indexOf(final) * columns);
 
   const transitions = Array.from(d.transitions.entries()).map(
     ([from, transition]) =>
       /** @type {[number, [number, number][]]} */ ([
-        d.states.indexOf(from),
+        d.states.indexOf(from) * columns,
         /** @type {[number, number][]} */ Array.from(
           transition.entries()
-        ).map(([symbol, to]) => [symbol.charCodeAt(0), d.states.indexOf(to)]),
+        ).map(([symbol, to]) => [
+          symbol.charCodeAt(0),
+          d.states.indexOf(to) * columns,
+        ]),
       ])
   );
 
@@ -156,34 +165,73 @@ export function lexer() {
     .map(([state]) => state)
     .find((state) => !finals.includes(state));
 
-  const code = `'use strict';
-    const table = new Uint8Array(${columns * d.states.length});
+  /**
+   * @param {typeof options['codegen']['module']} module
+   * @param {() => string} callback
+   */
+  const gen = (module, callback) => {
+    if (options.codegen.module === module) {
+      return callback();
+    }
+    return "";
+  };
+
+  const code = `${gen("commonjs", () => `'use strict';`)}
+
+    const states = ${JSON.stringify(d.states.map((state) => state.names[0]))};
+
+    const table = new Uint16Array(${columns * d.states.length});
     table.fill(${errorState ?? -1});
     ${transitions
       .flatMap(([from, transition]) =>
         transition.map(
           ([symbol, to]) =>
-            `table[${symbol + from * columns}] = ${to * columns};`
+            `table[${from + symbol}] = ${to}; // ${from / columns} -> ${
+              to / columns
+            }`
         )
       )
       .join("\n")}
 
-    const visited = new Uint8Array(1024);
+    const finals = ${JSON.stringify(finals)};
 
-    return (input) => {
+    const visited = new Uint16Array(1024);
+
+    let i = 0;
+    let input;
+
+    const next = (_input) => {
+      input = _input;
+      // ${start / columns}
       let state = ${start};
       visited[0] = ${start};
-      let i = 0, l = input.length;
+
+      i = 0;
+      let l = input.length;
       while (i < l) {
         state = table[state + input[i]];
         i++;
         visited[i] = state;
       }
+
+      let success = false;
+      let n = i;
+      while (!success && n > 0) {
+        success = success || finals.indexOf(visited[n]) > -1;
+        n--;
+      }
+      n = n + 1;
+
       return {
-        length: i,
-        visited,
+        success,
+        s: success ? states[visited[n] / ${columns}] : undefined,
+        value: success ? input.subarray(0, n) : undefined,
       };
     };
+
+    ${gen("esm", () => `export { next };`)}
+    ${gen("commonjs", () => `module.exports = { next };`)}
+    ${gen("function", () => `return { next };`)}
   `;
 
   return code;
