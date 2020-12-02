@@ -15,7 +15,7 @@
  * @param {T | undefined | null} input
  * @returns {input is T}
  */
-function removeFalsyValues(input) {
+function nonFalsyValues(input) {
   return Boolean(input);
 }
 
@@ -28,11 +28,11 @@ export function parse(grammar) {
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => !line.startsWith("#"))
-    .filter(removeFalsyValues);
+    .filter(nonFalsyValues);
 
   const tokens = lines
     .map((line) => line.match(/(?<token>[A-Z]+)\s*:=(?<expr>[^;]+);/))
-    .filter(removeFalsyValues)
+    .filter(nonFalsyValues)
     .map(
       (match) =>
         /** @type {Token} */ ({
@@ -44,10 +44,10 @@ export function parse(grammar) {
   const rules = lines
     .map((line) =>
       line.match(
-        /(?<rule>[A-Z][A-Za-z0-9_]+[a-z0-9_][A-Za-z0-9_]+)\s*<-(?<expr>[^;]+);/
+        /(?<rule>[A-Z][A-Za-z0-9_]*?[a-z0-9_][A-Za-z0-9_]*)\s*<-(?<expr>[^;]+);/
       )
     )
-    .filter(removeFalsyValues)
+    .filter(nonFalsyValues)
     .map(
       (match) =>
         /** @type {Rule} */ ({
