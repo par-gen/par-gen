@@ -224,7 +224,9 @@ export function lexer(grammar, options) {
       let success = false;
       let n = i;
       while (!success && n > 0) {
-        success = success || finals.indexOf(visited[n]) > -1;
+        success = success || ${finals
+          .map((final) => `${final} === visited[n]`)
+          .join(" || ")};
         n--;
       }
       n = n + 1;
