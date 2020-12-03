@@ -3,10 +3,10 @@ import { lexer } from "./lexer.js";
 describe("lexer", () => {
   it("should create a lexer which is executable as evaluated function", () => {
     const grammar = `
-      A := ab|ac;
-      B := b;
-      C := c;
-      D := d;
+      A := 'ab|ac';
+      B := 'b';
+      C := 'c';
+      D := 'd';
     `;
     const code = lexer(grammar, { codegen: { module: "function" } });
     /**
