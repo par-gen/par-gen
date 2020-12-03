@@ -1,25 +1,32 @@
 import { parse } from "./parser.js";
 
 describe("parse", () => {
-  it("should return a list of tokens from a grammar", () => {
-    const result = parse(`
-      # terminals
+  let testGrammar = `
+    # terminals
 
-      NUMBER := 0|1|2|3|4|5|6|7|8|9;
-      PLUS := +;
-      MINUS := -;
-      
-      # rules
-      
-      Expression <- Plus;
-      Expression <- Minus;
-      Plus <- NUMBER PLUS NUMBER;
-      Minus <- NUMBER MINUS NUMBER;
-    `);
+    WS := ' ';
+    NUMBER := '0|1|2|3|4|5|6|7|8|9';
+    PLUS := '+';
+    MINUS := '-';
+    
+    # rules
+    
+    Expression := Plus;
+    Expression := Minus;
+    Plus := NUMBER WS PLUS WS NUMBER;
+    Minus := NUMBER WS MINUS WS NUMBER;
+  `;
+
+  it("should return a list of tokens from a grammar", () => {
+    const result = parse(testGrammar);
 
     expect(result).toEqual(
       expect.objectContaining({
         tokens: [
+          {
+            name: "WS",
+            expr: " ",
+          },
           {
             name: "NUMBER",
             expr: "0|1|2|3|4|5|6|7|8|9",
@@ -37,21 +44,8 @@ describe("parse", () => {
     );
   });
 
-  it("should return a list of rules fro a grammar", () => {
-    const result = parse(`
-      # terminals
-
-      NUMBER := 0|1|2|3|4|5|6|7|8|9;
-      PLUS := +;
-      MINUS := -;
-      
-      # rules
-      
-      Expression <- Plus;
-      Expression <- Minus;
-      Plus <- NUMBER PLUS NUMBER;
-      Minus <- NUMBER MINUS NUMBER;
-    `);
+  it("should return a list of rules from a grammar", () => {
+    const result = parse(testGrammar);
 
     expect(result).toEqual(
       expect.objectContaining({
@@ -66,11 +60,11 @@ describe("parse", () => {
           },
           {
             name: "Plus",
-            symbols: ["NUMBER", "PLUS", "NUMBER"],
+            symbols: ["NUMBER", "WS", "PLUS", "WS", "NUMBER"],
           },
           {
             name: "Minus",
-            symbols: ["NUMBER", "MINUS", "NUMBER"],
+            symbols: ["NUMBER", "WS", "MINUS", "WS", "NUMBER"],
           },
         ],
       })
