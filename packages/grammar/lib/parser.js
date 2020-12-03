@@ -31,20 +31,20 @@ export function parse(grammar) {
     .filter(nonFalsyValues);
 
   const tokens = lines
-    .map((line) => line.match(/(?<token>[A-Z]+)\s*:=(?<expr>[^;]+);/))
+    .map((line) => line.match(/(?<token>[A-Z]+)\s*:=\s*'(?<expr>[^;]+)'\s*;/))
     .filter(nonFalsyValues)
     .map(
       (match) =>
         /** @type {Token} */ ({
           name: match.groups?.token?.trim(),
-          expr: match.groups?.expr?.trim(),
+          expr: match.groups?.expr,
         })
     );
 
   const rules = lines
     .map((line) =>
       line.match(
-        /(?<rule>[A-Z][A-Za-z0-9_]*?[a-z0-9_][A-Za-z0-9_]*)\s*<-(?<expr>[^;]+);/
+        /(?<rule>[A-Z][A-Za-z0-9_]*?[a-z0-9_][A-Za-z0-9_]*)\s*:=\s*(?<expr>[^;]+)\s*;/
       )
     )
     .filter(nonFalsyValues)
