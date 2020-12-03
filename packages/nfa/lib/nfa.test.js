@@ -177,6 +177,16 @@ describe("NFA", () => {
 
       expect(result).toBe(true);
     });
+
+    it("should convert a choice with empty branch regexp into a NFA", async () => {
+      const nfa = NFA.fromRegExp("a|");
+
+      const match = nfa.test(["a"]);
+      expect(match).toBe(true);
+
+      const empty = nfa.test([]);
+      expect(empty).toBe(true);
+    });
   });
 
   it("should create a NFA with non string states and symbols", () => {
