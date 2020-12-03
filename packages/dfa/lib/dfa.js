@@ -124,7 +124,9 @@ export class DFA {
     const error = errorState ?? -1;
 
     const code = `'use strict';
-      const table = new Uint8Array(${columns * d.states.length}).fill(${error});
+      const table = new Uint16Array(${
+        columns * d.states.length
+      }).fill(${error});
 
       ${transitions
         .flatMap(([from, transition]) =>
@@ -140,7 +142,7 @@ export class DFA {
         for (let i = 0, l = input.length; i < l; i++) {
           state = table[state + input[i]];
         }
-        return ${JSON.stringify(finals)}.indexOf(state) > -1;
+        return ${finals.map((final) => `${final} === state`).join(" || ")};
       };
     `;
 
