@@ -128,6 +128,36 @@ describe("parse", () => {
     );
   });
 
+  it("should parse a choice expression with empty branch", () => {
+    expect(parse("aa|")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: [
+          node({
+            op: ops.choice,
+            left: node({
+              op: ops.sequence,
+              nodes: [
+                node({
+                  op: ops.match,
+                  value: "a",
+                }),
+                node({
+                  op: ops.match,
+                  value: "a",
+                }),
+              ],
+            }),
+            right: node({
+              op: ops.sequence,
+              nodes: [],
+            }),
+          }),
+        ],
+      })
+    );
+  });
+
   it("should parse a sub-expression", () => {
     expect(parse("(ab)")).toEqual(
       node({
