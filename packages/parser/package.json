@@ -1,0 +1,20 @@
+{
+  "name": "@knisterpeter/expound-parser",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./types/index.d.ts",
+  "dependencies": {
+    "@knisterpeter/expound-dfa": "workspace:0.1.0",
+    "@knisterpeter/expound-grammar": "workspace:0.1.0",
+    "@knisterpeter/expound-nfa": "workspace:0.1.0"
+  },
+  "jest": {
+    "displayName": "parser",
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/types/"
+    ]
+  }
+}
