@@ -58,26 +58,8 @@ export function parser(grammar) {
     ...rules,
   ];
 
-  const {
-    states,
-    transitions,
-    start,
-    finals,
-  } = calculateStatesAndTransitionTable(augmentedTokens, augmentedRules);
-
-  /** @type {DFADescription<ItemState, string>} */
-  const description = {
-    states,
-    symbols: [
-      ...augmentedTokens.map((token) => token.name),
-      ...augmentedRules.map((rule) => rule.name),
-    ],
-    transitions,
-    start,
-    finals,
-  };
-
-  const dfa = new DFA(description);
+  // todo: minimize this dfa
+  const dfa = createDFA(augmentedTokens, augmentedRules);
 
   const actions = createActionTable(dfa);
   const goto = createGotoTable(dfa, augmentedRules);
@@ -110,7 +92,8 @@ export function parser(grammar) {
 
       const actionSet = actions.get(currentState);
       if (!actionSet) {
-        throw new Error(`Invalid state '${printState(currentState)}'`);
+        throw new Error(`Invalid state
+${printState(currentState)}`);
       }
       const action = actionSet.get(lookahead);
       if (!action) {
@@ -163,9 +146,8 @@ ${printState(currentState)}`
           const nextState = goto.get(stack[0].state)?.get(action.symbol);
           if (!nextState) {
             throw new Error(
-              `Unable to lookup goto state for ${printState(stack[0].state)}(${
-                action.symbol
-              })`
+              `Unable to lookup goto state (${action.symbol}) for
+${printState(stack[0].state)}`
             );
           }
           stack.unshift({
@@ -179,6 +161,36 @@ ${printState(currentState)}`
       }
     }
   };
+}
+
+/**
+ * @param {Token[]} tokens
+ * @param {Rule[]} rules
+ * @returns {DFA<ItemState, string>}
+ */
+function createDFA(tokens, rules) {
+  const {
+    states,
+    transitions,
+    start,
+    finals,
+  } = calculateStatesAndTransitionTable(tokens, rules);
+
+  /** @type {DFADescription<ItemState, string>} */
+  const description = {
+    states,
+    symbols: [
+      ...tokens.map((token) => token.name),
+      ...rules.map((rule) => rule.name),
+    ],
+    transitions,
+    start,
+    finals,
+  };
+
+  const dfa = new DFA(description);
+
+  return dfa;
 }
 
 /**
