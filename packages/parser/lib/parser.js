@@ -82,13 +82,12 @@ export function parser(grammar) {
   const actions = createActionTable(dfa);
   const goto = createGotoTable(dfa, augmentedRules);
 
-  const { next: nextToken } = new Function(
-    lexer(grammar, {
-      codegen: {
-        module: "function",
-      },
-    })
-  )();
+  const lexerCode = lexer(grammar, {
+    codegen: {
+      module: "function",
+    },
+  });
+  const { next: nextToken } = new Function(lexerCode)();
 
   return (input) => {
     const stream = Uint8Array.from(Buffer.from(input));
@@ -116,9 +115,8 @@ export function parser(grammar) {
       const action = actionSet.get(lookahead);
       if (!action) {
         throw new Error(
-          `Unknown lookahead(${lookahead}) for state ${printState(
-            currentState
-          )}`
+          `Unknown lookahead(${lookahead}) for state:
+${printState(currentState)}`
         );
       }
 
@@ -134,7 +132,7 @@ export function parser(grammar) {
           // todo: make lexer typesafe
           result = nextToken(rest);
           // todo: move EOF into lexer
-          lookahead = result.state ? result.state : EOF.name;
+          lookahead = result.state ?? EOF.name;
           value = result.value;
           rest = value !== undefined ? rest.subarray(value.length) : rest;
 
@@ -203,7 +201,7 @@ function printItem(item) {
 function printState(state) {
   return Array.from(state.values())
     .map((item) => printItem(item))
-    .join(" | ");
+    .join("\n");
 }
 
 /**
