@@ -2,15 +2,6 @@ import { DFA } from "@knisterpeter/expound-dfa";
 import { parse } from "@knisterpeter/expound-grammar";
 import { lexer } from "@knisterpeter/expound-lexer";
 
-import { inspect } from "util";
-
-/**
- * @param {unknown} o
- */
-function log(o) {
-  console.log(inspect(o, { colors: true, depth: 10 }));
-}
-
 /**
  * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
  */
@@ -33,9 +24,14 @@ function log(o) {
  */
 
 /**
+ * @typedef {Set<Item>} ItemState
+ */
+
+/**
  * @typedef {Object} AST
  */
 
+// todo: move into lexer
 /** @type {Token} */
 const EOF = {
   name: "EOF",
@@ -50,6 +46,7 @@ export function parser(grammar) {
   const { tokens, rules } = parse(grammar);
 
   /** @type {Token[]} */
+  // todo: this should be integrated into the lexer
   const augmentedTokens = [EOF, ...tokens];
 
   /** @type {Rule[]} */
@@ -61,145 +58,47 @@ export function parser(grammar) {
     ...rules,
   ];
 
-  const items = createItems(augmentedRules, augmentedTokens);
-  const firsts = calculateFirsts(augmentedRules, augmentedTokens);
-  const follows = calculateFollows(firsts, augmentedRules, augmentedTokens);
+  const {
+    states,
+    transitions,
+    start,
+    finals,
+  } = calculateStatesAndTransitionTable(augmentedTokens, augmentedRules);
 
-  /** @type {Map<Set<Item>, Map<string, Set<Item>>>} */
-  const transitions = new Map();
-
-  /** @type {Set<Item>[]} */
-  const itemSets = [];
-
-  /** @type {Set<Item>[]} */
-  const newItemSets = [firstItemSet(augmentedRules[0], rules, items, follows)];
-  while (newItemSets.length > 0) {
-    const fromItemSet = newItemSets.shift();
-    if (!fromItemSet) {
-      continue;
-    }
-    itemSets.push(fromItemSet);
-
-    const nextStates = nextItemSets(
-      fromItemSet,
-      augmentedRules,
-      items,
-      follows
-    );
-
-    for (const [token, toItemSet] of nextStates.entries()) {
-      const existing = itemSets.findIndex((exiting) => {
-        return (
-          exiting.size === toItemSet.size &&
-          Array.from(toItemSet.values()).every((item) => exiting.has(item))
-        );
-      });
-      transitions.set(
-        fromItemSet,
-        new Map([
-          ...Array.from(transitions.get(fromItemSet)?.entries() ?? []),
-          [token, existing !== -1 ? itemSets[existing] : toItemSet],
-        ])
-      );
-      if (existing === -1) {
-        newItemSets.push(toItemSet);
-      }
-    }
-  }
-
-  const finalItem = getItem(
-    {
-      name: "S",
-      tokens: [rules[0].name],
-      marker: 1,
-      lookahead: [EOF.name],
-    },
-    items
-  );
-
-  /** @type {DFADescription<Set<Item>, string>} */
+  /** @type {DFADescription<ItemState, string>} */
   const description = {
-    states: itemSets,
+    states,
     symbols: [
       ...augmentedTokens.map((token) => token.name),
       ...augmentedRules.map((rule) => rule.name),
     ],
     transitions,
-    start: itemSets[0],
-    finals: itemSets.filter((itemSet) => itemSet.has(finalItem)),
+    start,
+    finals,
   };
 
   const dfa = new DFA(description);
 
-  /** @type {Map<Set<Item>, Map<string, {op: string, st: Set<Item> | undefined, sym: string | undefined}>>} */
-  const actions = new Map();
-  dfa.description.states.forEach((cs) => {
-    const transition = dfa.description.transitions.get(cs);
-    dfa.description.symbols.forEach((symbol) => {
-      const ns = transition?.get(symbol);
-      if (ns) {
-        actions.set(
-          cs,
-          new Map([
-            ...Array.from(actions.get(cs)?.entries() ?? []),
-            [symbol, { op: "shift", st: ns, sym: undefined }],
-          ])
-        );
-      }
-    });
-    dfa.description.symbols.forEach((symbol) => {
-      const ends = Array.from(cs.values()).filter(
-        (item) => item.marker >= item.tokens.length
-      );
-      ends.forEach((end) => {
-        if (end.lookahead[0] === symbol) {
-          actions.set(
-            cs,
-            new Map([
-              ...Array.from(actions.get(cs)?.entries() ?? []),
-              [symbol, { op: "reduce", st: undefined, sym: end.name }],
-            ])
-          );
-        }
-      });
-    });
-  });
+  const actions = createActionTable(dfa);
+  const goto = createGotoTable(dfa, augmentedRules);
 
-  /** @type {Map<Set<Item>, Map<string, Set<Item>>>} */
-  const goto = new Map();
-  dfa.description.states.forEach((currentState) => {
-    const ruleNames = rules.map((rule) => rule.name);
-
-    const transition = dfa.description.transitions.get(currentState);
-    Array.from(transition?.entries() ?? [])
-      .filter(([from]) => ruleNames.includes(from))
-      .forEach(([ruleName, to]) => {
-        goto.set(
-          currentState,
-          new Map([
-            ...Array.from(goto.get(currentState)?.entries() ?? []),
-            [ruleName, to],
-          ])
-        );
-      });
-  });
-
-  const code = lexer(grammar, {
-    codegen: {
-      module: "function",
-    },
-  });
-  const { next } = new Function(code)();
+  const { next: nextToken } = new Function(
+    lexer(grammar, {
+      codegen: {
+        module: "function",
+      },
+    })
+  )();
 
   return (input) => {
     const stream = Uint8Array.from(Buffer.from(input));
     let rest = stream.subarray(0);
 
-    let result = next(rest);
-    let { state: la, value } = result;
+    let result = nextToken(rest);
+    let { state: lookahead, value } = result;
     rest = rest.subarray(value.length);
 
-    /** @type {{state: Set<Item>, tree: *}[]} */
+    /** @type {{state: ItemState, tree: *}[]} */
     const stack = [
       {
         state: dfa.description.start,
@@ -208,78 +107,111 @@ export function parser(grammar) {
     ];
 
     while (true) {
-      const actionSet = actions.get(stack[0].state);
-      const action = actionSet?.get(la);
+      const currentState = stack[0].state;
 
-      if (action === undefined) {
-        if (la === EOF.name) {
-          return stack[0].tree.items[0];
-        }
-        return false;
+      const actionSet = actions.get(currentState);
+      if (!actionSet) {
+        throw new Error(`Invalid state '${printState(currentState)}'`);
+      }
+      const action = actionSet.get(lookahead);
+      if (!action) {
+        throw new Error(
+          `Unknown lookahead(${lookahead}) for state ${printState(
+            currentState
+          )}`
+        );
       }
 
-      switch (action?.op) {
+      switch (action.op) {
+        case "done":
+          return stack[0].tree;
         case "shift":
-          /** @type {Partial<{state: Set<Item>, tree: *}>} */
           const stackItem = {
-            state: undefined,
-            tree: { name: la, value },
+            state: action.state,
+            tree: { name: lookahead, value },
           };
 
-          result = next(rest);
-          la = result.state ? result.state : EOF.name;
+          // todo: make lexer typesafe
+          result = nextToken(rest);
+          // todo: move EOF into lexer
+          lookahead = result.state ? result.state : EOF.name;
           value = result.value;
           rest = value !== undefined ? rest.subarray(value.length) : rest;
 
-          stackItem.state = /** @type {Set<Item>} */ (action.st);
-          stack.unshift(/** @type {{state: Set<Item>, tree: *}} */ (stackItem));
+          stack.unshift(stackItem);
 
           break;
         case "reduce":
-          const item = Array.from(stack[0].state.values()).find(
-            (item) => item.name === action.sym && item.lookahead[0] === la
+          const item = Array.from(currentState.values()).find(
+            (item) =>
+              item.name === action.symbol && item.lookahead[0] === lookahead
           );
           if (!item) {
-            throw new Error("Illegal state");
+            throw new Error(
+              `No valid state ${action.symbol}(${lookahead}) found`
+            );
           }
-          const n = item.tokens.length;
-          const removed = stack.splice(0, n);
+          const items = stack.splice(0, item.tokens.length);
 
           const tree = {
-            name: action.sym,
-            items: removed.map((r) => r.tree).reverse(),
+            name: action.symbol,
+            // the stack grown from 0 to n -> we need to reverse the
+            // parse tree
+            items: items.map((r) => r.tree).reverse(),
           };
 
-          const goto0 = goto.get(stack[0].state);
-          const ns = goto0?.get(/** @type {string} */ (action.sym));
+          // note: do note use `currentState` here, since we did
+          // changed the stack a few lines before
+          const nextState = goto.get(stack[0].state)?.get(action.symbol);
+          if (!nextState) {
+            throw new Error(
+              `Unable to lookup goto state for ${printState(stack[0].state)}(${
+                action.symbol
+              })`
+            );
+          }
           stack.unshift({
-            state: /** @type {Set<Item>} */ (ns),
+            state: nextState,
             tree,
           });
 
           break;
         default:
-          log({
-            action,
-            result,
-            stackLenght: stack.length,
-            stack: stack.map((entry) => entry.tree),
-            state: stack[0].state,
-          });
-          throw new Error("not sure what you want " + action?.op);
+          throw new Error("Parser Error");
       }
     }
-
-    return {};
   };
 }
 
 /**
- * @param {Rule[]} rules
+ * @param {Partial<Item>} item
+ * @returns {string}
+ */
+function printItem(item) {
+  const head = [...(item.tokens ?? [])].slice(0, item.marker ?? 0);
+  const tail = [...(item.tokens ?? [])].slice(item.marker ?? 0);
+
+  return `${item.name} -> ${[...head, "•", ...tail].join(
+    " "
+  )}, ${item.lookahead?.join(" ")}`;
+}
+
+/**
+ * @param {ItemState} state
+ * @returns {string}
+ */
+function printState(state) {
+  return Array.from(state.values())
+    .map((item) => printItem(item))
+    .join(" | ");
+}
+
+/**
  * @param {Token[]} tokens
+ * @param {Rule[]} rules
  * @returns {Item[]}
  */
-function createItems(rules, tokens) {
+function createItems(tokens, rules) {
   return rules.flatMap((rule) => [
     ...rule.symbols.flatMap((_, i) =>
       tokens.map((token) => ({
@@ -317,7 +249,7 @@ function getItem(needle, items) {
   });
 
   if (!item) {
-    throw new Error("Illegal state");
+    throw new Error(`Unable to find item [${printItem(needle)}]`);
   }
   return item;
 }
@@ -468,11 +400,11 @@ function createItemClosure(item, rules) {
 }
 
 /**
- * @param {Rule[]} rules
  * @param {Token[]} tokens
+ * @param {Rule[]} rules
  * @returns {Map<string, Set<Token>>}
  */
-function calculateFirsts(rules, tokens) {
+function calculateFirsts(tokens, rules) {
   // todo: handle epsilon (http://david.tribble.com/text/lrk_parsing.html)
 
   const rulesNames = new Set(rules.map((rule) => rule.name));
@@ -529,11 +461,11 @@ function calculateFirsts(rules, tokens) {
 
 /**
  * @param {Map<string, Set<Token>>} firsts
- * @param {Rule[]} rules
  * @param {Token[]} tokens
+ * @param {Rule[]} rules
  * @returns {Map<string, Set<Token>>}
  */
-function calculateFollows(firsts, rules, tokens) {
+function calculateFollows(firsts, tokens, rules) {
   // todo: handle epsilon (http://david.tribble.com/text/lrk_parsing.html)
 
   const rulesNames = new Set(rules.map((rule) => rule.name));
@@ -590,4 +522,175 @@ function calculateFollows(firsts, rules, tokens) {
   }
 
   return computed;
+}
+
+/**
+ * @param {Token[]} tokens
+ * @param {Rule[]} rules
+ * @returns {{states: ItemState[], transitions: Map<ItemState, Map<string, ItemState>>, start: ItemState, finals: ItemState[]}}
+ */
+function calculateStatesAndTransitionTable(tokens, rules) {
+  /** @type {Map<ItemState, Map<string, ItemState>>} */
+  const transitions = new Map();
+
+  const items = createItems(tokens, rules);
+
+  const firsts = calculateFirsts(tokens, rules);
+  const follows = calculateFollows(firsts, tokens, rules);
+
+  /** @type {ItemState[]} */
+  const itemSets = [];
+
+  /** @type {ItemState[]} */
+  const newItemSets = [firstItemSet(rules[0], rules, items, follows)];
+  while (newItemSets.length > 0) {
+    const fromItemSet = newItemSets.shift();
+    if (!fromItemSet) {
+      continue;
+    }
+    itemSets.push(fromItemSet);
+
+    const nextStates = nextItemSets(fromItemSet, rules, items, follows);
+
+    for (const [token, toItemSet] of nextStates.entries()) {
+      const existing = itemSets.findIndex((exiting) => {
+        return (
+          exiting.size === toItemSet.size &&
+          Array.from(toItemSet.values()).every((item) => exiting.has(item))
+        );
+      });
+      transitions.set(
+        fromItemSet,
+        new Map([
+          ...Array.from(transitions.get(fromItemSet)?.entries() ?? []),
+          [token, existing !== -1 ? itemSets[existing] : toItemSet],
+        ])
+      );
+      if (existing === -1) {
+        newItemSets.push(toItemSet);
+      }
+    }
+  }
+
+  const finalItem = getItem(
+    {
+      name: "S",
+      tokens: rules[0].symbols,
+      marker: 1,
+      lookahead: [EOF.name],
+    },
+    items
+  );
+
+  return {
+    states: itemSets,
+    transitions,
+    start: itemSets[0],
+    finals: itemSets.filter((state) => state.has(finalItem)),
+  };
+}
+
+/**
+ * @typedef {Object} Shift
+ * @property {'shift'} op
+ * @property {ItemState} state
+ * @property {undefined} symbol
+ */
+
+/**
+ * @typedef {Object} Reduce
+ * @property {'reduce'} op
+ * @property {undefined} state
+ * @property {string} symbol
+ */
+
+/**
+ * @typedef {Object} Done
+ * @property {'done'} op
+ * @property {undefined} state
+ * @property {undefined} symbol
+ */
+
+/**
+ * @typedef {Shift | Reduce | Done} Actions
+ */
+
+/**
+ * @param {DFA<ItemState, string>} dfa
+ * @returns {Map<ItemState, Map<string, Actions>>}
+ */
+function createActionTable(dfa) {
+  /** @type {Map<ItemState, Map<string, Actions>>} */
+  const actions = new Map();
+
+  dfa.description.states.forEach((currentState) => {
+    const transition = dfa.description.transitions.get(currentState);
+    dfa.description.symbols.forEach((symbol) => {
+      const ns = transition?.get(symbol);
+      if (ns) {
+        actions.set(
+          currentState,
+          new Map([
+            ...Array.from(actions.get(currentState)?.entries() ?? []),
+            [symbol, { op: "shift", state: ns, symbol: undefined }],
+          ])
+        );
+      }
+    });
+    dfa.description.symbols.forEach((symbol) => {
+      const ends = Array.from(currentState.values()).filter(
+        (item) => item.marker >= item.tokens.length
+      );
+
+      ends.forEach((end) => {
+        if (end.lookahead[0] === symbol) {
+          actions.set(
+            currentState,
+            new Map([
+              ...Array.from(actions.get(currentState)?.entries() ?? []),
+              [symbol, { op: "reduce", state: undefined, symbol: end.name }],
+            ])
+          );
+        }
+      });
+    });
+  });
+  dfa.description.finals.forEach((finalState) => {
+    actions.get(finalState)?.set(EOF.name, {
+      op: "done",
+      state: undefined,
+      symbol: undefined,
+    });
+  });
+
+  return actions;
+}
+
+/**
+ * @param {DFA<ItemState, string>} dfa
+ * @param {Rule[]} rules
+ * @returns {Map<ItemState, Map<string, ItemState>>}
+ */
+function createGotoTable(dfa, rules) {
+  const ruleNames = rules.map((rule) => rule.name);
+
+  /** @type {Map<ItemState, Map<string, ItemState>>} */
+  const goto = new Map();
+
+  dfa.description.states.forEach((currentState) => {
+    const transition = dfa.description.transitions.get(currentState);
+    Array.from(transition?.entries() ?? [])
+      .filter(([from]) => ruleNames.includes(from))
+      .forEach(([ruleName, to]) => {
+        goto.set(
+          currentState,
+          new Map([
+            ...Array.from(goto.get(currentState)?.entries() ?? []),
+            [ruleName, to],
+          ])
+        );
+      });
+  });
+
+  return goto;
 }

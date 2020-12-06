@@ -1,7 +1,7 @@
 import { parser } from "./parser.js";
 
 describe("parser", () => {
-  it("should construct...", async () => {
+  it("should construct a parser from a given grammar", async () => {
     const parse = parser(`
       POPEN := '(';
       PCLOSE := ')';
