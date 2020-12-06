@@ -47,16 +47,16 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
         .map(([state]) => state);
 
       partitions
-        .map((Y, n) => {
+        .map((Y) => {
           const yux = Y.filter((y) => X.includes(y));
           const yox = Y.filter((y) => !X.includes(y));
-          return { n, Y, yux, yox };
+          return { Y, yux, yox };
         })
         .filter(({ yux, yox }) => {
           return yux.length > 0 && yox.length > 0;
         })
-        .forEach(({ n, Y, yux, yox }) => {
-          partitions.splice(n, 1, yux, yox);
+        .forEach(({ Y, yux, yox }) => {
+          partitions.splice(partitions.indexOf(Y), 1, yux, yox);
 
           const queueIndex = queue.findIndex(
             (w) =>
