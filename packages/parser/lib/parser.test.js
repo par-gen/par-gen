@@ -19,27 +19,27 @@ describe("parser", () => {
     const ast = parse("1+1");
 
     expect(ast).toEqual({
-      type: "Expr",
-      value: undefined,
-      nodes: [
+      name: "Expr",
+      items: [
         {
-          type: "Add",
-          value: undefined,
-          nodes: [
+          name: "Term",
+          items: [
             {
-              type: "NUMBER",
-              value: "1",
-              nodes: [],
+              name: "Term",
+              items: [
+                {
+                  name: "NUMBER",
+                  value: new Uint8Array(["1".charCodeAt(0)]),
+                },
+              ],
             },
             {
-              type: "PLUS",
-              value: "+",
-              nodes: [],
+              name: "PLUS",
+              value: new Uint8Array(["+".charCodeAt(0)]),
             },
             {
-              type: "NUMBER",
-              value: "1",
-              nodes: [],
+              name: "NUMBER",
+              value: new Uint8Array(["1".charCodeAt(0)]),
             },
           ],
         },

@@ -1,5 +1,6 @@
 import { DFA } from "@knisterpeter/expound-dfa";
 import { parse } from "@knisterpeter/expound-grammar";
+import { lexer } from "@knisterpeter/expound-lexer";
 
 import { inspect } from "util";
 
@@ -29,7 +30,6 @@ function log(o) {
  * @property {string[]} tokens
  * @property {number} marker
  * @property {string[]} lookahead
- * @property {boolean} kernel
  */
 
 /**
@@ -65,7 +65,7 @@ export function parser(grammar) {
   const firsts = calculateFirsts(augmentedRules, augmentedTokens);
   const follows = calculateFollows(firsts, augmentedRules, augmentedTokens);
 
-  /** @type {Map<Set<Item>, Map<Token, Set<Item>>>} */
+  /** @type {Map<Set<Item>, Map<string, Set<Item>>>} */
   const transitions = new Map();
 
   /** @type {Set<Item>[]} */
@@ -97,12 +97,8 @@ export function parser(grammar) {
       transitions.set(
         fromItemSet,
         new Map([
-          [
-            /** @type {Token} */ (augmentedTokens.find(
-              (t) => t.name === token
-            )),
-            existing !== -1 ? itemSets[existing] : toItemSet,
-          ],
+          ...Array.from(transitions.get(fromItemSet)?.entries() ?? []),
+          [token, existing !== -1 ? itemSets[existing] : toItemSet],
         ])
       );
       if (existing === -1) {
@@ -111,20 +107,169 @@ export function parser(grammar) {
     }
   }
 
-  /** @type {DFADescription<Set<Item>, Token>} */
+  const finalItem = getItem(
+    {
+      name: "S",
+      tokens: [rules[0].name],
+      marker: 1,
+      lookahead: [EOF.name],
+    },
+    items
+  );
+
+  /** @type {DFADescription<Set<Item>, string>} */
   const description = {
     states: itemSets,
-    symbols: augmentedTokens,
+    symbols: [
+      ...augmentedTokens.map((token) => token.name),
+      ...augmentedRules.map((rule) => rule.name),
+    ],
     transitions,
     start: itemSets[0],
-    finals: [],
+    finals: itemSets.filter((itemSet) => itemSet.has(finalItem)),
   };
 
   const dfa = new DFA(description);
 
-  log({ dfa });
+  /** @type {Map<Set<Item>, Map<string, {op: string, st: Set<Item> | undefined, sym: string | undefined}>>} */
+  const actions = new Map();
+  dfa.description.states.forEach((cs) => {
+    const transition = dfa.description.transitions.get(cs);
+    dfa.description.symbols.forEach((symbol) => {
+      const ns = transition?.get(symbol);
+      if (ns) {
+        actions.set(
+          cs,
+          new Map([
+            ...Array.from(actions.get(cs)?.entries() ?? []),
+            [symbol, { op: "shift", st: ns, sym: undefined }],
+          ])
+        );
+      }
+    });
+    dfa.description.symbols.forEach((symbol) => {
+      const ends = Array.from(cs.values()).filter(
+        (item) => item.marker >= item.tokens.length
+      );
+      ends.forEach((end) => {
+        if (end.lookahead[0] === symbol) {
+          actions.set(
+            cs,
+            new Map([
+              ...Array.from(actions.get(cs)?.entries() ?? []),
+              [symbol, { op: "reduce", st: undefined, sym: end.name }],
+            ])
+          );
+        }
+      });
+    });
+  });
 
-  return () => {
+  /** @type {Map<Set<Item>, Map<string, Set<Item>>>} */
+  const goto = new Map();
+  dfa.description.states.forEach((currentState) => {
+    const ruleNames = rules.map((rule) => rule.name);
+
+    const transition = dfa.description.transitions.get(currentState);
+    Array.from(transition?.entries() ?? [])
+      .filter(([from]) => ruleNames.includes(from))
+      .forEach(([ruleName, to]) => {
+        goto.set(
+          currentState,
+          new Map([
+            ...Array.from(goto.get(currentState)?.entries() ?? []),
+            [ruleName, to],
+          ])
+        );
+      });
+  });
+
+  const code = lexer(grammar, {
+    codegen: {
+      module: "function",
+    },
+  });
+  const { next } = new Function(code)();
+
+  return (input) => {
+    const stream = Uint8Array.from(Buffer.from(input));
+    let rest = stream.subarray(0);
+
+    let result = next(rest);
+    let { state: la, value } = result;
+    rest = rest.subarray(value.length);
+
+    /** @type {{state: Set<Item>, tree: *}[]} */
+    const stack = [
+      {
+        state: dfa.description.start,
+        tree: undefined,
+      },
+    ];
+
+    while (true) {
+      const actionSet = actions.get(stack[0].state);
+      const action = actionSet?.get(la);
+
+      if (action === undefined) {
+        if (la === EOF.name) {
+          return stack[0].tree.items[0];
+        }
+        return false;
+      }
+
+      switch (action?.op) {
+        case "shift":
+          /** @type {Partial<{state: Set<Item>, tree: *}>} */
+          const stackItem = {
+            state: undefined,
+            tree: { name: la, value },
+          };
+
+          result = next(rest);
+          la = result.state ? result.state : EOF.name;
+          value = result.value;
+          rest = value !== undefined ? rest.subarray(value.length) : rest;
+
+          stackItem.state = /** @type {Set<Item>} */ (action.st);
+          stack.unshift(/** @type {{state: Set<Item>, tree: *}} */ (stackItem));
+
+          break;
+        case "reduce":
+          const item = Array.from(stack[0].state.values()).find(
+            (item) => item.name === action.sym && item.lookahead[0] === la
+          );
+          if (!item) {
+            throw new Error("Illegal state");
+          }
+          const n = item.tokens.length;
+          const removed = stack.splice(0, n);
+
+          const tree = {
+            name: action.sym,
+            items: removed.map((r) => r.tree).reverse(),
+          };
+
+          const goto0 = goto.get(stack[0].state);
+          const ns = goto0?.get(/** @type {string} */ (action.sym));
+          stack.unshift({
+            state: /** @type {Set<Item>} */ (ns),
+            tree,
+          });
+
+          break;
+        default:
+          log({
+            action,
+            result,
+            stackLenght: stack.length,
+            stack: stack.map((entry) => entry.tree),
+            state: stack[0].state,
+          });
+          throw new Error("not sure what you want " + action?.op);
+      }
+    }
+
     return {};
   };
 }
@@ -142,7 +287,6 @@ function createItems(rules, tokens) {
         tokens: rule.symbols,
         marker: i,
         lookahead: [token.name],
-        kernel: false,
       }))
     ),
     ...tokens.map((token) => ({
@@ -150,7 +294,6 @@ function createItems(rules, tokens) {
       tokens: rule.symbols,
       marker: rule.symbols.length,
       lookahead: [token.name],
-      kernel: false,
     })),
   ]);
 }
@@ -174,10 +317,6 @@ function getItem(needle, items) {
   });
 
   if (!item) {
-    log({
-      needle,
-      found: item,
-    });
     throw new Error("Illegal state");
   }
   return item;
@@ -196,7 +335,6 @@ function firstItemSet(rule, rules, items, follows) {
       name: rule.name,
       tokens: rule.symbols,
       marker: 0,
-      kernel: true,
       lookahead: [],
     },
     rules
@@ -319,7 +457,6 @@ function createItemClosure(item, rules) {
         name: rule.name,
         tokens: rule.symbols,
         marker: 0,
-        kernel: false,
         lookahead: [],
         symbol: undefined,
         itemSet: undefined,
