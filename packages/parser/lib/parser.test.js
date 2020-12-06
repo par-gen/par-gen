@@ -2,6 +2,8 @@ import { parser } from "./parser.js";
 
 describe("parser", () => {
   it("should construct a parser from a given grammar", async () => {
+    // todo: we currently can't have a token like '('
+    // the regexp parser fails on this
     const parse = parser(`
       POPEN := '(';
       PCLOSE := ')';
