@@ -38,10 +38,12 @@ importers:
     dependencies:
       '@knisterpeter/expound-dfa': 'link:../dfa'
       '@knisterpeter/expound-grammar': 'link:../grammar'
+      '@knisterpeter/expound-lexer': 'link:../lexer'
       '@knisterpeter/expound-nfa': 'link:../nfa'
     specifiers:
       '@knisterpeter/expound-dfa': 'workspace:0.1.0'
       '@knisterpeter/expound-grammar': 'workspace:0.1.0'
+      '@knisterpeter/expound-lexer': 'workspace:0.1.0'
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
 lockfileVersion: 5.2
 packages:

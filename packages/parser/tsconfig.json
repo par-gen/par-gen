@@ -13,6 +13,9 @@
       "path": "../grammar"
     },
     {
+      "path": "../lexer"
+    },
+    {
       "path": "../nfa"
     }
   ]
