@@ -10,39 +10,43 @@ describe("lexer", () => {
     `;
     const code = lexer(grammar, { codegen: { module: "function" } });
     /**
-     * @type {{next(input: Uint8Array): {success: boolean, state?: string, value?: string}}}
+     * @type {{next(input: Uint8Array, offset: number): {success: boolean, state?: string, value?: string}}}
      */
     const { next } = Function(code)();
 
     const input = new Uint8Array(Buffer.from("abbz"));
-    let view = input.subarray(0);
 
     [
       // match
-      {
-        success: true,
-        state: "A",
-        value: input.subarray(0, 2),
-      },
+      [
+        {
+          state: "A",
+          start: 0,
+          end: 2,
+        },
+        0,
+      ],
       // match
-      {
-        success: true,
-        state: "B",
-        value: input.subarray(2, 3),
-      },
+      [
+        {
+          state: "B",
+          start: 2,
+          end: 3,
+        },
+        2,
+      ],
       // miss
-      {
-        success: false,
-        state: undefined,
-        value: undefined,
-      },
-    ].forEach((expected) => {
-      const matched = next(view);
+      [
+        {
+          state: undefined,
+          start: -1,
+          end: -1,
+        },
+        3,
+      ],
+    ].forEach(([expected, offset]) => {
+      const matched = next(input, /** @type {number} */ (offset));
       expect(matched).toEqual(expected);
-
-      if (matched.value) {
-        view = view.subarray(matched.value.length);
-      }
     });
   });
 });

@@ -73,11 +73,11 @@ export function parser(grammar) {
 
   return (input) => {
     const stream = Uint8Array.from(Buffer.from(input));
-    let rest = stream.subarray(0);
+    let offset = 0;
 
-    let result = nextToken(rest);
-    let { state: lookahead, value } = result;
-    rest = rest.subarray(value.length);
+    let result = nextToken(stream, offset);
+    let { state: lookahead, start, end } = result;
+    offset = end;
 
     /** @type {{state: ItemState, tree: *}[]} */
     const stack = [
@@ -109,15 +109,15 @@ ${printState(currentState)}`
         case "shift":
           const stackItem = {
             state: action.state,
-            tree: { name: lookahead, value },
+            tree: { name: lookahead, start, end },
           };
 
           // todo: make lexer typesafe
-          result = nextToken(rest);
+          result = nextToken(stream, offset);
           // todo: move EOF into lexer
           lookahead = result.state ?? EOF.name;
-          value = result.value;
-          rest = value !== undefined ? rest.subarray(value.length) : rest;
+          start = result.start;
+          offset = end = result.end;
 
           stack.unshift(stackItem);
 

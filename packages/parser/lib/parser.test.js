@@ -31,17 +31,20 @@ describe("parser", () => {
               items: [
                 {
                   name: "NUMBER",
-                  value: new Uint8Array(["1".charCodeAt(0)]),
+                  start: 0,
+                  end: 1,
                 },
               ],
             },
             {
               name: "PLUS",
-              value: new Uint8Array(["+".charCodeAt(0)]),
+              start: 1,
+              end: 2,
             },
             {
               name: "NUMBER",
-              value: new Uint8Array(["1".charCodeAt(0)]),
+              start: 2,
+              end: 3,
             },
           ],
         },

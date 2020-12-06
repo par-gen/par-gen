@@ -206,23 +206,25 @@ export function lexer(grammar, options) {
 
     const visited = new Uint16Array(1024);
 
-    const next = (input) => {
+    const next = (input, offset) => {
       // ${start / columns}
       let state = ${start};
       visited[0] = ${start};
 
       // try to find match
-      let i = 0;
+      let i = offset;
+      let j = 0;
       let l = input.length;
       while (i < l) {
         state = table[state + input[i]];
         i++;
-        visited[i] = state;
+        j++;
+        visited[j] = state;
       }
 
       // track back to last matched final state
       let success = false;
-      let n = i;
+      let n = j;
       while (!success && n > 0) {
         success = success || ${finals
           .map((final) => `${final} === visited[n]`)
@@ -231,10 +233,17 @@ export function lexer(grammar, options) {
       }
       n = n + 1;
 
+      if (success) {
+        return {
+          state: states[visited[n] / ${columns}],
+          start: offset,
+          end: offset + n,
+        };
+      }
       return {
-        success,
-        state: success ? states[visited[n] / ${columns}] : undefined,
-        value: success ? input.subarray(0, n) : undefined,
+        state: undefined,
+        start: -1,
+        end: -1,
       };
     };
 
