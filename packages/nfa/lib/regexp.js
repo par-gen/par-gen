@@ -124,6 +124,19 @@ function seq(input) {
  * @returns {number}
  */
 function next(stack, input) {
+  const isEscapeSequence = input[0] === "\\";
+  if (isEscapeSequence && [".", "(", ")", "|", "*", "\\"].includes(input[1])) {
+    stack.push({
+      parent: undefined,
+      op: ops.match,
+      value: input[1],
+      node: undefined,
+      nodes: undefined,
+      left: undefined,
+      right: undefined,
+    });
+    return 2;
+  }
   switch (input[0]) {
     case ".": {
       stack.push({

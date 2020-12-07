@@ -44,6 +44,16 @@ describe("fromRegExp", () => {
     expect(nfa.test(["a", "a", "c", "c"])).toBe(true);
   });
 
+  it("should support escape sequences", () => {
+    const description = fromRegExp("\\.");
+
+    const nfa = new NFA(description);
+
+    expect(nfa.test(["."])).toBe(true);
+  });
+});
+
+describe("fromRegExpParseTree", () => {
   it("should create a NFA with custom symbols and states", () => {
     /** @type {ParseTree<number>} */
     const tree = {
