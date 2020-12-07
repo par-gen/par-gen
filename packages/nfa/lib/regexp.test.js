@@ -243,6 +243,20 @@ describe("parse", () => {
       })
     );
   });
+
+  it.only("should allow special characters", () => {
+    expect(parse("\\(")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: [
+          node({
+            op: ops.match,
+            value: "(",
+          }),
+        ],
+      })
+    );
+  });
 });
 
 describe("convertNode", () => {

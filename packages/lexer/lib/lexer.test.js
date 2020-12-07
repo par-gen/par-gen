@@ -49,4 +49,25 @@ describe("lexer", () => {
       expect(matched).toEqual(expected);
     });
   });
+
+  it("should create a lexer with support for escaped tokens", () => {
+    const grammar = `
+      A := '\\|';
+    `;
+    const code = lexer(grammar, { codegen: { module: "function" } });
+    /**
+     * @type {{next(input: Uint8Array, offset: number): {success: boolean, state?: string, value?: string}}}
+     */
+    const { next } = Function(code)();
+
+    const input = new Uint8Array(Buffer.from("|"));
+
+    const matched = next(input, /** @type {number} */ (0));
+
+    expect(matched).toEqual({
+      state: "A",
+      start: 0,
+      end: 1,
+    });
+  });
 });
