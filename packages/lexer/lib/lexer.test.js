@@ -13,9 +13,9 @@ describe("lexer", () => {
     `;
       const code = lexer(grammar, { codegen: { module: "function" } });
       /**
-       * @type {{next(input: Uint8Array, offset: number): {success: boolean, state?: string, value?: string}}}
+       * @type {{EOF: symbol, next(input: Uint8Array, offset: number): {state: string | symbol, start: number, end: number}}}
        */
-      const { next } = Function(code)();
+      const { EOF, next } = Function(code)();
 
       const input = new Uint8Array(Buffer.from("abbz"));
 
@@ -41,7 +41,7 @@ describe("lexer", () => {
         // miss
         [
           {
-            state: undefined,
+            state: EOF,
             start: -1,
             end: -1,
           },
@@ -88,7 +88,7 @@ describe("lexer", () => {
       `;
       const code = lexer(grammar, { codegen: { module: "esm" } });
 
-      // todo: this is not available in the typescript typings currently
+      // note: this is not available in the typescript typings currently
       const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
       const context = vm.createContext({
         output,

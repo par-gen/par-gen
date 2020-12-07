@@ -205,6 +205,7 @@ export function lexer(grammar, options) {
     const finals = ${JSON.stringify(finals)};
 
     const visited = new Uint16Array(1024);
+    const EOF = Symbol("lexer.eof");
 
     const next = (input, offset) => {
       // ${start / columns}
@@ -241,15 +242,15 @@ export function lexer(grammar, options) {
         };
       }
       return {
-        state: undefined,
+        state: EOF,
         start: -1,
         end: -1,
       };
     };
 
-    ${gen("esm", () => `export { next };`)}
-    ${gen("commonjs", () => `module.exports = { next };`)}
-    ${gen("function", () => `return { next };`)}
+    ${gen("esm", () => `export { EOF, next };`)}
+    ${gen("commonjs", () => `module.exports = { EOF, next };`)}
+    ${gen("function", () => `return { EOF, next };`)}
   `;
 
   return code;

@@ -20,7 +20,7 @@ import { lexer } from "@knisterpeter/expound-lexer";
  * @property {string} name
  * @property {string[]} tokens
  * @property {number} marker
- * @property {string[]} lookahead
+ * @property {string | symbol} lookahead
  */
 
 /**
@@ -31,13 +31,6 @@ import { lexer } from "@knisterpeter/expound-lexer";
  * @typedef {Object} AST
  */
 
-// todo: move into lexer
-/** @type {Token} */
-const EOF = {
-  name: "EOF",
-  expr: "",
-};
-
 /**
  * @param {string} grammar
  * @returns {(input: string) => AST}
@@ -45,9 +38,13 @@ const EOF = {
 export function parser(grammar) {
   const { tokens, rules } = parse(grammar);
 
-  /** @type {Token[]} */
-  // todo: this should be integrated into the lexer
-  const augmentedTokens = [EOF, ...tokens];
+  const lexerCode = lexer(grammar, {
+    codegen: {
+      module: "function",
+    },
+  });
+  /** @type {{EOF: symbol, next(input: Uint8Array, offset: number): { state: string | symbol, start: number, end: number }}} */
+  const { EOF, next: nextToken } = new Function(lexerCode)();
 
   /** @type {Rule[]} */
   const augmentedRules = [
@@ -59,17 +56,10 @@ export function parser(grammar) {
   ];
 
   // todo: minimize this dfa
-  const dfa = createDFA(augmentedTokens, augmentedRules);
+  const dfa = createDFA(tokens, EOF, augmentedRules);
 
-  const actions = createActionTable(dfa);
+  const actions = createActionTable(dfa, EOF);
   const goto = createGotoTable(dfa, augmentedRules);
-
-  const lexerCode = lexer(grammar, {
-    codegen: {
-      module: "function",
-    },
-  });
-  const { next: nextToken } = new Function(lexerCode)();
 
   return (input) => {
     const stream = Uint8Array.from(Buffer.from(input));
@@ -98,7 +88,7 @@ ${printState(currentState)}`);
       const action = actionSet.get(lookahead);
       if (!action) {
         throw new Error(
-          `Unknown lookahead(${lookahead}) for state:
+          `Unknown lookahead(${String(lookahead)}) for state:
 ${printState(currentState)}`
         );
       }
@@ -112,10 +102,8 @@ ${printState(currentState)}`
             tree: { name: lookahead, start, end },
           };
 
-          // todo: make lexer typesafe
           result = nextToken(stream, offset);
-          // todo: move EOF into lexer
-          lookahead = result.state ?? EOF.name;
+          lookahead = result.state;
           start = result.start;
           offset = end = result.end;
 
@@ -125,11 +113,11 @@ ${printState(currentState)}`
         case "reduce":
           const item = Array.from(currentState.values()).find(
             (item) =>
-              item.name === action.symbol && item.lookahead[0] === lookahead
+              item.name === action.symbol && item.lookahead === lookahead
           );
           if (!item) {
             throw new Error(
-              `No valid state ${action.symbol}(${lookahead}) found`
+              `No valid state ${action.symbol}(${String(lookahead)}) found`
             );
           }
           const items = stack.splice(0, item.tokens.length);
@@ -165,16 +153,17 @@ ${printState(stack[0].state)}`
 
 /**
  * @param {Token[]} tokens
+ * @param {symbol} EOF
  * @param {Rule[]} rules
  * @returns {DFA<ItemState, string>}
  */
-function createDFA(tokens, rules) {
+function createDFA(tokens, EOF, rules) {
   const {
     states,
     transitions,
     start,
     finals,
-  } = calculateStatesAndTransitionTable(tokens, rules);
+  } = calculateStatesAndTransitionTable(tokens, EOF, rules);
 
   /** @type {DFADescription<ItemState, string>} */
   const description = {
@@ -201,9 +190,9 @@ function printItem(item) {
   const head = [...(item.tokens ?? [])].slice(0, item.marker ?? 0);
   const tail = [...(item.tokens ?? [])].slice(item.marker ?? 0);
 
-  return `${item.name} -> ${[...head, "•", ...tail].join(
-    " "
-  )}, ${item.lookahead?.join(" ")}`;
+  return `${item.name} -> ${[...head, "•", ...tail].join(" ")}, ${String(
+    item.lookahead
+  )}`;
 }
 
 /**
@@ -218,26 +207,41 @@ function printState(state) {
 
 /**
  * @param {Token[]} tokens
+ * @param {symbol} EOF
  * @param {Rule[]} rules
  * @returns {Item[]}
  */
-function createItems(tokens, rules) {
-  return rules.flatMap((rule) => [
-    ...rule.symbols.flatMap((_, i) =>
-      tokens.map((token) => ({
+function createItems(tokens, EOF, rules) {
+  return [
+    ...rules.flatMap((rule) => [
+      ...rule.symbols.flatMap((_, i) => [
+        {
+          name: rule.name,
+          tokens: rule.symbols,
+          marker: i,
+          lookahead: EOF,
+        },
+        ...tokens.map((token) => ({
+          name: rule.name,
+          tokens: rule.symbols,
+          marker: i,
+          lookahead: token.name,
+        })),
+      ]),
+      {
         name: rule.name,
         tokens: rule.symbols,
-        marker: i,
-        lookahead: [token.name],
-      }))
-    ),
-    ...tokens.map((token) => ({
-      name: rule.name,
-      tokens: rule.symbols,
-      marker: rule.symbols.length,
-      lookahead: [token.name],
-    })),
-  ]);
+        marker: rule.symbols.length,
+        lookahead: EOF,
+      },
+      ...tokens.map((token) => ({
+        name: rule.name,
+        tokens: rule.symbols,
+        marker: rule.symbols.length,
+        lookahead: token.name,
+      })),
+    ]),
+  ];
 }
 
 /**
@@ -253,8 +257,7 @@ function getItem(needle, items) {
       item.marker === needle.marker &&
       item.tokens.length === needle.tokens?.length &&
       item.tokens.every((token) => needle.tokens?.includes(token)) &&
-      item.lookahead.length === needle.lookahead?.length &&
-      item.lookahead.every((la) => needle.lookahead?.includes(la))
+      item.lookahead === needle.lookahead
     );
   });
 
@@ -268,7 +271,7 @@ function getItem(needle, items) {
  * @param {Rule} rule
  * @param {Rule[]} rules
  * @param {Item[]} items
- * @param {Map<string, Set<Token>>} follows
+ * @param {Map<string, Set<Token | symbol>>} follows
  * @returns {Set<Item>}
  */
 function firstItemSet(rule, rules, items, follows) {
@@ -277,17 +280,17 @@ function firstItemSet(rule, rules, items, follows) {
       name: rule.name,
       tokens: rule.symbols,
       marker: 0,
-      lookahead: [],
+      lookahead: "dummy",
     },
     rules
   );
 
   /** @type {Item[]} */
   const itemSet = closure.flatMap((item) =>
-    Array.from(/** @type {Set<Token>} */ (follows.get(item.name))).map(
+    Array.from(/** @type {Set<Token | symbol>} */ (follows.get(item.name))).map(
       (token) => ({
         ...item,
-        lookahead: [token.name],
+        lookahead: typeof token === "symbol" ? token : token.name,
       })
     )
   );
@@ -299,7 +302,7 @@ function firstItemSet(rule, rules, items, follows) {
  * @param {Set<Item>} itemSet
  * @param {Rule[]} rules
  * @param {Item[]} items
- * @param {Map<string, Set<Token>>} follows
+ * @param {Map<string, Set<Token | symbol>>} follows
  * @returns {Map<String, Set<Item>>}
  */
 function nextItemSets(itemSet, rules, items, follows) {
@@ -336,12 +339,12 @@ function nextItemSets(itemSet, rules, items, follows) {
     Array.from(closedMap.entries()).map(([token, closure]) => [
       token,
       closure.flatMap((item) =>
-        Array.from(/** @type {Set<Token>} */ (follows.get(item.name))).map(
-          (token) => ({
-            ...item,
-            lookahead: [token.name],
-          })
-        )
+        Array.from(
+          /** @type {Set<Token | symbol>} */ (follows.get(item.name))
+        ).map((token) => ({
+          ...item,
+          lookahead: typeof token === "symbol" ? token : token.name,
+        }))
       ),
     ])
   );
@@ -399,9 +402,7 @@ function createItemClosure(item, rules) {
         name: rule.name,
         tokens: rule.symbols,
         marker: 0,
-        lookahead: [],
-        symbol: undefined,
-        itemSet: undefined,
+        lookahead: "dummy",
       }))
     );
   }
@@ -472,16 +473,17 @@ function calculateFirsts(tokens, rules) {
 /**
  * @param {Map<string, Set<Token>>} firsts
  * @param {Token[]} tokens
+ * @param {symbol} EOF
  * @param {Rule[]} rules
- * @returns {Map<string, Set<Token>>}
+ * @returns {Map<string, Set<Token | symbol>>}
  */
-function calculateFollows(firsts, tokens, rules) {
+function calculateFollows(firsts, tokens, EOF, rules) {
   // todo: handle epsilon (http://david.tribble.com/text/lrk_parsing.html)
 
   const rulesNames = new Set(rules.map((rule) => rule.name));
   const tokenCache = new Map(tokens.map((token) => [token.name, token]));
 
-  /** @type {Map<string, Set<Token>>} */
+  /** @type {Map<string, Set<Token | symbol>>} */
   const computed = new Map();
 
   const open = [...rulesNames];
@@ -492,7 +494,7 @@ function calculateFollows(firsts, tokens, rules) {
     }
 
     let incomplete = false;
-    /** @type {Set<Token>} */
+    /** @type {Set<Token | symbol>} */
     const follows = new Set();
 
     if (rules[0].name === ruleName) {
@@ -536,17 +538,18 @@ function calculateFollows(firsts, tokens, rules) {
 
 /**
  * @param {Token[]} tokens
+ * @param {symbol} EOF
  * @param {Rule[]} rules
  * @returns {{states: ItemState[], transitions: Map<ItemState, Map<string, ItemState>>, start: ItemState, finals: ItemState[]}}
  */
-function calculateStatesAndTransitionTable(tokens, rules) {
+function calculateStatesAndTransitionTable(tokens, EOF, rules) {
   /** @type {Map<ItemState, Map<string, ItemState>>} */
   const transitions = new Map();
 
-  const items = createItems(tokens, rules);
+  const items = createItems(tokens, EOF, rules);
 
   const firsts = calculateFirsts(tokens, rules);
-  const follows = calculateFollows(firsts, tokens, rules);
+  const follows = calculateFollows(firsts, tokens, EOF, rules);
 
   /** @type {ItemState[]} */
   const itemSets = [];
@@ -587,7 +590,7 @@ function calculateStatesAndTransitionTable(tokens, rules) {
       name: "S",
       tokens: rules[0].symbols,
       marker: 1,
-      lookahead: [EOF.name],
+      lookahead: EOF,
     },
     items
   );
@@ -627,10 +630,11 @@ function calculateStatesAndTransitionTable(tokens, rules) {
 
 /**
  * @param {DFA<ItemState, string>} dfa
- * @returns {Map<ItemState, Map<string, Actions>>}
+ * @param {symbol} EOF
+ * @returns {Map<ItemState, Map<string | symbol, Actions>>}
  */
-function createActionTable(dfa) {
-  /** @type {Map<ItemState, Map<string, Actions>>} */
+function createActionTable(dfa, EOF) {
+  /** @type {Map<ItemState, Map<string | symbol, Actions>>} */
   const actions = new Map();
 
   dfa.description.states.forEach((currentState) => {
@@ -647,13 +651,13 @@ function createActionTable(dfa) {
         );
       }
     });
-    dfa.description.symbols.forEach((symbol) => {
+    [...dfa.description.symbols, EOF].forEach((symbol) => {
       const ends = Array.from(currentState.values()).filter(
         (item) => item.marker >= item.tokens.length
       );
 
       ends.forEach((end) => {
-        if (end.lookahead[0] === symbol) {
+        if (end.lookahead === symbol) {
           actions.set(
             currentState,
             new Map([
@@ -666,7 +670,7 @@ function createActionTable(dfa) {
     });
   });
   dfa.description.finals.forEach((finalState) => {
-    actions.get(finalState)?.set(EOF.name, {
+    actions.get(finalState)?.set(EOF, {
       op: "done",
       state: undefined,
       symbol: undefined,
