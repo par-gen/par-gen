@@ -8,16 +8,10 @@
   "include": ["lib/"],
   "references": [
     {
-      "path": "../dfa"
-    },
-    {
-      "path": "../grammar"
-    },
-    {
       "path": "../lexer"
     },
     {
-      "path": "../nfa"
+      "path": "../parser"
     }
   ]
 }

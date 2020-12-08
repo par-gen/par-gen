@@ -1,52 +1,154 @@
-import { parser } from "./parser.js";
+import { generate } from "./parser.js";
 
-describe("parser", () => {
-  it("should construct a parser from a given grammar", async () => {
-    const parse = parser(`
-      POPEN := '\\(';
-      PCLOSE := '\\)';
-      NUMBER := '0|1|2|3|4|5|6|7|8|9';
-      PLUS := '+';
+/**
+ * @typedef {import('./parser').Actions} Actions
+ */
 
-      # S := Expr
-      Expr := Term;
-      Expr := POPEN Expr PCLOSE;
-      Term := NUMBER;
-      Term := PLUS Term;
-      Term := Term PLUS NUMBER;
+describe("generate", () => {
+  it("should return states, tables, ... to generate a parser", () => {
+    const data = generate(`
+      A := 'a';
+
+      Start := A;
     `);
 
-    const ast = parse("1+1");
-
-    expect(ast).toEqual({
-      name: "Expr",
-      items: [
-        {
-          name: "Term",
-          items: [
+    expect(data).toEqual({
+      actions: new Map([
+        [
+          new Set([
             {
-              name: "Term",
-              items: [
+              name: "S",
+              tokens: ["Start"],
+              marker: 0,
+              lookahead: "@expound.EOF",
+            },
+            {
+              name: "Start",
+              tokens: ["A"],
+              marker: 0,
+              lookahead: "@expound.EOF",
+            },
+          ]),
+          new Map([
+            [
+              "A",
+              /** @type {Actions} */ ({
+                op: "shift",
+                state: new Set([
+                  {
+                    name: "Start",
+                    tokens: ["A"],
+                    marker: 1,
+                    lookahead: "@expound.EOF",
+                  },
+                ]),
+                symbol: undefined,
+              }),
+            ],
+            [
+              "Start",
+              /** @type {Actions} */ ({
+                op: "shift",
+                state: new Set([
+                  {
+                    name: "S",
+                    tokens: ["Start"],
+                    marker: 1,
+                    lookahead: "@expound.EOF",
+                  },
+                ]),
+                symbol: undefined,
+              }),
+            ],
+          ]),
+        ],
+        [
+          new Set([
+            {
+              name: "S",
+              tokens: ["Start"],
+              marker: 1,
+              lookahead: "@expound.EOF",
+            },
+          ]),
+          new Map([
+            [
+              "@expound.EOF",
+              /** @type {Actions} */ ({
+                op: "done",
+                state: undefined,
+                symbol: undefined,
+              }),
+            ],
+          ]),
+        ],
+        [
+          new Set([
+            {
+              name: "Start",
+              tokens: ["A"],
+              marker: 1,
+              lookahead: "@expound.EOF",
+            },
+          ]),
+          new Map([
+            [
+              "@expound.EOF",
+              /** @type {Actions} */ ({
+                op: "reduce",
+                state: undefined,
+                symbol: "Start",
+              }),
+            ],
+          ]),
+        ],
+      ]),
+      goto: new Map([
+        [
+          new Set([
+            {
+              name: "S",
+              tokens: ["Start"],
+              marker: 0,
+              lookahead: "@expound.EOF",
+            },
+            {
+              name: "Start",
+              tokens: ["A"],
+              marker: 0,
+              lookahead: "@expound.EOF",
+            },
+          ]),
+          new Map([
+            [
+              "Start",
+              new Set([
                 {
-                  name: "NUMBER",
-                  start: 0,
-                  end: 1,
+                  name: "S",
+                  tokens: ["Start"],
+                  marker: 1,
+                  lookahead: "@expound.EOF",
                 },
-              ],
-            },
-            {
-              name: "PLUS",
-              start: 1,
-              end: 2,
-            },
-            {
-              name: "NUMBER",
-              start: 2,
-              end: 3,
-            },
-          ],
+              ]),
+            ],
+          ]),
+        ],
+      ]),
+      start: new Set([
+        {
+          name: "S",
+          tokens: ["Start"],
+          marker: 0,
+          lookahead: "@expound.EOF",
         },
-      ],
+        {
+          name: "Start",
+          tokens: ["A"],
+          marker: 0,
+          lookahead: "@expound.EOF",
+        },
+      ]),
+      lexerData: expect.any(Object),
     });
   });
 });

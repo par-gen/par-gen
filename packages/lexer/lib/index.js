@@ -1,1 +1,1 @@
-export { lexer, EOF, ERROR } from "./lexer.js";
+export { generate, EOF, ERROR } from "./lexer.js";

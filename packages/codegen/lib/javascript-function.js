@@ -1,0 +1,230 @@
+/**
+ * @typedef {import('@knisterpeter/expound-lexer/types/lexer').LexerData} LexerData
+ */
+
+/**
+ * @typedef {import('@knisterpeter/expound-parser/types/parser').Item} Item
+ */
+
+/**
+ * @typedef {import('@knisterpeter/expound-parser/types/parser').ItemState} ItemState
+ */
+
+/**
+ * @typedef {import('@knisterpeter/expound-parser/types/parser').ParserData} ParserData
+ */
+
+/**
+ * @typedef {import('@knisterpeter/expound-parser/types/parser').AST} AST
+ */
+
+/**
+ * @typedef {import('./type').Codegen} Codegen
+ */
+
+/**
+ * @extends {Codegen}
+ */
+export class JavaScriptFunctionCodegen {
+  /**
+   * @public
+   * @param {LexerData} data
+   * @return {Promise<{ EOF: string, next(input: Uint8Array, offset: number): { state: string; start: number; end: number; }; }>}
+   */
+  async lexer(data) {
+    const {
+      tokens: { EOF, ERROR },
+      stateNames,
+      errorState,
+      transitions,
+      start,
+      finals,
+    } = data;
+
+    const columns = 256;
+
+    const states = stateNames;
+
+    const table = new Uint16Array(columns * stateNames.length);
+    table.fill(errorState);
+    transitions.forEach(([from, transition]) => {
+      transition.forEach(([symbol, to]) => {
+        table[from + symbol] = to;
+      });
+    });
+
+    const visited = new Uint16Array(1024);
+
+    /**
+     * @param {Uint8Array} input
+     * @param {number} offset
+     */
+    const next = (input, offset) => {
+      let state = start;
+      visited[0] = start;
+
+      // try to find match
+      let i = offset;
+      let j = 0;
+      let l = input.length;
+      while (i < l) {
+        state = table[state + input[i]];
+        i++;
+        j++;
+        visited[j] = state;
+      }
+
+      // track back to last matched final state
+      let success = false;
+      let n = j;
+      while (!success && n > 0) {
+        success = success || finals.includes(visited[n]);
+        n--;
+      }
+      n = n + 1;
+
+      if (success) {
+        return {
+          state: states[visited[n] / columns],
+          start: offset,
+          end: offset + n,
+        };
+      }
+      return {
+        state: i === input.length ? EOF : ERROR,
+        start: -1,
+        end: -1,
+      };
+    };
+
+    return { EOF, next };
+  }
+
+  /**
+   * @public
+   * @param {ParserData} data
+   * @returns {Promise<{parse(input: string): AST}>}
+   */
+  async parser(data) {
+    const { actions, goto, start: startState, lexerData } = data;
+
+    const { next: nextToken } = await this.lexer(lexerData);
+
+    /**
+     * @param {string} input
+     */
+    const parse = (input) => {
+      const stream = Uint8Array.from(Buffer.from(input));
+      let offset = 0;
+
+      let result = nextToken(stream, offset);
+      let { state: lookahead, start, end } = result;
+      offset = end;
+
+      /** @type {{state: ItemState, tree: *}[]} */
+      const stack = [
+        {
+          state: startState,
+          tree: undefined,
+        },
+      ];
+
+      while (true) {
+        const currentState = stack[0].state;
+
+        const actionSet = actions.get(currentState);
+        if (!actionSet) {
+          throw new Error(`Invalid state
+${printState(currentState)}`);
+        }
+        const action = actionSet.get(lookahead);
+        if (!action) {
+          throw new Error(
+            `Unknown lookahead(${lookahead}) for state:
+${printState(currentState)}`
+          );
+        }
+
+        switch (action.op) {
+          case "done":
+            return stack[0].tree;
+          case "shift":
+            const stackItem = {
+              state: action.state,
+              tree: { name: lookahead, start, end },
+            };
+
+            result = nextToken(stream, offset);
+            lookahead = result.state;
+            start = result.start;
+            offset = end = result.end;
+
+            stack.unshift(stackItem);
+
+            break;
+          case "reduce":
+            const item = Array.from(currentState.values()).find(
+              (item) =>
+                item.name === action.symbol && item.lookahead === lookahead
+            );
+            if (!item) {
+              throw new Error(
+                `No valid state ${action.symbol}(${lookahead}) found`
+              );
+            }
+            const items = stack.splice(0, item.tokens.length);
+
+            const tree = {
+              name: action.symbol,
+              // the stack grown from 0 to n -> we need to reverse the
+              // parse tree
+              items: items.map((r) => r.tree).reverse(),
+            };
+
+            // note: do note use `currentState` here, since we did
+            // changed the stack a few lines before
+            const nextState = goto.get(stack[0].state)?.get(action.symbol);
+            if (!nextState) {
+              throw new Error(
+                `Unable to lookup goto state (${action.symbol}) for
+${printState(stack[0].state)}`
+              );
+            }
+            stack.unshift({
+              state: nextState,
+              tree,
+            });
+
+            break;
+          default:
+            throw new Error("Parser Error");
+        }
+      }
+    };
+
+    return { parse };
+  }
+}
+
+/**
+ * @param {ItemState} state
+ * @returns {string}
+ */
+function printState(state) {
+  return Array.from(state.values())
+    .map((item) => printItem(item))
+    .join("\n");
+}
+
+/**
+ * @param {Partial<Item>} item
+ * @returns {string}
+ */
+function printItem(item) {
+  const head = [...(item.tokens ?? [])].slice(0, item.marker ?? 0);
+  const tail = [...(item.tokens ?? [])].slice(item.marker ?? 0);
+
+  return `${item.name} -> ${[...head, "•", ...tail].join(" ")}, ${
+    item.lookahead
+  }`;
+}
