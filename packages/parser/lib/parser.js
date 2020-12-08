@@ -1,6 +1,6 @@
 import { DFA } from "@knisterpeter/expound-dfa";
 import { parse } from "@knisterpeter/expound-grammar";
-import { lexer } from "@knisterpeter/expound-lexer";
+import { generate as generateLexer } from "@knisterpeter/expound-lexer";
 
 /**
  * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
@@ -8,6 +8,10 @@ import { lexer } from "@knisterpeter/expound-lexer";
 
 /**
  * @typedef {import('@knisterpeter/expound-grammar/types/parser').Rule} Rule
+ */
+
+/**
+ * @typedef {import('@knisterpeter/expound-lexer/types/lexer').LexerData} LexerData
  */
 
 /**
@@ -28,23 +32,28 @@ import { lexer } from "@knisterpeter/expound-lexer";
  */
 
 /**
+ * @typedef {Object} ParserData
+ * @property {Map<Set<Item>, Map<string, Shift | Reduce | Done>>} actions
+ * @property {Map<Set<Item>, Map<string, Set<Item>>>} goto
+ * @property {ItemState} start
+ * @property {LexerData} lexerData
+ */
+
+/**
  * @typedef {Object} AST
  */
 
 /**
  * @param {string} grammar
- * @returns {(input: string) => AST}
+ * @returns {ParserData}
  */
-export function parser(grammar) {
+export function generate(grammar) {
   const { tokens, rules } = parse(grammar);
 
-  const lexerCode = lexer(grammar, {
-    codegen: {
-      module: "function",
-    },
-  });
-  /** @type {{EOF: string, next(input: Uint8Array, offset: number): { state: string, start: number, end: number }}} */
-  const { EOF, next: nextToken } = new Function(lexerCode)();
+  const lexerData = generateLexer(grammar);
+  const {
+    tokens: { EOF },
+  } = lexerData;
 
   /** @type {Rule[]} */
   const augmentedRules = [
@@ -61,93 +70,13 @@ export function parser(grammar) {
   const actions = createActionTable(dfa, EOF);
   const goto = createGotoTable(dfa, augmentedRules);
 
-  return (input) => {
-    const stream = Uint8Array.from(Buffer.from(input));
-    let offset = 0;
+  const start = dfa.description.start;
 
-    let result = nextToken(stream, offset);
-    let { state: lookahead, start, end } = result;
-    offset = end;
-
-    /** @type {{state: ItemState, tree: *}[]} */
-    const stack = [
-      {
-        state: dfa.description.start,
-        tree: undefined,
-      },
-    ];
-
-    while (true) {
-      const currentState = stack[0].state;
-
-      const actionSet = actions.get(currentState);
-      if (!actionSet) {
-        throw new Error(`Invalid state
-${printState(currentState)}`);
-      }
-      const action = actionSet.get(lookahead);
-      if (!action) {
-        throw new Error(
-          `Unknown lookahead(${lookahead}) for state:
-${printState(currentState)}`
-        );
-      }
-
-      switch (action.op) {
-        case "done":
-          return stack[0].tree;
-        case "shift":
-          const stackItem = {
-            state: action.state,
-            tree: { name: lookahead, start, end },
-          };
-
-          result = nextToken(stream, offset);
-          lookahead = result.state;
-          start = result.start;
-          offset = end = result.end;
-
-          stack.unshift(stackItem);
-
-          break;
-        case "reduce":
-          const item = Array.from(currentState.values()).find(
-            (item) =>
-              item.name === action.symbol && item.lookahead === lookahead
-          );
-          if (!item) {
-            throw new Error(
-              `No valid state ${action.symbol}(${lookahead}) found`
-            );
-          }
-          const items = stack.splice(0, item.tokens.length);
-
-          const tree = {
-            name: action.symbol,
-            // the stack grown from 0 to n -> we need to reverse the
-            // parse tree
-            items: items.map((r) => r.tree).reverse(),
-          };
-
-          // note: do note use `currentState` here, since we did
-          // changed the stack a few lines before
-          const nextState = goto.get(stack[0].state)?.get(action.symbol);
-          if (!nextState) {
-            throw new Error(
-              `Unable to lookup goto state (${action.symbol}) for
-${printState(stack[0].state)}`
-            );
-          }
-          stack.unshift({
-            state: nextState,
-            tree,
-          });
-
-          break;
-        default:
-          throw new Error("Parser Error");
-      }
-    }
+  return {
+    actions,
+    goto,
+    start: start,
+    lexerData,
   };
 }
 
@@ -193,16 +122,6 @@ function printItem(item) {
   return `${item.name} -> ${[...head, "•", ...tail].join(" ")}, ${
     item.lookahead
   }`;
-}
-
-/**
- * @param {ItemState} state
- * @returns {string}
- */
-function printState(state) {
-  return Array.from(state.values())
-    .map((item) => printItem(item))
-    .join("\n");
 }
 
 /**

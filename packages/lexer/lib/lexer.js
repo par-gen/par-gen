@@ -143,13 +143,22 @@ function createAutomata(grammar) {
 }
 
 /**
- * @param {string} grammar
- * @param {Object} options
- * @param {Object} options.codegen
- * @param {'esm' | 'commonjs' | 'function'} options.codegen.module
- * @returns {string}
+ * @typedef {Object} LexerData
+ * @property {Object} tokens
+ * @property {string} tokens.EOF
+ * @property {string} tokens.ERROR
+ * @property {string[]} stateNames
+ * @property {number} errorState
+ * @property {[number, [number, number][]][]} transitions
+ * @property {number} start
+ * @property {number[]} finals
  */
-export function lexer(grammar, options) {
+
+/**
+ * @param {string} grammar
+ * @returns {LexerData}
+ */
+export function generate(grammar) {
   const dfa = createAutomata(grammar);
 
   const d = dfa.description;
@@ -172,91 +181,23 @@ export function lexer(grammar, options) {
       ])
   );
 
-  const errorState = transitions
-    .filter(([from, transition]) => transition.every(([, to]) => from === to))
-    .map(([state]) => state)
-    .find((state) => !finals.includes(state));
+  const errorState =
+    transitions
+      .filter(([from, transition]) => transition.every(([, to]) => from === to))
+      .map(([state]) => state)
+      .find((state) => !finals.includes(state)) ?? -1;
 
-  /**
-   * @param {typeof options['codegen']['module']} module
-   * @param {() => string} callback
-   */
-  const gen = (module, callback) => {
-    if (options.codegen.module === module) {
-      return callback();
-    }
-    return "";
+  const stateNames = d.states.map((state) => state.names[0]);
+
+  return {
+    tokens: {
+      EOF,
+      ERROR,
+    },
+    stateNames,
+    errorState,
+    transitions,
+    start,
+    finals,
   };
-
-  const code = `${gen("commonjs", () => `'use strict';`)}
-
-    const EOF = "${EOF}";
-    const ERROR = "${ERROR}";
-
-    const states = ${JSON.stringify(d.states.map((state) => state.names[0]))};
-
-    const table = new Uint16Array(${columns * d.states.length});
-    table.fill(${errorState ?? -1});
-    ${transitions
-      .flatMap(([from, transition]) =>
-        transition.map(
-          ([symbol, to]) =>
-            `table[${from + symbol}] = ${to}; // ${from / columns} -> ${
-              to / columns
-            }`
-        )
-      )
-      .join("\n")}
-
-    const finals = ${JSON.stringify(finals)};
-
-    const visited = new Uint16Array(1024);
-
-    const next = (input, offset) => {
-      // ${start / columns}
-      let state = ${start};
-      visited[0] = ${start};
-
-      // try to find match
-      let i = offset;
-      let j = 0;
-      let l = input.length;
-      while (i < l) {
-        state = table[state + input[i]];
-        i++;
-        j++;
-        visited[j] = state;
-      }
-
-      // track back to last matched final state
-      let success = false;
-      let n = j;
-      while (!success && n > 0) {
-        success = success || ${finals
-          .map((final) => `${final} === visited[n]`)
-          .join(" || ")};
-        n--;
-      }
-      n = n + 1;
-
-      if (success) {
-        return {
-          state: states[visited[n] / ${columns}],
-          start: offset,
-          end: offset + n,
-        };
-      }
-      return {
-        state: i === input.length ? EOF : ERROR,
-        start: -1,
-        end: -1,
-      };
-    };
-
-    ${gen("esm", () => `export { EOF, next };`)}
-    ${gen("commonjs", () => `module.exports = { EOF, next };`)}
-    ${gen("function", () => `return { EOF, next };`)}
-  `;
-
-  return code;
 }

@@ -25,6 +25,9 @@
   "include": [],
   "references": [
     {
+      "path": "packages/codegen"
+    },
+    {
       "path": "packages/dfa"
     },
     {
