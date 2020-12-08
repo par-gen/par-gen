@@ -25,6 +25,9 @@ import {
  * @typedef {DFA<{ n: number; names: string[]; }, string>} StringDFA
  */
 
+export const EOF = "@expound.EOF";
+export const ERROR = "@expound.ERROR";
+
 /**
  * @template T
  * @param {T | undefined} value
@@ -187,6 +190,9 @@ export function lexer(grammar, options) {
 
   const code = `${gen("commonjs", () => `'use strict';`)}
 
+    const EOF = "${EOF}";
+    const ERROR = "${ERROR}";
+
     const states = ${JSON.stringify(d.states.map((state) => state.names[0]))};
 
     const table = new Uint16Array(${columns * d.states.length});
@@ -205,7 +211,6 @@ export function lexer(grammar, options) {
     const finals = ${JSON.stringify(finals)};
 
     const visited = new Uint16Array(1024);
-    const EOF = Symbol("lexer.eof");
 
     const next = (input, offset) => {
       // ${start / columns}
@@ -242,7 +247,7 @@ export function lexer(grammar, options) {
         };
       }
       return {
-        state: EOF,
+        state: i === input.length ? EOF : ERROR,
         start: -1,
         end: -1,
       };
