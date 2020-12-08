@@ -2,9 +2,8 @@
  * @typedef {import('@knisterpeter/expound-lexer/types/lexer').LexerData} LexerData
  */
 
-// todo: ...
 /**
- * @typedef {Object} ParserData
+ * @typedef {import('@knisterpeter/expound-parser/types/parser').ParserData} ParserData
  */
 
 /**
