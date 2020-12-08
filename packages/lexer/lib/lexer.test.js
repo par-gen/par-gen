@@ -13,7 +13,7 @@ describe("lexer", () => {
     `;
       const code = lexer(grammar, { codegen: { module: "function" } });
       /**
-       * @type {{EOF: symbol, next(input: Uint8Array, offset: number): {state: string | symbol, start: number, end: number}}}
+       * @type {{EOF: string, next(input: Uint8Array, offset: number): {state: string, start: number, end: number}}}
        */
       const { EOF, next } = Function(code)();
 
