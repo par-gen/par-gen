@@ -13,6 +13,38 @@ describe("generate", () => {
     `);
 
     expect(data).toEqual({
+      states: [
+        new Set([
+          {
+            name: "S",
+            tokens: ["Start"],
+            marker: 0,
+            lookahead: "@expound.EOF",
+          },
+          {
+            name: "Start",
+            tokens: ["A"],
+            marker: 0,
+            lookahead: "@expound.EOF",
+          },
+        ]),
+        new Set([
+          {
+            name: "Start",
+            tokens: ["A"],
+            marker: 1,
+            lookahead: "@expound.EOF",
+          },
+        ]),
+        new Set([
+          {
+            name: "S",
+            tokens: ["Start"],
+            marker: 1,
+            lookahead: "@expound.EOF",
+          },
+        ]),
+      ],
       actions: new Map([
         [
           new Set([

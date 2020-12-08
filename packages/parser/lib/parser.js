@@ -33,6 +33,7 @@ import { generate as generateLexer } from "@knisterpeter/expound-lexer";
 
 /**
  * @typedef {Object} ParserData
+ * @property {Set<Item>[]} states
  * @property {Map<Set<Item>, Map<string, Shift | Reduce | Done>>} actions
  * @property {Map<Set<Item>, Map<string, Set<Item>>>} goto
  * @property {ItemState} start
@@ -70,9 +71,27 @@ export function generate(grammar) {
   const actions = createActionTable(dfa, EOF);
   const goto = createGotoTable(dfa, augmentedRules);
 
+  /** @type {Set<ItemState>} */
+  const states = new Set();
+  for (const [from, action] of actions.entries()) {
+    states.add(from);
+    for (const [, to] of action.entries()) {
+      if (to.op === "shift") {
+        states.add(to.state);
+      }
+    }
+  }
+  for (const [from, target] of goto.entries()) {
+    states.add(from);
+    for (const [, to] of target) {
+      states.add(to);
+    }
+  }
+
   const start = dfa.description.start;
 
   return {
+    states: Array.from(states),
     actions,
     goto,
     start: start,

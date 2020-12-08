@@ -20,9 +20,11 @@ importers:
     dependencies:
       '@knisterpeter/expound-lexer': 'link:../lexer'
       '@knisterpeter/expound-parser': 'link:../parser'
+      prettier: 2.2.1
     specifiers:
       '@knisterpeter/expound-lexer': 'workspace:0.1.0'
       '@knisterpeter/expound-parser': 'workspace:0.1.0'
+      prettier: 2.2.1
   packages/dfa:
     dependencies:
       '@knisterpeter/expound-nfa': 'link:../nfa'
@@ -3245,7 +3247,6 @@ packages:
     resolution:
       integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
   /prettier/2.2.1:
-    dev: true
     engines:
       node: '>=10.13.0'
     hasBin: true

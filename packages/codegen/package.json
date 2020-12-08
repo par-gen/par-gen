@@ -6,7 +6,8 @@
   "types": "./types/index.d.ts",
   "dependencies": {
     "@knisterpeter/expound-lexer": "workspace:0.1.0",
-    "@knisterpeter/expound-parser": "workspace:0.1.0"
+    "@knisterpeter/expound-parser": "workspace:0.1.0",
+    "prettier": "2.2.1"
   },
   "jest": {
     "displayName": "codegen",
