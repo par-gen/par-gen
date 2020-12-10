@@ -25,6 +25,9 @@
   "include": [],
   "references": [
     {
+      "path": "packages/cli"
+    },
+    {
       "path": "packages/codegen"
     },
     {

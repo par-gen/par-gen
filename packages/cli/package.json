@@ -1,0 +1,23 @@
+{
+  "name": "@knisterpeter/expound-cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "expound": "./lib/index.js"
+  },
+  "dependencies": {
+    "@knisterpeter/expound-codegen": "workspace:0.1.0",
+    "sade": "1.7.4"
+  },
+  "jest": {
+    "displayName": "cli",
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/types/"
+    ]
+  },
+  "devDependencies": {
+    "@types/sade": "1.7.2"
+  }
+}
