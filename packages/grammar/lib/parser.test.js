@@ -70,4 +70,20 @@ describe("parse", () => {
       })
     );
   });
+
+  it("should prefer tokens over rules if ambiguous", () => {
+    const result = parse(`
+      A_B := ' ';
+    `);
+
+    expect(result).toEqual({
+      tokens: [
+        {
+          name: "A_B",
+          expr: " ",
+        },
+      ],
+      rules: [],
+    });
+  });
 });

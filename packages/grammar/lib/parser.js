@@ -31,7 +31,7 @@ export function parse(grammar) {
     .filter(nonFalsyValues);
 
   const tokens = lines
-    .map((line) => line.match(/(?<token>[A-Z]+)\s*:=\s*'(?<expr>[^;]+)'\s*;/))
+    .map((line) => line.match(/(?<token>[A-Z_]+)\s*:=\s*'(?<expr>[^;]+)'\s*;/))
     .filter(nonFalsyValues)
     .map(
       (match) =>
@@ -40,6 +40,7 @@ export function parse(grammar) {
           expr: match.groups?.expr,
         })
     );
+  const tokenNames = tokens.map((token) => token.name);
 
   const rules = lines
     .map((line) =>
@@ -54,7 +55,8 @@ export function parse(grammar) {
           name: match.groups?.rule?.trim(),
           symbols: match.groups?.expr?.trim().split(/\s+/),
         })
-    );
+    )
+    .filter((rule) => !tokenNames.includes(rule.name));
 
   return {
     tokens,
