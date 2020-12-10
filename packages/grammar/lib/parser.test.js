@@ -86,4 +86,8 @@ describe("parse", () => {
       rules: [],
     });
   });
+
+  it("should throw if rule contains unknown symbols", () => {
+    expect(() => parse("Rule := TOKEN;")).toThrow(/Unknown symbol 'TOKEN'/);
+  });
 });

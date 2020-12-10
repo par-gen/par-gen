@@ -57,6 +57,17 @@ export function parse(grammar) {
         })
     )
     .filter((rule) => !tokenNames.includes(rule.name));
+  const ruleNames = rules.map((rule) => rule.name);
+
+  const knownSymbols = [...tokenNames, ...ruleNames];
+
+  rules.forEach((rule) => {
+    rule.symbols.forEach((symbol) => {
+      if (!knownSymbols.includes(symbol)) {
+        throw new Error(`Unknown symbol '${symbol}'`);
+      }
+    });
+  });
 
   return {
     tokens,
