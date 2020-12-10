@@ -1,0 +1,11 @@
+{
+  "name": "@knisterpeter/expound-json",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "expound codegen json.expound ./generated"
+  },
+  "dependencies": {
+    "@knisterpeter/expound-cli": "workspace:0.1.0"
+  }
+}

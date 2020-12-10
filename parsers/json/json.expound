@@ -1,0 +1,77 @@
+# todo: could be nothing, space, LF, CR or TAB
+WS := ' ';
+TRUE := 'true';
+FALSE := 'false';
+NULL := 'null';
+CURLY_OPEN := '{';
+CURLY_CLOSE := '}';
+COMMA := ',';
+COLON := ':';
+# todo: should be everything excluding '"' or '\'
+CHAR := 'a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z';
+QUOTE := '"';
+BRACKET_OPEN := '[';
+BRACKET_CLOSE := ']';
+ZERO := '0';
+ONE_NINE := '1|2|3|4|5|6|7|8|9';
+DOT := '\.';
+UPPER_E := 'E';
+LOWER_E := 'e';
+PLUS := '+';
+MINUS := '-';
+
+Json := Element;
+
+Element := WS Value WS;
+
+Value := Object;
+Value := Array;
+Value := String;
+Value := Number;
+Value := TRUE;
+Value := FALSE;
+Value := NULL;
+
+Object := CURLY_OPEN WS CURLY_CLOSE;
+Object := CURLY_OPEN Members CURLY_CLOSE;
+
+Members := Member;
+Members := Members COMMA Member;
+
+Member := WS String WS COLON Element;
+
+String := QUOTE Characters QUOTE;
+
+# todo: correctly define unicode codepoints
+Characters := Characters Character;
+Characters := Character;
+Character := CHAR;
+
+Array := BRACKET_OPEN WS BRACKET_CLOSE;
+Array := BRACKET_OPEN Elements BRACKET_CLOSE;
+
+Elements := Element;
+Elements := Elements COMMA Element;
+
+Number := Integer Fraction Exponent;
+
+Integer := ZERO;
+Integer := ONE_NINE Digits;
+Integer := MINUS ZERO;
+Integer := MINUS ONE_NINE Digits;
+
+Digits := Digits Digit;
+Digits := Digit;
+
+Digit := ZERO;
+Digit := ONE_NINE;
+
+Fraction := DOT Digits;
+
+Exponent := UPPER_E Digits;
+Exponent := UPPER_E Sign Digits;
+Exponent := LOWER_E Digits;
+Exponent := LOWER_E Sign Digits;
+
+Sign := PLUS;
+Sign := MINUS;

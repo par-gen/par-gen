@@ -92,6 +92,11 @@ importers:
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
       '@types/debug': 4.1.5
       debug: ^4.3.1
+  parsers/json:
+    dependencies:
+      '@knisterpeter/expound-cli': 'link:../../packages/cli'
+    specifiers:
+      '@knisterpeter/expound-cli': 'workspace:0.1.0'
 lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.12.11:
