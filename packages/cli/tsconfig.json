@@ -9,6 +9,9 @@
   "references": [
     {
       "path": "../codegen"
+    },
+    {
+      "path": "../parser"
     }
   ]
 }
