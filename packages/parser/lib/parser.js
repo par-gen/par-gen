@@ -448,7 +448,7 @@ function calculateFollows(firsts, tokens, EOF, rules) {
       const next = current + 1;
       if (next < rule.symbols.length) {
         const symbol = rule.symbols[next];
-        const isNonTerminal = ruleName.includes(symbol);
+        const isNonTerminal = rulesNames.has(symbol);
         if (isNonTerminal) {
           firsts.get(symbol)?.forEach((name) => {
             follows.add(name);
