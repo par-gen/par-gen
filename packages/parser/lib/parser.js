@@ -454,7 +454,11 @@ function calculateFollows(firsts, tokens, EOF, rules) {
             follows.add(name);
           });
         } else {
-          follows.add(/** @type {Token} */ (tokenCache.get(symbol)));
+          const token = tokenCache.get(symbol);
+          if (!token) {
+            throw new Error(`Illegal state: No token for '${symbol}'`);
+          }
+          follows.add(token);
         }
       } else if (rule.name !== ruleName) {
         if (computed.has(rule.name)) {
