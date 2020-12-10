@@ -116,6 +116,7 @@ export class JavaScriptModuleCodegen {
       filepath: this.options.lexerFile,
     });
 
+    await fsp.mkdir(dirname(this.options.lexerFile), { recursive: true });
     await fsp.writeFile(this.options.lexerFile, formattedCode);
   }
 
@@ -303,6 +304,7 @@ export class JavaScriptModuleCodegen {
       filepath: this.options.parserFile,
     });
 
+    await fsp.mkdir(dirname(this.options.parserFile), { recursive: true });
     await fsp.writeFile(this.options.parserFile, formattedCode);
   }
 }
