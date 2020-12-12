@@ -243,12 +243,11 @@ export class JavaScriptCommonJsCodegen {
         offset = end;
         let lookaheadIndex = terminals.indexOf(lookahead);
 
-        const stack = [
-          {
-            state: states.indexOf(startState),
-            tree: undefined,
-          },
-        ];
+        const stack = new Array(10);
+        stack[0] = {
+          state: states.indexOf(startState),
+          tree: undefined,
+        };
         let sp = 0;
 
         while (true) {
@@ -291,7 +290,7 @@ export class JavaScriptCommonJsCodegen {
                 );
               }
 
-              const items = [];
+              const items = new Array(item.tokens.length);
               for (let i = 0; i < item.tokens.length; i++) {
                 items[i] = stack[i + sp + 1 - item.tokens.length].tree;
               }

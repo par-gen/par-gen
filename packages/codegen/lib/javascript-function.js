@@ -149,12 +149,11 @@ export class JavaScriptFunctionCodegen {
       offset = end;
 
       /** @type {{state: ItemState, tree: *}[]} */
-      const stack = [
-        {
-          state: startState,
-          tree: undefined,
-        },
-      ];
+      const stack = new Array(10);
+      stack[0] = {
+        state: startState,
+        tree: undefined,
+      };
       let sp = 0;
 
       while (true) {
@@ -207,7 +206,7 @@ ${printState(currentState)}`
               );
             }
 
-            const items = [];
+            const items = new Array(item.tokens.length);
             for (let i = 0; i < item.tokens.length; i++) {
               items[i] = stack[i + sp + 1 - item.tokens.length].tree;
             }
