@@ -55,6 +55,39 @@ export class JavaScriptFunctionCodegen {
 
     const visited = new Uint16Array(1024);
 
+    const finalStateLoop = (() => {
+      let isOptimizable = finals.every((final) => final % 256 === 0);
+
+      for (let i = 1; i < finals.length && isOptimizable; i++) {
+        isOptimizable = finals[i] / columns - finals[i - 1] / columns === 1;
+      }
+
+      /**
+       * @type {(success: boolean, n: number) => [boolean, number]}
+       */
+      let fn = (success, n) => {
+        while (!success && n > 0) {
+          success = success || finals.includes(visited[n]);
+          n--;
+        }
+        return [success, n + 1];
+      };
+
+      if (isOptimizable) {
+        fn = (success, n) => {
+          while (!success && n > 0) {
+            success =
+              visited[n] <= finals[finals.length - 1] &&
+              visited[n] % columns === 0;
+            n--;
+          }
+          return [success, n + 1];
+        };
+      }
+
+      return fn;
+    })();
+
     /**
      * @param {Uint8Array} input
      * @param {number} offset
@@ -75,13 +108,7 @@ export class JavaScriptFunctionCodegen {
       }
 
       // track back to last matched final state
-      let success = false;
-      let n = j;
-      while (!success && n > 0) {
-        success = success || finals.includes(visited[n]);
-        n--;
-      }
-      n = n + 1;
+      const [success, n] = finalStateLoop(false, j);
 
       if (success) {
         return {
