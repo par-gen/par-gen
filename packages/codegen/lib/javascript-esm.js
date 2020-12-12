@@ -242,9 +242,10 @@ export class JavaScriptModuleCodegen {
             tree: undefined,
           },
         ];
+        let sp = 0;
 
         while (true) {
-          const currentState = stack[0].state;
+          const currentState = stack[sp].state;
 
           const actionSet = actions.get(currentState);
           if (!actionSet) {
@@ -259,7 +260,7 @@ export class JavaScriptModuleCodegen {
 
           switch (action.op) {
             case "done":
-              return stack[0].tree;
+              return stack[sp].tree;
             case "shift":
               const stackItem = {
                 state: action.state,
@@ -271,7 +272,7 @@ export class JavaScriptModuleCodegen {
               start = result.start;
               offset = end = result.end;
 
-              stack.unshift(stackItem);
+              stack[++sp] = stackItem;
 
               break;
             case "reduce":
@@ -284,25 +285,28 @@ export class JavaScriptModuleCodegen {
                   \`No valid state \${action.symbol}(\${lookahead}) found\`
                 );
               }
-              const items = stack.splice(0, item.tokens.length);
+
+              const items = [];
+              for (let i = 0; i < item.tokens.length; i++) {
+                items[i] = stack[i + sp + 1 - item.tokens.length].tree;
+              }
+              sp -= item.tokens.length;
 
               const tree = {
                 name: action.symbol,
-                // the stack grown from 0 to n -> we need to reverse the
-                // parse tree
-                items: items.map((r) => r.tree).reverse(),
+                items,
               };
 
-              const nextState = goto.get(stack[0].state)?.get(action.symbol);
+              const nextState = goto.get(stack[sp].state)?.get(action.symbol);
               if (!nextState) {
                 throw new Error(
-                  \`Unable to lookup goto state (\${action.symbol}) for\\n\${printState(stack[0].state)}\`
+                  \`Unable to lookup goto state (\${action.symbol}) for\\n\${printState(stack[sp].state)}\`
                 );
               }
-              stack.unshift({
+              stack[++sp] = {
                 state: nextState,
                 tree,
-              });
+              };
 
               break;
             default:
