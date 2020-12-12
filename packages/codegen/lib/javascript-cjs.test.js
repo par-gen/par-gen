@@ -136,11 +136,14 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     expect(results).toEqual({
       name: "Rule",
+      start: -1,
+      end: -1,
       items: [
         {
           name: "A",
           start: 0,
           end: 3,
+          items: undefined,
         },
       ],
     });
