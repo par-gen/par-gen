@@ -191,10 +191,16 @@ ${printState(currentState)}`
 
             break;
           case "reduce":
-            const item = Array.from(currentState.values()).find(
-              (item) =>
-                item.name === action.symbol && item.lookahead === lookahead
-            );
+            let item;
+            for (const value of currentState.values()) {
+              if (
+                value.name === action.symbol &&
+                value.lookahead === lookahead
+              ) {
+                item = value;
+                break;
+              }
+            }
             if (!item) {
               throw new Error(
                 `No valid state ${action.symbol}(${lookahead}) found`

@@ -278,10 +278,13 @@ export class JavaScriptCommonJsCodegen {
 
               break;
             case "reduce":
-              const item = Array.from(states[currentState].values()).find(
-                (item) =>
-                  item.name === action.symbol && item.lookahead === lookahead
-              );
+              let item;
+              for (const value of states[currentState].values()) {
+                if (value.name === action.symbol && value.lookahead === lookahead) {
+                  item = value;
+                  break;
+                }
+              }
               if (!item) {
                 throw new Error(
                   \`No valid state \${action.symbol}(\${lookahead}) found\`
