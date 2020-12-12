@@ -45,11 +45,15 @@ export class JavaScriptModuleCodegen {
 
     const columns = 256;
 
+    const uniqueStateNames = Array.from(new Set([EOF, ERROR, ...stateNames]));
+
     const code = `
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
 
-      const states = ${JSON.stringify(stateNames)};
+      const states = ${JSON.stringify(
+        stateNames.map((name) => uniqueStateNames.indexOf(name))
+      )};
 
       const table = new Uint16Array(${columns * stateNames.length});
       table.fill(${errorState ?? -1});
@@ -115,7 +119,9 @@ export class JavaScriptModuleCodegen {
           };
         }
         return {
-          state: i === input.length ? EOF : ERROR,
+          state: i === input.length ? ${uniqueStateNames.indexOf(
+            EOF
+          )} : ${uniqueStateNames.indexOf(ERROR)},
           start: -1,
           end: -1,
         };
@@ -152,6 +158,17 @@ export class JavaScriptModuleCodegen {
 
     let actionsIndex = 0;
 
+    const uniqueStateNames = Array.from(
+      new Set([
+        lexerData.tokens.EOF,
+        lexerData.tokens.ERROR,
+        ...lexerData.stateNames,
+      ])
+    );
+    const allSymbols = Array.from(
+      new Set([...uniqueStateNames, ...terminals, ...nonTerminals])
+    );
+
     const code = `
       import { next as nextToken } from './${relative(
         dirname(this.options.parserFile),
@@ -174,21 +191,27 @@ export class JavaScriptModuleCodegen {
         }\`;
       }
 
-      const states = [
-        ${states
-          .map(
-            (state) =>
-              `new Set([${Array.from(state.values())
-                .map((item) => JSON.stringify(item))
-                .join(",\n")}])`
-          )
-          .join(",\n")}
-      ];
+      const allSymbols = ${JSON.stringify(allSymbols)};
 
-      const terminals = ${JSON.stringify(terminals)};
-      const nonTerminals = ${JSON.stringify(nonTerminals)};
+      const states = [];
+      ${states
+        .map((state, i) => {
+          return `states[${i}] = new Uint16Array(${
+            state.size * allSymbols.length * allSymbols.length
+          }).fill(-1)\n;
+          ${Array.from(state.values())
+            .map((item) => {
+              const name = allSymbols.indexOf(item.name);
+              const lookahead = allSymbols.indexOf(item.lookahead);
+              return `states[${i}][${name * allSymbols.length + lookahead}] = ${
+                item.tokens.length
+              }`;
+            })
+            .join(";\n")}`;
+        })
+        .join("\n")}
 
-      const startState = states[${states.indexOf(start)}];
+      const startState = ${states.indexOf(start)};
 
       const actions = [
         ${Array.from(actions.entries())
@@ -199,14 +222,16 @@ export class JavaScriptModuleCodegen {
                 state: ${
                   to.state ? `${states.indexOf(to.state)}` : "undefined"
                 },
-                symbol: ${to.symbol ? `"${to.symbol}"` : "undefined"},
+                symbol: ${
+                  to.symbol ? `${allSymbols.indexOf(to.symbol)}` : "undefined"
+                },
               }`;
             });
           })
           .join(",\n")}
       ];
       const actionsTable = new Uint16Array(${
-        states.length * terminals.length
+        states.length * allSymbols.length
       }).fill(-1);
       ${Array.from(actions.entries())
         .flatMap(([from, action]) => {
@@ -214,8 +239,8 @@ export class JavaScriptModuleCodegen {
             return `
             // ${states.indexOf(from)} -> ${symbol} -> ${to.op}
             actionsTable[${
-              states.indexOf(from) * terminals.length +
-              terminals.indexOf(symbol)
+              states.indexOf(from) * allSymbols.length +
+              allSymbols.indexOf(symbol)
             }] = ${actionsIndex++};
             `;
           });
@@ -223,15 +248,15 @@ export class JavaScriptModuleCodegen {
         .join("\n")}
 
       const gotoTable = new Uint16Array(${
-        states.length * nonTerminals.length
+        states.length * allSymbols.length
       }).fill(-1);
       ${Array.from(goto.entries())
         .flatMap(([from, target]) => {
           return Array.from(target.entries()).map(([symbol, to]) => {
             return `
               gotoTable[${
-                states.indexOf(from) * nonTerminals.length +
-                nonTerminals.indexOf(symbol)
+                states.indexOf(from) * allSymbols.length +
+                allSymbols.indexOf(symbol)
               }] = ${states.indexOf(to)};`;
           });
         })
@@ -244,11 +269,10 @@ export class JavaScriptModuleCodegen {
         let result = nextToken(stream, offset);
         let { state: lookahead, start, end } = result;
         offset = end;
-        let lookaheadIndex = terminals.indexOf(lookahead);
 
         const stack = new Array(10);
         stack[0] = {
-          state: states.indexOf(startState),
+          state: startState,
           tree: undefined,
         };
         let sp = 0;
@@ -256,10 +280,9 @@ export class JavaScriptModuleCodegen {
         while (true) {
           const currentState = stack[sp].state;
 
-          const actionLookup = actionsTable[currentState * ${
-            terminals.length
-          } + lookaheadIndex];
-          const action = actions[actionLookup];
+          const action = actions[actionsTable[currentState * ${
+            allSymbols.length
+          } + lookahead]];
 
           switch (action.op) {
             case "done":
@@ -267,12 +290,11 @@ export class JavaScriptModuleCodegen {
             case "shift":
               const stackItem = {
                 state: action.state,
-                tree: { name: lookahead, start, end, items: undefined },
+                tree: { name: allSymbols[lookahead], start, end, items: undefined },
               };
 
               result = nextToken(stream, offset);
               lookahead = result.state;
-              lookaheadIndex = terminals.indexOf(lookahead);
               start = result.start;
               offset = end = result.end;
 
@@ -280,38 +302,34 @@ export class JavaScriptModuleCodegen {
 
               break;
             case "reduce":
-              let item;
-              for (const value of states[currentState].values()) {
-                if (value.name === action.symbol && value.lookahead === lookahead) {
-                  item = value;
-                  break;
-                }
-              }
-              if (!item) {
+              const numTokens = states[currentState][action.symbol * ${
+                allSymbols.length
+              } + lookahead];
+              if (!numTokens) {
                 throw new Error(
-                  \`No valid state \${action.symbol}(\${lookahead}) found\`
+                  \`No valid state \${allSymbols[action.symbol]}(\${allSymbols[lookahead]}) found\`
                 );
               }
 
-              const items = new Array(item.tokens.length);
-              for (let i = 0; i < item.tokens.length; i++) {
-                items[i] = stack[i + sp + 1 - item.tokens.length].tree;
+              const items = new Array(numTokens);
+              for (let i = 0; i < numTokens; i++) {
+                items[i] = stack[i + sp + 1 - numTokens].tree;
               }
-              sp -= item.tokens.length;
+              sp -= numTokens;
 
               const tree = {
-                name: action.symbol,
+                name: allSymbols[action.symbol],
                 start: -1,
                 end: -1,
                 items,
               };
 
               const nextState = gotoTable[stack[sp].state * ${
-                nonTerminals.length
-              } + nonTerminals.indexOf(action.symbol)]
+                allSymbols.length
+              } + action.symbol]
               if (!nextState) {
                 throw new Error(
-                  \`Unable to lookup goto state (\${action.symbol}) for\\n\${printState(states[stack[sp].state])}\`
+                  \`Unable to lookup goto state (\${allSymbols[action.symbol]}) for\\n\${printState(states[stack[sp].state])}\`
                 );
               }
               stack[++sp] = {
