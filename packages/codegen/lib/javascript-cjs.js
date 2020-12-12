@@ -89,9 +89,21 @@ export class JavaScriptCommonJsCodegen {
         let success = false;
         let n = j;
         while (!success && n > 0) {
-          success = success || ${finals
-            .map((final) => `${final} === visited[n]`)
-            .join(" || ")};
+          ${(() => {
+            let isOptimizable = finals.every((final) => final % columns === 0);
+            for (let i = 1; i < finals.length && isOptimizable; i++) {
+              isOptimizable =
+                finals[i] / columns - finals[i - 1] / columns === 1;
+            }
+
+            return isOptimizable
+              ? `success = visited[n] <= ${
+                  finals[finals.length - 1]
+                } && visited[n] % ${columns} === 0;`
+              : `success = ${finals
+                  .map((final) => `${final} === visited[n]`)
+                  .join(" || ")};`;
+          })()}
           n--;
         }
         n = n + 1;
