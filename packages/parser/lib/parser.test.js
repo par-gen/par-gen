@@ -45,6 +45,8 @@ describe("generate", () => {
           },
         ]),
       ],
+      terminals: ["A", "S", "Start"],
+      nonTerminals: ["Start"],
       actions: new Map([
         [
           new Set([
