@@ -20,6 +20,33 @@ function nonFalsyValues(input) {
 }
 
 /**
+ * @param {string[]} symbols
+ * @return {string[]}
+ */
+function requireOptionals(symbols) {
+  return symbols.map((symbol) => symbol.replace(/\?$/, ""));
+}
+
+/**
+ * @param {string[]} symbols
+ * @return {boolean}
+ */
+function hasOptionals(symbols) {
+  return symbols.some((symbol) => symbol.endsWith("?"));
+}
+
+/**
+ * @param {string[]} symbols
+ * @return {string[]}
+ */
+function removeFirstOptional(symbols) {
+  const index = symbols.findIndex((symbol) => symbol.endsWith("?"));
+  const list = [...symbols];
+  list.splice(index, 1);
+  return list;
+}
+
+/**
  * @param {string} grammar
  * @returns {{tokens: Token[], rules: Rule[]}}
  */
@@ -65,7 +92,28 @@ export function parse(grammar) {
           symbols: match.expr?.trim().split(/\s+/),
         })
     )
-    .filter((rule) => !tokenNames.includes(rule.name));
+    .filter((rule) => !tokenNames.includes(rule.name))
+    .flatMap((rule) => {
+      let symbols = rule.symbols;
+
+      /** @type {Rule[]} */
+      const rules = [
+        {
+          name: rule.name,
+          symbols: requireOptionals(symbols),
+        },
+      ];
+
+      while (hasOptionals(symbols)) {
+        symbols = removeFirstOptional(symbols);
+        rules.push({
+          name: rule.name,
+          symbols: requireOptionals(symbols),
+        });
+      }
+
+      return rules;
+    });
   const ruleNames = rules.map((rule) => rule.name);
 
   const knownSymbols = [...tokenNames, ...ruleNames];
