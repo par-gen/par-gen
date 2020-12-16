@@ -49,11 +49,20 @@ export function parse(grammar) {
       )
     )
     .filter(nonFalsyValues)
+    .flatMap((match) =>
+      match.groups?.expr.split("|").flatMap((expr) => [
+        {
+          rule: match.groups?.rule,
+          expr: expr,
+        },
+      ])
+    )
+    .filter(nonFalsyValues)
     .map(
       (match) =>
         /** @type {Rule} */ ({
-          name: match.groups?.rule?.trim(),
-          symbols: match.groups?.expr?.trim().split(/\s+/),
+          name: match.rule?.trim(),
+          symbols: match.expr?.trim().split(/\s+/),
         })
     )
     .filter((rule) => !tokenNames.includes(rule.name));

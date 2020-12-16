@@ -8,9 +8,9 @@ describe("parse", () => {
     NUMBER := '0|1|2|3|4|5|6|7|8|9';
     PLUS := '+';
     MINUS := '-';
-    
+
     # rules
-    
+
     Expression := Plus;
     Expression := Minus;
     Plus := NUMBER WS PLUS WS NUMBER;
@@ -89,5 +89,29 @@ describe("parse", () => {
 
   it("should throw if rule contains unknown symbols", () => {
     expect(() => parse("Rule := TOKEN;")).toThrow(/Unknown symbol 'TOKEN'/);
+  });
+
+  it("should allow alternatives in rules", () => {
+    const grammar = parse(`
+      A := 'a';
+      B := 'b';
+      Rule := A | B;
+    `);
+    expect(grammar).toEqual({
+      tokens: [
+        { name: "A", expr: "a" },
+        { name: "B", expr: "b" },
+      ],
+      rules: [
+        {
+          name: "Rule",
+          symbols: ["A"],
+        },
+        {
+          name: "Rule",
+          symbols: ["B"],
+        },
+      ],
+    });
   });
 });
