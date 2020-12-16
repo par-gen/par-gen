@@ -114,4 +114,28 @@ describe("parse", () => {
       ],
     });
   });
+
+  it("should allow optional symbols in rules", () => {
+    const grammar = parse(`
+      A := 'a';
+      B := 'b';
+      Rule := A? B;
+    `);
+    expect(grammar).toEqual({
+      tokens: [
+        { name: "A", expr: "a" },
+        { name: "B", expr: "b" },
+      ],
+      rules: [
+        {
+          name: "Rule",
+          symbols: ["A", "B"],
+        },
+        {
+          name: "Rule",
+          symbols: ["B"],
+        },
+      ],
+    });
+  });
 });
