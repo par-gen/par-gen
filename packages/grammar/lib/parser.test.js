@@ -119,14 +119,22 @@ describe("parse", () => {
     const grammar = parse(`
       A := 'a';
       B := 'b';
-      Rule := A? B;
+      Rule := A? B A?;
     `);
     expect(grammar).toEqual({
       tokens: [
         { name: "A", expr: "a" },
         { name: "B", expr: "b" },
       ],
-      rules: [
+      rules: expect.arrayContaining([
+        {
+          name: "Rule",
+          symbols: ["A", "B", "A"],
+        },
+        {
+          name: "Rule",
+          symbols: ["B", "A"],
+        },
         {
           name: "Rule",
           symbols: ["A", "B"],
@@ -135,7 +143,7 @@ describe("parse", () => {
           name: "Rule",
           symbols: ["B"],
         },
-      ],
+      ]),
     });
   });
 });
