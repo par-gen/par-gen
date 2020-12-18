@@ -33,6 +33,7 @@ import { generate as generateLexer } from "@knisterpeter/expound-lexer";
 
 /**
  * @typedef {Object} ParserData
+ * @property {Rule[]} rules
  * @property {Set<Item>[]} states
  * @property {string[]} terminals
  * @property {string[]} nonTerminals
@@ -93,6 +94,7 @@ export function generate(grammar) {
   const start = dfa.description.start;
 
   return {
+    rules,
     states: Array.from(states),
     terminals: dfa.description.symbols,
     nonTerminals: rules.map((rule) => rule.name),

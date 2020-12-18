@@ -15,6 +15,7 @@ import { promises as fsp } from "fs";
  * @param {Object} options
  * @param {string} options.lexerFile
  * @param {string} options.parserFile
+ * @param {boolean=} options.debug
  */
 export function createGenerator(language, module, options) {
   switch (language.toLowerCase()) {

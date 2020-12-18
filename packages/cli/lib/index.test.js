@@ -123,6 +123,7 @@ describe("cli", () => {
     expect(createGeneratorMock).toHaveBeenCalledWith("javascript", "esm", {
       lexerFile: "target/lexer.js",
       parserFile: "target/parser.js",
+      debug: false,
     });
     expect(executeMock).toHaveBeenCalledWith("grammar", codegen);
   });
