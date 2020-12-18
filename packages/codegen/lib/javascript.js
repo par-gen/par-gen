@@ -22,6 +22,7 @@ export class JavaScriptBaseCodegen {
    * @param {Object} options
    * @param {string} options.lexerFile
    * @param {string} options.parserFile
+   * @param {boolean=} options.debug
    */
   constructor(options) {
     /** @protected */
@@ -179,12 +180,28 @@ export class JavaScriptBaseCodegen {
    * @returns {string}
    */
   _parserCode(data) {
-    const { states, terminals, nonTerminals, actions, goto, start } = data;
+    const {
+      rules,
+      states,
+      terminals,
+      nonTerminals,
+      actions,
+      goto,
+      start,
+    } = data;
 
     let actionsIndex = 0;
 
+    const debug = this._debug.bind(this);
+
     const code = `
       ${this._parserImports()}
+
+      /*
+      ${rules
+        .map((rule) => `${rule.name} := ${rule.symbols.join(" ")};`)
+        .join("\n")}
+      */
 
       function printState(state) {
         return Array.from(state.values())
@@ -204,8 +221,10 @@ export class JavaScriptBaseCodegen {
       const states = [
         ${states
           .map(
-            (state) =>
-              `new Set([${Array.from(state.values())
+            (state, i) =>
+              `
+              // state ${i}
+              new Set([${Array.from(state.values())
                 .map((item) => JSON.stringify(item))
                 .join(",\n")}])`
           )
@@ -238,13 +257,13 @@ export class JavaScriptBaseCodegen {
       ${Array.from(actions.entries())
         .flatMap(([from, action]) => {
           return Array.from(action.entries()).map(([symbol, to]) => {
-            return `
-            // ${states.indexOf(from)} -> ${symbol} -> ${to.op}
+            return `// actionTable ${states.indexOf(from)} -> ${symbol} -> ${
+              to.op
+            }
             actionsTable[${
               states.indexOf(from) * terminals.length +
               terminals.indexOf(symbol)
-            }] = ${actionsIndex++};
-            `;
+            }] = ${actionsIndex++};`;
           });
         })
         .join("\n")}
@@ -255,16 +274,22 @@ export class JavaScriptBaseCodegen {
       ${Array.from(goto.entries())
         .flatMap(([from, target]) => {
           return Array.from(target.entries()).map(([symbol, to]) => {
-            return `
-              gotoTable[${
-                states.indexOf(from) * nonTerminals.length +
-                nonTerminals.indexOf(symbol)
-              }] = ${states.indexOf(to)};`;
+            return `gotoTable[${
+              states.indexOf(from) * nonTerminals.length +
+              nonTerminals.indexOf(symbol)
+            }] = ${states.indexOf(to)};`;
           });
         })
         .join("\n")}
 
       function parse(input) {
+        ${debug(
+          () => `
+          console.log('--- parse input');
+          console.log(input.substr(0, Math.min(input.length, 20)).replace(/\\n/g, '\\\\n') + (Math.min(input.length, 20) < input.length ? '...' : ''));
+          console.log('---');
+          `
+        )}
         const stream = Uint8Array.from(Buffer.from(input));
         let offset = 0;
 
@@ -272,6 +297,15 @@ export class JavaScriptBaseCodegen {
         let { state: lookahead, start, end } = result;
         offset = end;
         let lookaheadIndex = terminals.indexOf(lookahead);
+        ${debug(
+          () => `
+          console.log('  lookahead', lookahead, '(' + start + ',' + end + ')');
+          console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
+          if (start !== -1) {
+            console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
+          }
+          `
+        )}
 
         const stack = new Array(10);
         stack[0] = {
@@ -292,6 +326,7 @@ export class JavaScriptBaseCodegen {
             case "done":
               return stack[sp].tree;
             case "shift":
+              ${debug(() => `console.log('action: shift', lookahead);`)}
               const stackItem = {
                 state: action.state,
                 tree: { name: lookahead, start, end, items: undefined },
@@ -302,11 +337,36 @@ export class JavaScriptBaseCodegen {
               lookaheadIndex = terminals.indexOf(lookahead);
               start = result.start;
               offset = end = result.end;
+              ${debug(
+                () => `
+                console.log('  lookahead', lookahead, '(' + start + ',' + end + ')');
+                console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
+                if (start !== -1) {
+                  console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
+                }
+                `
+              )}
 
               stack[++sp] = stackItem;
 
+              ${debug(
+                () => `
+                console.log('  next state', stack[sp].state);
+                console.log();
+                `
+              )}
               break;
             case "reduce":
+              ${debug(() => `console.log('action: reduce', action.symbol);`)}
+              ${debug(
+                () => `
+                console.log('  lookahead', lookahead, '(' + start + ',' + end + ')');
+                console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
+                if (start !== -1) {
+                  console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
+                }
+                `
+              )}
               let item;
               for (const value of states[currentState].values()) {
                 if (value.name === action.symbol && value.lookahead === lookahead) {
@@ -346,6 +406,12 @@ export class JavaScriptBaseCodegen {
                 tree,
               };
 
+              ${debug(
+                () => `
+                console.log('  next state', stack[sp].state);
+                console.log();
+                `
+              )}
               break;
             default:
               throw new Error("Parser Error");
@@ -385,5 +451,16 @@ export class JavaScriptBaseCodegen {
         this._parserExports.name
       }() unimplemented`
     );
+  }
+
+  /**
+   * @param {() => string} fn
+   * @returns {string}
+   */
+  _debug(fn) {
+    if (this.options.debug) {
+      return fn();
+    }
+    return "";
   }
 }

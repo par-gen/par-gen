@@ -15,6 +15,7 @@ export class JavaScriptCommonJsCodegen extends JavaScriptBaseCodegen {
    * @param {Object} options
    * @param {string} options.lexerFile
    * @param {string} options.parserFile
+   * @param {boolean=} options.debug
    */
   constructor(options) {
     super(options);

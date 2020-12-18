@@ -29,6 +29,7 @@ cli
     "Defines the module system. Currently esm and commonjs are supported",
     "esm"
   )
+  .option("--debug, -d", "Creates parser with debug output", false)
   .example("codegen ./json.expound ./generated")
   .action(
     /**
@@ -37,11 +38,13 @@ cli
      * @param {Object} opts
      * @param {string} opts.language
      * @param {string} opts.module
+     * @param {boolean} opts.debug
      */
     async (grammarFile, targetDirectory, opts) => {
       const codegen = createGenerator(opts.language, opts.module, {
         lexerFile: join(targetDirectory, "lexer.js"),
         parserFile: join(targetDirectory, "parser.js"),
+        debug: opts.debug,
       });
 
       await execute(grammarFile, codegen);
