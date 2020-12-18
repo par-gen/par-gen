@@ -1,3 +1,5 @@
+import { optionals } from "./optionals.js";
+
 /**
  * @typedef {Object} Token
  * @property {string} name
@@ -17,33 +19,6 @@
  */
 function nonFalsyValues(input) {
   return Boolean(input);
-}
-
-/**
- * @param {string[]} symbols
- * @return {string[]}
- */
-function requireOptionals(symbols) {
-  return symbols.map((symbol) => symbol.replace(/\?$/, ""));
-}
-
-/**
- * @param {string[]} symbols
- * @return {boolean}
- */
-function hasOptionals(symbols) {
-  return symbols.some((symbol) => symbol.endsWith("?"));
-}
-
-/**
- * @param {string[]} symbols
- * @return {string[]}
- */
-function removeFirstOptional(symbols) {
-  const index = symbols.findIndex((symbol) => symbol.endsWith("?"));
-  const list = [...symbols];
-  list.splice(index, 1);
-  return list;
 }
 
 /**
@@ -94,25 +69,10 @@ export function parse(grammar) {
     )
     .filter((rule) => !tokenNames.includes(rule.name))
     .flatMap((rule) => {
-      let symbols = rule.symbols;
-
-      /** @type {Rule[]} */
-      const rules = [
-        {
-          name: rule.name,
-          symbols: requireOptionals(symbols),
-        },
-      ];
-
-      while (hasOptionals(symbols)) {
-        symbols = removeFirstOptional(symbols);
-        rules.push({
-          name: rule.name,
-          symbols: requireOptionals(symbols),
-        });
-      }
-
-      return rules;
+      return optionals(rule.symbols).map((symbols) => ({
+        ...rule,
+        symbols,
+      }));
     });
   const ruleNames = rules.map((rule) => rule.name);
 
