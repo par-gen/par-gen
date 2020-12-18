@@ -194,11 +194,19 @@ function createItems(tokens, EOF, rules) {
  */
 function getItem(needle, items) {
   const item = items.find((item) => {
+    const tokensEqual = () => {
+      let equal = needle.tokens?.length === item.tokens.length;
+      for (let i = 0; equal && i < item.tokens.length; i++) {
+        equal = needle.tokens?.[i] === item.tokens[i];
+      }
+      return equal;
+    };
+
     return (
       item.name === needle.name &&
       item.marker === needle.marker &&
       item.tokens.length === needle.tokens?.length &&
-      item.tokens.every((token) => needle.tokens?.includes(token)) &&
+      tokensEqual() &&
       item.lookahead === needle.lookahead
     );
   });
