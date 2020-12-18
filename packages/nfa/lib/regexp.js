@@ -123,6 +123,8 @@ const escapedCharacters = [
   [".", "."],
   ["(", "("],
   [")", ")"],
+  ["[", "["],
+  ["]", "]"],
   ["|", "|"],
   ["*", "*"],
   ["\\", "\\"],
@@ -177,6 +179,39 @@ function next(stack, input) {
       return n + 2;
     }
     case ")": {
+      return Number.MAX_SAFE_INTEGER;
+    }
+    case "[": {
+      const [n, node] = seq(input.slice(1));
+
+      /** @type {string[]} */
+      const list = [];
+      let i = 0;
+      const values =
+        node.nodes?.map((node) => /** @type {string} */ (node.value)) ?? [];
+
+      while (i < values.length) {
+        if (i < values.length + 2 && values[i + 1] === "-") {
+          for (
+            let c = values[i].charCodeAt(0), last = values[i + 2].charCodeAt(0);
+            c <= last;
+            c++
+          ) {
+            list.push(String.fromCharCode(c));
+          }
+          i += 3;
+        } else {
+          list.push(values[i]);
+          i++;
+        }
+      }
+
+      const range = parse(list.join("|"));
+      stack.push(/** @type {ParseTree<string>} */ (range.nodes?.[0]));
+
+      return n + 2;
+    }
+    case "]": {
       return Number.MAX_SAFE_INTEGER;
     }
     case "|": {

@@ -248,6 +248,8 @@ describe("parse", () => {
     ["\\", "\\\\"],
     ["(", "\\("],
     [")", "\\)"],
+    ["[", "\\["],
+    ["]", "\\]"],
     [".", "\\."],
     ["|", "\\|"],
     ["*", "\\*"],
@@ -272,6 +274,54 @@ describe("parse", () => {
       );
     }
   );
+
+  it("should accept character ranges", () => {
+    expect(parse("[a-c]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: [
+          node({
+            op: ops.choice,
+            left: node({
+              op: ops.sequence,
+              nodes: [
+                node({
+                  op: ops.match,
+                  value: "a",
+                }),
+              ],
+            }),
+            right: node({
+              op: ops.sequence,
+              nodes: [
+                node({
+                  op: ops.choice,
+                  left: node({
+                    op: ops.sequence,
+                    nodes: [
+                      node({
+                        op: ops.match,
+                        value: "b",
+                      }),
+                    ],
+                  }),
+                  right: node({
+                    op: ops.sequence,
+                    nodes: [
+                      node({
+                        op: ops.match,
+                        value: "c",
+                      }),
+                    ],
+                  }),
+                }),
+              ],
+            }),
+          }),
+        ],
+      })
+    );
+  });
 });
 
 describe("convertNode", () => {
