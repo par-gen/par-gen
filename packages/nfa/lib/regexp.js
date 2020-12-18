@@ -118,6 +118,21 @@ function seq(input) {
   return [i, node];
 }
 
+/** @type {[string, string][]} */
+const escapedCharacters = [
+  [".", "."],
+  ["(", "("],
+  [")", ")"],
+  ["|", "|"],
+  ["*", "*"],
+  ["\\", "\\"],
+  ["n", "\n"],
+  ["r", "\r"],
+  ["t", "\t"],
+  ["b", "\b"],
+  ["f", "\f"],
+];
+
 /**
  * @param {ParseTree<string>[]} stack
  * @param {string} input
@@ -125,11 +140,17 @@ function seq(input) {
  */
 function next(stack, input) {
   const isEscapeSequence = input[0] === "\\";
-  if (isEscapeSequence && [".", "(", ")", "|", "*", "\\"].includes(input[1])) {
+  if (
+    isEscapeSequence &&
+    escapedCharacters.map((c) => c[0]).includes(input[1])
+  ) {
+    const [, matchedChar] =
+      escapedCharacters.find((c) => c[0] === input[1]) ?? [];
+
     stack.push({
       parent: undefined,
       op: ops.match,
-      value: input[1],
+      value: matchedChar,
       node: undefined,
       nodes: undefined,
       left: undefined,
