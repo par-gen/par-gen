@@ -244,19 +244,34 @@ describe("parse", () => {
     );
   });
 
-  it.only("should allow special characters", () => {
-    expect(parse("\\(")).toEqual(
-      node({
-        op: ops.sequence,
-        nodes: [
-          node({
-            op: ops.match,
-            value: "(",
-          }),
-        ],
-      })
-    );
-  });
+  it.each([
+    ["\\", "\\\\"],
+    ["(", "\\("],
+    [")", "\\)"],
+    [".", "\\."],
+    ["|", "\\|"],
+    ["*", "\\*"],
+    ["\n", "\\n"],
+    ["\r", "\\r"],
+    ["\t", "\\t"],
+    ["\b", "\\b"],
+    ["\f", "\\f"],
+  ])(
+    "should allow special character '%s' (escaped as '%s')",
+    (expected, input) => {
+      expect(parse(input)).toEqual(
+        node({
+          op: ops.sequence,
+          nodes: [
+            node({
+              op: ops.match,
+              value: expected,
+            }),
+          ],
+        })
+      );
+    }
+  );
 });
 
 describe("convertNode", () => {
