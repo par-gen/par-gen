@@ -4,6 +4,7 @@ import { optionals } from "./optionals.js";
  * @typedef {Object} Token
  * @property {string} name
  * @property {string} expr
+ * @property {string} state
  */
 
 /**
@@ -106,13 +107,18 @@ export function parse(grammar) {
     .filter(nonFalsyValues);
 
   const tokens = lines
-    .map((line) => line.match(/(?<token>[A-Z_]+)\s*:=\s*'(?<expr>[^;]+)'\s*/))
+    .map((line) =>
+      line.match(
+        /(?<token>[A-Z_]+)\s*:=\s*'(?<expr>[^;]+)'\s*(?:@\s+(?<state>[-_a-zA-Z0-9]+))?/
+      )
+    )
     .filter(nonFalsyValues)
     .map(
       (match) =>
         /** @type {Token} */ ({
           name: match.groups?.token?.trim(),
           expr: match.groups?.expr,
+          state: match.groups?.state ?? "initial",
         })
     );
   const tokenNames = tokens.map((token) => token.name);
