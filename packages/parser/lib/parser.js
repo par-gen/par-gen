@@ -463,6 +463,7 @@ function calculateFollows(firsts, tokens, EOF, rules) {
       follows.add({
         name: EOF,
         expr: EOF,
+        state: "initial",
       });
     }
     const rhsRules = rules.filter((rule) => rule.symbols.includes(ruleName));

@@ -26,18 +26,22 @@ describe("parse", () => {
           {
             name: "WS",
             expr: " ",
+            state: "initial",
           },
           {
             name: "NUMBER",
             expr: "0|1|2|3|4|5|6|7|8|9",
+            state: "initial",
           },
           {
             name: "PLUS",
             expr: "+",
+            state: "initial",
           },
           {
             name: "MINUS",
             expr: "-",
+            state: "initial",
           },
         ],
       })
@@ -88,6 +92,7 @@ describe("parse", () => {
         {
           name: "A",
           expr: " ",
+          state: "initial",
         },
       ],
       rules: [
@@ -110,6 +115,7 @@ describe("parse", () => {
         {
           name: "A_B",
           expr: " ",
+          state: "initial",
         },
       ],
       rules: [],
@@ -128,8 +134,8 @@ describe("parse", () => {
     `);
     expect(grammar).toEqual({
       tokens: [
-        { name: "A", expr: "a" },
-        { name: "B", expr: "b" },
+        { name: "A", expr: "a", state: "initial" },
+        { name: "B", expr: "b", state: "initial" },
       ],
       rules: [
         {
@@ -154,8 +160,8 @@ describe("parse", () => {
     `);
     expect(grammar).toEqual({
       tokens: [
-        { name: "A", expr: "a" },
-        { name: "B", expr: "b" },
+        { name: "A", expr: "a", state: "initial" },
+        { name: "B", expr: "b", state: "initial" },
       ],
       rules: expect.arrayContaining([
         {
@@ -195,10 +201,12 @@ describe("parse", () => {
           {
             name: "A",
             expr: "a",
+            state: "initial",
           },
           {
             name: "B",
             expr: "b",
+            state: "initial",
           },
         ],
         rules: [
@@ -209,6 +217,38 @@ describe("parse", () => {
               { at: 0, code: "/* code */" },
               { at: 3, code: "/* code */" },
             ],
+          },
+        ],
+      })
+    );
+  });
+
+  it("should allow semantic actions in rules", () => {
+    const grammar = parse(`
+      A := 'a';
+      B := 'b' @ b;
+      Rule := A B;
+    `);
+
+    expect(grammar).toEqual(
+      expect.objectContaining({
+        tokens: [
+          {
+            name: "A",
+            expr: "a",
+            state: "initial",
+          },
+          {
+            name: "B",
+            expr: "b",
+            state: "b",
+          },
+        ],
+        rules: [
+          {
+            name: "Rule",
+            symbols: ["A", "B"],
+            actions: [],
           },
         ],
       })
