@@ -7,12 +7,16 @@ import { optionals } from "./optionals.js";
  */
 
 /**
+ * @typedef {Object} RuleAction
+ * @property {number} at
+ * @property {string} code
+ */
+
+/**
  * @typedef {Object} Rule
  * @property {string} name
  * @property {string[]} symbols
- * @property {Object[]} actions
- * @property {number} actions.at
- * @property {string} actions.code
+ * @property {RuleAction[]} actions
  */
 
 /**
