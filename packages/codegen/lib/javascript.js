@@ -225,7 +225,19 @@ export class JavaScriptBaseCodegen {
               `
               // state ${i}
               new Set([${Array.from(state.values())
-                .map((item) => JSON.stringify(item))
+                .map(
+                  (item) => `{
+                  name: '${item.name}',
+                  tokens: ${JSON.stringify(item.tokens)},
+                  marker: ${item.marker},
+                  lookahead: '${item.lookahead}',
+                  semanticAction: ${
+                    item.semanticAction
+                      ? `(stack) => { ${item.semanticAction}; }`
+                      : "undefined"
+                  }
+                }`
+                )
                 .join(",\n")}])`
           )
           .join(",\n")}
@@ -313,6 +325,11 @@ export class JavaScriptBaseCodegen {
           tree: undefined,
         };
         let sp = 0;
+        for (const item of states[stack[sp].state].values()) {
+          if (item.lookahead === lookahead) {
+            item.semanticAction?.(stack);
+          }
+        }
 
         while (true) {
           const currentState = stack[sp].state;
@@ -331,6 +348,11 @@ export class JavaScriptBaseCodegen {
                 state: action.state,
                 tree: { name: lookahead, start, end, items: undefined },
               };
+              for (const item of states[action.state].values()) {
+                if (item.lookahead === lookahead) {
+                  item.semanticAction?.(stack);
+                }
+              }
 
               result = nextToken(stream, offset);
               lookahead = result.state;
@@ -379,6 +401,7 @@ export class JavaScriptBaseCodegen {
                   \`No valid state \${action.symbol}(\${lookahead}) found\`
                 );
               }
+              item.semanticAction?.(stack);
 
               const items = new Array(item.tokens.length);
               for (let i = 0; i < item.tokens.length; i++) {

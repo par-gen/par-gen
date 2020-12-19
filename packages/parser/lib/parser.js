@@ -25,6 +25,7 @@ import { generate as generateLexer } from "@knisterpeter/expound-lexer";
  * @property {string[]} tokens
  * @property {number} marker
  * @property {string} lookahead
+ * @property {string=} semanticAction
  */
 
 /**
@@ -64,7 +65,7 @@ export function generate(grammar) {
     ({
       name: "S",
       symbols: [rules[0].name],
-      actions: /** @type {any} */ ([]),
+      actions: [],
     }),
     ...rules,
   ];
@@ -164,12 +165,14 @@ function createItems(tokens, EOF, rules) {
           tokens: rule.symbols,
           marker: i,
           lookahead: EOF,
+          semanticAction: rule.actions.find((action) => action.at === i)?.code,
         },
         ...tokens.map((token) => ({
           name: rule.name,
           tokens: rule.symbols,
           marker: i,
           lookahead: token.name,
+          semanticAction: rule.actions.find((action) => action.at === i)?.code,
         })),
       ]),
       {
@@ -177,12 +180,18 @@ function createItems(tokens, EOF, rules) {
         tokens: rule.symbols,
         marker: rule.symbols.length,
         lookahead: EOF,
+        semanticAction: rule.actions.find(
+          (action) => action.at === rule.symbols.length
+        )?.code,
       },
       ...tokens.map((token) => ({
         name: rule.name,
         tokens: rule.symbols,
         marker: rule.symbols.length,
         lookahead: token.name,
+        semanticAction: rule.actions.find(
+          (action) => action.at === rule.symbols.length
+        )?.code,
       })),
     ]),
   ];
@@ -233,6 +242,7 @@ function firstItemSet(rule, rules, items, follows) {
       tokens: rule.symbols,
       marker: 0,
       lookahead: "dummy",
+      semanticAction: undefined,
     },
     rules
   );
