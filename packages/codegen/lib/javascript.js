@@ -1,9 +1,13 @@
 import { promises as fsp } from "fs";
-import { dirname } from "path";
+import { join, dirname, basename, extname } from "path";
 import prettier from "prettier";
 
 /**
  * @typedef {import('@knisterpeter/expound-lexer/types/lexer').LexerData} LexerData
+ */
+
+/**
+ * @typedef {import('@knisterpeter/expound-parser/types/parser').Lexers} Lexers
  */
 
 /**
@@ -30,15 +34,30 @@ export class JavaScriptBaseCodegen {
   }
 
   /**
+   * @protected
+   * @param {string} name
+   * @returns {string}
+   */
+  _lexerStateFile(name) {
+    const dir = dirname(this.options.lexerFile);
+    const ext = extname(this.options.lexerFile);
+    const base = basename(this.options.lexerFile, ext);
+    return join(dir, `${base}-${name}${ext}`);
+  }
+
+  /**
    * @public
    * @param {LexerData} data
+   * @param {string} name
    * @returns {Promise<void>}
    */
-  async lexer(data) {
+  async lexer(data, name) {
     const code = this._lexerCode(data);
 
-    await fsp.mkdir(dirname(this.options.lexerFile), { recursive: true });
-    await fsp.writeFile(this.options.lexerFile, code);
+    const lexerFile = this._lexerStateFile(name);
+
+    await fsp.mkdir(dirname(lexerFile), { recursive: true });
+    await fsp.writeFile(lexerFile, code);
   }
 
   /**
@@ -166,7 +185,9 @@ export class JavaScriptBaseCodegen {
    * @returns {Promise<void>}
    */
   async parser(data) {
-    await this.lexer(data.lexerData);
+    for (const [name, lexerData] of Object.entries(data.lexerData)) {
+      await this.lexer(lexerData, name);
+    }
 
     const code = this._parserCode(data);
 
@@ -181,6 +202,7 @@ export class JavaScriptBaseCodegen {
    */
   _parserCode(data) {
     const {
+      lexerData,
       rules,
       states,
       terminals,
@@ -195,7 +217,7 @@ export class JavaScriptBaseCodegen {
     const debug = this._debug.bind(this);
 
     const code = `
-      ${this._parserImports()}
+      ${this._parserImports(lexerData)}
 
       /*
       ${rules
@@ -305,7 +327,7 @@ export class JavaScriptBaseCodegen {
         const stream = Uint8Array.from(Buffer.from(input));
         let offset = 0;
 
-        let result = nextToken(stream, offset);
+        let result = nextTokenInitial(stream, offset);
         let { state: lookahead, start, end } = result;
         offset = end;
         let lookaheadIndex = terminals.indexOf(lookahead);
@@ -354,7 +376,7 @@ export class JavaScriptBaseCodegen {
                 }
               }
 
-              result = nextToken(stream, offset);
+              result = nextTokenInitial(stream, offset);
               lookahead = result.state;
               lookaheadIndex = terminals.indexOf(lookahead);
               start = result.start;
@@ -454,9 +476,10 @@ export class JavaScriptBaseCodegen {
 
   /**
    * @protected
+   * @param {Lexers} _lexers
    * @returns {string}
    */
-  _parserImports() {
+  _parserImports(_lexers) {
     throw new Error(
       `${Object.getPrototypeOf(this).constructor.name}#${
         this._parserImports.name

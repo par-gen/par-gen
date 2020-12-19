@@ -13,11 +13,14 @@ describe("JavaScriptCommonJsCodegen", () => {
   /** @type {string} */
   let lexerFile;
   /** @type {string} */
+  let lexerStateFile;
+  /** @type {string} */
   let parserFile;
 
   beforeEach(async () => {
     directory = await fsp.mkdtemp(join(tmpdir(), "lexer-"));
     lexerFile = join(directory, "lexer.js");
+    lexerStateFile = join(directory, "lexer-initial.js");
     parserFile = join(directory, "parser.js");
   });
 
@@ -38,7 +41,7 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     const codegen = new JavaScriptCommonJsCodegen({ lexerFile, parserFile });
 
-    await codegen.lexer(genLexer(grammar));
+    await codegen.lexer(genLexer(grammar), "initial");
 
     const context = vm.createContext({
       output,
@@ -47,9 +50,11 @@ describe("JavaScriptCommonJsCodegen", () => {
        * @param {string} id
        */
       require(id) {
-        if (id === lexerFile) {
+        if (id === lexerStateFile) {
           const context = vm.createContext({ module: {} });
-          new vm.Script(readFileSync(lexerFile, "utf-8")).runInContext(context);
+          new vm.Script(readFileSync(lexerStateFile, "utf-8")).runInContext(
+            context
+          );
           return context.module.exports;
         }
         throw new Error(`Unable to resolve dependency: ${id}`);
@@ -58,7 +63,7 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     const script = new vm.Script(
       `
-        const { next } = require('${lexerFile}');
+        const { next } = require('${lexerStateFile}');
 
         const input = new Uint8Array(Buffer.from("abc"));
         const matched = next(input, 0);
@@ -99,11 +104,11 @@ describe("JavaScriptCommonJsCodegen", () => {
        * @param {string} id
        */
       require(id) {
-        if (id === "./lexer.js") {
+        if (id === "./lexer-initial.js") {
           const innerContext = vm.createContext({
             module: {},
           });
-          new vm.Script(readFileSync(lexerFile, "utf-8")).runInContext(
+          new vm.Script(readFileSync(lexerStateFile, "utf-8")).runInContext(
             innerContext
           );
           return innerContext.module.exports;

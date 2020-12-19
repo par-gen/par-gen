@@ -135,7 +135,7 @@ export class JavaScriptFunctionCodegen {
   async parser(data) {
     const { actions, goto, start: startState, lexerData } = data;
 
-    const { next: nextToken } = await this.lexer(lexerData);
+    const { next: nextToken } = await this.lexer(lexerData.initial);
 
     /**
      * @param {string} input

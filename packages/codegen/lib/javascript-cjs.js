@@ -7,6 +7,10 @@ import { JavaScriptBaseCodegen } from "./javascript.js";
  */
 
 /**
+ * @typedef {import('@knisterpeter/expound-parser/types/parser').Lexers} Lexers
+ */
+
+/**
  * @typedef {import('./type').ParserData} ParserData
  */
 
@@ -31,12 +35,22 @@ export class JavaScriptCommonJsCodegen extends JavaScriptBaseCodegen {
     `;
   }
 
-  _parserImports() {
+  /**
+   * @param {Lexers} lexers
+   */
+  _parserImports(lexers) {
     return `
-      const { next: nextToken } = require('./${relative(
-        dirname(this.options.parserFile),
-        this.options.lexerFile
-      )}');
+      ${Object.keys(lexers)
+        .map(
+          (name) =>
+            `const { next: nextToken${
+              name[0].toUpperCase() + name.substr(1)
+            } } = require('./${relative(
+              dirname(this.options.parserFile),
+              this._lexerStateFile(name)
+            )}');`
+        )
+        .join("\n")}
     `;
   }
 

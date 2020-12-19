@@ -8,7 +8,7 @@
 
 /**
  * @typedef {Object} Codegen
- * @property {(data: LexerData) => Promise<void>} lexer
+ * @property {(data: LexerData, name: string) => Promise<void>} lexer
  * @property {(data: ParserData) => Promise<void>} parser
  */
 
