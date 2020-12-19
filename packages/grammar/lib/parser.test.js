@@ -53,18 +53,22 @@ describe("parse", () => {
           {
             name: "Expression",
             symbols: ["Plus"],
+            actions: [],
           },
           {
             name: "Expression",
             symbols: ["Minus"],
+            actions: [],
           },
           {
             name: "Plus",
             symbols: ["NUMBER", "WS", "PLUS", "WS", "NUMBER"],
+            actions: [],
           },
           {
             name: "Minus",
             symbols: ["NUMBER", "WS", "MINUS", "WS", "NUMBER"],
+            actions: [],
           },
         ],
       })
@@ -106,10 +110,12 @@ describe("parse", () => {
         {
           name: "Rule",
           symbols: ["A"],
+          actions: [],
         },
         {
           name: "Rule",
           symbols: ["B"],
+          actions: [],
         },
       ],
     });
@@ -130,20 +136,57 @@ describe("parse", () => {
         {
           name: "Rule",
           symbols: ["A", "B", "A"],
+          actions: [],
         },
         {
           name: "Rule",
           symbols: ["B", "A"],
+          actions: [],
         },
         {
           name: "Rule",
           symbols: ["A", "B"],
+          actions: [],
         },
         {
           name: "Rule",
           symbols: ["B"],
+          actions: [],
         },
       ]),
     });
+  });
+
+  it("should allow semantic actions in rules", () => {
+    const grammar = parse(`
+      A := 'a';
+      B := 'b';
+      Rule := { /* code */ } A B A { /* code */ };
+    `);
+
+    expect(grammar).toEqual(
+      expect.objectContaining({
+        tokens: [
+          {
+            name: "A",
+            expr: "a",
+          },
+          {
+            name: "B",
+            expr: "b",
+          },
+        ],
+        rules: [
+          {
+            name: "Rule",
+            symbols: ["A", "B", "A"],
+            actions: [
+              { at: 0, code: "/* code */" },
+              { at: 3, code: "/* code */" },
+            ],
+          },
+        ],
+      })
+    );
   });
 });

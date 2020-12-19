@@ -59,16 +59,16 @@ export function generate(grammar) {
     tokens: { EOF },
   } = lexerData;
 
-  /** @type {Rule[]} */
   const augmentedRules = [
-    {
+    /** @type {Rule} */
+    ({
       name: "S",
       symbols: [rules[0].name],
-    },
+      actions: /** @type {any} */ ([]),
+    }),
     ...rules,
   ];
 
-  // todo: minimize this dfa
   const dfa = createDFA(tokens, EOF, augmentedRules);
 
   const actions = createActionTable(dfa, EOF);
