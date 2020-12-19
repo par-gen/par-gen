@@ -1,6 +1,6 @@
 import { DFA } from "@knisterpeter/expound-dfa";
 import { parse } from "@knisterpeter/expound-grammar";
-import { generate as generateLexer } from "@knisterpeter/expound-lexer";
+import { generateFromTokens } from "@knisterpeter/expound-lexer";
 
 /**
  * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
@@ -12,6 +12,10 @@ import { generate as generateLexer } from "@knisterpeter/expound-lexer";
 
 /**
  * @typedef {import('@knisterpeter/expound-lexer/types/lexer').LexerData} LexerData
+ */
+
+/**
+ * @typedef {{[stateName: string]: LexerData}} Lexers
  */
 
 /**
@@ -41,7 +45,7 @@ import { generate as generateLexer } from "@knisterpeter/expound-lexer";
  * @property {Map<Set<Item>, Map<string, Shift | Reduce | Done>>} actions
  * @property {Map<Set<Item>, Map<string, Set<Item>>>} goto
  * @property {ItemState} start
- * @property {LexerData} lexerData
+ * @property {Lexers} lexerData
  */
 
 /**
@@ -55,10 +59,23 @@ import { generate as generateLexer } from "@knisterpeter/expound-lexer";
 export function generate(grammar) {
   const { tokens, rules } = parse(grammar);
 
-  const lexerData = generateLexer(grammar);
-  const {
-    tokens: { EOF },
-  } = lexerData;
+  const tokenGroups = tokens.reduce((groups, token) => {
+    let list = groups.get(token.state);
+    if (!list) {
+      list = [];
+      groups.set(token.state, list);
+    }
+    list.push(token);
+    return groups;
+  }, /** @type {Map<string, Token[]>} */ (new Map()));
+
+  /** @type {Lexers} */
+  const lexers = {};
+  for (const [name, tokens] of tokenGroups.entries()) {
+    const lexerData = generateFromTokens(tokens);
+    lexers[name] = lexerData;
+  }
+  const EOF = lexers.initial.tokens.EOF;
 
   const augmentedRules = [
     /** @type {Rule} */
@@ -102,7 +119,7 @@ export function generate(grammar) {
     actions,
     goto,
     start: start,
-    lexerData,
+    lexerData: lexers,
   };
 }
 

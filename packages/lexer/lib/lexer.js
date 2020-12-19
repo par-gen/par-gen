@@ -9,6 +9,10 @@ import {
 } from "@knisterpeter/expound-nfa";
 
 /**
+ * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
+ */
+
+/**
  * @template T
  * @typedef {import('@knisterpeter/expound-nfa/types/regexp').ParseTree<T>} ParseTree
  */
@@ -119,12 +123,10 @@ function createOptimalDFA(nfa) {
 }
 
 /**
- * @param {string} grammar
+ * @param {Token[]} tokens
  * @returns {StringDFA}
  */
-function createAutomata(grammar) {
-  const { tokens } = parse(grammar);
-
+function createAutomata(tokens) {
   const tree = createCombinedExpression(
     ...tokens.map((token) => parseTerminalRule(token.name, token.expr))
   );
@@ -155,11 +157,11 @@ function createAutomata(grammar) {
  */
 
 /**
- * @param {string} grammar
+ * @param {Token[]} tokens
  * @returns {LexerData}
  */
-export function generate(grammar) {
-  const dfa = createAutomata(grammar);
+export function generateFromTokens(tokens) {
+  const dfa = createAutomata(tokens);
 
   const d = dfa.description;
 
@@ -200,4 +202,14 @@ export function generate(grammar) {
     start,
     finals,
   };
+}
+
+/**
+ * @param {string} grammar
+ * @returns {LexerData}
+ */
+export function generate(grammar) {
+  const { tokens } = parse(grammar);
+
+  return generateFromTokens(tokens);
 }
