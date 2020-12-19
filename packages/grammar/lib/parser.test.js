@@ -75,6 +75,31 @@ describe("parse", () => {
     );
   });
 
+  it("should allow multiline rules", () => {
+    const result = parse(`
+      A := ' ';
+      Rule :=
+        A
+        ;
+    `);
+
+    expect(result).toEqual({
+      tokens: [
+        {
+          name: "A",
+          expr: " ",
+        },
+      ],
+      rules: [
+        {
+          name: "Rule",
+          symbols: ["A"],
+          actions: [],
+        },
+      ],
+    });
+  });
+
   it("should prefer tokens over rules if ambiguous", () => {
     const result = parse(`
       A_B := ' ';
