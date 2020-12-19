@@ -10,6 +10,9 @@ import { optionals } from "./optionals.js";
  * @typedef {Object} Rule
  * @property {string} name
  * @property {string[]} symbols
+ * @property {Object[]} actions
+ * @property {number} actions.at
+ * @property {string} actions.code
  */
 
 /**
@@ -19,6 +22,69 @@ import { optionals } from "./optionals.js";
  */
 function nonFalsyValues(input) {
   return Boolean(input);
+}
+
+/**
+ * @param {Object} match
+ * @param {string} match.rule
+ * @param {string} match.expr
+ * @returns {Rule}
+ */
+function parseRule(match) {
+  /** @type {string[]} */
+  const symbols = [];
+  /** @type {{at: number, code: string}[]} */
+  const actions = [];
+  /** @type {string[]} */
+  const current = [];
+  const str = (match.expr ?? "").trim().replace(/\s+/g, " ");
+  let action = false;
+  for (let i = 0; i < str.length; i++) {
+    current.push(str[i]);
+    if (action) {
+      if (str[i] === "}") {
+        actions.push({
+          at: symbols.length,
+          code: current
+            .join("")
+            .replace(/^\{(.*)\}$/, "$1")
+            .trim(),
+        });
+        current.splice(0, current.length);
+        action = false;
+      }
+    } else {
+      if (str[i] === "{") {
+        action = true;
+      } else if (str[i] === " ") {
+        const symbol = current.join("").trim();
+        if (symbol) {
+          symbols.push(symbol);
+          current.splice(0, current.length);
+        }
+      }
+    }
+  }
+  if (action) {
+    actions.push({
+      at: 0,
+      code: current
+        .join("")
+        .replace(/^\{(.*)\}$/, "$1")
+        .trim(),
+    });
+  } else {
+    const symbol = current.join("").trim();
+    if (symbol) {
+      symbols.push(symbol);
+    }
+  }
+
+  return {
+    name: match.rule?.trim(),
+    symbols,
+    actions,
+  };
 }
 
 /**
@@ -60,14 +126,11 @@ export function parse(grammar) {
       ])
     )
     .filter(nonFalsyValues)
-    .map(
-      (match) =>
-        /** @type {Rule} */ ({
-          name: match.rule?.trim(),
-          symbols: match.expr?.trim().split(/\s+/),
-        })
+    .filter(
+      /** @returns {match is {rule: string, expr: string}} */
+      (match) => Boolean(match.rule && !tokenNames.includes(match.rule))
     )
-    .filter((rule) => !tokenNames.includes(rule.name))
+    .map(parseRule)
     .flatMap((rule) => {
       return optionals(rule.symbols).map((symbols) => ({
         ...rule,
@@ -81,7 +144,7 @@ export function parse(grammar) {
   rules.forEach((rule) => {
     rule.symbols.forEach((symbol) => {
       if (!knownSymbols.includes(symbol)) {
-        throw new Error(`Unknown symbol '${symbol}'`);
+        throw new Error(`Unknown symbol '${symbol}' in rule '${rule.name}'`);
       }
     });
   });
