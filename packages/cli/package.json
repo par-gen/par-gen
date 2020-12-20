@@ -10,6 +10,10 @@
     "@knisterpeter/expound-parser": "workspace:0.1.0",
     "sade": "1.7.4"
   },
+  "devDependencies": {
+    "@jest/globals": "26.6.2",
+    "@types/sade": "1.7.2"
+  },
   "jest": {
     "displayName": "cli",
     "transform": {},
@@ -17,9 +21,5 @@
       "/node_modules/",
       "/types/"
     ]
-  },
-  "devDependencies": {
-    "@jest/globals": "26.6.2",
-    "@types/sade": "1.7.2"
   }
 }
