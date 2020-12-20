@@ -273,7 +273,7 @@ describe("parse", () => {
     );
   });
 
-  it("should accept character ranges", () => {
+  it("should accept character classes", () => {
     expect(parse("[a-c]")).toEqual(
       node({
         op: ops.sequence,
@@ -315,6 +315,68 @@ describe("parse", () => {
                 }),
               ],
             }),
+          }),
+        ],
+      })
+    );
+  });
+
+  it("should accept negative character classes", () => {
+    expect(parse("[^\x00-\x60\x64-\xff]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: [
+          node({
+            op: ops.choice,
+            left: node({
+              op: ops.sequence,
+              nodes: [
+                node({
+                  op: ops.match,
+                  value: "a",
+                }),
+              ],
+            }),
+            right: node({
+              op: ops.sequence,
+              nodes: [
+                node({
+                  op: ops.choice,
+                  left: node({
+                    op: ops.sequence,
+                    nodes: [
+                      node({
+                        op: ops.match,
+                        value: "b",
+                      }),
+                    ],
+                  }),
+                  right: node({
+                    op: ops.sequence,
+                    nodes: [
+                      node({
+                        op: ops.match,
+                        value: "c",
+                      }),
+                    ],
+                  }),
+                }),
+              ],
+            }),
+          }),
+        ],
+      })
+    );
+  });
+
+  it("should accept character classes with special characters", () => {
+    expect(parse("[\\x2a-\\x2a]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: [
+          node({
+            op: ops.match,
+            value: "*",
           }),
         ],
       })
