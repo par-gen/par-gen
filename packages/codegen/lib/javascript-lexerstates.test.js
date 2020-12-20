@@ -38,13 +38,20 @@ describe("Lexer States", () => {
     };
 
     const grammar = `
-      A := 'abc';
-      B := 'def' @ state;
+      A := 'a';
+      B := 'b' @ state;
+      C := 'c';
 
-      Rule := A;
+      RuleA := A RuleB;
+      RuleB := { lexer.push('state') } B { lexer.pop() } RuleC;
+      RuleC := C;
     `;
 
-    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    const codegen = new JavaScriptModuleCodegen({
+      lexerFile,
+      parserFile,
+      debug: false,
+    });
     await codegen.parser(genParser(grammar));
 
     // note: this is not available in the typescript typings currently
@@ -52,6 +59,7 @@ describe("Lexer States", () => {
     const context = vm.createContext({
       output,
       Buffer,
+      console,
     });
 
     const module = new SourceTextModule(
@@ -75,16 +83,20 @@ describe("Lexer States", () => {
           const code = await fsp.readFile(lexerInitialFile, "utf-8");
           return new SourceTextModule(code, {
             context: referencingModule.context,
+            identifier: lexerInitialFile,
           });
         } else if (specifier === `./${basename(lexerStateFile)}`) {
           const code = await fsp.readFile(lexerStateFile, "utf-8");
           return new SourceTextModule(code, {
             context: referencingModule.context,
+            identifier: lexerStateFile,
           });
         } else if (specifier === parserFile) {
           const code = await fsp.readFile(parserFile, "utf-8");
+
           return new SourceTextModule(code, {
             context: referencingModule.context,
+            identifier: parserFile,
           });
         }
         throw new Error(`Unable to resolve dependency: ${specifier}`);
@@ -97,15 +109,41 @@ describe("Lexer States", () => {
     await module.evaluate();
 
     expect(results).toEqual({
-      name: "Rule",
+      name: "RuleA",
       start: -1,
       end: -1,
       items: [
         {
           name: "A",
           start: 0,
-          end: 3,
+          end: 1,
           items: undefined,
+        },
+        {
+          name: "RuleB",
+          start: -1,
+          end: -1,
+          items: [
+            {
+              name: "B",
+              start: 1,
+              end: 2,
+              items: undefined,
+            },
+            {
+              name: "RuleC",
+              start: -1,
+              end: -1,
+              items: [
+                {
+                  name: "C",
+                  start: 2,
+                  end: 3,
+                  items: undefined,
+                },
+              ],
+            },
+          ],
         },
       ],
     });
