@@ -133,6 +133,7 @@ const escapedCharacters = [
   ["t", "\t"],
   ["b", "\b"],
   ["f", "\f"],
+  ["x", "x"],
 ];
 
 /**
@@ -148,6 +149,26 @@ function next(stack, input) {
   ) {
     const [, matchedChar] =
       escapedCharacters.find((c) => c[0] === input[1]) ?? [];
+
+    if (matchedChar === "x") {
+      const chars = input.slice(2, 4);
+      const [, hex] = chars.match(/^([0-9a-fA-F]{2})/) ?? [];
+
+      if (!hex) {
+        throw new Error(`Illegal '\\x${chars}' hex escape sequence`);
+      }
+
+      stack.push({
+        parent: undefined,
+        op: ops.match,
+        value: String.fromCharCode(parseInt(hex, 16)),
+        node: undefined,
+        nodes: undefined,
+        left: undefined,
+        right: undefined,
+      });
+      return 4;
+    }
 
     stack.push({
       parent: undefined,

@@ -258,22 +258,20 @@ describe("parse", () => {
     ["\t", "\\t"],
     ["\b", "\\b"],
     ["\f", "\\f"],
-  ])(
-    "should allow special character '%s' (escaped as '%s')",
-    (expected, input) => {
-      expect(parse(input)).toEqual(
-        node({
-          op: ops.sequence,
-          nodes: [
-            node({
-              op: ops.match,
-              value: expected,
-            }),
-          ],
-        })
-      );
-    }
-  );
+    ["a", "\\x61"],
+  ])("should allow special character %p (escaped as %p)", (expected, input) => {
+    expect(parse(input)).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: [
+          node({
+            op: ops.match,
+            value: expected,
+          }),
+        ],
+      })
+    );
+  });
 
   it("should accept character ranges", () => {
     expect(parse("[a-c]")).toEqual(
@@ -473,3 +471,5 @@ describe("convertNode", () => {
     );
   });
 });
+
+// /0xff/
