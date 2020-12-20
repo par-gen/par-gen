@@ -114,7 +114,9 @@ export function generate(grammar) {
   return {
     rules,
     states: Array.from(states),
-    terminals: dfa.description.symbols,
+    // todo: rename terminals and nonTerminals
+    // these are rule symbols (e.g. for lookahead) and rule names
+    terminals: [EOF, ...dfa.description.symbols],
     nonTerminals: rules.map((rule) => rule.name),
     actions,
     goto,

@@ -287,7 +287,7 @@ export class JavaScriptBaseCodegen {
       ];
       const actionsTable = new Uint16Array(${
         states.length * terminals.length
-      }).fill(-1);
+      }).fill(0xffff);
       ${Array.from(actions.entries())
         .flatMap(([from, action]) => {
           return Array.from(action.entries()).map(([symbol, to]) => {
@@ -304,7 +304,7 @@ export class JavaScriptBaseCodegen {
 
       const gotoTable = new Uint16Array(${
         states.length * nonTerminals.length
-      }).fill(-1);
+      }).fill(0xffff);
       ${Array.from(goto.entries())
         .flatMap(([from, target]) => {
           return Array.from(target.entries()).map(([symbol, to]) => {
@@ -316,6 +316,28 @@ export class JavaScriptBaseCodegen {
         })
         .join("\n")}
 
+      const nextTokens = {
+        ${Object.keys(lexerData)
+          .map(
+            (name) =>
+              `${name}: nextToken${name[0].toUpperCase() + name.substr(1)},`
+          )
+          .join("\n")}
+      };
+
+      const lexer = {
+        _stack: [],
+        push(name) {
+          nextToken = nextTokens[name];
+          lexer._stack.push(nextToken);
+        },
+        pop() {
+          lexer._stack.pop();
+          nextToken = lexer._stack[lexer._stack.length - 1];
+        }
+      };
+      let nextToken;
+
       function parse(input) {
         ${debug(
           () => `
@@ -324,10 +346,12 @@ export class JavaScriptBaseCodegen {
           console.log('---');
           `
         )}
+        lexer.push('initial');
+
         const stream = Uint8Array.from(Buffer.from(input));
         let offset = 0;
 
-        let result = nextTokenInitial(stream, offset);
+        let result = nextToken(stream, offset);
         let { state: lookahead, start, end } = result;
         offset = end;
         let lookaheadIndex = terminals.indexOf(lookahead);
@@ -359,6 +383,9 @@ export class JavaScriptBaseCodegen {
           const actionLookup = actionsTable[currentState * ${
             terminals.length
           } + lookaheadIndex];
+          if (actionLookup === 0xffff) {
+            throw new Error(\`Unexpected lookahead \${lookahead}\`);
+          }
           const action = actions[actionLookup];
 
           switch (action.op) {
@@ -371,12 +398,10 @@ export class JavaScriptBaseCodegen {
                 tree: { name: lookahead, start, end, items: undefined },
               };
               for (const item of states[action.state].values()) {
-                if (item.lookahead === lookahead) {
-                  item.semanticAction?.(stack);
-                }
+                item.semanticAction?.(stack);
               }
 
-              result = nextTokenInitial(stream, offset);
+              result = nextToken(stream, offset);
               lookahead = result.state;
               lookaheadIndex = terminals.indexOf(lookahead);
               start = result.start;
@@ -462,6 +487,8 @@ export class JavaScriptBaseCodegen {
               throw new Error("Parser Error");
           }
         }
+
+        lexer.pop();
       }
 
       ${this._parserExports()}
