@@ -9,6 +9,9 @@
     "@knisterpeter/expound-parser": "workspace:0.1.0",
     "prettier": "2.2.1"
   },
+  "devDependencies": {
+    "@jest/globals": "26.6.2"
+  },
   "jest": {
     "displayName": "codegen",
     "transform": {},

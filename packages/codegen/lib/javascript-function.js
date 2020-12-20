@@ -23,13 +23,17 @@
  */
 
 /**
+ * @typedef {{ EOF: string, next(input: Uint8Array, offset: number): { state: string; start: number; end: number; }; }} LexerResult
+ */
+
+/**
  * @extends {Codegen}
  */
 export class JavaScriptFunctionCodegen {
   /**
    * @public
    * @param {LexerData} data
-   * @return {Promise<{ EOF: string, next(input: Uint8Array, offset: number): { state: string; start: number; end: number; }; }>}
+   * @return {Promise<LexerResult>}
    */
   async lexer(data) {
     const {
@@ -135,7 +139,11 @@ export class JavaScriptFunctionCodegen {
   async parser(data) {
     const { actions, goto, start: startState, lexerData } = data;
 
-    const { next: nextToken } = await this.lexer(lexerData.initial);
+    /** @type {{[lexerState: string]: LexerResult['next']}} */
+    const lexers = {};
+    for await (const [name, data] of Object.entries(lexerData)) {
+      lexers[name] = (await this.lexer(data)).next;
+    }
 
     /**
      * @param {string} input
@@ -144,7 +152,7 @@ export class JavaScriptFunctionCodegen {
       const stream = Uint8Array.from(Buffer.from(input));
       let offset = 0;
 
-      let result = nextToken(stream, offset);
+      let result = lexers["initial"](stream, offset);
       let { state: lookahead, start, end } = result;
       offset = end;
 
@@ -181,7 +189,7 @@ ${printState(currentState)}`
               tree: { name: lookahead, start, end },
             };
 
-            result = nextToken(stream, offset);
+            result = lexers["initial"](stream, offset);
             lookahead = result.state;
             start = result.start;
             offset = end = result.end;
