@@ -177,9 +177,7 @@ describe("DFA", () => {
         .minimal()
         .compile((symbol) => symbol.charCodeAt(0));
 
-      expect(compiled(Uint8Array.from(Buffer.from("abcffghmnijmn")))).toBe(
-        true
-      );
+      expect(compiled(Buffer.from("abcffghmnijmn"))).toBe(true);
     });
 
     it("should be fast", () => {
@@ -202,7 +200,7 @@ describe("DFA", () => {
         .compile((symbol) => symbol.charCodeAt(0));
 
       const string = "abcffghmnijmn";
-      const input = Uint8Array.from(Buffer.from(string));
+      const input = Buffer.from(string);
       const iterations = 50_000_000;
 
       // make the function hot

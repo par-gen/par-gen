@@ -348,7 +348,7 @@ export class JavaScriptBaseCodegen {
         )}
         lexer.push('initial');
 
-        const stream = Uint8Array.from(Buffer.from(input));
+        const stream = Buffer.from(input);
         let offset = 0;
 
         let result = nextToken(stream, offset);

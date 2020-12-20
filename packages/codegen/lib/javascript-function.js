@@ -149,7 +149,7 @@ export class JavaScriptFunctionCodegen {
      * @param {string} input
      */
     const parse = (input) => {
-      const stream = Uint8Array.from(Buffer.from(input));
+      const stream = Buffer.from(input);
       let offset = 0;
 
       let result = lexers["initial"](stream, offset);

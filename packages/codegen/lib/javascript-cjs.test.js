@@ -65,7 +65,7 @@ describe("JavaScriptCommonJsCodegen", () => {
       `
         const { next } = require('${lexerStateFile}');
 
-        const input = new Uint8Array(Buffer.from("abc"));
+        const input = Buffer.from("abc");
         const matched = next(input, 0);
 
         output(matched);
