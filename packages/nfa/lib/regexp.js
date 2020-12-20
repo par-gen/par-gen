@@ -133,8 +133,10 @@ const escapedCharacters = [
   ["t", "\t"],
   ["b", "\b"],
   ["f", "\f"],
-  ["x", "x"],
 ];
+
+/** @type {[string, string][]} */
+const escapedCharactersWithHex = [...escapedCharacters, ["x", "x"]];
 
 /**
  * @param {ParseTree<string>[]} stack
@@ -145,10 +147,10 @@ function next(stack, input) {
   const isEscapeSequence = input[0] === "\\";
   if (
     isEscapeSequence &&
-    escapedCharacters.map((c) => c[0]).includes(input[1])
+    escapedCharactersWithHex.map((c) => c[0]).includes(input[1])
   ) {
     const [, matchedChar] =
-      escapedCharacters.find((c) => c[0] === input[1]) ?? [];
+      escapedCharactersWithHex.find((c) => c[0] === input[1]) ?? [];
 
     if (matchedChar === "x") {
       const chars = input.slice(2, 4);
@@ -203,15 +205,23 @@ function next(stack, input) {
       return Number.MAX_SAFE_INTEGER;
     }
     case "[": {
-      const [n, node] = seq(input.slice(1));
+      let negative = false;
+      let nextInput = input.slice(1);
+      if (nextInput[0] === "^") {
+        negative = true;
+        nextInput = nextInput.slice(1);
+      }
+
+      const [n, node] = seq(nextInput);
 
       /** @type {string[]} */
-      const list = [];
-      let i = 0;
+      let list = [];
       const values =
         node.nodes?.map((node) => /** @type {string} */ (node.value)) ?? [];
 
+      let i = 0;
       while (i < values.length) {
+        // character ranges
         if (i < values.length + 2 && values[i + 1] === "-") {
           for (
             let c = values[i].charCodeAt(0), last = values[i + 2].charCodeAt(0);
@@ -222,12 +232,30 @@ function next(stack, input) {
           }
           i += 3;
         } else {
+          // simple characters
           list.push(values[i]);
           i++;
         }
       }
 
-      const range = parse(list.join("|"));
+      if (negative) {
+        const positiveList = list;
+        list = [];
+        for (let i = 0; i < 255; i++) {
+          const char = String.fromCharCode(i);
+          if (!positiveList.includes(char)) {
+            list.push(char);
+          }
+        }
+      }
+
+      const escapeChars = escapedCharacters.map((c) => c[1]);
+
+      const range = parse(
+        list
+          .map((char) => (escapeChars.includes(char) ? `\\${char}` : char))
+          .join("|")
+      );
       stack.push(/** @type {ParseTree<string>} */ (range.nodes?.[0]));
 
       return n + 2;
