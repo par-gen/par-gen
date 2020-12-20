@@ -16,7 +16,7 @@ describe("JavaScriptFunctionCodegen", () => {
     const codegen = new JavaScriptFunctionCodegen();
     const { EOF, next } = await codegen.lexer(genLexer(grammar));
 
-    const input = new Uint8Array(Buffer.from("abbz"));
+    const input = Buffer.from("abbz");
 
     [
       // match
@@ -59,7 +59,7 @@ describe("JavaScriptFunctionCodegen", () => {
     const codegen = new JavaScriptFunctionCodegen();
     const { next } = await codegen.lexer(genLexer(grammar));
 
-    const input = new Uint8Array(Buffer.from("|"));
+    const input = Buffer.from("|");
 
     const matched = next(input, /** @type {number} */ (0));
 
