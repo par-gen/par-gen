@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import { generate as genLexer } from "@knisterpeter/expound-lexer";
 import { generate as genParser } from "@knisterpeter/expound-parser";
 
@@ -116,6 +117,35 @@ describe("JavaScriptFunctionCodegen", () => {
               end: 3,
             },
           ],
+        },
+      ],
+    });
+  });
+
+  it("should generate a parser with multiple lexer states", async () => {
+    const data = genParser(`
+      A := 'a';
+      B := 'b' @ b;
+
+      Rule := A;
+    `);
+
+    const codegen = new JavaScriptFunctionCodegen();
+    const spy = jest.spyOn(codegen, "lexer");
+
+    const { parse } = await codegen.parser(data);
+
+    const ast = parse("a");
+
+    expect(spy).toBeCalledTimes(2);
+
+    expect(ast).toEqual({
+      name: "Rule",
+      items: [
+        {
+          name: "A",
+          start: 0,
+          end: 1,
         },
       ],
     });

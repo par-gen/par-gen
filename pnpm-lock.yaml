@@ -35,7 +35,10 @@ importers:
       '@knisterpeter/expound-lexer': 'link:../lexer'
       '@knisterpeter/expound-parser': 'link:../parser'
       prettier: 2.2.1
+    devDependencies:
+      '@jest/globals': 26.6.2
     specifiers:
+      '@jest/globals': 26.6.2
       '@knisterpeter/expound-lexer': 'workspace:0.1.0'
       '@knisterpeter/expound-parser': 'workspace:0.1.0'
       prettier: 2.2.1
