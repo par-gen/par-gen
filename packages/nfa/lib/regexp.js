@@ -258,7 +258,7 @@ function next(stack, input) {
       );
       stack.push(/** @type {ParseTree<string>} */ (range.nodes?.[0]));
 
-      return n + 2;
+      return n + 2 + (negative ? 1 : 0);
     }
     case "]": {
       return Number.MAX_SAFE_INTEGER;
