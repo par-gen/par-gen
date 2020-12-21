@@ -7,6 +7,10 @@ import {
   createChoiceTree,
   convertNode,
 } from "@knisterpeter/expound-nfa";
+import debug from "debug";
+import { performance } from "perf_hooks";
+
+const log = debug("expound:lexer");
 
 /**
  * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
@@ -77,49 +81,56 @@ function createCombinedExpression(...trees) {
  * @returns {StringDFA}
  */
 function createOptimalDFA(nfa) {
-  const dfa = new DFA(
-    fromNFA(nfa, (n, states) => ({
-      n,
-      names: states.map((state) => state.name).filter(nonFalsyValues),
-    }))
-  );
+  const traceStart = performance.now();
+  log("enter createOptimalDFA");
+  try {
+    const dfa = new DFA(
+      fromNFA(nfa, (n, states) => ({
+        n,
+        names: states.map((state) => state.name).filter(nonFalsyValues),
+      }))
+    );
 
-  const initialPartitions = [
-    ...dfa.description.finals.map((final) => [final]),
-    dfa.description.states.filter(
-      (state) => !dfa.description.finals.includes(state)
-    ),
-  ];
+    const initialPartitions = [
+      ...dfa.description.finals.map((final) => [final]),
+      dfa.description.states.filter(
+        (state) => !dfa.description.finals.includes(state)
+      ),
+    ];
 
-  const optimizedStateMapper = () => {
-    /**
-     * @type {Map<number, {n: number, names: string[]}>}
-     */
-    const cache = new Map();
-    /**
-     * @param {number} n
-     * @param {{ n: number; names: string[]; }[]} states
-     */
-    const fn = (n, states) => {
-      let state = cache.get(n);
-      if (!state) {
-        state = {
-          n,
-          names: states.flatMap((s) => s.names).filter(nonFalsyValues),
-        };
-        cache.set(n, state);
-      }
-      return state;
+    const optimizedStateMapper = () => {
+      /**
+       * @type {Map<number, {n: number, names: string[]}>}
+       */
+      const cache = new Map();
+      /**
+       * @param {number} n
+       * @param {{ n: number; names: string[]; }[]} states
+       */
+      const fn = (n, states) => {
+        let state = cache.get(n);
+        if (!state) {
+          state = {
+            n,
+            names: states.flatMap((s) => s.names).filter(nonFalsyValues),
+          };
+          cache.set(n, state);
+        }
+        return state;
+      };
+      return fn;
     };
-    return fn;
-  };
 
-  const minimal = minimize(dfa, {
-    partitionizer: () => initialPartitions,
-    stateMapper: optimizedStateMapper(),
-  });
+    const minimal = minimize(dfa, {
+      partitionizer: () => initialPartitions,
+      stateMapper: optimizedStateMapper(),
+    });
 
-  return new DFA(minimal);
+    return new DFA(minimal);
+  } finally {
+    const traceEnd = performance.now();
+    log("exit createOptimalDFA (took %d ms)", traceEnd - traceStart);
+  }
 }
 
 /**
@@ -127,21 +138,28 @@ function createOptimalDFA(nfa) {
  * @returns {StringDFA}
  */
 function createAutomata(tokens) {
-  const tree = createCombinedExpression(
-    ...tokens.map((token) => parseTerminalRule(token.name, token.expr))
-  );
+  const traceStart = performance.now();
+  log("enter createAutomata");
+  try {
+    const tree = createCombinedExpression(
+      ...tokens.map((token) => parseTerminalRule(token.name, token.expr))
+    );
 
-  const nfa = new NFA(
-    fromRegExpParseTree(tree, {
-      symbolMapper: (value) => value?.value,
-      stateFactory: (n, tree) => ({
-        n,
-        name: tree.value?.name,
-      }),
-    })
-  );
+    const nfa = new NFA(
+      fromRegExpParseTree(tree, {
+        symbolMapper: (value) => value?.value,
+        stateFactory: (n, tree) => ({
+          n,
+          name: tree.value?.name,
+        }),
+      })
+    );
 
-  return createOptimalDFA(nfa);
+    return createOptimalDFA(nfa);
+  } finally {
+    const traceEnd = performance.now();
+    log("exit createAutomata (took %d ms)", traceEnd - traceStart);
+  }
 }
 
 /**
@@ -161,47 +179,56 @@ function createAutomata(tokens) {
  * @returns {LexerData}
  */
 export function generateFromTokens(tokens) {
-  const dfa = createAutomata(tokens);
+  const traceStart = performance.now();
+  log("enter generateFromTokens");
+  try {
+    const dfa = createAutomata(tokens);
 
-  const d = dfa.description;
+    const d = dfa.description;
 
-  const columns = 256;
+    const columns = 256;
 
-  const start = d.states.indexOf(d.start) * columns;
-  const finals = d.finals.map((final) => d.states.indexOf(final) * columns);
+    const start = d.states.indexOf(d.start) * columns;
+    const finals = d.finals.map((final) => d.states.indexOf(final) * columns);
 
-  const transitions = Array.from(d.transitions.entries()).map(
-    ([from, transition]) =>
-      /** @type {[number, [number, number][]]} */ ([
-        d.states.indexOf(from) * columns,
-        /** @type {[number, number][]} */ Array.from(
-          transition.entries()
-        ).map(([symbol, to]) => [
-          symbol.charCodeAt(0),
-          d.states.indexOf(to) * columns,
-        ]),
-      ])
-  );
+    const transitions = Array.from(d.transitions.entries()).map(
+      ([from, transition]) =>
+        /** @type {[number, [number, number][]]} */ ([
+          d.states.indexOf(from) * columns,
+          /** @type {[number, number][]} */ Array.from(
+            transition.entries()
+          ).map(([symbol, to]) => [
+            symbol.charCodeAt(0),
+            d.states.indexOf(to) * columns,
+          ]),
+        ])
+    );
 
-  const errorState =
-    transitions
-      .filter(([from, transition]) => transition.every(([, to]) => from === to))
-      .map(([state]) => state)
-      .find((state) => !finals.includes(state)) ?? -1;
+    const errorState =
+      transitions
+        .filter(([from, transition]) =>
+          transition.every(([, to]) => from === to)
+        )
+        .map(([state]) => state)
+        .find((state) => !finals.includes(state)) ?? -1;
 
-  const stateNames = d.states.map((state) => state.names[0]);
+    const stateNames = d.states.map((state) => state.names[0]);
 
-  return {
-    tokens: {
-      EOF,
-      ERROR,
-    },
-    stateNames,
-    errorState,
-    transitions,
-    start,
-    finals,
-  };
+    return {
+      tokens: {
+        EOF,
+        ERROR,
+      },
+      stateNames,
+      errorState,
+      transitions,
+      start,
+      finals,
+    };
+  } finally {
+    const traceEnd = performance.now();
+    log("exit generateFromTokens (took %d ms)", traceEnd - traceStart);
+  }
 }
 
 /**

@@ -1,3 +1,8 @@
+import debug from "debug";
+import { performance } from "perf_hooks";
+
+const log = debug("expound:dfa");
+
 /**
  * @template STATE, SYMBOL
  * @typedef {import('./dfa').DFA<STATE, SYMBOL>} DFA
@@ -20,6 +25,9 @@
  * @return {DFADescription<NEW_STATE, SYMBOL>}
  */
 export function minimize(dfa, { partitionizer, stateMapper }) {
+  const traceStart = performance.now();
+  log("enter minimize");
+  try {
   const { states, symbols, transitions, finals } = dfa.description;
 
   const initial = partitionizer?.() ?? [
@@ -134,4 +142,8 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
   };
 
   return description;
+  } finally {
+    const traceEnd = performance.now();
+    log("exit minimize (took %d ms)", traceEnd - traceStart);
+  }
 }

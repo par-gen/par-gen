@@ -1,4 +1,8 @@
 import { Epsilon } from "@knisterpeter/expound-nfa";
+import debug from "debug";
+import { performance } from "perf_hooks";
+
+const log = debug("expound:dfa");
 
 /**
  * @template STATE, SYMBOL
@@ -29,15 +33,22 @@ import { Epsilon } from "@knisterpeter/expound-nfa";
  * @returns {DFADescription<NEW_STATE, SYMBOL>}
  */
 export function fromNFA(nfa, stateMapper) {
-  const { dstates, transitions, start, finals } = construct(nfa, stateMapper);
+  const traceStart = performance.now();
+  log("enter fromNFA");
+  try {
+    const { dstates, transitions, start, finals } = construct(nfa, stateMapper);
 
-  return {
-    states: dstates.map((dstate) => dstate.name),
-    symbols: nfa.description.symbols,
-    transitions,
-    start: start.name,
-    finals: finals.map((final) => final.name),
-  };
+    return {
+      states: dstates.map((dstate) => dstate.name),
+      symbols: nfa.description.symbols,
+      transitions,
+      start: start.name,
+      finals: finals.map((final) => final.name),
+    };
+  } finally {
+    const traceEnd = performance.now();
+    log("exit fromNFA (took %d ms)", traceEnd - traceStart);
+  }
 }
 
 /**
@@ -94,61 +105,75 @@ function getDState(dstates, states) {
  * @returns {{ dstates: DState<STATE, NEW_STATE>[], transitions: Map<NEW_STATE, Map<SYMBOL, NEW_STATE>>, start: DState<STATE, NEW_STATE>, finals: DState<STATE, NEW_STATE>[] }}
  */
 function construct(nfa, stateMapper) {
-  let index = 0;
+  const traceStart = performance.now();
+  log("enter construct");
+  try {
+    let index = 0;
 
-  const start = {
-    name: stateMapper(index++, [nfa.description.start]),
-    nstates: getEpsilonClosure(nfa, [nfa.description.start]),
-  };
-  /** @type {DState<STATE, NEW_STATE>[]} */
-  const dstates = [start];
+    const start = {
+      name: stateMapper(index++, [nfa.description.start]),
+      nstates: getEpsilonClosure(nfa, [nfa.description.start]),
+    };
+    /** @type {DState<STATE, NEW_STATE>[]} */
+    const dstates = [start];
 
-  /** @type {DState<STATE, NEW_STATE>[]} */
-  const marked = [];
+    /** @type {DState<STATE, NEW_STATE>[]} */
+    const marked = [];
 
-  /** @type {Map<NEW_STATE, Map<SYMBOL, NEW_STATE>>} */
-  const transitions = new Map();
+    /** @type {Map<NEW_STATE, Map<SYMBOL, NEW_STATE>>} */
+    const transitions = new Map();
 
-  while (true) {
-    const next = dstates.find((state) => !marked.includes(state));
-    if (!next) {
-      break;
-    }
-    const dstate = next;
-    marked.push(dstate);
-
-    nfa.description.symbols.forEach((symbol) => {
-      const states = dstate.nstates
-        .flatMap((state) => nfa.description.transitions.get(state)?.get(symbol))
-        .filter(
-          /** @type {(states: STATE | undefined) => states is STATE} */ ((
-            states
-          ) => Boolean(states))
-        );
-      const statesWithEpsilon = getEpsilonClosure(nfa, states);
-
-      const nextDState = getDState(dstates, statesWithEpsilon) ?? {
-        name: stateMapper(index++, statesWithEpsilon),
-        nstates: statesWithEpsilon,
-      };
-
-      transitions.set(
-        dstate.name,
-        new Map([
-          ...Array.from(transitions.get(dstate.name)?.entries() ?? []),
-          [symbol, nextDState.name],
-        ])
-      );
-
-      if (!dstates.includes(nextDState)) {
-        dstates.push(nextDState);
+    while (true) {
+      const next = dstates.find((state) => !marked.includes(state));
+      if (!next) {
+        break;
       }
-    });
+      const dstate = next;
+      marked.push(dstate);
+
+      nfa.description.symbols.forEach((symbol) => {
+        const states = dstate.nstates
+          .flatMap((state) =>
+            nfa.description.transitions.get(state)?.get(symbol)
+          )
+          .filter(
+            /** @type {(states: STATE | undefined) => states is STATE} */ ((
+              states
+            ) => Boolean(states))
+          );
+        const statesWithEpsilon = getEpsilonClosure(nfa, states);
+
+        const nextDState = getDState(dstates, statesWithEpsilon) ?? {
+          name: stateMapper(index++, statesWithEpsilon),
+          nstates: statesWithEpsilon,
+        };
+
+        transitions.set(
+          dstate.name,
+          new Map([
+            ...Array.from(transitions.get(dstate.name)?.entries() ?? []),
+            [symbol, nextDState.name],
+          ])
+        );
+
+        if (!dstates.includes(nextDState)) {
+          dstates.push(nextDState);
+        }
+      });
+    }
+
+    const finals = nfa.description.finals.flatMap((state) =>
+      dstates.filter((dstate) => dstate.nstates.includes(state))
+    );
+
+    return {
+      dstates,
+      transitions,
+      start,
+      finals,
+    };
+  } finally {
+    const traceEnd = performance.now();
+    log("exit construct (took %d ms)", traceEnd - traceStart);
   }
-
-  const finals = nfa.description.finals.flatMap((state) =>
-    dstates.filter((dstate) => dstate.nstates.includes(state))
-  );
-
-  return { dstates, transitions, start, finals };
 }

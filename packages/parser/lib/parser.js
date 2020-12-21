@@ -1,6 +1,10 @@
 import { DFA } from "@knisterpeter/expound-dfa";
 import { parse } from "@knisterpeter/expound-grammar";
 import { generateFromTokens } from "@knisterpeter/expound-lexer";
+import debug from "debug";
+import { performance } from "perf_hooks";
+
+const log = debug("expound:parser");
 
 /**
  * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
@@ -57,72 +61,79 @@ import { generateFromTokens } from "@knisterpeter/expound-lexer";
  * @returns {ParserData}
  */
 export function generate(grammar) {
-  const { tokens, rules } = parse(grammar);
+  const traceStart = performance.now();
+  log("enter generate");
+  try {
+    const { tokens, rules } = parse(grammar);
 
-  const tokenGroups = tokens.reduce((groups, token) => {
-    let list = groups.get(token.state);
-    if (!list) {
-      list = [];
-      groups.set(token.state, list);
+    const tokenGroups = tokens.reduce((groups, token) => {
+      let list = groups.get(token.state);
+      if (!list) {
+        list = [];
+        groups.set(token.state, list);
+      }
+      list.push(token);
+      return groups;
+    }, /** @type {Map<string, Token[]>} */ (new Map()));
+
+    /** @type {Lexers} */
+    const lexers = {};
+    for (const [name, tokens] of tokenGroups.entries()) {
+      const lexerData = generateFromTokens(tokens);
+      lexers[name] = lexerData;
     }
-    list.push(token);
-    return groups;
-  }, /** @type {Map<string, Token[]>} */ (new Map()));
+    const EOF = lexers.initial.tokens.EOF;
 
-  /** @type {Lexers} */
-  const lexers = {};
-  for (const [name, tokens] of tokenGroups.entries()) {
-    const lexerData = generateFromTokens(tokens);
-    lexers[name] = lexerData;
-  }
-  const EOF = lexers.initial.tokens.EOF;
+    const augmentedRules = [
+      /** @type {Rule} */
+      ({
+        name: "S",
+        symbols: [rules[0].name],
+        actions: [],
+      }),
+      ...rules,
+    ];
 
-  const augmentedRules = [
-    /** @type {Rule} */
-    ({
-      name: "S",
-      symbols: [rules[0].name],
-      actions: [],
-    }),
-    ...rules,
-  ];
+    const dfa = createDFA(tokens, EOF, augmentedRules);
 
-  const dfa = createDFA(tokens, EOF, augmentedRules);
+    const actions = createActionTable(dfa, EOF);
+    const goto = createGotoTable(dfa, augmentedRules);
 
-  const actions = createActionTable(dfa, EOF);
-  const goto = createGotoTable(dfa, augmentedRules);
-
-  /** @type {Set<ItemState>} */
-  const states = new Set();
-  for (const [from, action] of actions.entries()) {
-    states.add(from);
-    for (const [, to] of action.entries()) {
-      if (to.op === "shift") {
-        states.add(to.state);
+    /** @type {Set<ItemState>} */
+    const states = new Set();
+    for (const [from, action] of actions.entries()) {
+      states.add(from);
+      for (const [, to] of action.entries()) {
+        if (to.op === "shift") {
+          states.add(to.state);
+        }
       }
     }
-  }
-  for (const [from, target] of goto.entries()) {
-    states.add(from);
-    for (const [, to] of target) {
-      states.add(to);
+    for (const [from, target] of goto.entries()) {
+      states.add(from);
+      for (const [, to] of target) {
+        states.add(to);
+      }
     }
+
+    const start = dfa.description.start;
+
+    return {
+      rules,
+      states: Array.from(states),
+      // todo: rename terminals and nonTerminals
+      // these are rule symbols (e.g. for lookahead) and rule names
+      terminals: [EOF, ...dfa.description.symbols],
+      nonTerminals: rules.map((rule) => rule.name),
+      actions,
+      goto,
+      start: start,
+      lexerData: lexers,
+    };
+  } finally {
+    const traceEnd = performance.now();
+    log("exit generate (took %d ms)", traceEnd - traceStart);
   }
-
-  const start = dfa.description.start;
-
-  return {
-    rules,
-    states: Array.from(states),
-    // todo: rename terminals and nonTerminals
-    // these are rule symbols (e.g. for lookahead) and rule names
-    terminals: [EOF, ...dfa.description.symbols],
-    nonTerminals: rules.map((rule) => rule.name),
-    actions,
-    goto,
-    start: start,
-    lexerData: lexers,
-  };
 }
 
 /**
