@@ -50,7 +50,7 @@ importers:
       '@types/debug': 4.1.5
     specifiers:
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
-      '@types/debug': ^4.1.5
+      '@types/debug': 4.1.5
       debug: ^4.3.1
   packages/grammar:
     specifiers: {}
@@ -66,7 +66,7 @@ importers:
       '@knisterpeter/expound-dfa': 'workspace:0.1.0'
       '@knisterpeter/expound-grammar': 'workspace:0.1.0'
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
-      '@types/debug': ^4.1.5
+      '@types/debug': 4.1.5
       debug: ^4.3.1
   packages/nfa:
     dependencies:
@@ -74,7 +74,7 @@ importers:
     devDependencies:
       '@types/debug': 4.1.5
     specifiers:
-      '@types/debug': ^4.1.5
+      '@types/debug': 4.1.5
       debug: ^4.3.1
   packages/parser:
     dependencies:
@@ -90,7 +90,7 @@ importers:
       '@knisterpeter/expound-grammar': 'workspace:0.1.0'
       '@knisterpeter/expound-lexer': 'workspace:0.1.0'
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
-      '@types/debug': ^4.1.5
+      '@types/debug': 4.1.5
       debug: ^4.3.1
 lockfileVersion: 5.2
 packages:
