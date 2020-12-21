@@ -45,8 +45,13 @@ importers:
   packages/dfa:
     dependencies:
       '@knisterpeter/expound-nfa': 'link:../nfa'
+      debug: 4.3.1
+    devDependencies:
+      '@types/debug': 4.1.5
     specifiers:
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
+      '@types/debug': ^4.1.5
+      debug: ^4.3.1
   packages/grammar:
     specifiers: {}
   packages/lexer:
@@ -54,23 +59,39 @@ importers:
       '@knisterpeter/expound-dfa': 'link:../dfa'
       '@knisterpeter/expound-grammar': 'link:../grammar'
       '@knisterpeter/expound-nfa': 'link:../nfa'
+      debug: 4.3.1
+    devDependencies:
+      '@types/debug': 4.1.5
     specifiers:
       '@knisterpeter/expound-dfa': 'workspace:0.1.0'
       '@knisterpeter/expound-grammar': 'workspace:0.1.0'
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
+      '@types/debug': ^4.1.5
+      debug: ^4.3.1
   packages/nfa:
-    specifiers: {}
+    dependencies:
+      debug: 4.3.1
+    devDependencies:
+      '@types/debug': 4.1.5
+    specifiers:
+      '@types/debug': ^4.1.5
+      debug: ^4.3.1
   packages/parser:
     dependencies:
       '@knisterpeter/expound-dfa': 'link:../dfa'
       '@knisterpeter/expound-grammar': 'link:../grammar'
       '@knisterpeter/expound-lexer': 'link:../lexer'
       '@knisterpeter/expound-nfa': 'link:../nfa'
+      debug: 4.3.1
+    devDependencies:
+      '@types/debug': 4.1.5
     specifiers:
       '@knisterpeter/expound-dfa': 'workspace:0.1.0'
       '@knisterpeter/expound-grammar': 'workspace:0.1.0'
       '@knisterpeter/expound-lexer': 'workspace:0.1.0'
       '@knisterpeter/expound-nfa': 'workspace:0.1.0'
+      '@types/debug': ^4.1.5
+      debug: ^4.3.1
 lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.12.11:
@@ -617,6 +638,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-kSjgDMZONiIfSH1Nxcr5JIRMwUetDki63FSQfpTCz8ogF3Ulqm8+mr5f78dUYs6vMiB6gBusQqfQmBvHZj/lwg==
+  /@types/debug/4.1.5:
+    dev: true
+    resolution:
+      integrity: sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
   /@types/graceful-fs/4.1.4:
     dependencies:
       '@types/node': 14.14.14
@@ -1239,7 +1264,6 @@ packages:
   /debug/4.3.1:
     dependencies:
       ms: 2.1.2
-    dev: true
     engines:
       node: '>=6.0'
     peerDependencies:
@@ -2959,7 +2983,6 @@ packages:
     resolution:
       integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
   /ms/2.1.2:
-    dev: true
     resolution:
       integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
   /nanomatch/1.2.13:

@@ -1,5 +1,9 @@
 import { Epsilon } from "./constants.js";
 import { parse, ops } from "./regexp.js";
+import debug from "debug";
+import { performance } from "perf_hooks";
+
+const log = debug("expound:nfa");
 
 /**
  * @template VALUE
@@ -41,29 +45,36 @@ export function fromRegExp(regexp) {
  * @returns {NFADescription<STATE, SYMBOL>}
  */
 export function fromRegExpParseTree(tree, { symbolMapper, stateFactory }) {
-  let counter = 0;
+  const traceStart = performance.now();
+  log("enter fromRegExpParseTree");
+  try {
+    let counter = 0;
 
-  const def = ((node) => {
-    switch (node.op) {
-      case ops.sequence:
-        return sequence(counter, node, symbolMapper, stateFactory);
-      case ops.choice:
-        return choice(counter, node, symbolMapper, stateFactory);
-      case ops.optional:
-        return optional(counter, node, symbolMapper, stateFactory);
-      case ops.match:
-        return match(counter, node, symbolMapper, stateFactory);
-    }
-    throw new Error(`Unknown op code '${node.op.toString()}'`);
-  })(tree);
+    const def = ((node) => {
+      switch (node.op) {
+        case ops.sequence:
+          return sequence(counter, node, symbolMapper, stateFactory);
+        case ops.choice:
+          return choice(counter, node, symbolMapper, stateFactory);
+        case ops.optional:
+          return optional(counter, node, symbolMapper, stateFactory);
+        case ops.match:
+          return match(counter, node, symbolMapper, stateFactory);
+      }
+      throw new Error(`Unknown op code '${node.op.toString()}'`);
+    })(tree);
 
-  return {
-    states: def.states,
-    symbols: Array.from(new Set(def.symbols)),
-    transitions: def.transitions,
-    start: def.start,
-    finals: [def.final],
-  };
+    return {
+      states: def.states,
+      symbols: Array.from(new Set(def.symbols)),
+      transitions: def.transitions,
+      start: def.start,
+      finals: [def.final],
+    };
+  } finally {
+    const traceEnd = performance.now();
+    log("exit fromRegExpParseTree (took %d ms)", traceEnd - traceStart);
+  }
 }
 
 /**
