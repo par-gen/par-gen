@@ -68,7 +68,7 @@ export class JavaScriptBaseCodegen {
   _lexerCode(data) {
     const {
       tokens: { EOF, ERROR },
-      stateNames,
+      tokenNames,
       errorState,
       transitions,
       start,
@@ -82,9 +82,9 @@ export class JavaScriptBaseCodegen {
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
 
-      const states = ${JSON.stringify(stateNames)};
+      const states = ${JSON.stringify(tokenNames)};
 
-      const table = new Uint16Array(${columns * stateNames.length});
+      const table = new Uint16Array(${columns * tokenNames.length});
       table.fill(${errorState ?? -1});
       ${transitions
         .flatMap(([from, transition]) =>
@@ -137,7 +137,7 @@ export class JavaScriptBaseCodegen {
 
         if (success) {
           return {
-            state: states[visited[n] / ${columns}],
+            state: states[(visited[n] / ${columns}) + 2],
             start: offset,
             end: offset + n,
           };

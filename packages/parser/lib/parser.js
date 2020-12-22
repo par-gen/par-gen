@@ -67,12 +67,14 @@ export function generate(grammar) {
     const { tokens, rules } = parse(grammar);
 
     const tokenGroups = tokens.reduce((groups, token) => {
-      let list = groups.get(token.state);
-      if (!list) {
-        list = [];
-        groups.set(token.state, list);
-      }
-      list.push(token);
+      token.state.forEach((state) => {
+        let list = groups.get(state);
+        if (!list) {
+          list = [];
+          groups.set(state, list);
+        }
+        list.push(token);
+      });
       return groups;
     }, /** @type {Map<string, Token[]>} */ (new Map()));
 
@@ -491,13 +493,11 @@ function calculateFollows(firsts, tokens, EOF, rules) {
     const follows = new Set();
 
     if (rules[0].name === ruleName) {
-      follows.add({
-        // todo: move into grammer parser
-        uid: Number.MAX_SAFE_INTEGER - 1,
-        name: EOF,
-        expr: EOF,
-        state: "initial",
-      });
+      const eofToken = tokens.find((token) => token.name === EOF);
+      if (!eofToken) {
+        throw new Error(`Unable to find ${EOF} token`);
+      }
+      follows.add(eofToken);
     }
     const rhsRules = rules.filter((rule) => rule.symbols.includes(ruleName));
 

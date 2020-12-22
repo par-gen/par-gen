@@ -43488,6 +43488,8 @@ const states = [
 
 const terminals = [
   "@expound.EOF",
+  "@expound.EOF",
+  "@expound.ERROR",
   "WS",
   "TRUE",
   "FALSE",
@@ -43607,9678 +43609,9676 @@ const nonTerminals = [
   "Spaces",
 ];
 
-const startState = states[0];
-
 const actions = [
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 11,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 12,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "done",
+    op: 2, // done
     state: undefined,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Json",
+    symbol: 0,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 20,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 21,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 23,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 24,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 25,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 26,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 27,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 28,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 29,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 30,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 31,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 32,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 33,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 34,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 35,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 36,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 37,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 38,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 39,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 40,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 41,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 42,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 43,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 44,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 45,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 46,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 47,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 48,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 49,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 50,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 51,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 52,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 53,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 54,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 55,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 56,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 57,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 58,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 59,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 62,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 64,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 65,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Value",
+    symbol: 5,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 66,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 67,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 68,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 69,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 70,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 71,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 72,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 73,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 74,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 75,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 76,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 77,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 78,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 79,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 80,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 81,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 82,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 83,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 84,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 85,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 86,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 87,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 88,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 89,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 90,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 91,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 92,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 32,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 93,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 94,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "String",
+    symbol: 21,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 95,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 96,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 97,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 98,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 99,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 100,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 101,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 102,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 103,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 104,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 105,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 106,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 107,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 108,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 109,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 110,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 111,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 112,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 113,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 114,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 115,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 116,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 117,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 118,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 119,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 54,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 55,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 120,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 121,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 122,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 123,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 124,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 125,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 126,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 127,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 128,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 129,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 130,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Spaces",
+    symbol: 46,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Element",
+    symbol: 1,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 132,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 133,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 134,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 135,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 136,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 137,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 138,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 32,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 139,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 140,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 141,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 142,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 143,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 144,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 145,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 146,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 147,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 148,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 54,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 55,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 149,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 150,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 151,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 152,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 153,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 154,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 155,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 42,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 156,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 157,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 158,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 159,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 160,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 161,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 162,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 163,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 164,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 165,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 166,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 167,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 54,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 55,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 168,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 169,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 170,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 171,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 172,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 173,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 174,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 175,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 176,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 177,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digit",
+    symbol: 37,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 178,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 179,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Object",
+    symbol: 12,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 180,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 42,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 181,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 182,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 183,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Array",
+    symbol: 22,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 184,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 185,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 186,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 187,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 188,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 87,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 189,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 190,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 191,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 63,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Sign",
+    symbol: 44,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Number",
+    symbol: 27,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Fraction",
+    symbol: 39,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Integer",
+    symbol: 31,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Digits",
+    symbol: 35,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 192,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 193,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Members",
+    symbol: 15,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 22,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 87,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 194,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Elements",
+    symbol: 25,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 195,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 60,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 61,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 131,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Exponent",
+    symbol: 40,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 1,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 2,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 3,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 4,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 5,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 6,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 7,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 8,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 9,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 10,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 196,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 13,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 14,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 15,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 16,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 17,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 18,
     symbol: undefined,
   },
   {
-    op: "shift",
+    op: 0, // shift
     state: 19,
     symbol: undefined,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
   {
-    op: "reduce",
+    op: 1, // reduce
     state: undefined,
-    symbol: "Member",
+    symbol: 17,
   },
 ];
-const actionsTable = new Uint16Array(13396).fill(0xffff);
+const actionsTable = new Uint16Array(13790).fill(0xffff);
 // actionTable 0 -> WS -> shift
-actionsTable[1] = 0;
+actionsTable[3] = 0;
 // actionTable 0 -> TRUE -> shift
-actionsTable[2] = 1;
+actionsTable[4] = 1;
 // actionTable 0 -> FALSE -> shift
-actionsTable[3] = 2;
+actionsTable[5] = 2;
 // actionTable 0 -> NULL -> shift
-actionsTable[4] = 3;
+actionsTable[6] = 3;
 // actionTable 0 -> CURLY_OPEN -> shift
-actionsTable[5] = 4;
+actionsTable[7] = 4;
 // actionTable 0 -> STRING -> shift
-actionsTable[9] = 5;
+actionsTable[11] = 5;
 // actionTable 0 -> BRACKET_OPEN -> shift
-actionsTable[10] = 6;
+actionsTable[12] = 6;
 // actionTable 0 -> ZERO -> shift
-actionsTable[12] = 7;
+actionsTable[14] = 7;
 // actionTable 0 -> ONE_NINE -> shift
-actionsTable[13] = 8;
+actionsTable[15] = 8;
 // actionTable 0 -> MINUS -> shift
-actionsTable[18] = 9;
+actionsTable[20] = 9;
 // actionTable 0 -> Json -> shift
-actionsTable[20] = 10;
+actionsTable[22] = 10;
 // actionTable 0 -> Element -> shift
-actionsTable[21] = 11;
+actionsTable[23] = 11;
 // actionTable 0 -> Value -> shift
-actionsTable[25] = 12;
+actionsTable[27] = 12;
 // actionTable 0 -> Object -> shift
-actionsTable[32] = 13;
+actionsTable[34] = 13;
 // actionTable 0 -> String -> shift
-actionsTable[41] = 14;
+actionsTable[43] = 14;
 // actionTable 0 -> Array -> shift
-actionsTable[42] = 15;
+actionsTable[44] = 15;
 // actionTable 0 -> Number -> shift
-actionsTable[47] = 16;
+actionsTable[49] = 16;
 // actionTable 0 -> Integer -> shift
-actionsTable[51] = 17;
+actionsTable[53] = 17;
 // actionTable 0 -> Spaces -> shift
-actionsTable[66] = 18;
+actionsTable[68] = 18;
 // actionTable 11 -> @expound.EOF -> done
-actionsTable[748] = 19;
+actionsTable[770] = 19;
 // actionTable 12 -> @expound.EOF -> reduce
-actionsTable[816] = 20;
+actionsTable[840] = 20;
 // actionTable 13 -> WS -> shift
-actionsTable[885] = 21;
+actionsTable[913] = 21;
 // actionTable 13 -> Spaces -> shift
-actionsTable[950] = 22;
-// actionTable 13 -> CURLY_CLOSE -> reduce
-actionsTable[890] = 23;
-// actionTable 13 -> COMMA -> reduce
-actionsTable[891] = 24;
-// actionTable 13 -> BRACKET_CLOSE -> reduce
-actionsTable[895] = 25;
+actionsTable[978] = 22;
 // actionTable 13 -> @expound.EOF -> reduce
-actionsTable[884] = 26;
+actionsTable[910] = 23;
+// actionTable 13 -> CURLY_CLOSE -> reduce
+actionsTable[918] = 24;
+// actionTable 13 -> COMMA -> reduce
+actionsTable[919] = 25;
+// actionTable 13 -> BRACKET_CLOSE -> reduce
+actionsTable[923] = 26;
 // actionTable 19 -> WS -> shift
-actionsTable[1293] = 27;
+actionsTable[1333] = 27;
 // actionTable 19 -> TRUE -> shift
-actionsTable[1294] = 28;
+actionsTable[1334] = 28;
 // actionTable 19 -> FALSE -> shift
-actionsTable[1295] = 29;
+actionsTable[1335] = 29;
 // actionTable 19 -> NULL -> shift
-actionsTable[1296] = 30;
+actionsTable[1336] = 30;
 // actionTable 19 -> CURLY_OPEN -> shift
-actionsTable[1297] = 31;
+actionsTable[1337] = 31;
 // actionTable 19 -> STRING -> shift
-actionsTable[1301] = 32;
+actionsTable[1341] = 32;
 // actionTable 19 -> BRACKET_OPEN -> shift
-actionsTable[1302] = 33;
+actionsTable[1342] = 33;
 // actionTable 19 -> ZERO -> shift
-actionsTable[1304] = 34;
+actionsTable[1344] = 34;
 // actionTable 19 -> ONE_NINE -> shift
-actionsTable[1305] = 35;
+actionsTable[1345] = 35;
 // actionTable 19 -> MINUS -> shift
-actionsTable[1310] = 36;
+actionsTable[1350] = 36;
 // actionTable 19 -> Value -> shift
-actionsTable[1317] = 37;
+actionsTable[1357] = 37;
 // actionTable 19 -> Object -> shift
-actionsTable[1324] = 38;
+actionsTable[1364] = 38;
 // actionTable 19 -> String -> shift
-actionsTable[1333] = 39;
+actionsTable[1373] = 39;
 // actionTable 19 -> Array -> shift
-actionsTable[1334] = 40;
+actionsTable[1374] = 40;
 // actionTable 19 -> Number -> shift
-actionsTable[1339] = 41;
+actionsTable[1379] = 41;
 // actionTable 19 -> Integer -> shift
-actionsTable[1343] = 42;
-// actionTable 14 -> WS -> reduce
-actionsTable[953] = 43;
-// actionTable 14 -> CURLY_CLOSE -> reduce
-actionsTable[958] = 44;
-// actionTable 14 -> COMMA -> reduce
-actionsTable[959] = 45;
-// actionTable 14 -> BRACKET_CLOSE -> reduce
-actionsTable[963] = 46;
+actionsTable[1383] = 42;
 // actionTable 14 -> @expound.EOF -> reduce
-actionsTable[952] = 47;
-// actionTable 16 -> WS -> reduce
-actionsTable[1089] = 48;
-// actionTable 16 -> CURLY_CLOSE -> reduce
-actionsTable[1094] = 49;
-// actionTable 16 -> COMMA -> reduce
-actionsTable[1095] = 50;
-// actionTable 16 -> BRACKET_CLOSE -> reduce
-actionsTable[1099] = 51;
+actionsTable[980] = 43;
+// actionTable 14 -> WS -> reduce
+actionsTable[983] = 44;
+// actionTable 14 -> CURLY_CLOSE -> reduce
+actionsTable[988] = 45;
+// actionTable 14 -> COMMA -> reduce
+actionsTable[989] = 46;
+// actionTable 14 -> BRACKET_CLOSE -> reduce
+actionsTable[993] = 47;
 // actionTable 16 -> @expound.EOF -> reduce
-actionsTable[1088] = 52;
-// actionTable 15 -> WS -> reduce
-actionsTable[1021] = 53;
-// actionTable 15 -> CURLY_CLOSE -> reduce
-actionsTable[1026] = 54;
-// actionTable 15 -> COMMA -> reduce
-actionsTable[1027] = 55;
-// actionTable 15 -> BRACKET_CLOSE -> reduce
-actionsTable[1031] = 56;
+actionsTable[1120] = 48;
+// actionTable 16 -> WS -> reduce
+actionsTable[1123] = 49;
+// actionTable 16 -> CURLY_CLOSE -> reduce
+actionsTable[1128] = 50;
+// actionTable 16 -> COMMA -> reduce
+actionsTable[1129] = 51;
+// actionTable 16 -> BRACKET_CLOSE -> reduce
+actionsTable[1133] = 52;
 // actionTable 15 -> @expound.EOF -> reduce
-actionsTable[1020] = 57;
-// actionTable 17 -> WS -> reduce
-actionsTable[1157] = 58;
-// actionTable 17 -> CURLY_CLOSE -> reduce
-actionsTable[1162] = 59;
-// actionTable 17 -> COMMA -> reduce
-actionsTable[1163] = 60;
-// actionTable 17 -> BRACKET_CLOSE -> reduce
-actionsTable[1167] = 61;
+actionsTable[1050] = 53;
+// actionTable 15 -> WS -> reduce
+actionsTable[1053] = 54;
+// actionTable 15 -> CURLY_CLOSE -> reduce
+actionsTable[1058] = 55;
+// actionTable 15 -> COMMA -> reduce
+actionsTable[1059] = 56;
+// actionTable 15 -> BRACKET_CLOSE -> reduce
+actionsTable[1063] = 57;
 // actionTable 17 -> @expound.EOF -> reduce
-actionsTable[1156] = 62;
-// actionTable 2 -> WS -> reduce
-actionsTable[137] = 63;
-// actionTable 2 -> CURLY_CLOSE -> reduce
-actionsTable[142] = 64;
-// actionTable 2 -> COMMA -> reduce
-actionsTable[143] = 65;
-// actionTable 2 -> BRACKET_CLOSE -> reduce
-actionsTable[147] = 66;
+actionsTable[1190] = 58;
+// actionTable 17 -> WS -> reduce
+actionsTable[1193] = 59;
+// actionTable 17 -> CURLY_CLOSE -> reduce
+actionsTable[1198] = 60;
+// actionTable 17 -> COMMA -> reduce
+actionsTable[1199] = 61;
+// actionTable 17 -> BRACKET_CLOSE -> reduce
+actionsTable[1203] = 62;
 // actionTable 2 -> @expound.EOF -> reduce
-actionsTable[136] = 67;
-// actionTable 3 -> WS -> reduce
-actionsTable[205] = 68;
-// actionTable 3 -> CURLY_CLOSE -> reduce
-actionsTable[210] = 69;
-// actionTable 3 -> COMMA -> reduce
-actionsTable[211] = 70;
-// actionTable 3 -> BRACKET_CLOSE -> reduce
-actionsTable[215] = 71;
+actionsTable[140] = 63;
+// actionTable 2 -> WS -> reduce
+actionsTable[143] = 64;
+// actionTable 2 -> CURLY_CLOSE -> reduce
+actionsTable[148] = 65;
+// actionTable 2 -> COMMA -> reduce
+actionsTable[149] = 66;
+// actionTable 2 -> BRACKET_CLOSE -> reduce
+actionsTable[153] = 67;
 // actionTable 3 -> @expound.EOF -> reduce
-actionsTable[204] = 72;
-// actionTable 4 -> WS -> reduce
-actionsTable[273] = 73;
-// actionTable 4 -> CURLY_CLOSE -> reduce
-actionsTable[278] = 74;
-// actionTable 4 -> COMMA -> reduce
-actionsTable[279] = 75;
-// actionTable 4 -> BRACKET_CLOSE -> reduce
-actionsTable[283] = 76;
+actionsTable[210] = 68;
+// actionTable 3 -> WS -> reduce
+actionsTable[213] = 69;
+// actionTable 3 -> CURLY_CLOSE -> reduce
+actionsTable[218] = 70;
+// actionTable 3 -> COMMA -> reduce
+actionsTable[219] = 71;
+// actionTable 3 -> BRACKET_CLOSE -> reduce
+actionsTable[223] = 72;
 // actionTable 4 -> @expound.EOF -> reduce
-actionsTable[272] = 77;
-// actionTable 1 -> WS -> reduce
-actionsTable[69] = 78;
-// actionTable 1 -> TRUE -> reduce
-actionsTable[70] = 79;
-// actionTable 1 -> FALSE -> reduce
-actionsTable[71] = 80;
-// actionTable 1 -> NULL -> reduce
-actionsTable[72] = 81;
-// actionTable 1 -> CURLY_OPEN -> reduce
-actionsTable[73] = 82;
-// actionTable 1 -> CURLY_CLOSE -> reduce
-actionsTable[74] = 83;
-// actionTable 1 -> COMMA -> reduce
-actionsTable[75] = 84;
-// actionTable 1 -> COLON -> reduce
-actionsTable[76] = 85;
-// actionTable 1 -> STRING -> reduce
-actionsTable[77] = 86;
-// actionTable 1 -> BRACKET_OPEN -> reduce
-actionsTable[78] = 87;
-// actionTable 1 -> BRACKET_CLOSE -> reduce
-actionsTable[79] = 88;
-// actionTable 1 -> ZERO -> reduce
-actionsTable[80] = 89;
-// actionTable 1 -> ONE_NINE -> reduce
-actionsTable[81] = 90;
-// actionTable 1 -> MINUS -> reduce
-actionsTable[86] = 91;
+actionsTable[280] = 73;
+// actionTable 4 -> WS -> reduce
+actionsTable[283] = 74;
+// actionTable 4 -> CURLY_CLOSE -> reduce
+actionsTable[288] = 75;
+// actionTable 4 -> COMMA -> reduce
+actionsTable[289] = 76;
+// actionTable 4 -> BRACKET_CLOSE -> reduce
+actionsTable[293] = 77;
 // actionTable 1 -> @expound.EOF -> reduce
-actionsTable[68] = 92;
+actionsTable[70] = 78;
+// actionTable 1 -> WS -> reduce
+actionsTable[73] = 79;
+// actionTable 1 -> TRUE -> reduce
+actionsTable[74] = 80;
+// actionTable 1 -> FALSE -> reduce
+actionsTable[75] = 81;
+// actionTable 1 -> NULL -> reduce
+actionsTable[76] = 82;
+// actionTable 1 -> CURLY_OPEN -> reduce
+actionsTable[77] = 83;
+// actionTable 1 -> CURLY_CLOSE -> reduce
+actionsTable[78] = 84;
+// actionTable 1 -> COMMA -> reduce
+actionsTable[79] = 85;
+// actionTable 1 -> COLON -> reduce
+actionsTable[80] = 86;
+// actionTable 1 -> STRING -> reduce
+actionsTable[81] = 87;
+// actionTable 1 -> BRACKET_OPEN -> reduce
+actionsTable[82] = 88;
+// actionTable 1 -> BRACKET_CLOSE -> reduce
+actionsTable[83] = 89;
+// actionTable 1 -> ZERO -> reduce
+actionsTable[84] = 90;
+// actionTable 1 -> ONE_NINE -> reduce
+actionsTable[85] = 91;
+// actionTable 1 -> MINUS -> reduce
+actionsTable[90] = 92;
 // actionTable 5 -> WS -> shift
-actionsTable[341] = 93;
+actionsTable[353] = 93;
 // actionTable 5 -> CURLY_CLOSE -> shift
-actionsTable[346] = 94;
+actionsTable[358] = 94;
 // actionTable 5 -> STRING -> shift
-actionsTable[349] = 95;
+actionsTable[361] = 95;
 // actionTable 5 -> Members -> shift
-actionsTable[375] = 96;
+actionsTable[387] = 96;
 // actionTable 5 -> Member -> shift
-actionsTable[377] = 97;
+actionsTable[389] = 97;
 // actionTable 5 -> String -> shift
-actionsTable[381] = 98;
+actionsTable[393] = 98;
 // actionTable 5 -> Spaces -> shift
-actionsTable[406] = 99;
+actionsTable[418] = 99;
 // actionTable 7 -> WS -> shift
-actionsTable[477] = 100;
+actionsTable[493] = 100;
 // actionTable 7 -> TRUE -> shift
-actionsTable[478] = 101;
+actionsTable[494] = 101;
 // actionTable 7 -> FALSE -> shift
-actionsTable[479] = 102;
+actionsTable[495] = 102;
 // actionTable 7 -> NULL -> shift
-actionsTable[480] = 103;
+actionsTable[496] = 103;
 // actionTable 7 -> CURLY_OPEN -> shift
-actionsTable[481] = 104;
+actionsTable[497] = 104;
 // actionTable 7 -> STRING -> shift
-actionsTable[485] = 105;
+actionsTable[501] = 105;
 // actionTable 7 -> BRACKET_OPEN -> shift
-actionsTable[486] = 106;
+actionsTable[502] = 106;
 // actionTable 7 -> BRACKET_CLOSE -> shift
-actionsTable[487] = 107;
+actionsTable[503] = 107;
 // actionTable 7 -> ZERO -> shift
-actionsTable[488] = 108;
+actionsTable[504] = 108;
 // actionTable 7 -> ONE_NINE -> shift
-actionsTable[489] = 109;
+actionsTable[505] = 109;
 // actionTable 7 -> MINUS -> shift
-actionsTable[494] = 110;
+actionsTable[510] = 110;
 // actionTable 7 -> Element -> shift
-actionsTable[497] = 111;
+actionsTable[513] = 111;
 // actionTable 7 -> Value -> shift
-actionsTable[501] = 112;
+actionsTable[517] = 112;
 // actionTable 7 -> Object -> shift
-actionsTable[508] = 113;
+actionsTable[524] = 113;
 // actionTable 7 -> String -> shift
-actionsTable[517] = 114;
+actionsTable[533] = 114;
 // actionTable 7 -> Array -> shift
-actionsTable[518] = 115;
+actionsTable[534] = 115;
 // actionTable 7 -> Elements -> shift
-actionsTable[521] = 116;
+actionsTable[537] = 116;
 // actionTable 7 -> Number -> shift
-actionsTable[523] = 117;
+actionsTable[539] = 117;
 // actionTable 7 -> Integer -> shift
-actionsTable[527] = 118;
+actionsTable[543] = 118;
 // actionTable 7 -> Spaces -> shift
-actionsTable[542] = 119;
-// actionTable 6 -> WS -> reduce
-actionsTable[409] = 120;
-// actionTable 6 -> CURLY_CLOSE -> reduce
-actionsTable[414] = 121;
-// actionTable 6 -> COMMA -> reduce
-actionsTable[415] = 122;
-// actionTable 6 -> COLON -> reduce
-actionsTable[416] = 123;
-// actionTable 6 -> BRACKET_CLOSE -> reduce
-actionsTable[419] = 124;
+actionsTable[558] = 119;
 // actionTable 6 -> @expound.EOF -> reduce
-actionsTable[408] = 125;
+actionsTable[420] = 120;
+// actionTable 6 -> WS -> reduce
+actionsTable[423] = 121;
+// actionTable 6 -> CURLY_CLOSE -> reduce
+actionsTable[428] = 122;
+// actionTable 6 -> COMMA -> reduce
+actionsTable[429] = 123;
+// actionTable 6 -> COLON -> reduce
+actionsTable[430] = 124;
+// actionTable 6 -> BRACKET_CLOSE -> reduce
+actionsTable[433] = 125;
 // actionTable 18 -> DOT -> shift
-actionsTable[1238] = 126;
+actionsTable[1276] = 126;
 // actionTable 18 -> UPPER_E -> shift
-actionsTable[1239] = 127;
+actionsTable[1277] = 127;
 // actionTable 18 -> LOWER_E -> shift
-actionsTable[1240] = 128;
+actionsTable[1278] = 128;
 // actionTable 18 -> Fraction -> shift
-actionsTable[1283] = 129;
+actionsTable[1321] = 129;
 // actionTable 18 -> Exponent -> shift
-actionsTable[1284] = 130;
-// actionTable 18 -> WS -> reduce
-actionsTable[1225] = 131;
-// actionTable 18 -> CURLY_CLOSE -> reduce
-actionsTable[1230] = 132;
-// actionTable 18 -> COMMA -> reduce
-actionsTable[1231] = 133;
-// actionTable 18 -> BRACKET_CLOSE -> reduce
-actionsTable[1235] = 134;
+actionsTable[1322] = 130;
 // actionTable 18 -> @expound.EOF -> reduce
-actionsTable[1224] = 135;
-// actionTable 8 -> WS -> reduce
-actionsTable[545] = 136;
-// actionTable 8 -> CURLY_CLOSE -> reduce
-actionsTable[550] = 137;
-// actionTable 8 -> COMMA -> reduce
-actionsTable[551] = 138;
-// actionTable 8 -> BRACKET_CLOSE -> reduce
-actionsTable[555] = 139;
-// actionTable 8 -> DOT -> reduce
-actionsTable[558] = 140;
-// actionTable 8 -> UPPER_E -> reduce
-actionsTable[559] = 141;
-// actionTable 8 -> LOWER_E -> reduce
-actionsTable[560] = 142;
+actionsTable[1260] = 131;
+// actionTable 18 -> WS -> reduce
+actionsTable[1263] = 132;
+// actionTable 18 -> CURLY_CLOSE -> reduce
+actionsTable[1268] = 133;
+// actionTable 18 -> COMMA -> reduce
+actionsTable[1269] = 134;
+// actionTable 18 -> BRACKET_CLOSE -> reduce
+actionsTable[1273] = 135;
 // actionTable 8 -> @expound.EOF -> reduce
-actionsTable[544] = 143;
+actionsTable[560] = 136;
+// actionTable 8 -> WS -> reduce
+actionsTable[563] = 137;
+// actionTable 8 -> CURLY_CLOSE -> reduce
+actionsTable[568] = 138;
+// actionTable 8 -> COMMA -> reduce
+actionsTable[569] = 139;
+// actionTable 8 -> BRACKET_CLOSE -> reduce
+actionsTable[573] = 140;
+// actionTable 8 -> DOT -> reduce
+actionsTable[576] = 141;
+// actionTable 8 -> UPPER_E -> reduce
+actionsTable[577] = 142;
+// actionTable 8 -> LOWER_E -> reduce
+actionsTable[578] = 143;
 // actionTable 10 -> ZERO -> shift
-actionsTable[692] = 144;
+actionsTable[714] = 144;
 // actionTable 10 -> ONE_NINE -> shift
-actionsTable[693] = 145;
+actionsTable[715] = 145;
 // actionTable 9 -> ZERO -> shift
-actionsTable[624] = 146;
+actionsTable[644] = 146;
 // actionTable 9 -> ONE_NINE -> shift
-actionsTable[625] = 147;
+actionsTable[645] = 147;
 // actionTable 9 -> Digits -> shift
-actionsTable[667] = 148;
+actionsTable[687] = 148;
 // actionTable 9 -> Digit -> shift
-actionsTable[669] = 149;
+actionsTable[689] = 149;
 // actionTable 21 -> WS -> shift
-actionsTable[1429] = 150;
-// actionTable 21 -> CURLY_CLOSE -> reduce
-actionsTable[1434] = 151;
-// actionTable 21 -> COMMA -> reduce
-actionsTable[1435] = 152;
-// actionTable 21 -> BRACKET_CLOSE -> reduce
-actionsTable[1439] = 153;
+actionsTable[1473] = 150;
 // actionTable 21 -> @expound.EOF -> reduce
-actionsTable[1428] = 154;
-// actionTable 20 -> WS -> reduce
-actionsTable[1361] = 155;
-// actionTable 20 -> TRUE -> reduce
-actionsTable[1362] = 156;
-// actionTable 20 -> FALSE -> reduce
-actionsTable[1363] = 157;
-// actionTable 20 -> NULL -> reduce
-actionsTable[1364] = 158;
-// actionTable 20 -> CURLY_OPEN -> reduce
-actionsTable[1365] = 159;
-// actionTable 20 -> CURLY_CLOSE -> reduce
-actionsTable[1366] = 160;
-// actionTable 20 -> COMMA -> reduce
-actionsTable[1367] = 161;
-// actionTable 20 -> COLON -> reduce
-actionsTable[1368] = 162;
-// actionTable 20 -> STRING -> reduce
-actionsTable[1369] = 163;
-// actionTable 20 -> BRACKET_OPEN -> reduce
-actionsTable[1370] = 164;
-// actionTable 20 -> BRACKET_CLOSE -> reduce
-actionsTable[1371] = 165;
-// actionTable 20 -> ZERO -> reduce
-actionsTable[1372] = 166;
-// actionTable 20 -> ONE_NINE -> reduce
-actionsTable[1373] = 167;
-// actionTable 20 -> MINUS -> reduce
-actionsTable[1378] = 168;
+actionsTable[1470] = 151;
+// actionTable 21 -> CURLY_CLOSE -> reduce
+actionsTable[1478] = 152;
+// actionTable 21 -> COMMA -> reduce
+actionsTable[1479] = 153;
+// actionTable 21 -> BRACKET_CLOSE -> reduce
+actionsTable[1483] = 154;
 // actionTable 20 -> @expound.EOF -> reduce
-actionsTable[1360] = 169;
+actionsTable[1400] = 155;
+// actionTable 20 -> WS -> reduce
+actionsTable[1403] = 156;
+// actionTable 20 -> TRUE -> reduce
+actionsTable[1404] = 157;
+// actionTable 20 -> FALSE -> reduce
+actionsTable[1405] = 158;
+// actionTable 20 -> NULL -> reduce
+actionsTable[1406] = 159;
+// actionTable 20 -> CURLY_OPEN -> reduce
+actionsTable[1407] = 160;
+// actionTable 20 -> CURLY_CLOSE -> reduce
+actionsTable[1408] = 161;
+// actionTable 20 -> COMMA -> reduce
+actionsTable[1409] = 162;
+// actionTable 20 -> COLON -> reduce
+actionsTable[1410] = 163;
+// actionTable 20 -> STRING -> reduce
+actionsTable[1411] = 164;
+// actionTable 20 -> BRACKET_OPEN -> reduce
+actionsTable[1412] = 165;
+// actionTable 20 -> BRACKET_CLOSE -> reduce
+actionsTable[1413] = 166;
+// actionTable 20 -> ZERO -> reduce
+actionsTable[1414] = 167;
+// actionTable 20 -> ONE_NINE -> reduce
+actionsTable[1415] = 168;
+// actionTable 20 -> MINUS -> reduce
+actionsTable[1420] = 169;
 // actionTable 32 -> WS -> shift
-actionsTable[2177] = 170;
+actionsTable[2243] = 170;
 // actionTable 32 -> Spaces -> shift
-actionsTable[2242] = 171;
-// actionTable 32 -> CURLY_CLOSE -> reduce
-actionsTable[2182] = 172;
-// actionTable 32 -> COMMA -> reduce
-actionsTable[2183] = 173;
-// actionTable 32 -> BRACKET_CLOSE -> reduce
-actionsTable[2187] = 174;
+actionsTable[2308] = 171;
 // actionTable 32 -> @expound.EOF -> reduce
-actionsTable[2176] = 175;
-// actionTable 33 -> WS -> reduce
-actionsTable[2245] = 176;
-// actionTable 33 -> CURLY_CLOSE -> reduce
-actionsTable[2250] = 177;
-// actionTable 33 -> COMMA -> reduce
-actionsTable[2251] = 178;
-// actionTable 33 -> BRACKET_CLOSE -> reduce
-actionsTable[2255] = 179;
+actionsTable[2240] = 172;
+// actionTable 32 -> CURLY_CLOSE -> reduce
+actionsTable[2248] = 173;
+// actionTable 32 -> COMMA -> reduce
+actionsTable[2249] = 174;
+// actionTable 32 -> BRACKET_CLOSE -> reduce
+actionsTable[2253] = 175;
 // actionTable 33 -> @expound.EOF -> reduce
-actionsTable[2244] = 180;
-// actionTable 35 -> WS -> reduce
-actionsTable[2381] = 181;
-// actionTable 35 -> CURLY_CLOSE -> reduce
-actionsTable[2386] = 182;
-// actionTable 35 -> COMMA -> reduce
-actionsTable[2387] = 183;
-// actionTable 35 -> BRACKET_CLOSE -> reduce
-actionsTable[2391] = 184;
+actionsTable[2310] = 176;
+// actionTable 33 -> WS -> reduce
+actionsTable[2313] = 177;
+// actionTable 33 -> CURLY_CLOSE -> reduce
+actionsTable[2318] = 178;
+// actionTable 33 -> COMMA -> reduce
+actionsTable[2319] = 179;
+// actionTable 33 -> BRACKET_CLOSE -> reduce
+actionsTable[2323] = 180;
 // actionTable 35 -> @expound.EOF -> reduce
-actionsTable[2380] = 185;
-// actionTable 34 -> WS -> reduce
-actionsTable[2313] = 186;
-// actionTable 34 -> CURLY_CLOSE -> reduce
-actionsTable[2318] = 187;
-// actionTable 34 -> COMMA -> reduce
-actionsTable[2319] = 188;
-// actionTable 34 -> BRACKET_CLOSE -> reduce
-actionsTable[2323] = 189;
+actionsTable[2450] = 181;
+// actionTable 35 -> WS -> reduce
+actionsTable[2453] = 182;
+// actionTable 35 -> CURLY_CLOSE -> reduce
+actionsTable[2458] = 183;
+// actionTable 35 -> COMMA -> reduce
+actionsTable[2459] = 184;
+// actionTable 35 -> BRACKET_CLOSE -> reduce
+actionsTable[2463] = 185;
 // actionTable 34 -> @expound.EOF -> reduce
-actionsTable[2312] = 190;
-// actionTable 36 -> WS -> reduce
-actionsTable[2449] = 191;
-// actionTable 36 -> CURLY_CLOSE -> reduce
-actionsTable[2454] = 192;
-// actionTable 36 -> COMMA -> reduce
-actionsTable[2455] = 193;
-// actionTable 36 -> BRACKET_CLOSE -> reduce
-actionsTable[2459] = 194;
+actionsTable[2380] = 186;
+// actionTable 34 -> WS -> reduce
+actionsTable[2383] = 187;
+// actionTable 34 -> CURLY_CLOSE -> reduce
+actionsTable[2388] = 188;
+// actionTable 34 -> COMMA -> reduce
+actionsTable[2389] = 189;
+// actionTable 34 -> BRACKET_CLOSE -> reduce
+actionsTable[2393] = 190;
 // actionTable 36 -> @expound.EOF -> reduce
-actionsTable[2448] = 195;
-// actionTable 23 -> WS -> reduce
-actionsTable[1565] = 196;
-// actionTable 23 -> CURLY_CLOSE -> reduce
-actionsTable[1570] = 197;
-// actionTable 23 -> COMMA -> reduce
-actionsTable[1571] = 198;
-// actionTable 23 -> BRACKET_CLOSE -> reduce
-actionsTable[1575] = 199;
+actionsTable[2520] = 191;
+// actionTable 36 -> WS -> reduce
+actionsTable[2523] = 192;
+// actionTable 36 -> CURLY_CLOSE -> reduce
+actionsTable[2528] = 193;
+// actionTable 36 -> COMMA -> reduce
+actionsTable[2529] = 194;
+// actionTable 36 -> BRACKET_CLOSE -> reduce
+actionsTable[2533] = 195;
 // actionTable 23 -> @expound.EOF -> reduce
-actionsTable[1564] = 200;
-// actionTable 24 -> WS -> reduce
-actionsTable[1633] = 201;
-// actionTable 24 -> CURLY_CLOSE -> reduce
-actionsTable[1638] = 202;
-// actionTable 24 -> COMMA -> reduce
-actionsTable[1639] = 203;
-// actionTable 24 -> BRACKET_CLOSE -> reduce
-actionsTable[1643] = 204;
+actionsTable[1610] = 196;
+// actionTable 23 -> WS -> reduce
+actionsTable[1613] = 197;
+// actionTable 23 -> CURLY_CLOSE -> reduce
+actionsTable[1618] = 198;
+// actionTable 23 -> COMMA -> reduce
+actionsTable[1619] = 199;
+// actionTable 23 -> BRACKET_CLOSE -> reduce
+actionsTable[1623] = 200;
 // actionTable 24 -> @expound.EOF -> reduce
-actionsTable[1632] = 205;
-// actionTable 25 -> WS -> reduce
-actionsTable[1701] = 206;
-// actionTable 25 -> CURLY_CLOSE -> reduce
-actionsTable[1706] = 207;
-// actionTable 25 -> COMMA -> reduce
-actionsTable[1707] = 208;
-// actionTable 25 -> BRACKET_CLOSE -> reduce
-actionsTable[1711] = 209;
+actionsTable[1680] = 201;
+// actionTable 24 -> WS -> reduce
+actionsTable[1683] = 202;
+// actionTable 24 -> CURLY_CLOSE -> reduce
+actionsTable[1688] = 203;
+// actionTable 24 -> COMMA -> reduce
+actionsTable[1689] = 204;
+// actionTable 24 -> BRACKET_CLOSE -> reduce
+actionsTable[1693] = 205;
 // actionTable 25 -> @expound.EOF -> reduce
-actionsTable[1700] = 210;
+actionsTable[1750] = 206;
+// actionTable 25 -> WS -> reduce
+actionsTable[1753] = 207;
+// actionTable 25 -> CURLY_CLOSE -> reduce
+actionsTable[1758] = 208;
+// actionTable 25 -> COMMA -> reduce
+actionsTable[1759] = 209;
+// actionTable 25 -> BRACKET_CLOSE -> reduce
+actionsTable[1763] = 210;
 // actionTable 26 -> WS -> shift
-actionsTable[1769] = 211;
+actionsTable[1823] = 211;
 // actionTable 26 -> CURLY_CLOSE -> shift
-actionsTable[1774] = 212;
+actionsTable[1828] = 212;
 // actionTable 26 -> STRING -> shift
-actionsTable[1777] = 213;
+actionsTable[1831] = 213;
 // actionTable 26 -> Members -> shift
-actionsTable[1803] = 214;
+actionsTable[1857] = 214;
 // actionTable 26 -> Member -> shift
-actionsTable[1805] = 215;
+actionsTable[1859] = 215;
 // actionTable 26 -> String -> shift
-actionsTable[1809] = 216;
+actionsTable[1863] = 216;
 // actionTable 26 -> Spaces -> shift
-actionsTable[1834] = 217;
+actionsTable[1888] = 217;
 // actionTable 28 -> WS -> shift
-actionsTable[1905] = 218;
+actionsTable[1963] = 218;
 // actionTable 28 -> TRUE -> shift
-actionsTable[1906] = 219;
+actionsTable[1964] = 219;
 // actionTable 28 -> FALSE -> shift
-actionsTable[1907] = 220;
+actionsTable[1965] = 220;
 // actionTable 28 -> NULL -> shift
-actionsTable[1908] = 221;
+actionsTable[1966] = 221;
 // actionTable 28 -> CURLY_OPEN -> shift
-actionsTable[1909] = 222;
+actionsTable[1967] = 222;
 // actionTable 28 -> STRING -> shift
-actionsTable[1913] = 223;
+actionsTable[1971] = 223;
 // actionTable 28 -> BRACKET_OPEN -> shift
-actionsTable[1914] = 224;
+actionsTable[1972] = 224;
 // actionTable 28 -> BRACKET_CLOSE -> shift
-actionsTable[1915] = 225;
+actionsTable[1973] = 225;
 // actionTable 28 -> ZERO -> shift
-actionsTable[1916] = 226;
+actionsTable[1974] = 226;
 // actionTable 28 -> ONE_NINE -> shift
-actionsTable[1917] = 227;
+actionsTable[1975] = 227;
 // actionTable 28 -> MINUS -> shift
-actionsTable[1922] = 228;
+actionsTable[1980] = 228;
 // actionTable 28 -> Element -> shift
-actionsTable[1925] = 229;
+actionsTable[1983] = 229;
 // actionTable 28 -> Value -> shift
-actionsTable[1929] = 230;
+actionsTable[1987] = 230;
 // actionTable 28 -> Object -> shift
-actionsTable[1936] = 231;
+actionsTable[1994] = 231;
 // actionTable 28 -> String -> shift
-actionsTable[1945] = 232;
+actionsTable[2003] = 232;
 // actionTable 28 -> Array -> shift
-actionsTable[1946] = 233;
+actionsTable[2004] = 233;
 // actionTable 28 -> Elements -> shift
-actionsTable[1949] = 234;
+actionsTable[2007] = 234;
 // actionTable 28 -> Number -> shift
-actionsTable[1951] = 235;
+actionsTable[2009] = 235;
 // actionTable 28 -> Integer -> shift
-actionsTable[1955] = 236;
+actionsTable[2013] = 236;
 // actionTable 28 -> Spaces -> shift
-actionsTable[1970] = 237;
-// actionTable 27 -> WS -> reduce
-actionsTable[1837] = 238;
-// actionTable 27 -> CURLY_CLOSE -> reduce
-actionsTable[1842] = 239;
-// actionTable 27 -> COMMA -> reduce
-actionsTable[1843] = 240;
-// actionTable 27 -> COLON -> reduce
-actionsTable[1844] = 241;
-// actionTable 27 -> BRACKET_CLOSE -> reduce
-actionsTable[1847] = 242;
+actionsTable[2028] = 237;
 // actionTable 27 -> @expound.EOF -> reduce
-actionsTable[1836] = 243;
+actionsTable[1890] = 238;
+// actionTable 27 -> WS -> reduce
+actionsTable[1893] = 239;
+// actionTable 27 -> CURLY_CLOSE -> reduce
+actionsTable[1898] = 240;
+// actionTable 27 -> COMMA -> reduce
+actionsTable[1899] = 241;
+// actionTable 27 -> COLON -> reduce
+actionsTable[1900] = 242;
+// actionTable 27 -> BRACKET_CLOSE -> reduce
+actionsTable[1903] = 243;
 // actionTable 37 -> DOT -> shift
-actionsTable[2530] = 244;
+actionsTable[2606] = 244;
 // actionTable 37 -> UPPER_E -> shift
-actionsTable[2531] = 245;
+actionsTable[2607] = 245;
 // actionTable 37 -> LOWER_E -> shift
-actionsTable[2532] = 246;
+actionsTable[2608] = 246;
 // actionTable 37 -> Fraction -> shift
-actionsTable[2575] = 247;
+actionsTable[2651] = 247;
 // actionTable 37 -> Exponent -> shift
-actionsTable[2576] = 248;
-// actionTable 37 -> WS -> reduce
-actionsTable[2517] = 249;
-// actionTable 37 -> CURLY_CLOSE -> reduce
-actionsTable[2522] = 250;
-// actionTable 37 -> COMMA -> reduce
-actionsTable[2523] = 251;
-// actionTable 37 -> BRACKET_CLOSE -> reduce
-actionsTable[2527] = 252;
+actionsTable[2652] = 248;
 // actionTable 37 -> @expound.EOF -> reduce
-actionsTable[2516] = 253;
-// actionTable 29 -> WS -> reduce
-actionsTable[1973] = 254;
-// actionTable 29 -> CURLY_CLOSE -> reduce
-actionsTable[1978] = 255;
-// actionTable 29 -> COMMA -> reduce
-actionsTable[1979] = 256;
-// actionTable 29 -> BRACKET_CLOSE -> reduce
-actionsTable[1983] = 257;
-// actionTable 29 -> DOT -> reduce
-actionsTable[1986] = 258;
-// actionTable 29 -> UPPER_E -> reduce
-actionsTable[1987] = 259;
-// actionTable 29 -> LOWER_E -> reduce
-actionsTable[1988] = 260;
+actionsTable[2590] = 249;
+// actionTable 37 -> WS -> reduce
+actionsTable[2593] = 250;
+// actionTable 37 -> CURLY_CLOSE -> reduce
+actionsTable[2598] = 251;
+// actionTable 37 -> COMMA -> reduce
+actionsTable[2599] = 252;
+// actionTable 37 -> BRACKET_CLOSE -> reduce
+actionsTable[2603] = 253;
 // actionTable 29 -> @expound.EOF -> reduce
-actionsTable[1972] = 261;
+actionsTable[2030] = 254;
+// actionTable 29 -> WS -> reduce
+actionsTable[2033] = 255;
+// actionTable 29 -> CURLY_CLOSE -> reduce
+actionsTable[2038] = 256;
+// actionTable 29 -> COMMA -> reduce
+actionsTable[2039] = 257;
+// actionTable 29 -> BRACKET_CLOSE -> reduce
+actionsTable[2043] = 258;
+// actionTable 29 -> DOT -> reduce
+actionsTable[2046] = 259;
+// actionTable 29 -> UPPER_E -> reduce
+actionsTable[2047] = 260;
+// actionTable 29 -> LOWER_E -> reduce
+actionsTable[2048] = 261;
 // actionTable 31 -> ZERO -> shift
-actionsTable[2120] = 262;
+actionsTable[2184] = 262;
 // actionTable 31 -> ONE_NINE -> shift
-actionsTable[2121] = 263;
+actionsTable[2185] = 263;
 // actionTable 30 -> ZERO -> shift
-actionsTable[2052] = 264;
+actionsTable[2114] = 264;
 // actionTable 30 -> ONE_NINE -> shift
-actionsTable[2053] = 265;
+actionsTable[2115] = 265;
 // actionTable 30 -> Digits -> shift
-actionsTable[2095] = 266;
+actionsTable[2157] = 266;
 // actionTable 30 -> Digit -> shift
-actionsTable[2097] = 267;
-// actionTable 22 -> WS -> reduce
-actionsTable[1497] = 268;
-// actionTable 22 -> TRUE -> reduce
-actionsTable[1498] = 269;
-// actionTable 22 -> FALSE -> reduce
-actionsTable[1499] = 270;
-// actionTable 22 -> NULL -> reduce
-actionsTable[1500] = 271;
-// actionTable 22 -> CURLY_OPEN -> reduce
-actionsTable[1501] = 272;
-// actionTable 22 -> CURLY_CLOSE -> reduce
-actionsTable[1502] = 273;
-// actionTable 22 -> COMMA -> reduce
-actionsTable[1503] = 274;
-// actionTable 22 -> COLON -> reduce
-actionsTable[1504] = 275;
-// actionTable 22 -> STRING -> reduce
-actionsTable[1505] = 276;
-// actionTable 22 -> BRACKET_OPEN -> reduce
-actionsTable[1506] = 277;
-// actionTable 22 -> BRACKET_CLOSE -> reduce
-actionsTable[1507] = 278;
-// actionTable 22 -> ZERO -> reduce
-actionsTable[1508] = 279;
-// actionTable 22 -> ONE_NINE -> reduce
-actionsTable[1509] = 280;
-// actionTable 22 -> MINUS -> reduce
-actionsTable[1514] = 281;
+actionsTable[2159] = 267;
 // actionTable 22 -> @expound.EOF -> reduce
-actionsTable[1496] = 282;
-// actionTable 38 -> WS -> reduce
-actionsTable[2585] = 283;
-// actionTable 38 -> CURLY_CLOSE -> reduce
-actionsTable[2590] = 284;
-// actionTable 38 -> COMMA -> reduce
-actionsTable[2591] = 285;
-// actionTable 38 -> BRACKET_CLOSE -> reduce
-actionsTable[2595] = 286;
+actionsTable[1540] = 268;
+// actionTable 22 -> WS -> reduce
+actionsTable[1543] = 269;
+// actionTable 22 -> TRUE -> reduce
+actionsTable[1544] = 270;
+// actionTable 22 -> FALSE -> reduce
+actionsTable[1545] = 271;
+// actionTable 22 -> NULL -> reduce
+actionsTable[1546] = 272;
+// actionTable 22 -> CURLY_OPEN -> reduce
+actionsTable[1547] = 273;
+// actionTable 22 -> CURLY_CLOSE -> reduce
+actionsTable[1548] = 274;
+// actionTable 22 -> COMMA -> reduce
+actionsTable[1549] = 275;
+// actionTable 22 -> COLON -> reduce
+actionsTable[1550] = 276;
+// actionTable 22 -> STRING -> reduce
+actionsTable[1551] = 277;
+// actionTable 22 -> BRACKET_OPEN -> reduce
+actionsTable[1552] = 278;
+// actionTable 22 -> BRACKET_CLOSE -> reduce
+actionsTable[1553] = 279;
+// actionTable 22 -> ZERO -> reduce
+actionsTable[1554] = 280;
+// actionTable 22 -> ONE_NINE -> reduce
+actionsTable[1555] = 281;
+// actionTable 22 -> MINUS -> reduce
+actionsTable[1560] = 282;
 // actionTable 38 -> @expound.EOF -> reduce
-actionsTable[2584] = 287;
+actionsTable[2660] = 283;
+// actionTable 38 -> WS -> reduce
+actionsTable[2663] = 284;
+// actionTable 38 -> CURLY_CLOSE -> reduce
+actionsTable[2668] = 285;
+// actionTable 38 -> COMMA -> reduce
+actionsTable[2669] = 286;
+// actionTable 38 -> BRACKET_CLOSE -> reduce
+actionsTable[2673] = 287;
 // actionTable 43 -> WS -> shift
-actionsTable[2925] = 288;
+actionsTable[3013] = 288;
 // actionTable 43 -> CURLY_CLOSE -> shift
-actionsTable[2930] = 289;
+actionsTable[3018] = 289;
 // actionTable 43 -> STRING -> shift
-actionsTable[2933] = 290;
+actionsTable[3021] = 290;
 // actionTable 43 -> String -> shift
-actionsTable[2965] = 291;
+actionsTable[3053] = 291;
 // actionTable 40 -> CURLY_CLOSE -> shift
-actionsTable[2726] = 292;
+actionsTable[2808] = 292;
 // actionTable 40 -> COMMA -> shift
-actionsTable[2727] = 293;
+actionsTable[2809] = 293;
 // actionTable 41 -> CURLY_CLOSE -> reduce
-actionsTable[2794] = 294;
+actionsTable[2878] = 294;
 // actionTable 41 -> COMMA -> reduce
-actionsTable[2795] = 295;
+actionsTable[2879] = 295;
 // actionTable 42 -> WS -> shift
-actionsTable[2857] = 296;
+actionsTable[2943] = 296;
 // actionTable 42 -> COLON -> shift
-actionsTable[2864] = 297;
+actionsTable[2950] = 297;
 // actionTable 42 -> Spaces -> shift
-actionsTable[2922] = 298;
-// actionTable 39 -> WS -> reduce
-actionsTable[2653] = 299;
-// actionTable 39 -> CURLY_CLOSE -> reduce
-actionsTable[2658] = 300;
-// actionTable 39 -> COMMA -> reduce
-actionsTable[2659] = 301;
-// actionTable 39 -> COLON -> reduce
-actionsTable[2660] = 302;
-// actionTable 39 -> BRACKET_CLOSE -> reduce
-actionsTable[2663] = 303;
+actionsTable[3008] = 298;
 // actionTable 39 -> @expound.EOF -> reduce
-actionsTable[2652] = 304;
-// actionTable 45 -> WS -> reduce
-actionsTable[3061] = 305;
-// actionTable 45 -> CURLY_CLOSE -> reduce
-actionsTable[3066] = 306;
-// actionTable 45 -> COMMA -> reduce
-actionsTable[3067] = 307;
-// actionTable 45 -> BRACKET_CLOSE -> reduce
-actionsTable[3071] = 308;
+actionsTable[2730] = 299;
+// actionTable 39 -> WS -> reduce
+actionsTable[2733] = 300;
+// actionTable 39 -> CURLY_CLOSE -> reduce
+actionsTable[2738] = 301;
+// actionTable 39 -> COMMA -> reduce
+actionsTable[2739] = 302;
+// actionTable 39 -> COLON -> reduce
+actionsTable[2740] = 303;
+// actionTable 39 -> BRACKET_CLOSE -> reduce
+actionsTable[2743] = 304;
 // actionTable 45 -> @expound.EOF -> reduce
-actionsTable[3060] = 309;
+actionsTable[3150] = 305;
+// actionTable 45 -> WS -> reduce
+actionsTable[3153] = 306;
+// actionTable 45 -> CURLY_CLOSE -> reduce
+actionsTable[3158] = 307;
+// actionTable 45 -> COMMA -> reduce
+actionsTable[3159] = 308;
+// actionTable 45 -> BRACKET_CLOSE -> reduce
+actionsTable[3163] = 309;
 // actionTable 52 -> WS -> shift
-actionsTable[3537] = 310;
+actionsTable[3643] = 310;
 // actionTable 52 -> TRUE -> shift
-actionsTable[3538] = 311;
+actionsTable[3644] = 311;
 // actionTable 52 -> FALSE -> shift
-actionsTable[3539] = 312;
+actionsTable[3645] = 312;
 // actionTable 52 -> NULL -> shift
-actionsTable[3540] = 313;
+actionsTable[3646] = 313;
 // actionTable 52 -> CURLY_OPEN -> shift
-actionsTable[3541] = 314;
+actionsTable[3647] = 314;
 // actionTable 52 -> STRING -> shift
-actionsTable[3545] = 315;
+actionsTable[3651] = 315;
 // actionTable 52 -> BRACKET_OPEN -> shift
-actionsTable[3546] = 316;
+actionsTable[3652] = 316;
 // actionTable 52 -> BRACKET_CLOSE -> shift
-actionsTable[3547] = 317;
+actionsTable[3653] = 317;
 // actionTable 52 -> ZERO -> shift
-actionsTable[3548] = 318;
+actionsTable[3654] = 318;
 // actionTable 52 -> ONE_NINE -> shift
-actionsTable[3549] = 319;
+actionsTable[3655] = 319;
 // actionTable 52 -> MINUS -> shift
-actionsTable[3554] = 320;
+actionsTable[3660] = 320;
 // actionTable 52 -> Value -> shift
-actionsTable[3561] = 321;
+actionsTable[3667] = 321;
 // actionTable 52 -> Object -> shift
-actionsTable[3568] = 322;
+actionsTable[3674] = 322;
 // actionTable 52 -> String -> shift
-actionsTable[3577] = 323;
+actionsTable[3683] = 323;
 // actionTable 52 -> Array -> shift
-actionsTable[3578] = 324;
+actionsTable[3684] = 324;
 // actionTable 52 -> Number -> shift
-actionsTable[3583] = 325;
+actionsTable[3689] = 325;
 // actionTable 52 -> Integer -> shift
-actionsTable[3587] = 326;
+actionsTable[3693] = 326;
 // actionTable 50 -> COMMA -> shift
-actionsTable[3407] = 327;
+actionsTable[3509] = 327;
 // actionTable 50 -> BRACKET_CLOSE -> shift
-actionsTable[3411] = 328;
+actionsTable[3513] = 328;
 // actionTable 49 -> COMMA -> reduce
-actionsTable[3339] = 329;
+actionsTable[3439] = 329;
 // actionTable 49 -> BRACKET_CLOSE -> reduce
-actionsTable[3343] = 330;
-// actionTable 44 -> WS -> reduce
-actionsTable[2993] = 331;
-// actionTable 44 -> CURLY_CLOSE -> reduce
-actionsTable[2998] = 332;
-// actionTable 44 -> COMMA -> reduce
-actionsTable[2999] = 333;
-// actionTable 44 -> COLON -> reduce
-actionsTable[3000] = 334;
-// actionTable 44 -> BRACKET_CLOSE -> reduce
-actionsTable[3003] = 335;
+actionsTable[3443] = 330;
 // actionTable 44 -> @expound.EOF -> reduce
-actionsTable[2992] = 336;
+actionsTable[3080] = 331;
+// actionTable 44 -> WS -> reduce
+actionsTable[3083] = 332;
+// actionTable 44 -> CURLY_CLOSE -> reduce
+actionsTable[3088] = 333;
+// actionTable 44 -> COMMA -> reduce
+actionsTable[3089] = 334;
+// actionTable 44 -> COLON -> reduce
+actionsTable[3090] = 335;
+// actionTable 44 -> BRACKET_CLOSE -> reduce
+actionsTable[3093] = 336;
 // actionTable 51 -> DOT -> shift
-actionsTable[3482] = 337;
+actionsTable[3586] = 337;
 // actionTable 51 -> UPPER_E -> shift
-actionsTable[3483] = 338;
+actionsTable[3587] = 338;
 // actionTable 51 -> LOWER_E -> shift
-actionsTable[3484] = 339;
+actionsTable[3588] = 339;
 // actionTable 51 -> Fraction -> shift
-actionsTable[3527] = 340;
+actionsTable[3631] = 340;
 // actionTable 51 -> Exponent -> shift
-actionsTable[3528] = 341;
-// actionTable 51 -> WS -> reduce
-actionsTable[3469] = 342;
-// actionTable 51 -> CURLY_CLOSE -> reduce
-actionsTable[3474] = 343;
-// actionTable 51 -> COMMA -> reduce
-actionsTable[3475] = 344;
-// actionTable 51 -> BRACKET_CLOSE -> reduce
-actionsTable[3479] = 345;
+actionsTable[3632] = 341;
 // actionTable 51 -> @expound.EOF -> reduce
-actionsTable[3468] = 346;
-// actionTable 46 -> WS -> reduce
-actionsTable[3129] = 347;
-// actionTable 46 -> CURLY_CLOSE -> reduce
-actionsTable[3134] = 348;
-// actionTable 46 -> COMMA -> reduce
-actionsTable[3135] = 349;
-// actionTable 46 -> BRACKET_CLOSE -> reduce
-actionsTable[3139] = 350;
-// actionTable 46 -> DOT -> reduce
-actionsTable[3142] = 351;
-// actionTable 46 -> UPPER_E -> reduce
-actionsTable[3143] = 352;
-// actionTable 46 -> LOWER_E -> reduce
-actionsTable[3144] = 353;
+actionsTable[3570] = 342;
+// actionTable 51 -> WS -> reduce
+actionsTable[3573] = 343;
+// actionTable 51 -> CURLY_CLOSE -> reduce
+actionsTable[3578] = 344;
+// actionTable 51 -> COMMA -> reduce
+actionsTable[3579] = 345;
+// actionTable 51 -> BRACKET_CLOSE -> reduce
+actionsTable[3583] = 346;
 // actionTable 46 -> @expound.EOF -> reduce
-actionsTable[3128] = 354;
+actionsTable[3220] = 347;
+// actionTable 46 -> WS -> reduce
+actionsTable[3223] = 348;
+// actionTable 46 -> CURLY_CLOSE -> reduce
+actionsTable[3228] = 349;
+// actionTable 46 -> COMMA -> reduce
+actionsTable[3229] = 350;
+// actionTable 46 -> BRACKET_CLOSE -> reduce
+actionsTable[3233] = 351;
+// actionTable 46 -> DOT -> reduce
+actionsTable[3236] = 352;
+// actionTable 46 -> UPPER_E -> reduce
+actionsTable[3237] = 353;
+// actionTable 46 -> LOWER_E -> reduce
+actionsTable[3238] = 354;
 // actionTable 48 -> ZERO -> shift
-actionsTable[3276] = 355;
+actionsTable[3374] = 355;
 // actionTable 48 -> ONE_NINE -> shift
-actionsTable[3277] = 356;
+actionsTable[3375] = 356;
 // actionTable 47 -> ZERO -> shift
-actionsTable[3208] = 357;
+actionsTable[3304] = 357;
 // actionTable 47 -> ONE_NINE -> shift
-actionsTable[3209] = 358;
+actionsTable[3305] = 358;
 // actionTable 47 -> Digits -> shift
-actionsTable[3251] = 359;
+actionsTable[3347] = 359;
 // actionTable 47 -> Digit -> shift
-actionsTable[3253] = 360;
-// actionTable 57 -> WS -> reduce
-actionsTable[3877] = 361;
-// actionTable 57 -> CURLY_CLOSE -> reduce
-actionsTable[3882] = 362;
-// actionTable 57 -> COMMA -> reduce
-actionsTable[3883] = 363;
-// actionTable 57 -> BRACKET_CLOSE -> reduce
-actionsTable[3887] = 364;
+actionsTable[3349] = 360;
 // actionTable 57 -> @expound.EOF -> reduce
-actionsTable[3876] = 365;
+actionsTable[3990] = 361;
+// actionTable 57 -> WS -> reduce
+actionsTable[3993] = 362;
+// actionTable 57 -> CURLY_CLOSE -> reduce
+actionsTable[3998] = 363;
+// actionTable 57 -> COMMA -> reduce
+actionsTable[3999] = 364;
+// actionTable 57 -> BRACKET_CLOSE -> reduce
+actionsTable[4003] = 365;
 // actionTable 54 -> ZERO -> shift
-actionsTable[3684] = 366;
+actionsTable[3794] = 366;
 // actionTable 54 -> ONE_NINE -> shift
-actionsTable[3685] = 367;
+actionsTable[3795] = 367;
 // actionTable 54 -> PLUS -> shift
-actionsTable[3689] = 368;
+actionsTable[3799] = 368;
 // actionTable 54 -> MINUS -> shift
-actionsTable[3690] = 369;
+actionsTable[3800] = 369;
 // actionTable 54 -> Digits -> shift
-actionsTable[3727] = 370;
+actionsTable[3837] = 370;
 // actionTable 54 -> Digit -> shift
-actionsTable[3729] = 371;
+actionsTable[3839] = 371;
 // actionTable 54 -> Sign -> shift
-actionsTable[3736] = 372;
+actionsTable[3846] = 372;
 // actionTable 55 -> ZERO -> shift
-actionsTable[3752] = 373;
+actionsTable[3864] = 373;
 // actionTable 55 -> ONE_NINE -> shift
-actionsTable[3753] = 374;
+actionsTable[3865] = 374;
 // actionTable 55 -> PLUS -> shift
-actionsTable[3757] = 375;
+actionsTable[3869] = 375;
 // actionTable 55 -> MINUS -> shift
-actionsTable[3758] = 376;
+actionsTable[3870] = 376;
 // actionTable 55 -> Digits -> shift
-actionsTable[3795] = 377;
+actionsTable[3907] = 377;
 // actionTable 55 -> Digit -> shift
-actionsTable[3797] = 378;
+actionsTable[3909] = 378;
 // actionTable 55 -> Sign -> shift
-actionsTable[3804] = 379;
+actionsTable[3916] = 379;
 // actionTable 56 -> UPPER_E -> shift
-actionsTable[3823] = 380;
+actionsTable[3937] = 380;
 // actionTable 56 -> LOWER_E -> shift
-actionsTable[3824] = 381;
+actionsTable[3938] = 381;
 // actionTable 56 -> Exponent -> shift
-actionsTable[3868] = 382;
-// actionTable 56 -> WS -> reduce
-actionsTable[3809] = 383;
-// actionTable 56 -> CURLY_CLOSE -> reduce
-actionsTable[3814] = 384;
-// actionTable 56 -> COMMA -> reduce
-actionsTable[3815] = 385;
-// actionTable 56 -> BRACKET_CLOSE -> reduce
-actionsTable[3819] = 386;
+actionsTable[3982] = 382;
 // actionTable 56 -> @expound.EOF -> reduce
-actionsTable[3808] = 387;
+actionsTable[3920] = 383;
+// actionTable 56 -> WS -> reduce
+actionsTable[3923] = 384;
+// actionTable 56 -> CURLY_CLOSE -> reduce
+actionsTable[3928] = 385;
+// actionTable 56 -> COMMA -> reduce
+actionsTable[3929] = 386;
+// actionTable 56 -> BRACKET_CLOSE -> reduce
+actionsTable[3933] = 387;
 // actionTable 53 -> ZERO -> shift
-actionsTable[3616] = 388;
+actionsTable[3724] = 388;
 // actionTable 53 -> ONE_NINE -> shift
-actionsTable[3617] = 389;
+actionsTable[3725] = 389;
 // actionTable 53 -> Digits -> shift
-actionsTable[3659] = 390;
+actionsTable[3767] = 390;
 // actionTable 53 -> Digit -> shift
-actionsTable[3661] = 391;
-// actionTable 58 -> WS -> reduce
-actionsTable[3945] = 392;
-// actionTable 58 -> CURLY_CLOSE -> reduce
-actionsTable[3950] = 393;
-// actionTable 58 -> COMMA -> reduce
-actionsTable[3951] = 394;
-// actionTable 58 -> BRACKET_CLOSE -> reduce
-actionsTable[3955] = 395;
-// actionTable 58 -> DOT -> reduce
-actionsTable[3958] = 396;
-// actionTable 58 -> UPPER_E -> reduce
-actionsTable[3959] = 397;
-// actionTable 58 -> LOWER_E -> reduce
-actionsTable[3960] = 398;
+actionsTable[3769] = 391;
 // actionTable 58 -> @expound.EOF -> reduce
-actionsTable[3944] = 399;
+actionsTable[4060] = 392;
+// actionTable 58 -> WS -> reduce
+actionsTable[4063] = 393;
+// actionTable 58 -> CURLY_CLOSE -> reduce
+actionsTable[4068] = 394;
+// actionTable 58 -> COMMA -> reduce
+actionsTable[4069] = 395;
+// actionTable 58 -> BRACKET_CLOSE -> reduce
+actionsTable[4073] = 396;
+// actionTable 58 -> DOT -> reduce
+actionsTable[4076] = 397;
+// actionTable 58 -> UPPER_E -> reduce
+actionsTable[4077] = 398;
+// actionTable 58 -> LOWER_E -> reduce
+actionsTable[4078] = 399;
 // actionTable 59 -> ZERO -> shift
-actionsTable[4024] = 400;
+actionsTable[4144] = 400;
 // actionTable 59 -> ONE_NINE -> shift
-actionsTable[4025] = 401;
+actionsTable[4145] = 401;
 // actionTable 59 -> Digits -> shift
-actionsTable[4067] = 402;
+actionsTable[4187] = 402;
 // actionTable 59 -> Digit -> shift
-actionsTable[4069] = 403;
+actionsTable[4189] = 403;
 // actionTable 62 -> ZERO -> shift
-actionsTable[4228] = 404;
+actionsTable[4354] = 404;
 // actionTable 62 -> ONE_NINE -> shift
-actionsTable[4229] = 405;
+actionsTable[4355] = 405;
 // actionTable 62 -> Digit -> shift
-actionsTable[4273] = 406;
-// actionTable 62 -> WS -> reduce
-actionsTable[4217] = 407;
-// actionTable 62 -> CURLY_CLOSE -> reduce
-actionsTable[4222] = 408;
-// actionTable 62 -> COMMA -> reduce
-actionsTable[4223] = 409;
-// actionTable 62 -> BRACKET_CLOSE -> reduce
-actionsTable[4227] = 410;
-// actionTable 62 -> DOT -> reduce
-actionsTable[4230] = 411;
-// actionTable 62 -> UPPER_E -> reduce
-actionsTable[4231] = 412;
-// actionTable 62 -> LOWER_E -> reduce
-actionsTable[4232] = 413;
+actionsTable[4399] = 406;
 // actionTable 62 -> @expound.EOF -> reduce
-actionsTable[4216] = 414;
-// actionTable 63 -> WS -> reduce
-actionsTable[4285] = 415;
-// actionTable 63 -> CURLY_CLOSE -> reduce
-actionsTable[4290] = 416;
-// actionTable 63 -> COMMA -> reduce
-actionsTable[4291] = 417;
-// actionTable 63 -> BRACKET_CLOSE -> reduce
-actionsTable[4295] = 418;
-// actionTable 63 -> ZERO -> reduce
-actionsTable[4296] = 419;
-// actionTable 63 -> ONE_NINE -> reduce
-actionsTable[4297] = 420;
-// actionTable 63 -> DOT -> reduce
-actionsTable[4298] = 421;
-// actionTable 63 -> UPPER_E -> reduce
-actionsTable[4299] = 422;
-// actionTable 63 -> LOWER_E -> reduce
-actionsTable[4300] = 423;
+actionsTable[4340] = 407;
+// actionTable 62 -> WS -> reduce
+actionsTable[4343] = 408;
+// actionTable 62 -> CURLY_CLOSE -> reduce
+actionsTable[4348] = 409;
+// actionTable 62 -> COMMA -> reduce
+actionsTable[4349] = 410;
+// actionTable 62 -> BRACKET_CLOSE -> reduce
+actionsTable[4353] = 411;
+// actionTable 62 -> DOT -> reduce
+actionsTable[4356] = 412;
+// actionTable 62 -> UPPER_E -> reduce
+actionsTable[4357] = 413;
+// actionTable 62 -> LOWER_E -> reduce
+actionsTable[4358] = 414;
 // actionTable 63 -> @expound.EOF -> reduce
-actionsTable[4284] = 424;
-// actionTable 60 -> WS -> reduce
-actionsTable[4081] = 425;
-// actionTable 60 -> CURLY_CLOSE -> reduce
-actionsTable[4086] = 426;
-// actionTable 60 -> COMMA -> reduce
-actionsTable[4087] = 427;
-// actionTable 60 -> BRACKET_CLOSE -> reduce
-actionsTable[4091] = 428;
-// actionTable 60 -> ZERO -> reduce
-actionsTable[4092] = 429;
-// actionTable 60 -> ONE_NINE -> reduce
-actionsTable[4093] = 430;
-// actionTable 60 -> DOT -> reduce
-actionsTable[4094] = 431;
-// actionTable 60 -> UPPER_E -> reduce
-actionsTable[4095] = 432;
-// actionTable 60 -> LOWER_E -> reduce
-actionsTable[4096] = 433;
+actionsTable[4410] = 415;
+// actionTable 63 -> WS -> reduce
+actionsTable[4413] = 416;
+// actionTable 63 -> CURLY_CLOSE -> reduce
+actionsTable[4418] = 417;
+// actionTable 63 -> COMMA -> reduce
+actionsTable[4419] = 418;
+// actionTable 63 -> BRACKET_CLOSE -> reduce
+actionsTable[4423] = 419;
+// actionTable 63 -> ZERO -> reduce
+actionsTable[4424] = 420;
+// actionTable 63 -> ONE_NINE -> reduce
+actionsTable[4425] = 421;
+// actionTable 63 -> DOT -> reduce
+actionsTable[4426] = 422;
+// actionTable 63 -> UPPER_E -> reduce
+actionsTable[4427] = 423;
+// actionTable 63 -> LOWER_E -> reduce
+actionsTable[4428] = 424;
 // actionTable 60 -> @expound.EOF -> reduce
-actionsTable[4080] = 434;
-// actionTable 61 -> WS -> reduce
-actionsTable[4149] = 435;
-// actionTable 61 -> CURLY_CLOSE -> reduce
-actionsTable[4154] = 436;
-// actionTable 61 -> COMMA -> reduce
-actionsTable[4155] = 437;
-// actionTable 61 -> BRACKET_CLOSE -> reduce
-actionsTable[4159] = 438;
-// actionTable 61 -> ZERO -> reduce
-actionsTable[4160] = 439;
-// actionTable 61 -> ONE_NINE -> reduce
-actionsTable[4161] = 440;
-// actionTable 61 -> DOT -> reduce
-actionsTable[4162] = 441;
-// actionTable 61 -> UPPER_E -> reduce
-actionsTable[4163] = 442;
-// actionTable 61 -> LOWER_E -> reduce
-actionsTable[4164] = 443;
+actionsTable[4200] = 425;
+// actionTable 60 -> WS -> reduce
+actionsTable[4203] = 426;
+// actionTable 60 -> CURLY_CLOSE -> reduce
+actionsTable[4208] = 427;
+// actionTable 60 -> COMMA -> reduce
+actionsTable[4209] = 428;
+// actionTable 60 -> BRACKET_CLOSE -> reduce
+actionsTable[4213] = 429;
+// actionTable 60 -> ZERO -> reduce
+actionsTable[4214] = 430;
+// actionTable 60 -> ONE_NINE -> reduce
+actionsTable[4215] = 431;
+// actionTable 60 -> DOT -> reduce
+actionsTable[4216] = 432;
+// actionTable 60 -> UPPER_E -> reduce
+actionsTable[4217] = 433;
+// actionTable 60 -> LOWER_E -> reduce
+actionsTable[4218] = 434;
 // actionTable 61 -> @expound.EOF -> reduce
-actionsTable[4148] = 444;
-// actionTable 64 -> WS -> reduce
-actionsTable[4353] = 445;
-// actionTable 64 -> TRUE -> reduce
-actionsTable[4354] = 446;
-// actionTable 64 -> FALSE -> reduce
-actionsTable[4355] = 447;
-// actionTable 64 -> NULL -> reduce
-actionsTable[4356] = 448;
-// actionTable 64 -> CURLY_OPEN -> reduce
-actionsTable[4357] = 449;
-// actionTable 64 -> CURLY_CLOSE -> reduce
-actionsTable[4358] = 450;
-// actionTable 64 -> COMMA -> reduce
-actionsTable[4359] = 451;
-// actionTable 64 -> COLON -> reduce
-actionsTable[4360] = 452;
-// actionTable 64 -> STRING -> reduce
-actionsTable[4361] = 453;
-// actionTable 64 -> BRACKET_OPEN -> reduce
-actionsTable[4362] = 454;
-// actionTable 64 -> BRACKET_CLOSE -> reduce
-actionsTable[4363] = 455;
-// actionTable 64 -> ZERO -> reduce
-actionsTable[4364] = 456;
-// actionTable 64 -> ONE_NINE -> reduce
-actionsTable[4365] = 457;
-// actionTable 64 -> MINUS -> reduce
-actionsTable[4370] = 458;
+actionsTable[4270] = 435;
+// actionTable 61 -> WS -> reduce
+actionsTable[4273] = 436;
+// actionTable 61 -> CURLY_CLOSE -> reduce
+actionsTable[4278] = 437;
+// actionTable 61 -> COMMA -> reduce
+actionsTable[4279] = 438;
+// actionTable 61 -> BRACKET_CLOSE -> reduce
+actionsTable[4283] = 439;
+// actionTable 61 -> ZERO -> reduce
+actionsTable[4284] = 440;
+// actionTable 61 -> ONE_NINE -> reduce
+actionsTable[4285] = 441;
+// actionTable 61 -> DOT -> reduce
+actionsTable[4286] = 442;
+// actionTable 61 -> UPPER_E -> reduce
+actionsTable[4287] = 443;
+// actionTable 61 -> LOWER_E -> reduce
+actionsTable[4288] = 444;
 // actionTable 64 -> @expound.EOF -> reduce
-actionsTable[4352] = 459;
+actionsTable[4480] = 445;
+// actionTable 64 -> WS -> reduce
+actionsTable[4483] = 446;
+// actionTable 64 -> TRUE -> reduce
+actionsTable[4484] = 447;
+// actionTable 64 -> FALSE -> reduce
+actionsTable[4485] = 448;
+// actionTable 64 -> NULL -> reduce
+actionsTable[4486] = 449;
+// actionTable 64 -> CURLY_OPEN -> reduce
+actionsTable[4487] = 450;
+// actionTable 64 -> CURLY_CLOSE -> reduce
+actionsTable[4488] = 451;
+// actionTable 64 -> COMMA -> reduce
+actionsTable[4489] = 452;
+// actionTable 64 -> COLON -> reduce
+actionsTable[4490] = 453;
+// actionTable 64 -> STRING -> reduce
+actionsTable[4491] = 454;
+// actionTable 64 -> BRACKET_OPEN -> reduce
+actionsTable[4492] = 455;
+// actionTable 64 -> BRACKET_CLOSE -> reduce
+actionsTable[4493] = 456;
+// actionTable 64 -> ZERO -> reduce
+actionsTable[4494] = 457;
+// actionTable 64 -> ONE_NINE -> reduce
+actionsTable[4495] = 458;
+// actionTable 64 -> MINUS -> reduce
+actionsTable[4500] = 459;
 // actionTable 65 -> WS -> shift
-actionsTable[4421] = 460;
-// actionTable 65 -> CURLY_CLOSE -> reduce
-actionsTable[4426] = 461;
-// actionTable 65 -> COMMA -> reduce
-actionsTable[4427] = 462;
-// actionTable 65 -> BRACKET_CLOSE -> reduce
-actionsTable[4431] = 463;
+actionsTable[4553] = 460;
 // actionTable 65 -> @expound.EOF -> reduce
-actionsTable[4420] = 464;
-// actionTable 66 -> WS -> reduce
-actionsTable[4489] = 465;
-// actionTable 66 -> CURLY_CLOSE -> reduce
-actionsTable[4494] = 466;
-// actionTable 66 -> COMMA -> reduce
-actionsTable[4495] = 467;
-// actionTable 66 -> BRACKET_CLOSE -> reduce
-actionsTable[4499] = 468;
+actionsTable[4550] = 461;
+// actionTable 65 -> CURLY_CLOSE -> reduce
+actionsTable[4558] = 462;
+// actionTable 65 -> COMMA -> reduce
+actionsTable[4559] = 463;
+// actionTable 65 -> BRACKET_CLOSE -> reduce
+actionsTable[4563] = 464;
 // actionTable 66 -> @expound.EOF -> reduce
-actionsTable[4488] = 469;
+actionsTable[4620] = 465;
+// actionTable 66 -> WS -> reduce
+actionsTable[4623] = 466;
+// actionTable 66 -> CURLY_CLOSE -> reduce
+actionsTable[4628] = 467;
+// actionTable 66 -> COMMA -> reduce
+actionsTable[4629] = 468;
+// actionTable 66 -> BRACKET_CLOSE -> reduce
+actionsTable[4633] = 469;
 // actionTable 70 -> WS -> shift
-actionsTable[4761] = 470;
+actionsTable[4903] = 470;
 // actionTable 70 -> CURLY_CLOSE -> shift
-actionsTable[4766] = 471;
+actionsTable[4908] = 471;
 // actionTable 70 -> STRING -> shift
-actionsTable[4769] = 472;
+actionsTable[4911] = 472;
 // actionTable 70 -> String -> shift
-actionsTable[4801] = 473;
+actionsTable[4943] = 473;
 // actionTable 67 -> CURLY_CLOSE -> shift
-actionsTable[4562] = 474;
+actionsTable[4698] = 474;
 // actionTable 67 -> COMMA -> shift
-actionsTable[4563] = 475;
+actionsTable[4699] = 475;
 // actionTable 68 -> CURLY_CLOSE -> reduce
-actionsTable[4630] = 476;
+actionsTable[4768] = 476;
 // actionTable 68 -> COMMA -> reduce
-actionsTable[4631] = 477;
+actionsTable[4769] = 477;
 // actionTable 69 -> WS -> shift
-actionsTable[4693] = 478;
+actionsTable[4833] = 478;
 // actionTable 69 -> COLON -> shift
-actionsTable[4700] = 479;
+actionsTable[4840] = 479;
 // actionTable 69 -> Spaces -> shift
-actionsTable[4758] = 480;
-// actionTable 71 -> WS -> reduce
-actionsTable[4829] = 481;
-// actionTable 71 -> CURLY_CLOSE -> reduce
-actionsTable[4834] = 482;
-// actionTable 71 -> COMMA -> reduce
-actionsTable[4835] = 483;
-// actionTable 71 -> BRACKET_CLOSE -> reduce
-actionsTable[4839] = 484;
+actionsTable[4898] = 480;
 // actionTable 71 -> @expound.EOF -> reduce
-actionsTable[4828] = 485;
+actionsTable[4970] = 481;
+// actionTable 71 -> WS -> reduce
+actionsTable[4973] = 482;
+// actionTable 71 -> CURLY_CLOSE -> reduce
+actionsTable[4978] = 483;
+// actionTable 71 -> COMMA -> reduce
+actionsTable[4979] = 484;
+// actionTable 71 -> BRACKET_CLOSE -> reduce
+actionsTable[4983] = 485;
 // actionTable 74 -> WS -> shift
-actionsTable[5033] = 486;
+actionsTable[5183] = 486;
 // actionTable 74 -> TRUE -> shift
-actionsTable[5034] = 487;
+actionsTable[5184] = 487;
 // actionTable 74 -> FALSE -> shift
-actionsTable[5035] = 488;
+actionsTable[5185] = 488;
 // actionTable 74 -> NULL -> shift
-actionsTable[5036] = 489;
+actionsTable[5186] = 489;
 // actionTable 74 -> CURLY_OPEN -> shift
-actionsTable[5037] = 490;
+actionsTable[5187] = 490;
 // actionTable 74 -> STRING -> shift
-actionsTable[5041] = 491;
+actionsTable[5191] = 491;
 // actionTable 74 -> BRACKET_OPEN -> shift
-actionsTable[5042] = 492;
+actionsTable[5192] = 492;
 // actionTable 74 -> BRACKET_CLOSE -> shift
-actionsTable[5043] = 493;
+actionsTable[5193] = 493;
 // actionTable 74 -> ZERO -> shift
-actionsTable[5044] = 494;
+actionsTable[5194] = 494;
 // actionTable 74 -> ONE_NINE -> shift
-actionsTable[5045] = 495;
+actionsTable[5195] = 495;
 // actionTable 74 -> MINUS -> shift
-actionsTable[5050] = 496;
+actionsTable[5200] = 496;
 // actionTable 74 -> Value -> shift
-actionsTable[5057] = 497;
+actionsTable[5207] = 497;
 // actionTable 74 -> Object -> shift
-actionsTable[5064] = 498;
+actionsTable[5214] = 498;
 // actionTable 74 -> String -> shift
-actionsTable[5073] = 499;
+actionsTable[5223] = 499;
 // actionTable 74 -> Array -> shift
-actionsTable[5074] = 500;
+actionsTable[5224] = 500;
 // actionTable 74 -> Number -> shift
-actionsTable[5079] = 501;
+actionsTable[5229] = 501;
 // actionTable 74 -> Integer -> shift
-actionsTable[5083] = 502;
+actionsTable[5233] = 502;
 // actionTable 73 -> COMMA -> shift
-actionsTable[4971] = 503;
+actionsTable[5119] = 503;
 // actionTable 73 -> BRACKET_CLOSE -> shift
-actionsTable[4975] = 504;
+actionsTable[5123] = 504;
 // actionTable 72 -> COMMA -> reduce
-actionsTable[4903] = 505;
+actionsTable[5049] = 505;
 // actionTable 72 -> BRACKET_CLOSE -> reduce
-actionsTable[4907] = 506;
-// actionTable 79 -> WS -> reduce
-actionsTable[5373] = 507;
-// actionTable 79 -> CURLY_CLOSE -> reduce
-actionsTable[5378] = 508;
-// actionTable 79 -> COMMA -> reduce
-actionsTable[5379] = 509;
-// actionTable 79 -> BRACKET_CLOSE -> reduce
-actionsTable[5383] = 510;
+actionsTable[5053] = 506;
 // actionTable 79 -> @expound.EOF -> reduce
-actionsTable[5372] = 511;
+actionsTable[5530] = 507;
+// actionTable 79 -> WS -> reduce
+actionsTable[5533] = 508;
+// actionTable 79 -> CURLY_CLOSE -> reduce
+actionsTable[5538] = 509;
+// actionTable 79 -> COMMA -> reduce
+actionsTable[5539] = 510;
+// actionTable 79 -> BRACKET_CLOSE -> reduce
+actionsTable[5543] = 511;
 // actionTable 76 -> ZERO -> shift
-actionsTable[5180] = 512;
+actionsTable[5334] = 512;
 // actionTable 76 -> ONE_NINE -> shift
-actionsTable[5181] = 513;
+actionsTable[5335] = 513;
 // actionTable 76 -> PLUS -> shift
-actionsTable[5185] = 514;
+actionsTable[5339] = 514;
 // actionTable 76 -> MINUS -> shift
-actionsTable[5186] = 515;
+actionsTable[5340] = 515;
 // actionTable 76 -> Digits -> shift
-actionsTable[5223] = 516;
+actionsTable[5377] = 516;
 // actionTable 76 -> Digit -> shift
-actionsTable[5225] = 517;
+actionsTable[5379] = 517;
 // actionTable 76 -> Sign -> shift
-actionsTable[5232] = 518;
+actionsTable[5386] = 518;
 // actionTable 77 -> ZERO -> shift
-actionsTable[5248] = 519;
+actionsTable[5404] = 519;
 // actionTable 77 -> ONE_NINE -> shift
-actionsTable[5249] = 520;
+actionsTable[5405] = 520;
 // actionTable 77 -> PLUS -> shift
-actionsTable[5253] = 521;
+actionsTable[5409] = 521;
 // actionTable 77 -> MINUS -> shift
-actionsTable[5254] = 522;
+actionsTable[5410] = 522;
 // actionTable 77 -> Digits -> shift
-actionsTable[5291] = 523;
+actionsTable[5447] = 523;
 // actionTable 77 -> Digit -> shift
-actionsTable[5293] = 524;
+actionsTable[5449] = 524;
 // actionTable 77 -> Sign -> shift
-actionsTable[5300] = 525;
+actionsTable[5456] = 525;
 // actionTable 78 -> UPPER_E -> shift
-actionsTable[5319] = 526;
+actionsTable[5477] = 526;
 // actionTable 78 -> LOWER_E -> shift
-actionsTable[5320] = 527;
+actionsTable[5478] = 527;
 // actionTable 78 -> Exponent -> shift
-actionsTable[5364] = 528;
-// actionTable 78 -> WS -> reduce
-actionsTable[5305] = 529;
-// actionTable 78 -> CURLY_CLOSE -> reduce
-actionsTable[5310] = 530;
-// actionTable 78 -> COMMA -> reduce
-actionsTable[5311] = 531;
-// actionTable 78 -> BRACKET_CLOSE -> reduce
-actionsTable[5315] = 532;
+actionsTable[5522] = 528;
 // actionTable 78 -> @expound.EOF -> reduce
-actionsTable[5304] = 533;
+actionsTable[5460] = 529;
+// actionTable 78 -> WS -> reduce
+actionsTable[5463] = 530;
+// actionTable 78 -> CURLY_CLOSE -> reduce
+actionsTable[5468] = 531;
+// actionTable 78 -> COMMA -> reduce
+actionsTable[5469] = 532;
+// actionTable 78 -> BRACKET_CLOSE -> reduce
+actionsTable[5473] = 533;
 // actionTable 75 -> ZERO -> shift
-actionsTable[5112] = 534;
+actionsTable[5264] = 534;
 // actionTable 75 -> ONE_NINE -> shift
-actionsTable[5113] = 535;
+actionsTable[5265] = 535;
 // actionTable 75 -> Digits -> shift
-actionsTable[5155] = 536;
+actionsTable[5307] = 536;
 // actionTable 75 -> Digit -> shift
-actionsTable[5157] = 537;
-// actionTable 80 -> WS -> reduce
-actionsTable[5441] = 538;
-// actionTable 80 -> CURLY_CLOSE -> reduce
-actionsTable[5446] = 539;
-// actionTable 80 -> COMMA -> reduce
-actionsTable[5447] = 540;
-// actionTable 80 -> BRACKET_CLOSE -> reduce
-actionsTable[5451] = 541;
-// actionTable 80 -> DOT -> reduce
-actionsTable[5454] = 542;
-// actionTable 80 -> UPPER_E -> reduce
-actionsTable[5455] = 543;
-// actionTable 80 -> LOWER_E -> reduce
-actionsTable[5456] = 544;
+actionsTable[5309] = 537;
 // actionTable 80 -> @expound.EOF -> reduce
-actionsTable[5440] = 545;
+actionsTable[5600] = 538;
+// actionTable 80 -> WS -> reduce
+actionsTable[5603] = 539;
+// actionTable 80 -> CURLY_CLOSE -> reduce
+actionsTable[5608] = 540;
+// actionTable 80 -> COMMA -> reduce
+actionsTable[5609] = 541;
+// actionTable 80 -> BRACKET_CLOSE -> reduce
+actionsTable[5613] = 542;
+// actionTable 80 -> DOT -> reduce
+actionsTable[5616] = 543;
+// actionTable 80 -> UPPER_E -> reduce
+actionsTable[5617] = 544;
+// actionTable 80 -> LOWER_E -> reduce
+actionsTable[5618] = 545;
 // actionTable 81 -> ZERO -> shift
-actionsTable[5520] = 546;
+actionsTable[5684] = 546;
 // actionTable 81 -> ONE_NINE -> shift
-actionsTable[5521] = 547;
+actionsTable[5685] = 547;
 // actionTable 81 -> Digits -> shift
-actionsTable[5563] = 548;
+actionsTable[5727] = 548;
 // actionTable 81 -> Digit -> shift
-actionsTable[5565] = 549;
+actionsTable[5729] = 549;
 // actionTable 84 -> ZERO -> shift
-actionsTable[5724] = 550;
+actionsTable[5894] = 550;
 // actionTable 84 -> ONE_NINE -> shift
-actionsTable[5725] = 551;
+actionsTable[5895] = 551;
 // actionTable 84 -> Digit -> shift
-actionsTable[5769] = 552;
-// actionTable 84 -> WS -> reduce
-actionsTable[5713] = 553;
-// actionTable 84 -> CURLY_CLOSE -> reduce
-actionsTable[5718] = 554;
-// actionTable 84 -> COMMA -> reduce
-actionsTable[5719] = 555;
-// actionTable 84 -> BRACKET_CLOSE -> reduce
-actionsTable[5723] = 556;
-// actionTable 84 -> DOT -> reduce
-actionsTable[5726] = 557;
-// actionTable 84 -> UPPER_E -> reduce
-actionsTable[5727] = 558;
-// actionTable 84 -> LOWER_E -> reduce
-actionsTable[5728] = 559;
+actionsTable[5939] = 552;
 // actionTable 84 -> @expound.EOF -> reduce
-actionsTable[5712] = 560;
-// actionTable 85 -> WS -> reduce
-actionsTable[5781] = 561;
-// actionTable 85 -> CURLY_CLOSE -> reduce
-actionsTable[5786] = 562;
-// actionTable 85 -> COMMA -> reduce
-actionsTable[5787] = 563;
-// actionTable 85 -> BRACKET_CLOSE -> reduce
-actionsTable[5791] = 564;
-// actionTable 85 -> ZERO -> reduce
-actionsTable[5792] = 565;
-// actionTable 85 -> ONE_NINE -> reduce
-actionsTable[5793] = 566;
-// actionTable 85 -> DOT -> reduce
-actionsTable[5794] = 567;
-// actionTable 85 -> UPPER_E -> reduce
-actionsTable[5795] = 568;
-// actionTable 85 -> LOWER_E -> reduce
-actionsTable[5796] = 569;
+actionsTable[5880] = 553;
+// actionTable 84 -> WS -> reduce
+actionsTable[5883] = 554;
+// actionTable 84 -> CURLY_CLOSE -> reduce
+actionsTable[5888] = 555;
+// actionTable 84 -> COMMA -> reduce
+actionsTable[5889] = 556;
+// actionTable 84 -> BRACKET_CLOSE -> reduce
+actionsTable[5893] = 557;
+// actionTable 84 -> DOT -> reduce
+actionsTable[5896] = 558;
+// actionTable 84 -> UPPER_E -> reduce
+actionsTable[5897] = 559;
+// actionTable 84 -> LOWER_E -> reduce
+actionsTable[5898] = 560;
 // actionTable 85 -> @expound.EOF -> reduce
-actionsTable[5780] = 570;
-// actionTable 82 -> WS -> reduce
-actionsTable[5577] = 571;
-// actionTable 82 -> CURLY_CLOSE -> reduce
-actionsTable[5582] = 572;
-// actionTable 82 -> COMMA -> reduce
-actionsTable[5583] = 573;
-// actionTable 82 -> BRACKET_CLOSE -> reduce
-actionsTable[5587] = 574;
-// actionTable 82 -> ZERO -> reduce
-actionsTable[5588] = 575;
-// actionTable 82 -> ONE_NINE -> reduce
-actionsTable[5589] = 576;
-// actionTable 82 -> DOT -> reduce
-actionsTable[5590] = 577;
-// actionTable 82 -> UPPER_E -> reduce
-actionsTable[5591] = 578;
-// actionTable 82 -> LOWER_E -> reduce
-actionsTable[5592] = 579;
+actionsTable[5950] = 561;
+// actionTable 85 -> WS -> reduce
+actionsTable[5953] = 562;
+// actionTable 85 -> CURLY_CLOSE -> reduce
+actionsTable[5958] = 563;
+// actionTable 85 -> COMMA -> reduce
+actionsTable[5959] = 564;
+// actionTable 85 -> BRACKET_CLOSE -> reduce
+actionsTable[5963] = 565;
+// actionTable 85 -> ZERO -> reduce
+actionsTable[5964] = 566;
+// actionTable 85 -> ONE_NINE -> reduce
+actionsTable[5965] = 567;
+// actionTable 85 -> DOT -> reduce
+actionsTable[5966] = 568;
+// actionTable 85 -> UPPER_E -> reduce
+actionsTable[5967] = 569;
+// actionTable 85 -> LOWER_E -> reduce
+actionsTable[5968] = 570;
 // actionTable 82 -> @expound.EOF -> reduce
-actionsTable[5576] = 580;
-// actionTable 83 -> WS -> reduce
-actionsTable[5645] = 581;
-// actionTable 83 -> CURLY_CLOSE -> reduce
-actionsTable[5650] = 582;
-// actionTable 83 -> COMMA -> reduce
-actionsTable[5651] = 583;
-// actionTable 83 -> BRACKET_CLOSE -> reduce
-actionsTable[5655] = 584;
-// actionTable 83 -> ZERO -> reduce
-actionsTable[5656] = 585;
-// actionTable 83 -> ONE_NINE -> reduce
-actionsTable[5657] = 586;
-// actionTable 83 -> DOT -> reduce
-actionsTable[5658] = 587;
-// actionTable 83 -> UPPER_E -> reduce
-actionsTable[5659] = 588;
-// actionTable 83 -> LOWER_E -> reduce
-actionsTable[5660] = 589;
+actionsTable[5740] = 571;
+// actionTable 82 -> WS -> reduce
+actionsTable[5743] = 572;
+// actionTable 82 -> CURLY_CLOSE -> reduce
+actionsTable[5748] = 573;
+// actionTable 82 -> COMMA -> reduce
+actionsTable[5749] = 574;
+// actionTable 82 -> BRACKET_CLOSE -> reduce
+actionsTable[5753] = 575;
+// actionTable 82 -> ZERO -> reduce
+actionsTable[5754] = 576;
+// actionTable 82 -> ONE_NINE -> reduce
+actionsTable[5755] = 577;
+// actionTable 82 -> DOT -> reduce
+actionsTable[5756] = 578;
+// actionTable 82 -> UPPER_E -> reduce
+actionsTable[5757] = 579;
+// actionTable 82 -> LOWER_E -> reduce
+actionsTable[5758] = 580;
 // actionTable 83 -> @expound.EOF -> reduce
-actionsTable[5644] = 590;
-// actionTable 86 -> WS -> reduce
-actionsTable[5849] = 591;
-// actionTable 86 -> CURLY_CLOSE -> reduce
-actionsTable[5854] = 592;
-// actionTable 86 -> COMMA -> reduce
-actionsTable[5855] = 593;
-// actionTable 86 -> BRACKET_CLOSE -> reduce
-actionsTable[5859] = 594;
+actionsTable[5810] = 581;
+// actionTable 83 -> WS -> reduce
+actionsTable[5813] = 582;
+// actionTable 83 -> CURLY_CLOSE -> reduce
+actionsTable[5818] = 583;
+// actionTable 83 -> COMMA -> reduce
+actionsTable[5819] = 584;
+// actionTable 83 -> BRACKET_CLOSE -> reduce
+actionsTable[5823] = 585;
+// actionTable 83 -> ZERO -> reduce
+actionsTable[5824] = 586;
+// actionTable 83 -> ONE_NINE -> reduce
+actionsTable[5825] = 587;
+// actionTable 83 -> DOT -> reduce
+actionsTable[5826] = 588;
+// actionTable 83 -> UPPER_E -> reduce
+actionsTable[5827] = 589;
+// actionTable 83 -> LOWER_E -> reduce
+actionsTable[5828] = 590;
 // actionTable 86 -> @expound.EOF -> reduce
-actionsTable[5848] = 595;
+actionsTable[6020] = 591;
+// actionTable 86 -> WS -> reduce
+actionsTable[6023] = 592;
+// actionTable 86 -> CURLY_CLOSE -> reduce
+actionsTable[6028] = 593;
+// actionTable 86 -> COMMA -> reduce
+actionsTable[6029] = 594;
+// actionTable 86 -> BRACKET_CLOSE -> reduce
+actionsTable[6033] = 595;
 // actionTable 87 -> WS -> shift
-actionsTable[5917] = 596;
+actionsTable[6093] = 596;
 // actionTable 87 -> COLON -> shift
-actionsTable[5924] = 597;
+actionsTable[6100] = 597;
 // actionTable 87 -> Spaces -> shift
-actionsTable[5982] = 598;
-// actionTable 88 -> WS -> reduce
-actionsTable[5985] = 599;
-// actionTable 88 -> CURLY_CLOSE -> reduce
-actionsTable[5990] = 600;
-// actionTable 88 -> COMMA -> reduce
-actionsTable[5991] = 601;
-// actionTable 88 -> BRACKET_CLOSE -> reduce
-actionsTable[5995] = 602;
+actionsTable[6158] = 598;
 // actionTable 88 -> @expound.EOF -> reduce
-actionsTable[5984] = 603;
+actionsTable[6160] = 599;
+// actionTable 88 -> WS -> reduce
+actionsTable[6163] = 600;
+// actionTable 88 -> CURLY_CLOSE -> reduce
+actionsTable[6168] = 601;
+// actionTable 88 -> COMMA -> reduce
+actionsTable[6169] = 602;
+// actionTable 88 -> BRACKET_CLOSE -> reduce
+actionsTable[6173] = 603;
 // actionTable 89 -> WS -> shift
-actionsTable[6053] = 604;
+actionsTable[6233] = 604;
 // actionTable 89 -> STRING -> shift
-actionsTable[6061] = 605;
+actionsTable[6241] = 605;
 // actionTable 89 -> Member -> shift
-actionsTable[6089] = 606;
+actionsTable[6269] = 606;
 // actionTable 89 -> String -> shift
-actionsTable[6093] = 607;
+actionsTable[6273] = 607;
 // actionTable 89 -> Spaces -> shift
-actionsTable[6118] = 608;
+actionsTable[6298] = 608;
 // actionTable 90 -> WS -> shift
-actionsTable[6121] = 609;
+actionsTable[6303] = 609;
 // actionTable 90 -> TRUE -> shift
-actionsTable[6122] = 610;
+actionsTable[6304] = 610;
 // actionTable 90 -> FALSE -> shift
-actionsTable[6123] = 611;
+actionsTable[6305] = 611;
 // actionTable 90 -> NULL -> shift
-actionsTable[6124] = 612;
+actionsTable[6306] = 612;
 // actionTable 90 -> CURLY_OPEN -> shift
-actionsTable[6125] = 613;
+actionsTable[6307] = 613;
 // actionTable 90 -> STRING -> shift
-actionsTable[6129] = 614;
+actionsTable[6311] = 614;
 // actionTable 90 -> BRACKET_OPEN -> shift
-actionsTable[6130] = 615;
+actionsTable[6312] = 615;
 // actionTable 90 -> ZERO -> shift
-actionsTable[6132] = 616;
+actionsTable[6314] = 616;
 // actionTable 90 -> ONE_NINE -> shift
-actionsTable[6133] = 617;
+actionsTable[6315] = 617;
 // actionTable 90 -> MINUS -> shift
-actionsTable[6138] = 618;
+actionsTable[6320] = 618;
 // actionTable 90 -> Element -> shift
-actionsTable[6141] = 619;
+actionsTable[6323] = 619;
 // actionTable 90 -> Value -> shift
-actionsTable[6145] = 620;
+actionsTable[6327] = 620;
 // actionTable 90 -> Object -> shift
-actionsTable[6152] = 621;
+actionsTable[6334] = 621;
 // actionTable 90 -> String -> shift
-actionsTable[6161] = 622;
+actionsTable[6343] = 622;
 // actionTable 90 -> Array -> shift
-actionsTable[6162] = 623;
+actionsTable[6344] = 623;
 // actionTable 90 -> Number -> shift
-actionsTable[6167] = 624;
+actionsTable[6349] = 624;
 // actionTable 90 -> Integer -> shift
-actionsTable[6171] = 625;
+actionsTable[6353] = 625;
 // actionTable 90 -> Spaces -> shift
-actionsTable[6186] = 626;
+actionsTable[6368] = 626;
 // actionTable 91 -> WS -> shift
-actionsTable[6189] = 627;
+actionsTable[6373] = 627;
 // actionTable 91 -> COLON -> shift
-actionsTable[6196] = 628;
-// actionTable 92 -> WS -> reduce
-actionsTable[6257] = 629;
-// actionTable 92 -> CURLY_CLOSE -> reduce
-actionsTable[6262] = 630;
-// actionTable 92 -> COMMA -> reduce
-actionsTable[6263] = 631;
-// actionTable 92 -> BRACKET_CLOSE -> reduce
-actionsTable[6267] = 632;
+actionsTable[6380] = 628;
 // actionTable 92 -> @expound.EOF -> reduce
-actionsTable[6256] = 633;
-// actionTable 94 -> WS -> reduce
-actionsTable[6393] = 634;
-// actionTable 94 -> CURLY_CLOSE -> reduce
-actionsTable[6398] = 635;
-// actionTable 94 -> COMMA -> reduce
-actionsTable[6399] = 636;
-// actionTable 94 -> BRACKET_CLOSE -> reduce
-actionsTable[6403] = 637;
+actionsTable[6440] = 629;
+// actionTable 92 -> WS -> reduce
+actionsTable[6443] = 630;
+// actionTable 92 -> CURLY_CLOSE -> reduce
+actionsTable[6448] = 631;
+// actionTable 92 -> COMMA -> reduce
+actionsTable[6449] = 632;
+// actionTable 92 -> BRACKET_CLOSE -> reduce
+actionsTable[6453] = 633;
 // actionTable 94 -> @expound.EOF -> reduce
-actionsTable[6392] = 638;
+actionsTable[6580] = 634;
+// actionTable 94 -> WS -> reduce
+actionsTable[6583] = 635;
+// actionTable 94 -> CURLY_CLOSE -> reduce
+actionsTable[6588] = 636;
+// actionTable 94 -> COMMA -> reduce
+actionsTable[6589] = 637;
+// actionTable 94 -> BRACKET_CLOSE -> reduce
+actionsTable[6593] = 638;
 // actionTable 93 -> WS -> shift
-actionsTable[6325] = 639;
+actionsTable[6513] = 639;
 // actionTable 93 -> TRUE -> shift
-actionsTable[6326] = 640;
+actionsTable[6514] = 640;
 // actionTable 93 -> FALSE -> shift
-actionsTable[6327] = 641;
+actionsTable[6515] = 641;
 // actionTable 93 -> NULL -> shift
-actionsTable[6328] = 642;
+actionsTable[6516] = 642;
 // actionTable 93 -> CURLY_OPEN -> shift
-actionsTable[6329] = 643;
+actionsTable[6517] = 643;
 // actionTable 93 -> STRING -> shift
-actionsTable[6333] = 644;
+actionsTable[6521] = 644;
 // actionTable 93 -> BRACKET_OPEN -> shift
-actionsTable[6334] = 645;
+actionsTable[6522] = 645;
 // actionTable 93 -> ZERO -> shift
-actionsTable[6336] = 646;
+actionsTable[6524] = 646;
 // actionTable 93 -> ONE_NINE -> shift
-actionsTable[6337] = 647;
+actionsTable[6525] = 647;
 // actionTable 93 -> MINUS -> shift
-actionsTable[6342] = 648;
+actionsTable[6530] = 648;
 // actionTable 93 -> Element -> shift
-actionsTable[6345] = 649;
+actionsTable[6533] = 649;
 // actionTable 93 -> Value -> shift
-actionsTable[6349] = 650;
+actionsTable[6537] = 650;
 // actionTable 93 -> Object -> shift
-actionsTable[6356] = 651;
+actionsTable[6544] = 651;
 // actionTable 93 -> String -> shift
-actionsTable[6365] = 652;
+actionsTable[6553] = 652;
 // actionTable 93 -> Array -> shift
-actionsTable[6366] = 653;
+actionsTable[6554] = 653;
 // actionTable 93 -> Number -> shift
-actionsTable[6371] = 654;
+actionsTable[6559] = 654;
 // actionTable 93 -> Integer -> shift
-actionsTable[6375] = 655;
+actionsTable[6563] = 655;
 // actionTable 93 -> Spaces -> shift
-actionsTable[6390] = 656;
-// actionTable 99 -> WS -> reduce
-actionsTable[6733] = 657;
-// actionTable 99 -> CURLY_CLOSE -> reduce
-actionsTable[6738] = 658;
-// actionTable 99 -> COMMA -> reduce
-actionsTable[6739] = 659;
-// actionTable 99 -> BRACKET_CLOSE -> reduce
-actionsTable[6743] = 660;
+actionsTable[6578] = 656;
 // actionTable 99 -> @expound.EOF -> reduce
-actionsTable[6732] = 661;
+actionsTable[6930] = 657;
+// actionTable 99 -> WS -> reduce
+actionsTable[6933] = 658;
+// actionTable 99 -> CURLY_CLOSE -> reduce
+actionsTable[6938] = 659;
+// actionTable 99 -> COMMA -> reduce
+actionsTable[6939] = 660;
+// actionTable 99 -> BRACKET_CLOSE -> reduce
+actionsTable[6943] = 661;
 // actionTable 96 -> ZERO -> shift
-actionsTable[6540] = 662;
+actionsTable[6734] = 662;
 // actionTable 96 -> ONE_NINE -> shift
-actionsTable[6541] = 663;
+actionsTable[6735] = 663;
 // actionTable 96 -> PLUS -> shift
-actionsTable[6545] = 664;
+actionsTable[6739] = 664;
 // actionTable 96 -> MINUS -> shift
-actionsTable[6546] = 665;
+actionsTable[6740] = 665;
 // actionTable 96 -> Digits -> shift
-actionsTable[6583] = 666;
+actionsTable[6777] = 666;
 // actionTable 96 -> Digit -> shift
-actionsTable[6585] = 667;
+actionsTable[6779] = 667;
 // actionTable 96 -> Sign -> shift
-actionsTable[6592] = 668;
+actionsTable[6786] = 668;
 // actionTable 97 -> ZERO -> shift
-actionsTable[6608] = 669;
+actionsTable[6804] = 669;
 // actionTable 97 -> ONE_NINE -> shift
-actionsTable[6609] = 670;
+actionsTable[6805] = 670;
 // actionTable 97 -> PLUS -> shift
-actionsTable[6613] = 671;
+actionsTable[6809] = 671;
 // actionTable 97 -> MINUS -> shift
-actionsTable[6614] = 672;
+actionsTable[6810] = 672;
 // actionTable 97 -> Digits -> shift
-actionsTable[6651] = 673;
+actionsTable[6847] = 673;
 // actionTable 97 -> Digit -> shift
-actionsTable[6653] = 674;
+actionsTable[6849] = 674;
 // actionTable 97 -> Sign -> shift
-actionsTable[6660] = 675;
+actionsTable[6856] = 675;
 // actionTable 98 -> UPPER_E -> shift
-actionsTable[6679] = 676;
+actionsTable[6877] = 676;
 // actionTable 98 -> LOWER_E -> shift
-actionsTable[6680] = 677;
+actionsTable[6878] = 677;
 // actionTable 98 -> Exponent -> shift
-actionsTable[6724] = 678;
-// actionTable 98 -> WS -> reduce
-actionsTable[6665] = 679;
-// actionTable 98 -> CURLY_CLOSE -> reduce
-actionsTable[6670] = 680;
-// actionTable 98 -> COMMA -> reduce
-actionsTable[6671] = 681;
-// actionTable 98 -> BRACKET_CLOSE -> reduce
-actionsTable[6675] = 682;
+actionsTable[6922] = 678;
 // actionTable 98 -> @expound.EOF -> reduce
-actionsTable[6664] = 683;
+actionsTable[6860] = 679;
+// actionTable 98 -> WS -> reduce
+actionsTable[6863] = 680;
+// actionTable 98 -> CURLY_CLOSE -> reduce
+actionsTable[6868] = 681;
+// actionTable 98 -> COMMA -> reduce
+actionsTable[6869] = 682;
+// actionTable 98 -> BRACKET_CLOSE -> reduce
+actionsTable[6873] = 683;
 // actionTable 95 -> ZERO -> shift
-actionsTable[6472] = 684;
+actionsTable[6664] = 684;
 // actionTable 95 -> ONE_NINE -> shift
-actionsTable[6473] = 685;
+actionsTable[6665] = 685;
 // actionTable 95 -> Digits -> shift
-actionsTable[6515] = 686;
+actionsTable[6707] = 686;
 // actionTable 95 -> Digit -> shift
-actionsTable[6517] = 687;
-// actionTable 100 -> WS -> reduce
-actionsTable[6801] = 688;
-// actionTable 100 -> CURLY_CLOSE -> reduce
-actionsTable[6806] = 689;
-// actionTable 100 -> COMMA -> reduce
-actionsTable[6807] = 690;
-// actionTable 100 -> BRACKET_CLOSE -> reduce
-actionsTable[6811] = 691;
-// actionTable 100 -> DOT -> reduce
-actionsTable[6814] = 692;
-// actionTable 100 -> UPPER_E -> reduce
-actionsTable[6815] = 693;
-// actionTable 100 -> LOWER_E -> reduce
-actionsTable[6816] = 694;
+actionsTable[6709] = 687;
 // actionTable 100 -> @expound.EOF -> reduce
-actionsTable[6800] = 695;
+actionsTable[7000] = 688;
+// actionTable 100 -> WS -> reduce
+actionsTable[7003] = 689;
+// actionTable 100 -> CURLY_CLOSE -> reduce
+actionsTable[7008] = 690;
+// actionTable 100 -> COMMA -> reduce
+actionsTable[7009] = 691;
+// actionTable 100 -> BRACKET_CLOSE -> reduce
+actionsTable[7013] = 692;
+// actionTable 100 -> DOT -> reduce
+actionsTable[7016] = 693;
+// actionTable 100 -> UPPER_E -> reduce
+actionsTable[7017] = 694;
+// actionTable 100 -> LOWER_E -> reduce
+actionsTable[7018] = 695;
 // actionTable 101 -> ZERO -> shift
-actionsTable[6880] = 696;
+actionsTable[7084] = 696;
 // actionTable 101 -> ONE_NINE -> shift
-actionsTable[6881] = 697;
+actionsTable[7085] = 697;
 // actionTable 101 -> Digits -> shift
-actionsTable[6923] = 698;
+actionsTable[7127] = 698;
 // actionTable 101 -> Digit -> shift
-actionsTable[6925] = 699;
+actionsTable[7129] = 699;
 // actionTable 104 -> ZERO -> shift
-actionsTable[7084] = 700;
+actionsTable[7294] = 700;
 // actionTable 104 -> ONE_NINE -> shift
-actionsTable[7085] = 701;
+actionsTable[7295] = 701;
 // actionTable 104 -> Digit -> shift
-actionsTable[7129] = 702;
-// actionTable 104 -> WS -> reduce
-actionsTable[7073] = 703;
-// actionTable 104 -> CURLY_CLOSE -> reduce
-actionsTable[7078] = 704;
-// actionTable 104 -> COMMA -> reduce
-actionsTable[7079] = 705;
-// actionTable 104 -> BRACKET_CLOSE -> reduce
-actionsTable[7083] = 706;
-// actionTable 104 -> DOT -> reduce
-actionsTable[7086] = 707;
-// actionTable 104 -> UPPER_E -> reduce
-actionsTable[7087] = 708;
-// actionTable 104 -> LOWER_E -> reduce
-actionsTable[7088] = 709;
+actionsTable[7339] = 702;
 // actionTable 104 -> @expound.EOF -> reduce
-actionsTable[7072] = 710;
-// actionTable 105 -> WS -> reduce
-actionsTable[7141] = 711;
-// actionTable 105 -> CURLY_CLOSE -> reduce
-actionsTable[7146] = 712;
-// actionTable 105 -> COMMA -> reduce
-actionsTable[7147] = 713;
-// actionTable 105 -> BRACKET_CLOSE -> reduce
-actionsTable[7151] = 714;
-// actionTable 105 -> ZERO -> reduce
-actionsTable[7152] = 715;
-// actionTable 105 -> ONE_NINE -> reduce
-actionsTable[7153] = 716;
-// actionTable 105 -> DOT -> reduce
-actionsTable[7154] = 717;
-// actionTable 105 -> UPPER_E -> reduce
-actionsTable[7155] = 718;
-// actionTable 105 -> LOWER_E -> reduce
-actionsTable[7156] = 719;
+actionsTable[7280] = 703;
+// actionTable 104 -> WS -> reduce
+actionsTable[7283] = 704;
+// actionTable 104 -> CURLY_CLOSE -> reduce
+actionsTable[7288] = 705;
+// actionTable 104 -> COMMA -> reduce
+actionsTable[7289] = 706;
+// actionTable 104 -> BRACKET_CLOSE -> reduce
+actionsTable[7293] = 707;
+// actionTable 104 -> DOT -> reduce
+actionsTable[7296] = 708;
+// actionTable 104 -> UPPER_E -> reduce
+actionsTable[7297] = 709;
+// actionTable 104 -> LOWER_E -> reduce
+actionsTable[7298] = 710;
 // actionTable 105 -> @expound.EOF -> reduce
-actionsTable[7140] = 720;
-// actionTable 102 -> WS -> reduce
-actionsTable[6937] = 721;
-// actionTable 102 -> CURLY_CLOSE -> reduce
-actionsTable[6942] = 722;
-// actionTable 102 -> COMMA -> reduce
-actionsTable[6943] = 723;
-// actionTable 102 -> BRACKET_CLOSE -> reduce
-actionsTable[6947] = 724;
-// actionTable 102 -> ZERO -> reduce
-actionsTable[6948] = 725;
-// actionTable 102 -> ONE_NINE -> reduce
-actionsTable[6949] = 726;
-// actionTable 102 -> DOT -> reduce
-actionsTable[6950] = 727;
-// actionTable 102 -> UPPER_E -> reduce
-actionsTable[6951] = 728;
-// actionTable 102 -> LOWER_E -> reduce
-actionsTable[6952] = 729;
+actionsTable[7350] = 711;
+// actionTable 105 -> WS -> reduce
+actionsTable[7353] = 712;
+// actionTable 105 -> CURLY_CLOSE -> reduce
+actionsTable[7358] = 713;
+// actionTable 105 -> COMMA -> reduce
+actionsTable[7359] = 714;
+// actionTable 105 -> BRACKET_CLOSE -> reduce
+actionsTable[7363] = 715;
+// actionTable 105 -> ZERO -> reduce
+actionsTable[7364] = 716;
+// actionTable 105 -> ONE_NINE -> reduce
+actionsTable[7365] = 717;
+// actionTable 105 -> DOT -> reduce
+actionsTable[7366] = 718;
+// actionTable 105 -> UPPER_E -> reduce
+actionsTable[7367] = 719;
+// actionTable 105 -> LOWER_E -> reduce
+actionsTable[7368] = 720;
 // actionTable 102 -> @expound.EOF -> reduce
-actionsTable[6936] = 730;
-// actionTable 103 -> WS -> reduce
-actionsTable[7005] = 731;
-// actionTable 103 -> CURLY_CLOSE -> reduce
-actionsTable[7010] = 732;
-// actionTable 103 -> COMMA -> reduce
-actionsTable[7011] = 733;
-// actionTable 103 -> BRACKET_CLOSE -> reduce
-actionsTable[7015] = 734;
-// actionTable 103 -> ZERO -> reduce
-actionsTable[7016] = 735;
-// actionTable 103 -> ONE_NINE -> reduce
-actionsTable[7017] = 736;
-// actionTable 103 -> DOT -> reduce
-actionsTable[7018] = 737;
-// actionTable 103 -> UPPER_E -> reduce
-actionsTable[7019] = 738;
-// actionTable 103 -> LOWER_E -> reduce
-actionsTable[7020] = 739;
+actionsTable[7140] = 721;
+// actionTable 102 -> WS -> reduce
+actionsTable[7143] = 722;
+// actionTable 102 -> CURLY_CLOSE -> reduce
+actionsTable[7148] = 723;
+// actionTable 102 -> COMMA -> reduce
+actionsTable[7149] = 724;
+// actionTable 102 -> BRACKET_CLOSE -> reduce
+actionsTable[7153] = 725;
+// actionTable 102 -> ZERO -> reduce
+actionsTable[7154] = 726;
+// actionTable 102 -> ONE_NINE -> reduce
+actionsTable[7155] = 727;
+// actionTable 102 -> DOT -> reduce
+actionsTable[7156] = 728;
+// actionTable 102 -> UPPER_E -> reduce
+actionsTable[7157] = 729;
+// actionTable 102 -> LOWER_E -> reduce
+actionsTable[7158] = 730;
 // actionTable 103 -> @expound.EOF -> reduce
-actionsTable[7004] = 740;
+actionsTable[7210] = 731;
+// actionTable 103 -> WS -> reduce
+actionsTable[7213] = 732;
+// actionTable 103 -> CURLY_CLOSE -> reduce
+actionsTable[7218] = 733;
+// actionTable 103 -> COMMA -> reduce
+actionsTable[7219] = 734;
+// actionTable 103 -> BRACKET_CLOSE -> reduce
+actionsTable[7223] = 735;
+// actionTable 103 -> ZERO -> reduce
+actionsTable[7224] = 736;
+// actionTable 103 -> ONE_NINE -> reduce
+actionsTable[7225] = 737;
+// actionTable 103 -> DOT -> reduce
+actionsTable[7226] = 738;
+// actionTable 103 -> UPPER_E -> reduce
+actionsTable[7227] = 739;
+// actionTable 103 -> LOWER_E -> reduce
+actionsTable[7228] = 740;
 // actionTable 110 -> ZERO -> shift
-actionsTable[7492] = 741;
+actionsTable[7714] = 741;
 // actionTable 110 -> ONE_NINE -> shift
-actionsTable[7493] = 742;
+actionsTable[7715] = 742;
 // actionTable 110 -> Digit -> shift
-actionsTable[7537] = 743;
-// actionTable 110 -> WS -> reduce
-actionsTable[7481] = 744;
-// actionTable 110 -> CURLY_CLOSE -> reduce
-actionsTable[7486] = 745;
-// actionTable 110 -> COMMA -> reduce
-actionsTable[7487] = 746;
-// actionTable 110 -> BRACKET_CLOSE -> reduce
-actionsTable[7491] = 747;
+actionsTable[7759] = 743;
 // actionTable 110 -> @expound.EOF -> reduce
-actionsTable[7480] = 748;
-// actionTable 111 -> WS -> reduce
-actionsTable[7549] = 749;
-// actionTable 111 -> CURLY_CLOSE -> reduce
-actionsTable[7554] = 750;
-// actionTable 111 -> COMMA -> reduce
-actionsTable[7555] = 751;
-// actionTable 111 -> BRACKET_CLOSE -> reduce
-actionsTable[7559] = 752;
-// actionTable 111 -> ZERO -> reduce
-actionsTable[7560] = 753;
-// actionTable 111 -> ONE_NINE -> reduce
-actionsTable[7561] = 754;
-// actionTable 111 -> DOT -> reduce
-actionsTable[7562] = 755;
-// actionTable 111 -> UPPER_E -> reduce
-actionsTable[7563] = 756;
-// actionTable 111 -> LOWER_E -> reduce
-actionsTable[7564] = 757;
+actionsTable[7700] = 744;
+// actionTable 110 -> WS -> reduce
+actionsTable[7703] = 745;
+// actionTable 110 -> CURLY_CLOSE -> reduce
+actionsTable[7708] = 746;
+// actionTable 110 -> COMMA -> reduce
+actionsTable[7709] = 747;
+// actionTable 110 -> BRACKET_CLOSE -> reduce
+actionsTable[7713] = 748;
 // actionTable 111 -> @expound.EOF -> reduce
-actionsTable[7548] = 758;
-// actionTable 106 -> WS -> reduce
-actionsTable[7209] = 759;
-// actionTable 106 -> CURLY_CLOSE -> reduce
-actionsTable[7214] = 760;
-// actionTable 106 -> COMMA -> reduce
-actionsTable[7215] = 761;
-// actionTable 106 -> BRACKET_CLOSE -> reduce
-actionsTable[7219] = 762;
-// actionTable 106 -> ZERO -> reduce
-actionsTable[7220] = 763;
-// actionTable 106 -> ONE_NINE -> reduce
-actionsTable[7221] = 764;
-// actionTable 106 -> DOT -> reduce
-actionsTable[7222] = 765;
-// actionTable 106 -> UPPER_E -> reduce
-actionsTable[7223] = 766;
-// actionTable 106 -> LOWER_E -> reduce
-actionsTable[7224] = 767;
+actionsTable[7770] = 749;
+// actionTable 111 -> WS -> reduce
+actionsTable[7773] = 750;
+// actionTable 111 -> CURLY_CLOSE -> reduce
+actionsTable[7778] = 751;
+// actionTable 111 -> COMMA -> reduce
+actionsTable[7779] = 752;
+// actionTable 111 -> BRACKET_CLOSE -> reduce
+actionsTable[7783] = 753;
+// actionTable 111 -> ZERO -> reduce
+actionsTable[7784] = 754;
+// actionTable 111 -> ONE_NINE -> reduce
+actionsTable[7785] = 755;
+// actionTable 111 -> DOT -> reduce
+actionsTable[7786] = 756;
+// actionTable 111 -> UPPER_E -> reduce
+actionsTable[7787] = 757;
+// actionTable 111 -> LOWER_E -> reduce
+actionsTable[7788] = 758;
 // actionTable 106 -> @expound.EOF -> reduce
-actionsTable[7208] = 768;
-// actionTable 107 -> WS -> reduce
-actionsTable[7277] = 769;
-// actionTable 107 -> CURLY_CLOSE -> reduce
-actionsTable[7282] = 770;
-// actionTable 107 -> COMMA -> reduce
-actionsTable[7283] = 771;
-// actionTable 107 -> BRACKET_CLOSE -> reduce
-actionsTable[7287] = 772;
-// actionTable 107 -> ZERO -> reduce
-actionsTable[7288] = 773;
-// actionTable 107 -> ONE_NINE -> reduce
-actionsTable[7289] = 774;
-// actionTable 107 -> DOT -> reduce
-actionsTable[7290] = 775;
-// actionTable 107 -> UPPER_E -> reduce
-actionsTable[7291] = 776;
-// actionTable 107 -> LOWER_E -> reduce
-actionsTable[7292] = 777;
+actionsTable[7420] = 759;
+// actionTable 106 -> WS -> reduce
+actionsTable[7423] = 760;
+// actionTable 106 -> CURLY_CLOSE -> reduce
+actionsTable[7428] = 761;
+// actionTable 106 -> COMMA -> reduce
+actionsTable[7429] = 762;
+// actionTable 106 -> BRACKET_CLOSE -> reduce
+actionsTable[7433] = 763;
+// actionTable 106 -> ZERO -> reduce
+actionsTable[7434] = 764;
+// actionTable 106 -> ONE_NINE -> reduce
+actionsTable[7435] = 765;
+// actionTable 106 -> DOT -> reduce
+actionsTable[7436] = 766;
+// actionTable 106 -> UPPER_E -> reduce
+actionsTable[7437] = 767;
+// actionTable 106 -> LOWER_E -> reduce
+actionsTable[7438] = 768;
 // actionTable 107 -> @expound.EOF -> reduce
-actionsTable[7276] = 778;
+actionsTable[7490] = 769;
+// actionTable 107 -> WS -> reduce
+actionsTable[7493] = 770;
+// actionTable 107 -> CURLY_CLOSE -> reduce
+actionsTable[7498] = 771;
+// actionTable 107 -> COMMA -> reduce
+actionsTable[7499] = 772;
+// actionTable 107 -> BRACKET_CLOSE -> reduce
+actionsTable[7503] = 773;
+// actionTable 107 -> ZERO -> reduce
+actionsTable[7504] = 774;
+// actionTable 107 -> ONE_NINE -> reduce
+actionsTable[7505] = 775;
+// actionTable 107 -> DOT -> reduce
+actionsTable[7506] = 776;
+// actionTable 107 -> UPPER_E -> reduce
+actionsTable[7507] = 777;
+// actionTable 107 -> LOWER_E -> reduce
+actionsTable[7508] = 778;
 // actionTable 112 -> ZERO -> shift
-actionsTable[7628] = 779;
+actionsTable[7854] = 779;
 // actionTable 112 -> ONE_NINE -> shift
-actionsTable[7629] = 780;
+actionsTable[7855] = 780;
 // actionTable 112 -> Digits -> shift
-actionsTable[7671] = 781;
+actionsTable[7897] = 781;
 // actionTable 112 -> Digit -> shift
-actionsTable[7673] = 782;
+actionsTable[7899] = 782;
 // actionTable 108 -> ZERO -> reduce
-actionsTable[7356] = 783;
+actionsTable[7574] = 783;
 // actionTable 108 -> ONE_NINE -> reduce
-actionsTable[7357] = 784;
+actionsTable[7575] = 784;
 // actionTable 109 -> ZERO -> reduce
-actionsTable[7424] = 785;
+actionsTable[7644] = 785;
 // actionTable 109 -> ONE_NINE -> reduce
-actionsTable[7425] = 786;
+actionsTable[7645] = 786;
 // actionTable 117 -> ZERO -> shift
-actionsTable[7968] = 787;
+actionsTable[8204] = 787;
 // actionTable 117 -> ONE_NINE -> shift
-actionsTable[7969] = 788;
+actionsTable[8205] = 788;
 // actionTable 117 -> Digit -> shift
-actionsTable[8013] = 789;
-// actionTable 117 -> WS -> reduce
-actionsTable[7957] = 790;
-// actionTable 117 -> CURLY_CLOSE -> reduce
-actionsTable[7962] = 791;
-// actionTable 117 -> COMMA -> reduce
-actionsTable[7963] = 792;
-// actionTable 117 -> BRACKET_CLOSE -> reduce
-actionsTable[7967] = 793;
+actionsTable[8249] = 789;
 // actionTable 117 -> @expound.EOF -> reduce
-actionsTable[7956] = 794;
-// actionTable 118 -> WS -> reduce
-actionsTable[8025] = 795;
-// actionTable 118 -> CURLY_CLOSE -> reduce
-actionsTable[8030] = 796;
-// actionTable 118 -> COMMA -> reduce
-actionsTable[8031] = 797;
-// actionTable 118 -> BRACKET_CLOSE -> reduce
-actionsTable[8035] = 798;
-// actionTable 118 -> ZERO -> reduce
-actionsTable[8036] = 799;
-// actionTable 118 -> ONE_NINE -> reduce
-actionsTable[8037] = 800;
-// actionTable 118 -> DOT -> reduce
-actionsTable[8038] = 801;
-// actionTable 118 -> UPPER_E -> reduce
-actionsTable[8039] = 802;
-// actionTable 118 -> LOWER_E -> reduce
-actionsTable[8040] = 803;
+actionsTable[8190] = 790;
+// actionTable 117 -> WS -> reduce
+actionsTable[8193] = 791;
+// actionTable 117 -> CURLY_CLOSE -> reduce
+actionsTable[8198] = 792;
+// actionTable 117 -> COMMA -> reduce
+actionsTable[8199] = 793;
+// actionTable 117 -> BRACKET_CLOSE -> reduce
+actionsTable[8203] = 794;
 // actionTable 118 -> @expound.EOF -> reduce
-actionsTable[8024] = 804;
-// actionTable 113 -> WS -> reduce
-actionsTable[7685] = 805;
-// actionTable 113 -> CURLY_CLOSE -> reduce
-actionsTable[7690] = 806;
-// actionTable 113 -> COMMA -> reduce
-actionsTable[7691] = 807;
-// actionTable 113 -> BRACKET_CLOSE -> reduce
-actionsTable[7695] = 808;
-// actionTable 113 -> ZERO -> reduce
-actionsTable[7696] = 809;
-// actionTable 113 -> ONE_NINE -> reduce
-actionsTable[7697] = 810;
-// actionTable 113 -> DOT -> reduce
-actionsTable[7698] = 811;
-// actionTable 113 -> UPPER_E -> reduce
-actionsTable[7699] = 812;
-// actionTable 113 -> LOWER_E -> reduce
-actionsTable[7700] = 813;
+actionsTable[8260] = 795;
+// actionTable 118 -> WS -> reduce
+actionsTable[8263] = 796;
+// actionTable 118 -> CURLY_CLOSE -> reduce
+actionsTable[8268] = 797;
+// actionTable 118 -> COMMA -> reduce
+actionsTable[8269] = 798;
+// actionTable 118 -> BRACKET_CLOSE -> reduce
+actionsTable[8273] = 799;
+// actionTable 118 -> ZERO -> reduce
+actionsTable[8274] = 800;
+// actionTable 118 -> ONE_NINE -> reduce
+actionsTable[8275] = 801;
+// actionTable 118 -> DOT -> reduce
+actionsTable[8276] = 802;
+// actionTable 118 -> UPPER_E -> reduce
+actionsTable[8277] = 803;
+// actionTable 118 -> LOWER_E -> reduce
+actionsTable[8278] = 804;
 // actionTable 113 -> @expound.EOF -> reduce
-actionsTable[7684] = 814;
-// actionTable 114 -> WS -> reduce
-actionsTable[7753] = 815;
-// actionTable 114 -> CURLY_CLOSE -> reduce
-actionsTable[7758] = 816;
-// actionTable 114 -> COMMA -> reduce
-actionsTable[7759] = 817;
-// actionTable 114 -> BRACKET_CLOSE -> reduce
-actionsTable[7763] = 818;
-// actionTable 114 -> ZERO -> reduce
-actionsTable[7764] = 819;
-// actionTable 114 -> ONE_NINE -> reduce
-actionsTable[7765] = 820;
-// actionTable 114 -> DOT -> reduce
-actionsTable[7766] = 821;
-// actionTable 114 -> UPPER_E -> reduce
-actionsTable[7767] = 822;
-// actionTable 114 -> LOWER_E -> reduce
-actionsTable[7768] = 823;
+actionsTable[7910] = 805;
+// actionTable 113 -> WS -> reduce
+actionsTable[7913] = 806;
+// actionTable 113 -> CURLY_CLOSE -> reduce
+actionsTable[7918] = 807;
+// actionTable 113 -> COMMA -> reduce
+actionsTable[7919] = 808;
+// actionTable 113 -> BRACKET_CLOSE -> reduce
+actionsTable[7923] = 809;
+// actionTable 113 -> ZERO -> reduce
+actionsTable[7924] = 810;
+// actionTable 113 -> ONE_NINE -> reduce
+actionsTable[7925] = 811;
+// actionTable 113 -> DOT -> reduce
+actionsTable[7926] = 812;
+// actionTable 113 -> UPPER_E -> reduce
+actionsTable[7927] = 813;
+// actionTable 113 -> LOWER_E -> reduce
+actionsTable[7928] = 814;
 // actionTable 114 -> @expound.EOF -> reduce
-actionsTable[7752] = 824;
+actionsTable[7980] = 815;
+// actionTable 114 -> WS -> reduce
+actionsTable[7983] = 816;
+// actionTable 114 -> CURLY_CLOSE -> reduce
+actionsTable[7988] = 817;
+// actionTable 114 -> COMMA -> reduce
+actionsTable[7989] = 818;
+// actionTable 114 -> BRACKET_CLOSE -> reduce
+actionsTable[7993] = 819;
+// actionTable 114 -> ZERO -> reduce
+actionsTable[7994] = 820;
+// actionTable 114 -> ONE_NINE -> reduce
+actionsTable[7995] = 821;
+// actionTable 114 -> DOT -> reduce
+actionsTable[7996] = 822;
+// actionTable 114 -> UPPER_E -> reduce
+actionsTable[7997] = 823;
+// actionTable 114 -> LOWER_E -> reduce
+actionsTable[7998] = 824;
 // actionTable 119 -> ZERO -> shift
-actionsTable[8104] = 825;
+actionsTable[8344] = 825;
 // actionTable 119 -> ONE_NINE -> shift
-actionsTable[8105] = 826;
+actionsTable[8345] = 826;
 // actionTable 119 -> Digits -> shift
-actionsTable[8147] = 827;
+actionsTable[8387] = 827;
 // actionTable 119 -> Digit -> shift
-actionsTable[8149] = 828;
+actionsTable[8389] = 828;
 // actionTable 115 -> ZERO -> reduce
-actionsTable[7832] = 829;
+actionsTable[8064] = 829;
 // actionTable 115 -> ONE_NINE -> reduce
-actionsTable[7833] = 830;
+actionsTable[8065] = 830;
 // actionTable 116 -> ZERO -> reduce
-actionsTable[7900] = 831;
+actionsTable[8134] = 831;
 // actionTable 116 -> ONE_NINE -> reduce
-actionsTable[7901] = 832;
-// actionTable 120 -> WS -> reduce
-actionsTable[8161] = 833;
-// actionTable 120 -> CURLY_CLOSE -> reduce
-actionsTable[8166] = 834;
-// actionTable 120 -> COMMA -> reduce
-actionsTable[8167] = 835;
-// actionTable 120 -> BRACKET_CLOSE -> reduce
-actionsTable[8171] = 836;
+actionsTable[8135] = 832;
 // actionTable 120 -> @expound.EOF -> reduce
-actionsTable[8160] = 837;
+actionsTable[8400] = 833;
+// actionTable 120 -> WS -> reduce
+actionsTable[8403] = 834;
+// actionTable 120 -> CURLY_CLOSE -> reduce
+actionsTable[8408] = 835;
+// actionTable 120 -> COMMA -> reduce
+actionsTable[8409] = 836;
+// actionTable 120 -> BRACKET_CLOSE -> reduce
+actionsTable[8413] = 837;
 // actionTable 123 -> ZERO -> shift
-actionsTable[8376] = 838;
+actionsTable[8624] = 838;
 // actionTable 123 -> ONE_NINE -> shift
-actionsTable[8377] = 839;
+actionsTable[8625] = 839;
 // actionTable 123 -> Digit -> shift
-actionsTable[8421] = 840;
-// actionTable 123 -> WS -> reduce
-actionsTable[8365] = 841;
-// actionTable 123 -> CURLY_CLOSE -> reduce
-actionsTable[8370] = 842;
-// actionTable 123 -> COMMA -> reduce
-actionsTable[8371] = 843;
-// actionTable 123 -> BRACKET_CLOSE -> reduce
-actionsTable[8375] = 844;
-// actionTable 123 -> UPPER_E -> reduce
-actionsTable[8379] = 845;
-// actionTable 123 -> LOWER_E -> reduce
-actionsTable[8380] = 846;
+actionsTable[8669] = 840;
 // actionTable 123 -> @expound.EOF -> reduce
-actionsTable[8364] = 847;
-// actionTable 124 -> WS -> reduce
-actionsTable[8433] = 848;
-// actionTable 124 -> CURLY_CLOSE -> reduce
-actionsTable[8438] = 849;
-// actionTable 124 -> COMMA -> reduce
-actionsTable[8439] = 850;
-// actionTable 124 -> BRACKET_CLOSE -> reduce
-actionsTable[8443] = 851;
-// actionTable 124 -> ZERO -> reduce
-actionsTable[8444] = 852;
-// actionTable 124 -> ONE_NINE -> reduce
-actionsTable[8445] = 853;
-// actionTable 124 -> DOT -> reduce
-actionsTable[8446] = 854;
-// actionTable 124 -> UPPER_E -> reduce
-actionsTable[8447] = 855;
-// actionTable 124 -> LOWER_E -> reduce
-actionsTable[8448] = 856;
+actionsTable[8610] = 841;
+// actionTable 123 -> WS -> reduce
+actionsTable[8613] = 842;
+// actionTable 123 -> CURLY_CLOSE -> reduce
+actionsTable[8618] = 843;
+// actionTable 123 -> COMMA -> reduce
+actionsTable[8619] = 844;
+// actionTable 123 -> BRACKET_CLOSE -> reduce
+actionsTable[8623] = 845;
+// actionTable 123 -> UPPER_E -> reduce
+actionsTable[8627] = 846;
+// actionTable 123 -> LOWER_E -> reduce
+actionsTable[8628] = 847;
 // actionTable 124 -> @expound.EOF -> reduce
-actionsTable[8432] = 857;
-// actionTable 121 -> WS -> reduce
-actionsTable[8229] = 858;
-// actionTable 121 -> CURLY_CLOSE -> reduce
-actionsTable[8234] = 859;
-// actionTable 121 -> COMMA -> reduce
-actionsTable[8235] = 860;
-// actionTable 121 -> BRACKET_CLOSE -> reduce
-actionsTable[8239] = 861;
-// actionTable 121 -> ZERO -> reduce
-actionsTable[8240] = 862;
-// actionTable 121 -> ONE_NINE -> reduce
-actionsTable[8241] = 863;
-// actionTable 121 -> DOT -> reduce
-actionsTable[8242] = 864;
-// actionTable 121 -> UPPER_E -> reduce
-actionsTable[8243] = 865;
-// actionTable 121 -> LOWER_E -> reduce
-actionsTable[8244] = 866;
+actionsTable[8680] = 848;
+// actionTable 124 -> WS -> reduce
+actionsTable[8683] = 849;
+// actionTable 124 -> CURLY_CLOSE -> reduce
+actionsTable[8688] = 850;
+// actionTable 124 -> COMMA -> reduce
+actionsTable[8689] = 851;
+// actionTable 124 -> BRACKET_CLOSE -> reduce
+actionsTable[8693] = 852;
+// actionTable 124 -> ZERO -> reduce
+actionsTable[8694] = 853;
+// actionTable 124 -> ONE_NINE -> reduce
+actionsTable[8695] = 854;
+// actionTable 124 -> DOT -> reduce
+actionsTable[8696] = 855;
+// actionTable 124 -> UPPER_E -> reduce
+actionsTable[8697] = 856;
+// actionTable 124 -> LOWER_E -> reduce
+actionsTable[8698] = 857;
 // actionTable 121 -> @expound.EOF -> reduce
-actionsTable[8228] = 867;
-// actionTable 122 -> WS -> reduce
-actionsTable[8297] = 868;
-// actionTable 122 -> CURLY_CLOSE -> reduce
-actionsTable[8302] = 869;
-// actionTable 122 -> COMMA -> reduce
-actionsTable[8303] = 870;
-// actionTable 122 -> BRACKET_CLOSE -> reduce
-actionsTable[8307] = 871;
-// actionTable 122 -> ZERO -> reduce
-actionsTable[8308] = 872;
-// actionTable 122 -> ONE_NINE -> reduce
-actionsTable[8309] = 873;
-// actionTable 122 -> DOT -> reduce
-actionsTable[8310] = 874;
-// actionTable 122 -> UPPER_E -> reduce
-actionsTable[8311] = 875;
-// actionTable 122 -> LOWER_E -> reduce
-actionsTable[8312] = 876;
+actionsTable[8470] = 858;
+// actionTable 121 -> WS -> reduce
+actionsTable[8473] = 859;
+// actionTable 121 -> CURLY_CLOSE -> reduce
+actionsTable[8478] = 860;
+// actionTable 121 -> COMMA -> reduce
+actionsTable[8479] = 861;
+// actionTable 121 -> BRACKET_CLOSE -> reduce
+actionsTable[8483] = 862;
+// actionTable 121 -> ZERO -> reduce
+actionsTable[8484] = 863;
+// actionTable 121 -> ONE_NINE -> reduce
+actionsTable[8485] = 864;
+// actionTable 121 -> DOT -> reduce
+actionsTable[8486] = 865;
+// actionTable 121 -> UPPER_E -> reduce
+actionsTable[8487] = 866;
+// actionTable 121 -> LOWER_E -> reduce
+actionsTable[8488] = 867;
 // actionTable 122 -> @expound.EOF -> reduce
-actionsTable[8296] = 877;
+actionsTable[8540] = 868;
+// actionTable 122 -> WS -> reduce
+actionsTable[8543] = 869;
+// actionTable 122 -> CURLY_CLOSE -> reduce
+actionsTable[8548] = 870;
+// actionTable 122 -> COMMA -> reduce
+actionsTable[8549] = 871;
+// actionTable 122 -> BRACKET_CLOSE -> reduce
+actionsTable[8553] = 872;
+// actionTable 122 -> ZERO -> reduce
+actionsTable[8554] = 873;
+// actionTable 122 -> ONE_NINE -> reduce
+actionsTable[8555] = 874;
+// actionTable 122 -> DOT -> reduce
+actionsTable[8556] = 875;
+// actionTable 122 -> UPPER_E -> reduce
+actionsTable[8557] = 876;
+// actionTable 122 -> LOWER_E -> reduce
+actionsTable[8558] = 877;
 // actionTable 127 -> ZERO -> shift
-actionsTable[8648] = 878;
+actionsTable[8904] = 878;
 // actionTable 127 -> ONE_NINE -> shift
-actionsTable[8649] = 879;
+actionsTable[8905] = 879;
 // actionTable 127 -> Digit -> shift
-actionsTable[8693] = 880;
-// actionTable 127 -> WS -> reduce
-actionsTable[8637] = 881;
-// actionTable 127 -> CURLY_CLOSE -> reduce
-actionsTable[8642] = 882;
-// actionTable 127 -> COMMA -> reduce
-actionsTable[8643] = 883;
-// actionTable 127 -> BRACKET_CLOSE -> reduce
-actionsTable[8647] = 884;
-// actionTable 127 -> DOT -> reduce
-actionsTable[8650] = 885;
-// actionTable 127 -> UPPER_E -> reduce
-actionsTable[8651] = 886;
-// actionTable 127 -> LOWER_E -> reduce
-actionsTable[8652] = 887;
+actionsTable[8949] = 880;
 // actionTable 127 -> @expound.EOF -> reduce
-actionsTable[8636] = 888;
-// actionTable 128 -> WS -> reduce
-actionsTable[8705] = 889;
-// actionTable 128 -> CURLY_CLOSE -> reduce
-actionsTable[8710] = 890;
-// actionTable 128 -> COMMA -> reduce
-actionsTable[8711] = 891;
-// actionTable 128 -> BRACKET_CLOSE -> reduce
-actionsTable[8715] = 892;
-// actionTable 128 -> ZERO -> reduce
-actionsTable[8716] = 893;
-// actionTable 128 -> ONE_NINE -> reduce
-actionsTable[8717] = 894;
-// actionTable 128 -> DOT -> reduce
-actionsTable[8718] = 895;
-// actionTable 128 -> UPPER_E -> reduce
-actionsTable[8719] = 896;
-// actionTable 128 -> LOWER_E -> reduce
-actionsTable[8720] = 897;
+actionsTable[8890] = 881;
+// actionTable 127 -> WS -> reduce
+actionsTable[8893] = 882;
+// actionTable 127 -> CURLY_CLOSE -> reduce
+actionsTable[8898] = 883;
+// actionTable 127 -> COMMA -> reduce
+actionsTable[8899] = 884;
+// actionTable 127 -> BRACKET_CLOSE -> reduce
+actionsTable[8903] = 885;
+// actionTable 127 -> DOT -> reduce
+actionsTable[8906] = 886;
+// actionTable 127 -> UPPER_E -> reduce
+actionsTable[8907] = 887;
+// actionTable 127 -> LOWER_E -> reduce
+actionsTable[8908] = 888;
 // actionTable 128 -> @expound.EOF -> reduce
-actionsTable[8704] = 898;
-// actionTable 125 -> WS -> reduce
-actionsTable[8501] = 899;
-// actionTable 125 -> CURLY_CLOSE -> reduce
-actionsTable[8506] = 900;
-// actionTable 125 -> COMMA -> reduce
-actionsTable[8507] = 901;
-// actionTable 125 -> BRACKET_CLOSE -> reduce
-actionsTable[8511] = 902;
-// actionTable 125 -> ZERO -> reduce
-actionsTable[8512] = 903;
-// actionTable 125 -> ONE_NINE -> reduce
-actionsTable[8513] = 904;
-// actionTable 125 -> DOT -> reduce
-actionsTable[8514] = 905;
-// actionTable 125 -> UPPER_E -> reduce
-actionsTable[8515] = 906;
-// actionTable 125 -> LOWER_E -> reduce
-actionsTable[8516] = 907;
+actionsTable[8960] = 889;
+// actionTable 128 -> WS -> reduce
+actionsTable[8963] = 890;
+// actionTable 128 -> CURLY_CLOSE -> reduce
+actionsTable[8968] = 891;
+// actionTable 128 -> COMMA -> reduce
+actionsTable[8969] = 892;
+// actionTable 128 -> BRACKET_CLOSE -> reduce
+actionsTable[8973] = 893;
+// actionTable 128 -> ZERO -> reduce
+actionsTable[8974] = 894;
+// actionTable 128 -> ONE_NINE -> reduce
+actionsTable[8975] = 895;
+// actionTable 128 -> DOT -> reduce
+actionsTable[8976] = 896;
+// actionTable 128 -> UPPER_E -> reduce
+actionsTable[8977] = 897;
+// actionTable 128 -> LOWER_E -> reduce
+actionsTable[8978] = 898;
 // actionTable 125 -> @expound.EOF -> reduce
-actionsTable[8500] = 908;
-// actionTable 126 -> WS -> reduce
-actionsTable[8569] = 909;
-// actionTable 126 -> CURLY_CLOSE -> reduce
-actionsTable[8574] = 910;
-// actionTable 126 -> COMMA -> reduce
-actionsTable[8575] = 911;
-// actionTable 126 -> BRACKET_CLOSE -> reduce
-actionsTable[8579] = 912;
-// actionTable 126 -> ZERO -> reduce
-actionsTable[8580] = 913;
-// actionTable 126 -> ONE_NINE -> reduce
-actionsTable[8581] = 914;
-// actionTable 126 -> DOT -> reduce
-actionsTable[8582] = 915;
-// actionTable 126 -> UPPER_E -> reduce
-actionsTable[8583] = 916;
-// actionTable 126 -> LOWER_E -> reduce
-actionsTable[8584] = 917;
+actionsTable[8750] = 899;
+// actionTable 125 -> WS -> reduce
+actionsTable[8753] = 900;
+// actionTable 125 -> CURLY_CLOSE -> reduce
+actionsTable[8758] = 901;
+// actionTable 125 -> COMMA -> reduce
+actionsTable[8759] = 902;
+// actionTable 125 -> BRACKET_CLOSE -> reduce
+actionsTable[8763] = 903;
+// actionTable 125 -> ZERO -> reduce
+actionsTable[8764] = 904;
+// actionTable 125 -> ONE_NINE -> reduce
+actionsTable[8765] = 905;
+// actionTable 125 -> DOT -> reduce
+actionsTable[8766] = 906;
+// actionTable 125 -> UPPER_E -> reduce
+actionsTable[8767] = 907;
+// actionTable 125 -> LOWER_E -> reduce
+actionsTable[8768] = 908;
 // actionTable 126 -> @expound.EOF -> reduce
-actionsTable[8568] = 918;
-// actionTable 131 -> WS -> reduce
-actionsTable[8909] = 919;
-// actionTable 131 -> CURLY_CLOSE -> reduce
-actionsTable[8914] = 920;
-// actionTable 131 -> COMMA -> reduce
-actionsTable[8915] = 921;
-// actionTable 131 -> BRACKET_CLOSE -> reduce
-actionsTable[8919] = 922;
-// actionTable 131 -> ZERO -> reduce
-actionsTable[8920] = 923;
-// actionTable 131 -> ONE_NINE -> reduce
-actionsTable[8921] = 924;
-// actionTable 131 -> DOT -> reduce
-actionsTable[8922] = 925;
-// actionTable 131 -> UPPER_E -> reduce
-actionsTable[8923] = 926;
-// actionTable 131 -> LOWER_E -> reduce
-actionsTable[8924] = 927;
+actionsTable[8820] = 909;
+// actionTable 126 -> WS -> reduce
+actionsTable[8823] = 910;
+// actionTable 126 -> CURLY_CLOSE -> reduce
+actionsTable[8828] = 911;
+// actionTable 126 -> COMMA -> reduce
+actionsTable[8829] = 912;
+// actionTable 126 -> BRACKET_CLOSE -> reduce
+actionsTable[8833] = 913;
+// actionTable 126 -> ZERO -> reduce
+actionsTable[8834] = 914;
+// actionTable 126 -> ONE_NINE -> reduce
+actionsTable[8835] = 915;
+// actionTable 126 -> DOT -> reduce
+actionsTable[8836] = 916;
+// actionTable 126 -> UPPER_E -> reduce
+actionsTable[8837] = 917;
+// actionTable 126 -> LOWER_E -> reduce
+actionsTable[8838] = 918;
 // actionTable 131 -> @expound.EOF -> reduce
-actionsTable[8908] = 928;
-// actionTable 129 -> WS -> reduce
-actionsTable[8773] = 929;
-// actionTable 129 -> CURLY_CLOSE -> reduce
-actionsTable[8778] = 930;
-// actionTable 129 -> COMMA -> reduce
-actionsTable[8779] = 931;
-// actionTable 129 -> BRACKET_CLOSE -> reduce
-actionsTable[8783] = 932;
-// actionTable 129 -> ZERO -> reduce
-actionsTable[8784] = 933;
-// actionTable 129 -> ONE_NINE -> reduce
-actionsTable[8785] = 934;
-// actionTable 129 -> DOT -> reduce
-actionsTable[8786] = 935;
-// actionTable 129 -> UPPER_E -> reduce
-actionsTable[8787] = 936;
-// actionTable 129 -> LOWER_E -> reduce
-actionsTable[8788] = 937;
+actionsTable[9170] = 919;
+// actionTable 131 -> WS -> reduce
+actionsTable[9173] = 920;
+// actionTable 131 -> CURLY_CLOSE -> reduce
+actionsTable[9178] = 921;
+// actionTable 131 -> COMMA -> reduce
+actionsTable[9179] = 922;
+// actionTable 131 -> BRACKET_CLOSE -> reduce
+actionsTable[9183] = 923;
+// actionTable 131 -> ZERO -> reduce
+actionsTable[9184] = 924;
+// actionTable 131 -> ONE_NINE -> reduce
+actionsTable[9185] = 925;
+// actionTable 131 -> DOT -> reduce
+actionsTable[9186] = 926;
+// actionTable 131 -> UPPER_E -> reduce
+actionsTable[9187] = 927;
+// actionTable 131 -> LOWER_E -> reduce
+actionsTable[9188] = 928;
 // actionTable 129 -> @expound.EOF -> reduce
-actionsTable[8772] = 938;
-// actionTable 130 -> WS -> reduce
-actionsTable[8841] = 939;
-// actionTable 130 -> CURLY_CLOSE -> reduce
-actionsTable[8846] = 940;
-// actionTable 130 -> COMMA -> reduce
-actionsTable[8847] = 941;
-// actionTable 130 -> BRACKET_CLOSE -> reduce
-actionsTable[8851] = 942;
-// actionTable 130 -> ZERO -> reduce
-actionsTable[8852] = 943;
-// actionTable 130 -> ONE_NINE -> reduce
-actionsTable[8853] = 944;
-// actionTable 130 -> DOT -> reduce
-actionsTable[8854] = 945;
-// actionTable 130 -> UPPER_E -> reduce
-actionsTable[8855] = 946;
-// actionTable 130 -> LOWER_E -> reduce
-actionsTable[8856] = 947;
+actionsTable[9030] = 929;
+// actionTable 129 -> WS -> reduce
+actionsTable[9033] = 930;
+// actionTable 129 -> CURLY_CLOSE -> reduce
+actionsTable[9038] = 931;
+// actionTable 129 -> COMMA -> reduce
+actionsTable[9039] = 932;
+// actionTable 129 -> BRACKET_CLOSE -> reduce
+actionsTable[9043] = 933;
+// actionTable 129 -> ZERO -> reduce
+actionsTable[9044] = 934;
+// actionTable 129 -> ONE_NINE -> reduce
+actionsTable[9045] = 935;
+// actionTable 129 -> DOT -> reduce
+actionsTable[9046] = 936;
+// actionTable 129 -> UPPER_E -> reduce
+actionsTable[9047] = 937;
+// actionTable 129 -> LOWER_E -> reduce
+actionsTable[9048] = 938;
 // actionTable 130 -> @expound.EOF -> reduce
-actionsTable[8840] = 948;
-// actionTable 132 -> WS -> reduce
-actionsTable[8977] = 949;
-// actionTable 132 -> CURLY_CLOSE -> reduce
-actionsTable[8982] = 950;
-// actionTable 132 -> COMMA -> reduce
-actionsTable[8983] = 951;
-// actionTable 132 -> BRACKET_CLOSE -> reduce
-actionsTable[8987] = 952;
+actionsTable[9100] = 939;
+// actionTable 130 -> WS -> reduce
+actionsTable[9103] = 940;
+// actionTable 130 -> CURLY_CLOSE -> reduce
+actionsTable[9108] = 941;
+// actionTable 130 -> COMMA -> reduce
+actionsTable[9109] = 942;
+// actionTable 130 -> BRACKET_CLOSE -> reduce
+actionsTable[9113] = 943;
+// actionTable 130 -> ZERO -> reduce
+actionsTable[9114] = 944;
+// actionTable 130 -> ONE_NINE -> reduce
+actionsTable[9115] = 945;
+// actionTable 130 -> DOT -> reduce
+actionsTable[9116] = 946;
+// actionTable 130 -> UPPER_E -> reduce
+actionsTable[9117] = 947;
+// actionTable 130 -> LOWER_E -> reduce
+actionsTable[9118] = 948;
 // actionTable 132 -> @expound.EOF -> reduce
-actionsTable[8976] = 953;
+actionsTable[9240] = 949;
+// actionTable 132 -> WS -> reduce
+actionsTable[9243] = 950;
+// actionTable 132 -> CURLY_CLOSE -> reduce
+actionsTable[9248] = 951;
+// actionTable 132 -> COMMA -> reduce
+actionsTable[9249] = 952;
+// actionTable 132 -> BRACKET_CLOSE -> reduce
+actionsTable[9253] = 953;
 // actionTable 133 -> WS -> shift
-actionsTable[9045] = 954;
+actionsTable[9313] = 954;
 // actionTable 133 -> COLON -> shift
-actionsTable[9052] = 955;
+actionsTable[9320] = 955;
 // actionTable 133 -> Spaces -> shift
-actionsTable[9110] = 956;
-// actionTable 134 -> WS -> reduce
-actionsTable[9113] = 957;
-// actionTable 134 -> CURLY_CLOSE -> reduce
-actionsTable[9118] = 958;
-// actionTable 134 -> COMMA -> reduce
-actionsTable[9119] = 959;
-// actionTable 134 -> BRACKET_CLOSE -> reduce
-actionsTable[9123] = 960;
+actionsTable[9378] = 956;
 // actionTable 134 -> @expound.EOF -> reduce
-actionsTable[9112] = 961;
+actionsTable[9380] = 957;
+// actionTable 134 -> WS -> reduce
+actionsTable[9383] = 958;
+// actionTable 134 -> CURLY_CLOSE -> reduce
+actionsTable[9388] = 959;
+// actionTable 134 -> COMMA -> reduce
+actionsTable[9389] = 960;
+// actionTable 134 -> BRACKET_CLOSE -> reduce
+actionsTable[9393] = 961;
 // actionTable 135 -> WS -> shift
-actionsTable[9181] = 962;
+actionsTable[9453] = 962;
 // actionTable 135 -> STRING -> shift
-actionsTable[9189] = 963;
+actionsTable[9461] = 963;
 // actionTable 135 -> Member -> shift
-actionsTable[9217] = 964;
+actionsTable[9489] = 964;
 // actionTable 135 -> String -> shift
-actionsTable[9221] = 965;
+actionsTable[9493] = 965;
 // actionTable 135 -> Spaces -> shift
-actionsTable[9246] = 966;
+actionsTable[9518] = 966;
 // actionTable 136 -> WS -> shift
-actionsTable[9249] = 967;
+actionsTable[9523] = 967;
 // actionTable 136 -> TRUE -> shift
-actionsTable[9250] = 968;
+actionsTable[9524] = 968;
 // actionTable 136 -> FALSE -> shift
-actionsTable[9251] = 969;
+actionsTable[9525] = 969;
 // actionTable 136 -> NULL -> shift
-actionsTable[9252] = 970;
+actionsTable[9526] = 970;
 // actionTable 136 -> CURLY_OPEN -> shift
-actionsTable[9253] = 971;
+actionsTable[9527] = 971;
 // actionTable 136 -> STRING -> shift
-actionsTable[9257] = 972;
+actionsTable[9531] = 972;
 // actionTable 136 -> BRACKET_OPEN -> shift
-actionsTable[9258] = 973;
+actionsTable[9532] = 973;
 // actionTable 136 -> ZERO -> shift
-actionsTable[9260] = 974;
+actionsTable[9534] = 974;
 // actionTable 136 -> ONE_NINE -> shift
-actionsTable[9261] = 975;
+actionsTable[9535] = 975;
 // actionTable 136 -> MINUS -> shift
-actionsTable[9266] = 976;
+actionsTable[9540] = 976;
 // actionTable 136 -> Element -> shift
-actionsTable[9269] = 977;
+actionsTable[9543] = 977;
 // actionTable 136 -> Value -> shift
-actionsTable[9273] = 978;
+actionsTable[9547] = 978;
 // actionTable 136 -> Object -> shift
-actionsTable[9280] = 979;
+actionsTable[9554] = 979;
 // actionTable 136 -> String -> shift
-actionsTable[9289] = 980;
+actionsTable[9563] = 980;
 // actionTable 136 -> Array -> shift
-actionsTable[9290] = 981;
+actionsTable[9564] = 981;
 // actionTable 136 -> Number -> shift
-actionsTable[9295] = 982;
+actionsTable[9569] = 982;
 // actionTable 136 -> Integer -> shift
-actionsTable[9299] = 983;
+actionsTable[9573] = 983;
 // actionTable 136 -> Spaces -> shift
-actionsTable[9314] = 984;
+actionsTable[9588] = 984;
 // actionTable 137 -> WS -> shift
-actionsTable[9317] = 985;
+actionsTable[9593] = 985;
 // actionTable 137 -> COLON -> shift
-actionsTable[9324] = 986;
-// actionTable 138 -> WS -> reduce
-actionsTable[9385] = 987;
-// actionTable 138 -> CURLY_CLOSE -> reduce
-actionsTable[9390] = 988;
-// actionTable 138 -> COMMA -> reduce
-actionsTable[9391] = 989;
-// actionTable 138 -> BRACKET_CLOSE -> reduce
-actionsTable[9395] = 990;
+actionsTable[9600] = 986;
 // actionTable 138 -> @expound.EOF -> reduce
-actionsTable[9384] = 991;
-// actionTable 140 -> WS -> reduce
-actionsTable[9521] = 992;
-// actionTable 140 -> CURLY_CLOSE -> reduce
-actionsTable[9526] = 993;
-// actionTable 140 -> COMMA -> reduce
-actionsTable[9527] = 994;
-// actionTable 140 -> BRACKET_CLOSE -> reduce
-actionsTable[9531] = 995;
+actionsTable[9660] = 987;
+// actionTable 138 -> WS -> reduce
+actionsTable[9663] = 988;
+// actionTable 138 -> CURLY_CLOSE -> reduce
+actionsTable[9668] = 989;
+// actionTable 138 -> COMMA -> reduce
+actionsTable[9669] = 990;
+// actionTable 138 -> BRACKET_CLOSE -> reduce
+actionsTable[9673] = 991;
 // actionTable 140 -> @expound.EOF -> reduce
-actionsTable[9520] = 996;
+actionsTable[9800] = 992;
+// actionTable 140 -> WS -> reduce
+actionsTable[9803] = 993;
+// actionTable 140 -> CURLY_CLOSE -> reduce
+actionsTable[9808] = 994;
+// actionTable 140 -> COMMA -> reduce
+actionsTable[9809] = 995;
+// actionTable 140 -> BRACKET_CLOSE -> reduce
+actionsTable[9813] = 996;
 // actionTable 139 -> WS -> shift
-actionsTable[9453] = 997;
+actionsTable[9733] = 997;
 // actionTable 139 -> TRUE -> shift
-actionsTable[9454] = 998;
+actionsTable[9734] = 998;
 // actionTable 139 -> FALSE -> shift
-actionsTable[9455] = 999;
+actionsTable[9735] = 999;
 // actionTable 139 -> NULL -> shift
-actionsTable[9456] = 1000;
+actionsTable[9736] = 1000;
 // actionTable 139 -> CURLY_OPEN -> shift
-actionsTable[9457] = 1001;
+actionsTable[9737] = 1001;
 // actionTable 139 -> STRING -> shift
-actionsTable[9461] = 1002;
+actionsTable[9741] = 1002;
 // actionTable 139 -> BRACKET_OPEN -> shift
-actionsTable[9462] = 1003;
+actionsTable[9742] = 1003;
 // actionTable 139 -> ZERO -> shift
-actionsTable[9464] = 1004;
+actionsTable[9744] = 1004;
 // actionTable 139 -> ONE_NINE -> shift
-actionsTable[9465] = 1005;
+actionsTable[9745] = 1005;
 // actionTable 139 -> MINUS -> shift
-actionsTable[9470] = 1006;
+actionsTable[9750] = 1006;
 // actionTable 139 -> Element -> shift
-actionsTable[9473] = 1007;
+actionsTable[9753] = 1007;
 // actionTable 139 -> Value -> shift
-actionsTable[9477] = 1008;
+actionsTable[9757] = 1008;
 // actionTable 139 -> Object -> shift
-actionsTable[9484] = 1009;
+actionsTable[9764] = 1009;
 // actionTable 139 -> String -> shift
-actionsTable[9493] = 1010;
+actionsTable[9773] = 1010;
 // actionTable 139 -> Array -> shift
-actionsTable[9494] = 1011;
+actionsTable[9774] = 1011;
 // actionTable 139 -> Number -> shift
-actionsTable[9499] = 1012;
+actionsTable[9779] = 1012;
 // actionTable 139 -> Integer -> shift
-actionsTable[9503] = 1013;
+actionsTable[9783] = 1013;
 // actionTable 139 -> Spaces -> shift
-actionsTable[9518] = 1014;
+actionsTable[9798] = 1014;
 // actionTable 143 -> ZERO -> shift
-actionsTable[9736] = 1015;
+actionsTable[10024] = 1015;
 // actionTable 143 -> ONE_NINE -> shift
-actionsTable[9737] = 1016;
+actionsTable[10025] = 1016;
 // actionTable 143 -> Digit -> shift
-actionsTable[9781] = 1017;
-// actionTable 143 -> WS -> reduce
-actionsTable[9725] = 1018;
-// actionTable 143 -> CURLY_CLOSE -> reduce
-actionsTable[9730] = 1019;
-// actionTable 143 -> COMMA -> reduce
-actionsTable[9731] = 1020;
-// actionTable 143 -> BRACKET_CLOSE -> reduce
-actionsTable[9735] = 1021;
+actionsTable[10069] = 1017;
 // actionTable 143 -> @expound.EOF -> reduce
-actionsTable[9724] = 1022;
+actionsTable[10010] = 1018;
+// actionTable 143 -> WS -> reduce
+actionsTable[10013] = 1019;
+// actionTable 143 -> CURLY_CLOSE -> reduce
+actionsTable[10018] = 1020;
+// actionTable 143 -> COMMA -> reduce
+actionsTable[10019] = 1021;
+// actionTable 143 -> BRACKET_CLOSE -> reduce
+actionsTable[10023] = 1022;
 // actionTable 144 -> ZERO -> shift
-actionsTable[9804] = 1023;
+actionsTable[10094] = 1023;
 // actionTable 144 -> ONE_NINE -> shift
-actionsTable[9805] = 1024;
+actionsTable[10095] = 1024;
 // actionTable 144 -> Digits -> shift
-actionsTable[9847] = 1025;
+actionsTable[10137] = 1025;
 // actionTable 144 -> Digit -> shift
-actionsTable[9849] = 1026;
+actionsTable[10139] = 1026;
 // actionTable 141 -> ZERO -> reduce
-actionsTable[9600] = 1027;
+actionsTable[9884] = 1027;
 // actionTable 141 -> ONE_NINE -> reduce
-actionsTable[9601] = 1028;
+actionsTable[9885] = 1028;
 // actionTable 142 -> ZERO -> reduce
-actionsTable[9668] = 1029;
+actionsTable[9954] = 1029;
 // actionTable 142 -> ONE_NINE -> reduce
-actionsTable[9669] = 1030;
+actionsTable[9955] = 1030;
 // actionTable 147 -> ZERO -> shift
-actionsTable[10008] = 1031;
+actionsTable[10304] = 1031;
 // actionTable 147 -> ONE_NINE -> shift
-actionsTable[10009] = 1032;
+actionsTable[10305] = 1032;
 // actionTable 147 -> Digit -> shift
-actionsTable[10053] = 1033;
-// actionTable 147 -> WS -> reduce
-actionsTable[9997] = 1034;
-// actionTable 147 -> CURLY_CLOSE -> reduce
-actionsTable[10002] = 1035;
-// actionTable 147 -> COMMA -> reduce
-actionsTable[10003] = 1036;
-// actionTable 147 -> BRACKET_CLOSE -> reduce
-actionsTable[10007] = 1037;
+actionsTable[10349] = 1033;
 // actionTable 147 -> @expound.EOF -> reduce
-actionsTable[9996] = 1038;
+actionsTable[10290] = 1034;
+// actionTable 147 -> WS -> reduce
+actionsTable[10293] = 1035;
+// actionTable 147 -> CURLY_CLOSE -> reduce
+actionsTable[10298] = 1036;
+// actionTable 147 -> COMMA -> reduce
+actionsTable[10299] = 1037;
+// actionTable 147 -> BRACKET_CLOSE -> reduce
+actionsTable[10303] = 1038;
 // actionTable 148 -> ZERO -> shift
-actionsTable[10076] = 1039;
+actionsTable[10374] = 1039;
 // actionTable 148 -> ONE_NINE -> shift
-actionsTable[10077] = 1040;
+actionsTable[10375] = 1040;
 // actionTable 148 -> Digits -> shift
-actionsTable[10119] = 1041;
+actionsTable[10417] = 1041;
 // actionTable 148 -> Digit -> shift
-actionsTable[10121] = 1042;
+actionsTable[10419] = 1042;
 // actionTable 145 -> ZERO -> reduce
-actionsTable[9872] = 1043;
+actionsTable[10164] = 1043;
 // actionTable 145 -> ONE_NINE -> reduce
-actionsTable[9873] = 1044;
+actionsTable[10165] = 1044;
 // actionTable 146 -> ZERO -> reduce
-actionsTable[9940] = 1045;
+actionsTable[10234] = 1045;
 // actionTable 146 -> ONE_NINE -> reduce
-actionsTable[9941] = 1046;
-// actionTable 149 -> WS -> reduce
-actionsTable[10133] = 1047;
-// actionTable 149 -> CURLY_CLOSE -> reduce
-actionsTable[10138] = 1048;
-// actionTable 149 -> COMMA -> reduce
-actionsTable[10139] = 1049;
-// actionTable 149 -> BRACKET_CLOSE -> reduce
-actionsTable[10143] = 1050;
+actionsTable[10235] = 1046;
 // actionTable 149 -> @expound.EOF -> reduce
-actionsTable[10132] = 1051;
+actionsTable[10430] = 1047;
+// actionTable 149 -> WS -> reduce
+actionsTable[10433] = 1048;
+// actionTable 149 -> CURLY_CLOSE -> reduce
+actionsTable[10438] = 1049;
+// actionTable 149 -> COMMA -> reduce
+actionsTable[10439] = 1050;
+// actionTable 149 -> BRACKET_CLOSE -> reduce
+actionsTable[10443] = 1051;
 // actionTable 150 -> ZERO -> shift
-actionsTable[10212] = 1052;
+actionsTable[10514] = 1052;
 // actionTable 150 -> ONE_NINE -> shift
-actionsTable[10213] = 1053;
+actionsTable[10515] = 1053;
 // actionTable 150 -> Digit -> shift
-actionsTable[10257] = 1054;
-// actionTable 150 -> WS -> reduce
-actionsTable[10201] = 1055;
-// actionTable 150 -> CURLY_CLOSE -> reduce
-actionsTable[10206] = 1056;
-// actionTable 150 -> COMMA -> reduce
-actionsTable[10207] = 1057;
-// actionTable 150 -> BRACKET_CLOSE -> reduce
-actionsTable[10211] = 1058;
-// actionTable 150 -> UPPER_E -> reduce
-actionsTable[10215] = 1059;
-// actionTable 150 -> LOWER_E -> reduce
-actionsTable[10216] = 1060;
+actionsTable[10559] = 1054;
 // actionTable 150 -> @expound.EOF -> reduce
-actionsTable[10200] = 1061;
+actionsTable[10500] = 1055;
+// actionTable 150 -> WS -> reduce
+actionsTable[10503] = 1056;
+// actionTable 150 -> CURLY_CLOSE -> reduce
+actionsTable[10508] = 1057;
+// actionTable 150 -> COMMA -> reduce
+actionsTable[10509] = 1058;
+// actionTable 150 -> BRACKET_CLOSE -> reduce
+actionsTable[10513] = 1059;
+// actionTable 150 -> UPPER_E -> reduce
+actionsTable[10517] = 1060;
+// actionTable 150 -> LOWER_E -> reduce
+actionsTable[10518] = 1061;
 // actionTable 151 -> ZERO -> shift
-actionsTable[10280] = 1062;
+actionsTable[10584] = 1062;
 // actionTable 151 -> ONE_NINE -> shift
-actionsTable[10281] = 1063;
+actionsTable[10585] = 1063;
 // actionTable 151 -> Digit -> shift
-actionsTable[10325] = 1064;
-// actionTable 151 -> WS -> reduce
-actionsTable[10269] = 1065;
-// actionTable 151 -> CURLY_CLOSE -> reduce
-actionsTable[10274] = 1066;
-// actionTable 151 -> COMMA -> reduce
-actionsTable[10275] = 1067;
-// actionTable 151 -> BRACKET_CLOSE -> reduce
-actionsTable[10279] = 1068;
-// actionTable 151 -> DOT -> reduce
-actionsTable[10282] = 1069;
-// actionTable 151 -> UPPER_E -> reduce
-actionsTable[10283] = 1070;
-// actionTable 151 -> LOWER_E -> reduce
-actionsTable[10284] = 1071;
+actionsTable[10629] = 1064;
 // actionTable 151 -> @expound.EOF -> reduce
-actionsTable[10268] = 1072;
-// actionTable 152 -> WS -> reduce
-actionsTable[10337] = 1073;
-// actionTable 152 -> CURLY_CLOSE -> reduce
-actionsTable[10342] = 1074;
-// actionTable 152 -> COMMA -> reduce
-actionsTable[10343] = 1075;
-// actionTable 152 -> BRACKET_CLOSE -> reduce
-actionsTable[10347] = 1076;
-// actionTable 152 -> ZERO -> reduce
-actionsTable[10348] = 1077;
-// actionTable 152 -> ONE_NINE -> reduce
-actionsTable[10349] = 1078;
-// actionTable 152 -> DOT -> reduce
-actionsTable[10350] = 1079;
-// actionTable 152 -> UPPER_E -> reduce
-actionsTable[10351] = 1080;
-// actionTable 152 -> LOWER_E -> reduce
-actionsTable[10352] = 1081;
+actionsTable[10570] = 1065;
+// actionTable 151 -> WS -> reduce
+actionsTable[10573] = 1066;
+// actionTable 151 -> CURLY_CLOSE -> reduce
+actionsTable[10578] = 1067;
+// actionTable 151 -> COMMA -> reduce
+actionsTable[10579] = 1068;
+// actionTable 151 -> BRACKET_CLOSE -> reduce
+actionsTable[10583] = 1069;
+// actionTable 151 -> DOT -> reduce
+actionsTable[10586] = 1070;
+// actionTable 151 -> UPPER_E -> reduce
+actionsTable[10587] = 1071;
+// actionTable 151 -> LOWER_E -> reduce
+actionsTable[10588] = 1072;
 // actionTable 152 -> @expound.EOF -> reduce
-actionsTable[10336] = 1082;
+actionsTable[10640] = 1073;
+// actionTable 152 -> WS -> reduce
+actionsTable[10643] = 1074;
+// actionTable 152 -> CURLY_CLOSE -> reduce
+actionsTable[10648] = 1075;
+// actionTable 152 -> COMMA -> reduce
+actionsTable[10649] = 1076;
+// actionTable 152 -> BRACKET_CLOSE -> reduce
+actionsTable[10653] = 1077;
+// actionTable 152 -> ZERO -> reduce
+actionsTable[10654] = 1078;
+// actionTable 152 -> ONE_NINE -> reduce
+actionsTable[10655] = 1079;
+// actionTable 152 -> DOT -> reduce
+actionsTable[10656] = 1080;
+// actionTable 152 -> UPPER_E -> reduce
+actionsTable[10657] = 1081;
+// actionTable 152 -> LOWER_E -> reduce
+actionsTable[10658] = 1082;
 // actionTable 153 -> WS -> shift
-actionsTable[10405] = 1083;
+actionsTable[10713] = 1083;
 // actionTable 153 -> TRUE -> shift
-actionsTable[10406] = 1084;
+actionsTable[10714] = 1084;
 // actionTable 153 -> FALSE -> shift
-actionsTable[10407] = 1085;
+actionsTable[10715] = 1085;
 // actionTable 153 -> NULL -> shift
-actionsTable[10408] = 1086;
+actionsTable[10716] = 1086;
 // actionTable 153 -> CURLY_OPEN -> shift
-actionsTable[10409] = 1087;
+actionsTable[10717] = 1087;
 // actionTable 153 -> STRING -> shift
-actionsTable[10413] = 1088;
+actionsTable[10721] = 1088;
 // actionTable 153 -> BRACKET_OPEN -> shift
-actionsTable[10414] = 1089;
+actionsTable[10722] = 1089;
 // actionTable 153 -> ZERO -> shift
-actionsTable[10416] = 1090;
+actionsTable[10724] = 1090;
 // actionTable 153 -> ONE_NINE -> shift
-actionsTable[10417] = 1091;
+actionsTable[10725] = 1091;
 // actionTable 153 -> MINUS -> shift
-actionsTable[10422] = 1092;
+actionsTable[10730] = 1092;
 // actionTable 153 -> Element -> shift
-actionsTable[10425] = 1093;
+actionsTable[10733] = 1093;
 // actionTable 153 -> Value -> shift
-actionsTable[10429] = 1094;
+actionsTable[10737] = 1094;
 // actionTable 153 -> Object -> shift
-actionsTable[10436] = 1095;
+actionsTable[10744] = 1095;
 // actionTable 153 -> String -> shift
-actionsTable[10445] = 1096;
+actionsTable[10753] = 1096;
 // actionTable 153 -> Array -> shift
-actionsTable[10446] = 1097;
+actionsTable[10754] = 1097;
 // actionTable 153 -> Number -> shift
-actionsTable[10451] = 1098;
+actionsTable[10759] = 1098;
 // actionTable 153 -> Integer -> shift
-actionsTable[10455] = 1099;
+actionsTable[10763] = 1099;
 // actionTable 153 -> Spaces -> shift
-actionsTable[10470] = 1100;
+actionsTable[10778] = 1100;
 // actionTable 154 -> WS -> shift
-actionsTable[10473] = 1101;
+actionsTable[10783] = 1101;
 // actionTable 154 -> COLON -> shift
-actionsTable[10480] = 1102;
+actionsTable[10790] = 1102;
 // actionTable 155 -> CURLY_CLOSE -> reduce
-actionsTable[10546] = 1103;
+actionsTable[10858] = 1103;
 // actionTable 155 -> COMMA -> reduce
-actionsTable[10547] = 1104;
+actionsTable[10859] = 1104;
 // actionTable 156 -> WS -> shift
-actionsTable[10609] = 1105;
+actionsTable[10923] = 1105;
 // actionTable 156 -> STRING -> shift
-actionsTable[10617] = 1106;
+actionsTable[10931] = 1106;
 // actionTable 156 -> String -> shift
-actionsTable[10649] = 1107;
+actionsTable[10963] = 1107;
 // actionTable 157 -> CURLY_CLOSE -> reduce
-actionsTable[10682] = 1108;
+actionsTable[10998] = 1108;
 // actionTable 157 -> COMMA -> reduce
-actionsTable[10683] = 1109;
+actionsTable[10999] = 1109;
 // actionTable 158 -> WS -> shift
-actionsTable[10745] = 1110;
+actionsTable[11063] = 1110;
 // actionTable 158 -> TRUE -> shift
-actionsTable[10746] = 1111;
+actionsTable[11064] = 1111;
 // actionTable 158 -> FALSE -> shift
-actionsTable[10747] = 1112;
+actionsTable[11065] = 1112;
 // actionTable 158 -> NULL -> shift
-actionsTable[10748] = 1113;
+actionsTable[11066] = 1113;
 // actionTable 158 -> CURLY_OPEN -> shift
-actionsTable[10749] = 1114;
+actionsTable[11067] = 1114;
 // actionTable 158 -> STRING -> shift
-actionsTable[10753] = 1115;
+actionsTable[11071] = 1115;
 // actionTable 158 -> BRACKET_OPEN -> shift
-actionsTable[10754] = 1116;
+actionsTable[11072] = 1116;
 // actionTable 158 -> ZERO -> shift
-actionsTable[10756] = 1117;
+actionsTable[11074] = 1117;
 // actionTable 158 -> ONE_NINE -> shift
-actionsTable[10757] = 1118;
+actionsTable[11075] = 1118;
 // actionTable 158 -> MINUS -> shift
-actionsTable[10762] = 1119;
+actionsTable[11080] = 1119;
 // actionTable 158 -> Element -> shift
-actionsTable[10765] = 1120;
+actionsTable[11083] = 1120;
 // actionTable 158 -> Value -> shift
-actionsTable[10769] = 1121;
+actionsTable[11087] = 1121;
 // actionTable 158 -> Object -> shift
-actionsTable[10776] = 1122;
+actionsTable[11094] = 1122;
 // actionTable 158 -> String -> shift
-actionsTable[10785] = 1123;
+actionsTable[11103] = 1123;
 // actionTable 158 -> Array -> shift
-actionsTable[10786] = 1124;
+actionsTable[11104] = 1124;
 // actionTable 158 -> Number -> shift
-actionsTable[10791] = 1125;
+actionsTable[11109] = 1125;
 // actionTable 158 -> Integer -> shift
-actionsTable[10795] = 1126;
+actionsTable[11113] = 1126;
 // actionTable 158 -> Spaces -> shift
-actionsTable[10810] = 1127;
+actionsTable[11128] = 1127;
 // actionTable 159 -> COMMA -> reduce
-actionsTable[10819] = 1128;
+actionsTable[11139] = 1128;
 // actionTable 159 -> BRACKET_CLOSE -> reduce
-actionsTable[10823] = 1129;
+actionsTable[11143] = 1129;
 // actionTable 162 -> ZERO -> shift
-actionsTable[11028] = 1130;
+actionsTable[11354] = 1130;
 // actionTable 162 -> ONE_NINE -> shift
-actionsTable[11029] = 1131;
+actionsTable[11355] = 1131;
 // actionTable 162 -> Digit -> shift
-actionsTable[11073] = 1132;
-// actionTable 162 -> WS -> reduce
-actionsTable[11017] = 1133;
-// actionTable 162 -> CURLY_CLOSE -> reduce
-actionsTable[11022] = 1134;
-// actionTable 162 -> COMMA -> reduce
-actionsTable[11023] = 1135;
-// actionTable 162 -> BRACKET_CLOSE -> reduce
-actionsTable[11027] = 1136;
+actionsTable[11399] = 1132;
 // actionTable 162 -> @expound.EOF -> reduce
-actionsTable[11016] = 1137;
+actionsTable[11340] = 1133;
+// actionTable 162 -> WS -> reduce
+actionsTable[11343] = 1134;
+// actionTable 162 -> CURLY_CLOSE -> reduce
+actionsTable[11348] = 1135;
+// actionTable 162 -> COMMA -> reduce
+actionsTable[11349] = 1136;
+// actionTable 162 -> BRACKET_CLOSE -> reduce
+actionsTable[11353] = 1137;
 // actionTable 163 -> ZERO -> shift
-actionsTable[11096] = 1138;
+actionsTable[11424] = 1138;
 // actionTable 163 -> ONE_NINE -> shift
-actionsTable[11097] = 1139;
+actionsTable[11425] = 1139;
 // actionTable 163 -> Digits -> shift
-actionsTable[11139] = 1140;
+actionsTable[11467] = 1140;
 // actionTable 163 -> Digit -> shift
-actionsTable[11141] = 1141;
+actionsTable[11469] = 1141;
 // actionTable 160 -> ZERO -> reduce
-actionsTable[10892] = 1142;
+actionsTable[11214] = 1142;
 // actionTable 160 -> ONE_NINE -> reduce
-actionsTable[10893] = 1143;
+actionsTable[11215] = 1143;
 // actionTable 161 -> ZERO -> reduce
-actionsTable[10960] = 1144;
+actionsTable[11284] = 1144;
 // actionTable 161 -> ONE_NINE -> reduce
-actionsTable[10961] = 1145;
+actionsTable[11285] = 1145;
 // actionTable 166 -> ZERO -> shift
-actionsTable[11300] = 1146;
+actionsTable[11634] = 1146;
 // actionTable 166 -> ONE_NINE -> shift
-actionsTable[11301] = 1147;
+actionsTable[11635] = 1147;
 // actionTable 166 -> Digit -> shift
-actionsTable[11345] = 1148;
-// actionTable 166 -> WS -> reduce
-actionsTable[11289] = 1149;
-// actionTable 166 -> CURLY_CLOSE -> reduce
-actionsTable[11294] = 1150;
-// actionTable 166 -> COMMA -> reduce
-actionsTable[11295] = 1151;
-// actionTable 166 -> BRACKET_CLOSE -> reduce
-actionsTable[11299] = 1152;
+actionsTable[11679] = 1148;
 // actionTable 166 -> @expound.EOF -> reduce
-actionsTable[11288] = 1153;
+actionsTable[11620] = 1149;
+// actionTable 166 -> WS -> reduce
+actionsTable[11623] = 1150;
+// actionTable 166 -> CURLY_CLOSE -> reduce
+actionsTable[11628] = 1151;
+// actionTable 166 -> COMMA -> reduce
+actionsTable[11629] = 1152;
+// actionTable 166 -> BRACKET_CLOSE -> reduce
+actionsTable[11633] = 1153;
 // actionTable 167 -> ZERO -> shift
-actionsTable[11368] = 1154;
+actionsTable[11704] = 1154;
 // actionTable 167 -> ONE_NINE -> shift
-actionsTable[11369] = 1155;
+actionsTable[11705] = 1155;
 // actionTable 167 -> Digits -> shift
-actionsTable[11411] = 1156;
+actionsTable[11747] = 1156;
 // actionTable 167 -> Digit -> shift
-actionsTable[11413] = 1157;
+actionsTable[11749] = 1157;
 // actionTable 164 -> ZERO -> reduce
-actionsTable[11164] = 1158;
+actionsTable[11494] = 1158;
 // actionTable 164 -> ONE_NINE -> reduce
-actionsTable[11165] = 1159;
+actionsTable[11495] = 1159;
 // actionTable 165 -> ZERO -> reduce
-actionsTable[11232] = 1160;
+actionsTable[11564] = 1160;
 // actionTable 165 -> ONE_NINE -> reduce
-actionsTable[11233] = 1161;
-// actionTable 168 -> WS -> reduce
-actionsTable[11425] = 1162;
-// actionTable 168 -> CURLY_CLOSE -> reduce
-actionsTable[11430] = 1163;
-// actionTable 168 -> COMMA -> reduce
-actionsTable[11431] = 1164;
-// actionTable 168 -> BRACKET_CLOSE -> reduce
-actionsTable[11435] = 1165;
+actionsTable[11565] = 1161;
 // actionTable 168 -> @expound.EOF -> reduce
-actionsTable[11424] = 1166;
+actionsTable[11760] = 1162;
+// actionTable 168 -> WS -> reduce
+actionsTable[11763] = 1163;
+// actionTable 168 -> CURLY_CLOSE -> reduce
+actionsTable[11768] = 1164;
+// actionTable 168 -> COMMA -> reduce
+actionsTable[11769] = 1165;
+// actionTable 168 -> BRACKET_CLOSE -> reduce
+actionsTable[11773] = 1166;
 // actionTable 169 -> ZERO -> shift
-actionsTable[11504] = 1167;
+actionsTable[11844] = 1167;
 // actionTable 169 -> ONE_NINE -> shift
-actionsTable[11505] = 1168;
+actionsTable[11845] = 1168;
 // actionTable 169 -> Digit -> shift
-actionsTable[11549] = 1169;
-// actionTable 169 -> WS -> reduce
-actionsTable[11493] = 1170;
-// actionTable 169 -> CURLY_CLOSE -> reduce
-actionsTable[11498] = 1171;
-// actionTable 169 -> COMMA -> reduce
-actionsTable[11499] = 1172;
-// actionTable 169 -> BRACKET_CLOSE -> reduce
-actionsTable[11503] = 1173;
-// actionTable 169 -> UPPER_E -> reduce
-actionsTable[11507] = 1174;
-// actionTable 169 -> LOWER_E -> reduce
-actionsTable[11508] = 1175;
+actionsTable[11889] = 1169;
 // actionTable 169 -> @expound.EOF -> reduce
-actionsTable[11492] = 1176;
+actionsTable[11830] = 1170;
+// actionTable 169 -> WS -> reduce
+actionsTable[11833] = 1171;
+// actionTable 169 -> CURLY_CLOSE -> reduce
+actionsTable[11838] = 1172;
+// actionTable 169 -> COMMA -> reduce
+actionsTable[11839] = 1173;
+// actionTable 169 -> BRACKET_CLOSE -> reduce
+actionsTable[11843] = 1174;
+// actionTable 169 -> UPPER_E -> reduce
+actionsTable[11847] = 1175;
+// actionTable 169 -> LOWER_E -> reduce
+actionsTable[11848] = 1176;
 // actionTable 170 -> ZERO -> shift
-actionsTable[11572] = 1177;
+actionsTable[11914] = 1177;
 // actionTable 170 -> ONE_NINE -> shift
-actionsTable[11573] = 1178;
+actionsTable[11915] = 1178;
 // actionTable 170 -> Digit -> shift
-actionsTable[11617] = 1179;
-// actionTable 170 -> WS -> reduce
-actionsTable[11561] = 1180;
-// actionTable 170 -> CURLY_CLOSE -> reduce
-actionsTable[11566] = 1181;
-// actionTable 170 -> COMMA -> reduce
-actionsTable[11567] = 1182;
-// actionTable 170 -> BRACKET_CLOSE -> reduce
-actionsTable[11571] = 1183;
-// actionTable 170 -> DOT -> reduce
-actionsTable[11574] = 1184;
-// actionTable 170 -> UPPER_E -> reduce
-actionsTable[11575] = 1185;
-// actionTable 170 -> LOWER_E -> reduce
-actionsTable[11576] = 1186;
+actionsTable[11959] = 1179;
 // actionTable 170 -> @expound.EOF -> reduce
-actionsTable[11560] = 1187;
-// actionTable 171 -> WS -> reduce
-actionsTable[11629] = 1188;
-// actionTable 171 -> CURLY_CLOSE -> reduce
-actionsTable[11634] = 1189;
-// actionTable 171 -> COMMA -> reduce
-actionsTable[11635] = 1190;
-// actionTable 171 -> BRACKET_CLOSE -> reduce
-actionsTable[11639] = 1191;
-// actionTable 171 -> ZERO -> reduce
-actionsTable[11640] = 1192;
-// actionTable 171 -> ONE_NINE -> reduce
-actionsTable[11641] = 1193;
-// actionTable 171 -> DOT -> reduce
-actionsTable[11642] = 1194;
-// actionTable 171 -> UPPER_E -> reduce
-actionsTable[11643] = 1195;
-// actionTable 171 -> LOWER_E -> reduce
-actionsTable[11644] = 1196;
+actionsTable[11900] = 1180;
+// actionTable 170 -> WS -> reduce
+actionsTable[11903] = 1181;
+// actionTable 170 -> CURLY_CLOSE -> reduce
+actionsTable[11908] = 1182;
+// actionTable 170 -> COMMA -> reduce
+actionsTable[11909] = 1183;
+// actionTable 170 -> BRACKET_CLOSE -> reduce
+actionsTable[11913] = 1184;
+// actionTable 170 -> DOT -> reduce
+actionsTable[11916] = 1185;
+// actionTable 170 -> UPPER_E -> reduce
+actionsTable[11917] = 1186;
+// actionTable 170 -> LOWER_E -> reduce
+actionsTable[11918] = 1187;
 // actionTable 171 -> @expound.EOF -> reduce
-actionsTable[11628] = 1197;
-// actionTable 172 -> WS -> reduce
-actionsTable[11697] = 1198;
-// actionTable 172 -> CURLY_CLOSE -> reduce
-actionsTable[11702] = 1199;
-// actionTable 172 -> COMMA -> reduce
-actionsTable[11703] = 1200;
-// actionTable 172 -> BRACKET_CLOSE -> reduce
-actionsTable[11707] = 1201;
-// actionTable 172 -> ZERO -> reduce
-actionsTable[11708] = 1202;
-// actionTable 172 -> ONE_NINE -> reduce
-actionsTable[11709] = 1203;
-// actionTable 172 -> DOT -> reduce
-actionsTable[11710] = 1204;
-// actionTable 172 -> UPPER_E -> reduce
-actionsTable[11711] = 1205;
-// actionTable 172 -> LOWER_E -> reduce
-actionsTable[11712] = 1206;
+actionsTable[11970] = 1188;
+// actionTable 171 -> WS -> reduce
+actionsTable[11973] = 1189;
+// actionTable 171 -> CURLY_CLOSE -> reduce
+actionsTable[11978] = 1190;
+// actionTable 171 -> COMMA -> reduce
+actionsTable[11979] = 1191;
+// actionTable 171 -> BRACKET_CLOSE -> reduce
+actionsTable[11983] = 1192;
+// actionTable 171 -> ZERO -> reduce
+actionsTable[11984] = 1193;
+// actionTable 171 -> ONE_NINE -> reduce
+actionsTable[11985] = 1194;
+// actionTable 171 -> DOT -> reduce
+actionsTable[11986] = 1195;
+// actionTable 171 -> UPPER_E -> reduce
+actionsTable[11987] = 1196;
+// actionTable 171 -> LOWER_E -> reduce
+actionsTable[11988] = 1197;
 // actionTable 172 -> @expound.EOF -> reduce
-actionsTable[11696] = 1207;
+actionsTable[12040] = 1198;
+// actionTable 172 -> WS -> reduce
+actionsTable[12043] = 1199;
+// actionTable 172 -> CURLY_CLOSE -> reduce
+actionsTable[12048] = 1200;
+// actionTable 172 -> COMMA -> reduce
+actionsTable[12049] = 1201;
+// actionTable 172 -> BRACKET_CLOSE -> reduce
+actionsTable[12053] = 1202;
+// actionTable 172 -> ZERO -> reduce
+actionsTable[12054] = 1203;
+// actionTable 172 -> ONE_NINE -> reduce
+actionsTable[12055] = 1204;
+// actionTable 172 -> DOT -> reduce
+actionsTable[12056] = 1205;
+// actionTable 172 -> UPPER_E -> reduce
+actionsTable[12057] = 1206;
+// actionTable 172 -> LOWER_E -> reduce
+actionsTable[12058] = 1207;
 // actionTable 173 -> ZERO -> shift
-actionsTable[11776] = 1208;
+actionsTable[12124] = 1208;
 // actionTable 173 -> ONE_NINE -> shift
-actionsTable[11777] = 1209;
+actionsTable[12125] = 1209;
 // actionTable 173 -> Digit -> shift
-actionsTable[11821] = 1210;
-// actionTable 173 -> WS -> reduce
-actionsTable[11765] = 1211;
-// actionTable 173 -> CURLY_CLOSE -> reduce
-actionsTable[11770] = 1212;
-// actionTable 173 -> COMMA -> reduce
-actionsTable[11771] = 1213;
-// actionTable 173 -> BRACKET_CLOSE -> reduce
-actionsTable[11775] = 1214;
+actionsTable[12169] = 1210;
 // actionTable 173 -> @expound.EOF -> reduce
-actionsTable[11764] = 1215;
-// actionTable 174 -> WS -> reduce
-actionsTable[11833] = 1216;
-// actionTable 174 -> CURLY_CLOSE -> reduce
-actionsTable[11838] = 1217;
-// actionTable 174 -> COMMA -> reduce
-actionsTable[11839] = 1218;
-// actionTable 174 -> BRACKET_CLOSE -> reduce
-actionsTable[11843] = 1219;
-// actionTable 174 -> ZERO -> reduce
-actionsTable[11844] = 1220;
-// actionTable 174 -> ONE_NINE -> reduce
-actionsTable[11845] = 1221;
-// actionTable 174 -> DOT -> reduce
-actionsTable[11846] = 1222;
-// actionTable 174 -> UPPER_E -> reduce
-actionsTable[11847] = 1223;
-// actionTable 174 -> LOWER_E -> reduce
-actionsTable[11848] = 1224;
+actionsTable[12110] = 1211;
+// actionTable 173 -> WS -> reduce
+actionsTable[12113] = 1212;
+// actionTable 173 -> CURLY_CLOSE -> reduce
+actionsTable[12118] = 1213;
+// actionTable 173 -> COMMA -> reduce
+actionsTable[12119] = 1214;
+// actionTable 173 -> BRACKET_CLOSE -> reduce
+actionsTable[12123] = 1215;
 // actionTable 174 -> @expound.EOF -> reduce
-actionsTable[11832] = 1225;
+actionsTable[12180] = 1216;
+// actionTable 174 -> WS -> reduce
+actionsTable[12183] = 1217;
+// actionTable 174 -> CURLY_CLOSE -> reduce
+actionsTable[12188] = 1218;
+// actionTable 174 -> COMMA -> reduce
+actionsTable[12189] = 1219;
+// actionTable 174 -> BRACKET_CLOSE -> reduce
+actionsTable[12193] = 1220;
+// actionTable 174 -> ZERO -> reduce
+actionsTable[12194] = 1221;
+// actionTable 174 -> ONE_NINE -> reduce
+actionsTable[12195] = 1222;
+// actionTable 174 -> DOT -> reduce
+actionsTable[12196] = 1223;
+// actionTable 174 -> UPPER_E -> reduce
+actionsTable[12197] = 1224;
+// actionTable 174 -> LOWER_E -> reduce
+actionsTable[12198] = 1225;
 // actionTable 175 -> ZERO -> shift
-actionsTable[11912] = 1226;
+actionsTable[12264] = 1226;
 // actionTable 175 -> ONE_NINE -> shift
-actionsTable[11913] = 1227;
+actionsTable[12265] = 1227;
 // actionTable 175 -> Digit -> shift
-actionsTable[11957] = 1228;
-// actionTable 175 -> WS -> reduce
-actionsTable[11901] = 1229;
-// actionTable 175 -> CURLY_CLOSE -> reduce
-actionsTable[11906] = 1230;
-// actionTable 175 -> COMMA -> reduce
-actionsTable[11907] = 1231;
-// actionTable 175 -> BRACKET_CLOSE -> reduce
-actionsTable[11911] = 1232;
+actionsTable[12309] = 1228;
 // actionTable 175 -> @expound.EOF -> reduce
-actionsTable[11900] = 1233;
-// actionTable 176 -> WS -> reduce
-actionsTable[11969] = 1234;
-// actionTable 176 -> CURLY_CLOSE -> reduce
-actionsTable[11974] = 1235;
-// actionTable 176 -> COMMA -> reduce
-actionsTable[11975] = 1236;
-// actionTable 176 -> BRACKET_CLOSE -> reduce
-actionsTable[11979] = 1237;
-// actionTable 176 -> ZERO -> reduce
-actionsTable[11980] = 1238;
-// actionTable 176 -> ONE_NINE -> reduce
-actionsTable[11981] = 1239;
-// actionTable 176 -> DOT -> reduce
-actionsTable[11982] = 1240;
-// actionTable 176 -> UPPER_E -> reduce
-actionsTable[11983] = 1241;
-// actionTable 176 -> LOWER_E -> reduce
-actionsTable[11984] = 1242;
+actionsTable[12250] = 1229;
+// actionTable 175 -> WS -> reduce
+actionsTable[12253] = 1230;
+// actionTable 175 -> CURLY_CLOSE -> reduce
+actionsTable[12258] = 1231;
+// actionTable 175 -> COMMA -> reduce
+actionsTable[12259] = 1232;
+// actionTable 175 -> BRACKET_CLOSE -> reduce
+actionsTable[12263] = 1233;
 // actionTable 176 -> @expound.EOF -> reduce
-actionsTable[11968] = 1243;
-// actionTable 177 -> WS -> reduce
-actionsTable[12037] = 1244;
-// actionTable 177 -> CURLY_CLOSE -> reduce
-actionsTable[12042] = 1245;
-// actionTable 177 -> COMMA -> reduce
-actionsTable[12043] = 1246;
-// actionTable 177 -> BRACKET_CLOSE -> reduce
-actionsTable[12047] = 1247;
-// actionTable 177 -> ZERO -> reduce
-actionsTable[12048] = 1248;
-// actionTable 177 -> ONE_NINE -> reduce
-actionsTable[12049] = 1249;
-// actionTable 177 -> DOT -> reduce
-actionsTable[12050] = 1250;
-// actionTable 177 -> UPPER_E -> reduce
-actionsTable[12051] = 1251;
-// actionTable 177 -> LOWER_E -> reduce
-actionsTable[12052] = 1252;
+actionsTable[12320] = 1234;
+// actionTable 176 -> WS -> reduce
+actionsTable[12323] = 1235;
+// actionTable 176 -> CURLY_CLOSE -> reduce
+actionsTable[12328] = 1236;
+// actionTable 176 -> COMMA -> reduce
+actionsTable[12329] = 1237;
+// actionTable 176 -> BRACKET_CLOSE -> reduce
+actionsTable[12333] = 1238;
+// actionTable 176 -> ZERO -> reduce
+actionsTable[12334] = 1239;
+// actionTable 176 -> ONE_NINE -> reduce
+actionsTable[12335] = 1240;
+// actionTable 176 -> DOT -> reduce
+actionsTable[12336] = 1241;
+// actionTable 176 -> UPPER_E -> reduce
+actionsTable[12337] = 1242;
+// actionTable 176 -> LOWER_E -> reduce
+actionsTable[12338] = 1243;
 // actionTable 177 -> @expound.EOF -> reduce
-actionsTable[12036] = 1253;
+actionsTable[12390] = 1244;
+// actionTable 177 -> WS -> reduce
+actionsTable[12393] = 1245;
+// actionTable 177 -> CURLY_CLOSE -> reduce
+actionsTable[12398] = 1246;
+// actionTable 177 -> COMMA -> reduce
+actionsTable[12399] = 1247;
+// actionTable 177 -> BRACKET_CLOSE -> reduce
+actionsTable[12403] = 1248;
+// actionTable 177 -> ZERO -> reduce
+actionsTable[12404] = 1249;
+// actionTable 177 -> ONE_NINE -> reduce
+actionsTable[12405] = 1250;
+// actionTable 177 -> DOT -> reduce
+actionsTable[12406] = 1251;
+// actionTable 177 -> UPPER_E -> reduce
+actionsTable[12407] = 1252;
+// actionTable 177 -> LOWER_E -> reduce
+actionsTable[12408] = 1253;
 // actionTable 178 -> WS -> shift
-actionsTable[12105] = 1254;
+actionsTable[12463] = 1254;
 // actionTable 178 -> TRUE -> shift
-actionsTable[12106] = 1255;
+actionsTable[12464] = 1255;
 // actionTable 178 -> FALSE -> shift
-actionsTable[12107] = 1256;
+actionsTable[12465] = 1256;
 // actionTable 178 -> NULL -> shift
-actionsTable[12108] = 1257;
+actionsTable[12466] = 1257;
 // actionTable 178 -> CURLY_OPEN -> shift
-actionsTable[12109] = 1258;
+actionsTable[12467] = 1258;
 // actionTable 178 -> STRING -> shift
-actionsTable[12113] = 1259;
+actionsTable[12471] = 1259;
 // actionTable 178 -> BRACKET_OPEN -> shift
-actionsTable[12114] = 1260;
+actionsTable[12472] = 1260;
 // actionTable 178 -> ZERO -> shift
-actionsTable[12116] = 1261;
+actionsTable[12474] = 1261;
 // actionTable 178 -> ONE_NINE -> shift
-actionsTable[12117] = 1262;
+actionsTable[12475] = 1262;
 // actionTable 178 -> MINUS -> shift
-actionsTable[12122] = 1263;
+actionsTable[12480] = 1263;
 // actionTable 178 -> Element -> shift
-actionsTable[12125] = 1264;
+actionsTable[12483] = 1264;
 // actionTable 178 -> Value -> shift
-actionsTable[12129] = 1265;
+actionsTable[12487] = 1265;
 // actionTable 178 -> Object -> shift
-actionsTable[12136] = 1266;
+actionsTable[12494] = 1266;
 // actionTable 178 -> String -> shift
-actionsTable[12145] = 1267;
+actionsTable[12503] = 1267;
 // actionTable 178 -> Array -> shift
-actionsTable[12146] = 1268;
+actionsTable[12504] = 1268;
 // actionTable 178 -> Number -> shift
-actionsTable[12151] = 1269;
+actionsTable[12509] = 1269;
 // actionTable 178 -> Integer -> shift
-actionsTable[12155] = 1270;
+actionsTable[12513] = 1270;
 // actionTable 178 -> Spaces -> shift
-actionsTable[12170] = 1271;
+actionsTable[12528] = 1271;
 // actionTable 179 -> WS -> shift
-actionsTable[12173] = 1272;
+actionsTable[12533] = 1272;
 // actionTable 179 -> COLON -> shift
-actionsTable[12180] = 1273;
+actionsTable[12540] = 1273;
 // actionTable 180 -> CURLY_CLOSE -> reduce
-actionsTable[12246] = 1274;
+actionsTable[12608] = 1274;
 // actionTable 180 -> COMMA -> reduce
-actionsTable[12247] = 1275;
+actionsTable[12609] = 1275;
 // actionTable 181 -> WS -> shift
-actionsTable[12309] = 1276;
+actionsTable[12673] = 1276;
 // actionTable 181 -> STRING -> shift
-actionsTable[12317] = 1277;
+actionsTable[12681] = 1277;
 // actionTable 181 -> String -> shift
-actionsTable[12349] = 1278;
+actionsTable[12713] = 1278;
 // actionTable 182 -> CURLY_CLOSE -> reduce
-actionsTable[12382] = 1279;
+actionsTable[12748] = 1279;
 // actionTable 182 -> COMMA -> reduce
-actionsTable[12383] = 1280;
+actionsTable[12749] = 1280;
 // actionTable 183 -> WS -> shift
-actionsTable[12445] = 1281;
+actionsTable[12813] = 1281;
 // actionTable 183 -> TRUE -> shift
-actionsTable[12446] = 1282;
+actionsTable[12814] = 1282;
 // actionTable 183 -> FALSE -> shift
-actionsTable[12447] = 1283;
+actionsTable[12815] = 1283;
 // actionTable 183 -> NULL -> shift
-actionsTable[12448] = 1284;
+actionsTable[12816] = 1284;
 // actionTable 183 -> CURLY_OPEN -> shift
-actionsTable[12449] = 1285;
+actionsTable[12817] = 1285;
 // actionTable 183 -> STRING -> shift
-actionsTable[12453] = 1286;
+actionsTable[12821] = 1286;
 // actionTable 183 -> BRACKET_OPEN -> shift
-actionsTable[12454] = 1287;
+actionsTable[12822] = 1287;
 // actionTable 183 -> ZERO -> shift
-actionsTable[12456] = 1288;
+actionsTable[12824] = 1288;
 // actionTable 183 -> ONE_NINE -> shift
-actionsTable[12457] = 1289;
+actionsTable[12825] = 1289;
 // actionTable 183 -> MINUS -> shift
-actionsTable[12462] = 1290;
+actionsTable[12830] = 1290;
 // actionTable 183 -> Element -> shift
-actionsTable[12465] = 1291;
+actionsTable[12833] = 1291;
 // actionTable 183 -> Value -> shift
-actionsTable[12469] = 1292;
+actionsTable[12837] = 1292;
 // actionTable 183 -> Object -> shift
-actionsTable[12476] = 1293;
+actionsTable[12844] = 1293;
 // actionTable 183 -> String -> shift
-actionsTable[12485] = 1294;
+actionsTable[12853] = 1294;
 // actionTable 183 -> Array -> shift
-actionsTable[12486] = 1295;
+actionsTable[12854] = 1295;
 // actionTable 183 -> Number -> shift
-actionsTable[12491] = 1296;
+actionsTable[12859] = 1296;
 // actionTable 183 -> Integer -> shift
-actionsTable[12495] = 1297;
+actionsTable[12863] = 1297;
 // actionTable 183 -> Spaces -> shift
-actionsTable[12510] = 1298;
+actionsTable[12878] = 1298;
 // actionTable 184 -> COMMA -> reduce
-actionsTable[12519] = 1299;
+actionsTable[12889] = 1299;
 // actionTable 184 -> BRACKET_CLOSE -> reduce
-actionsTable[12523] = 1300;
+actionsTable[12893] = 1300;
 // actionTable 185 -> ZERO -> shift
-actionsTable[12592] = 1301;
+actionsTable[12964] = 1301;
 // actionTable 185 -> ONE_NINE -> shift
-actionsTable[12593] = 1302;
+actionsTable[12965] = 1302;
 // actionTable 185 -> Digit -> shift
-actionsTable[12637] = 1303;
-// actionTable 185 -> WS -> reduce
-actionsTable[12581] = 1304;
-// actionTable 185 -> CURLY_CLOSE -> reduce
-actionsTable[12586] = 1305;
-// actionTable 185 -> COMMA -> reduce
-actionsTable[12587] = 1306;
-// actionTable 185 -> BRACKET_CLOSE -> reduce
-actionsTable[12591] = 1307;
+actionsTable[13009] = 1303;
 // actionTable 185 -> @expound.EOF -> reduce
-actionsTable[12580] = 1308;
+actionsTable[12950] = 1304;
+// actionTable 185 -> WS -> reduce
+actionsTable[12953] = 1305;
+// actionTable 185 -> CURLY_CLOSE -> reduce
+actionsTable[12958] = 1306;
+// actionTable 185 -> COMMA -> reduce
+actionsTable[12959] = 1307;
+// actionTable 185 -> BRACKET_CLOSE -> reduce
+actionsTable[12963] = 1308;
 // actionTable 186 -> ZERO -> shift
-actionsTable[12660] = 1309;
+actionsTable[13034] = 1309;
 // actionTable 186 -> ONE_NINE -> shift
-actionsTable[12661] = 1310;
+actionsTable[13035] = 1310;
 // actionTable 186 -> Digit -> shift
-actionsTable[12705] = 1311;
-// actionTable 186 -> WS -> reduce
-actionsTable[12649] = 1312;
-// actionTable 186 -> CURLY_CLOSE -> reduce
-actionsTable[12654] = 1313;
-// actionTable 186 -> COMMA -> reduce
-actionsTable[12655] = 1314;
-// actionTable 186 -> BRACKET_CLOSE -> reduce
-actionsTable[12659] = 1315;
+actionsTable[13079] = 1311;
 // actionTable 186 -> @expound.EOF -> reduce
-actionsTable[12648] = 1316;
+actionsTable[13020] = 1312;
+// actionTable 186 -> WS -> reduce
+actionsTable[13023] = 1313;
+// actionTable 186 -> CURLY_CLOSE -> reduce
+actionsTable[13028] = 1314;
+// actionTable 186 -> COMMA -> reduce
+actionsTable[13029] = 1315;
+// actionTable 186 -> BRACKET_CLOSE -> reduce
+actionsTable[13033] = 1316;
 // actionTable 187 -> CURLY_CLOSE -> reduce
-actionsTable[12722] = 1317;
+actionsTable[13098] = 1317;
 // actionTable 187 -> COMMA -> reduce
-actionsTable[12723] = 1318;
+actionsTable[13099] = 1318;
 // actionTable 188 -> WS -> shift
-actionsTable[12785] = 1319;
+actionsTable[13163] = 1319;
 // actionTable 188 -> TRUE -> shift
-actionsTable[12786] = 1320;
+actionsTable[13164] = 1320;
 // actionTable 188 -> FALSE -> shift
-actionsTable[12787] = 1321;
+actionsTable[13165] = 1321;
 // actionTable 188 -> NULL -> shift
-actionsTable[12788] = 1322;
+actionsTable[13166] = 1322;
 // actionTable 188 -> CURLY_OPEN -> shift
-actionsTable[12789] = 1323;
+actionsTable[13167] = 1323;
 // actionTable 188 -> STRING -> shift
-actionsTable[12793] = 1324;
+actionsTable[13171] = 1324;
 // actionTable 188 -> BRACKET_OPEN -> shift
-actionsTable[12794] = 1325;
+actionsTable[13172] = 1325;
 // actionTable 188 -> ZERO -> shift
-actionsTable[12796] = 1326;
+actionsTable[13174] = 1326;
 // actionTable 188 -> ONE_NINE -> shift
-actionsTable[12797] = 1327;
+actionsTable[13175] = 1327;
 // actionTable 188 -> MINUS -> shift
-actionsTable[12802] = 1328;
+actionsTable[13180] = 1328;
 // actionTable 188 -> Element -> shift
-actionsTable[12805] = 1329;
+actionsTable[13183] = 1329;
 // actionTable 188 -> Value -> shift
-actionsTable[12809] = 1330;
+actionsTable[13187] = 1330;
 // actionTable 188 -> Object -> shift
-actionsTable[12816] = 1331;
+actionsTable[13194] = 1331;
 // actionTable 188 -> String -> shift
-actionsTable[12825] = 1332;
+actionsTable[13203] = 1332;
 // actionTable 188 -> Array -> shift
-actionsTable[12826] = 1333;
+actionsTable[13204] = 1333;
 // actionTable 188 -> Number -> shift
-actionsTable[12831] = 1334;
+actionsTable[13209] = 1334;
 // actionTable 188 -> Integer -> shift
-actionsTable[12835] = 1335;
+actionsTable[13213] = 1335;
 // actionTable 188 -> Spaces -> shift
-actionsTable[12850] = 1336;
+actionsTable[13228] = 1336;
 // actionTable 189 -> CURLY_CLOSE -> reduce
-actionsTable[12858] = 1337;
+actionsTable[13238] = 1337;
 // actionTable 189 -> COMMA -> reduce
-actionsTable[12859] = 1338;
+actionsTable[13239] = 1338;
 // actionTable 190 -> ZERO -> shift
-actionsTable[12932] = 1339;
+actionsTable[13314] = 1339;
 // actionTable 190 -> ONE_NINE -> shift
-actionsTable[12933] = 1340;
+actionsTable[13315] = 1340;
 // actionTable 190 -> Digit -> shift
-actionsTable[12977] = 1341;
-// actionTable 190 -> WS -> reduce
-actionsTable[12921] = 1342;
-// actionTable 190 -> CURLY_CLOSE -> reduce
-actionsTable[12926] = 1343;
-// actionTable 190 -> COMMA -> reduce
-actionsTable[12927] = 1344;
-// actionTable 190 -> BRACKET_CLOSE -> reduce
-actionsTable[12931] = 1345;
+actionsTable[13359] = 1341;
 // actionTable 190 -> @expound.EOF -> reduce
-actionsTable[12920] = 1346;
+actionsTable[13300] = 1342;
+// actionTable 190 -> WS -> reduce
+actionsTable[13303] = 1343;
+// actionTable 190 -> CURLY_CLOSE -> reduce
+actionsTable[13308] = 1344;
+// actionTable 190 -> COMMA -> reduce
+actionsTable[13309] = 1345;
+// actionTable 190 -> BRACKET_CLOSE -> reduce
+actionsTable[13313] = 1346;
 // actionTable 191 -> ZERO -> shift
-actionsTable[13000] = 1347;
+actionsTable[13384] = 1347;
 // actionTable 191 -> ONE_NINE -> shift
-actionsTable[13001] = 1348;
+actionsTable[13385] = 1348;
 // actionTable 191 -> Digit -> shift
-actionsTable[13045] = 1349;
-// actionTable 191 -> WS -> reduce
-actionsTable[12989] = 1350;
-// actionTable 191 -> CURLY_CLOSE -> reduce
-actionsTable[12994] = 1351;
-// actionTable 191 -> COMMA -> reduce
-actionsTable[12995] = 1352;
-// actionTable 191 -> BRACKET_CLOSE -> reduce
-actionsTable[12999] = 1353;
+actionsTable[13429] = 1349;
 // actionTable 191 -> @expound.EOF -> reduce
-actionsTable[12988] = 1354;
+actionsTable[13370] = 1350;
+// actionTable 191 -> WS -> reduce
+actionsTable[13373] = 1351;
+// actionTable 191 -> CURLY_CLOSE -> reduce
+actionsTable[13378] = 1352;
+// actionTable 191 -> COMMA -> reduce
+actionsTable[13379] = 1353;
+// actionTable 191 -> BRACKET_CLOSE -> reduce
+actionsTable[13383] = 1354;
 // actionTable 192 -> CURLY_CLOSE -> reduce
-actionsTable[13062] = 1355;
+actionsTable[13448] = 1355;
 // actionTable 192 -> COMMA -> reduce
-actionsTable[13063] = 1356;
+actionsTable[13449] = 1356;
 // actionTable 193 -> WS -> shift
-actionsTable[13125] = 1357;
+actionsTable[13513] = 1357;
 // actionTable 193 -> TRUE -> shift
-actionsTable[13126] = 1358;
+actionsTable[13514] = 1358;
 // actionTable 193 -> FALSE -> shift
-actionsTable[13127] = 1359;
+actionsTable[13515] = 1359;
 // actionTable 193 -> NULL -> shift
-actionsTable[13128] = 1360;
+actionsTable[13516] = 1360;
 // actionTable 193 -> CURLY_OPEN -> shift
-actionsTable[13129] = 1361;
+actionsTable[13517] = 1361;
 // actionTable 193 -> STRING -> shift
-actionsTable[13133] = 1362;
+actionsTable[13521] = 1362;
 // actionTable 193 -> BRACKET_OPEN -> shift
-actionsTable[13134] = 1363;
+actionsTable[13522] = 1363;
 // actionTable 193 -> ZERO -> shift
-actionsTable[13136] = 1364;
+actionsTable[13524] = 1364;
 // actionTable 193 -> ONE_NINE -> shift
-actionsTable[13137] = 1365;
+actionsTable[13525] = 1365;
 // actionTable 193 -> MINUS -> shift
-actionsTable[13142] = 1366;
+actionsTable[13530] = 1366;
 // actionTable 193 -> Element -> shift
-actionsTable[13145] = 1367;
+actionsTable[13533] = 1367;
 // actionTable 193 -> Value -> shift
-actionsTable[13149] = 1368;
+actionsTable[13537] = 1368;
 // actionTable 193 -> Object -> shift
-actionsTable[13156] = 1369;
+actionsTable[13544] = 1369;
 // actionTable 193 -> String -> shift
-actionsTable[13165] = 1370;
+actionsTable[13553] = 1370;
 // actionTable 193 -> Array -> shift
-actionsTable[13166] = 1371;
+actionsTable[13554] = 1371;
 // actionTable 193 -> Number -> shift
-actionsTable[13171] = 1372;
+actionsTable[13559] = 1372;
 // actionTable 193 -> Integer -> shift
-actionsTable[13175] = 1373;
+actionsTable[13563] = 1373;
 // actionTable 193 -> Spaces -> shift
-actionsTable[13190] = 1374;
+actionsTable[13578] = 1374;
 // actionTable 194 -> CURLY_CLOSE -> reduce
-actionsTable[13198] = 1375;
+actionsTable[13588] = 1375;
 // actionTable 194 -> COMMA -> reduce
-actionsTable[13199] = 1376;
+actionsTable[13589] = 1376;
 // actionTable 195 -> CURLY_CLOSE -> reduce
-actionsTable[13266] = 1377;
+actionsTable[13658] = 1377;
 // actionTable 195 -> COMMA -> reduce
-actionsTable[13267] = 1378;
+actionsTable[13659] = 1378;
 // actionTable 196 -> CURLY_CLOSE -> reduce
-actionsTable[13334] = 1379;
+actionsTable[13728] = 1379;
 // actionTable 196 -> COMMA -> reduce
-actionsTable[13335] = 1380;
+actionsTable[13729] = 1380;
 
 const gotoTable = new Uint16Array(9456).fill(0xffff);
 gotoTable[0] = 11;
@@ -53539,7 +53539,7 @@ function parse(input) {
 
   const stack = new Array(10);
   stack[0] = {
-    state: states.indexOf(startState),
+    state: 0,
     tree: undefined,
   };
   let sp = 0;
@@ -53547,25 +53547,21 @@ function parse(input) {
   while (true) {
     const currentState = stack[sp].state;
 
-    const actionLookup = actionsTable[currentState * 68 + lookaheadIndex];
+    const actionLookup = actionsTable[currentState * 70 + lookaheadIndex];
     if (actionLookup === 0xffff) {
       throw new Error(`Unexpected lookahead ${lookahead}`);
     }
     const action = actions[actionLookup];
 
     switch (action.op) {
-      case "done":
+      case 2: // done
+        lexer.pop();
         return stack[sp].tree;
-      case "shift":
+      case 0: // shift
         const stackItem = {
           state: action.state,
           tree: { name: lookahead, start, end, items: undefined },
         };
-        for (const item of states[currentState].values()) {
-          if (item.tokens[item.marker] === lookahead) {
-            item.semanticAction?.(stack, sp);
-          }
-        }
 
         result = nextToken(stream, offset);
         lookahead = result.state;
@@ -53576,20 +53572,18 @@ function parse(input) {
         stack[++sp] = stackItem;
 
         break;
-      case "reduce":
+      case 1: // reduce
         let item;
+        const actionSymbol = nonTerminals[action.symbol];
         for (const value of states[currentState].values()) {
-          if (value.name === action.symbol && value.lookahead === lookahead) {
+          if (value.name === actionSymbol && value.lookahead === lookahead) {
             item = value;
             break;
           }
         }
         if (!item) {
-          throw new Error(
-            `No valid state ${action.symbol}(${lookahead}) found`
-          );
+          throw new Error(`No valid state ${actionSymbol}(${lookahead}) found`);
         }
-        item.semanticAction?.(stack, sp);
 
         const items = new Array(item.tokens.length);
         for (let i = 0; i < item.tokens.length; i++) {
@@ -53598,21 +53592,13 @@ function parse(input) {
         sp -= item.tokens.length;
 
         const tree = {
-          name: action.symbol,
+          name: actionSymbol,
           start: -1,
           end: -1,
           items,
         };
 
-        const nextState =
-          gotoTable[stack[sp].state * 48 + nonTerminals.indexOf(action.symbol)];
-        if (nextState === -1) {
-          throw new Error(
-            `Unable to lookup goto state (${action.symbol}) for\n${printState(
-              states[stack[sp].state]
-            )}`
-          );
-        }
+        const nextState = gotoTable[stack[sp].state * 48 + action.symbol];
         stack[++sp] = {
           state: nextState,
           tree,
@@ -53623,8 +53609,6 @@ function parse(input) {
         throw new Error("Parser Error");
     }
   }
-
-  lexer.pop();
 }
 
 export { parse };

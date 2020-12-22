@@ -2,6 +2,8 @@ const EOF = "@expound.EOF";
 const ERROR = "@expound.ERROR";
 
 const states = [
+  "@expound.EOF",
+  "@expound.ERROR",
   "WS",
   "WS",
   "WS",
@@ -51,7 +53,7 @@ const states = [
   null,
 ];
 
-const table = new Uint16Array(12032);
+const table = new Uint16Array(12544);
 table.fill(11776);
 table[32] = 11776;
 table[10] = 11776;
@@ -12082,7 +12084,7 @@ const next = (input, offset) => {
   let i = offset;
   let j = 0;
   let l = input.length;
-  while (i < l) {
+  while (state !== 11776 && i < l) {
     state = table[state + input[i]];
     i++;
     j++;
@@ -12100,7 +12102,7 @@ const next = (input, offset) => {
 
   if (success) {
     return {
-      state: states[visited[n] / 256],
+      state: states[visited[n] / 256 + 2],
       start: offset,
       end: offset + n,
     };

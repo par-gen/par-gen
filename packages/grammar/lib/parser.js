@@ -1,11 +1,14 @@
 import { optionals } from "./optionals.js";
 
+export const EOF = "@expound.EOF";
+export const ERROR = "@expound.ERROR";
+
 /**
  * @typedef {Object} Token
  * @property {number} uid
  * @property {string} name
  * @property {string} expr
- * @property {string} state
+ * @property {string[]} state
  */
 
 /**
@@ -112,23 +115,48 @@ export function parse(grammar) {
     .map((line) => line.trim())
     .filter(nonFalsyValues);
 
-  const tokens = lines
-    .map((line) =>
-      line.match(
-        /(?<token>[A-Z_]+)\s*:=\s*'(?<expr>[^;]+)'\s*(?:@\s+(?<state>[-_a-zA-Z0-9]+))?/
+  /** @type {Token} */
+  const eofToken = {
+    uid: uid++,
+    name: EOF,
+    expr: "",
+    state: ["initial"],
+  };
+
+  /** @type {Token} */
+  const errorToken = {
+    uid: uid++,
+    name: ERROR,
+    expr: "",
+    state: ["initial"],
+  };
+
+  const tokens = [
+    eofToken,
+    errorToken,
+    ...lines
+      .map((line) =>
+        line.match(
+          /(?<token>[A-Z_]+)\s*:=\s*'(?<expr>[^;]+)'\s*(?:@\s+(?<state>[-_a-zA-Z0-9]+))?/
+        )
       )
-    )
-    .filter(nonFalsyValues)
-    .map(
-      (match) =>
-        /** @type {Token} */ ({
-          uid: uid++,
-          name: match.groups?.token?.trim(),
-          expr: match.groups?.expr,
-          state: match.groups?.state ?? "initial",
-        })
-    );
+      .filter(nonFalsyValues)
+      .map(
+        (match) =>
+          /** @type {Token} */ ({
+            uid: uid++,
+            name: match.groups?.token?.trim(),
+            expr: match.groups?.expr,
+            state: match.groups?.state?.split(" ") ?? ["initial"],
+          })
+      ),
+  ];
   const tokenNames = tokens.map((token) => token.name);
+  const tokenStates = Array.from(
+    new Set(tokens.flatMap((token) => token.state))
+  );
+  eofToken.state = tokenStates;
+  errorToken.state = tokenStates;
 
   const rules = lines
     .map((line) =>

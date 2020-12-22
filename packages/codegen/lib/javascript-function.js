@@ -38,7 +38,7 @@ export class JavaScriptFunctionCodegen {
   async lexer(data) {
     const {
       tokens: { EOF, ERROR },
-      stateNames,
+      tokenNames,
       errorState,
       transitions,
       start,
@@ -47,9 +47,9 @@ export class JavaScriptFunctionCodegen {
 
     const columns = 256;
 
-    const states = stateNames;
+    const states = tokenNames;
 
-    const table = new Uint16Array(columns * stateNames.length);
+    const table = new Uint16Array(columns * tokenNames.length);
     table.fill(errorState);
     transitions.forEach(([from, transition]) => {
       transition.forEach(([symbol, to]) => {
@@ -115,11 +115,14 @@ export class JavaScriptFunctionCodegen {
       const [success, n] = finalStateLoop(false, j);
 
       if (success) {
-        return {
-          state: states[visited[n] / columns],
-          start: offset,
-          end: offset + n,
-        };
+        const state = states[visited[n] / columns + 2];
+        if (state) {
+          return {
+            state: state,
+            start: offset,
+            end: offset + n,
+          };
+        }
       }
       return {
         state: i === input.length ? EOF : ERROR,

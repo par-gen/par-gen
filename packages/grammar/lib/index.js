@@ -1,1 +1,1 @@
-export { parse } from "./parser.js";
+export { EOF, ERROR, parse } from "./parser.js";

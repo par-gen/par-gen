@@ -1,5 +1,5 @@
 import { DFA, fromNFA, minimize } from "@knisterpeter/expound-dfa";
-import { parse } from "@knisterpeter/expound-grammar";
+import { EOF, ERROR, parse } from "@knisterpeter/expound-grammar";
 import {
   NFA,
   parseRegExp,
@@ -9,6 +9,8 @@ import {
 } from "@knisterpeter/expound-nfa";
 import debug from "debug";
 import { performance } from "perf_hooks";
+
+export { EOF, ERROR };
 
 const log = debug("expound:lexer");
 
@@ -32,9 +34,6 @@ const log = debug("expound:lexer");
 /**
  * @typedef {DFA<{ n: number; uids: number[], names: string[]; }, string>} StringDFA
  */
-
-export const EOF = "@expound.EOF";
-export const ERROR = "@expound.ERROR";
 
 /**
  * @template T
@@ -146,9 +145,9 @@ function createAutomata(tokens) {
   log("enter createAutomata");
   try {
     const tree = createCombinedExpression(
-      ...tokens.map((token) =>
-        parseTerminalRule(token.uid, token.name, token.expr)
-      )
+      ...tokens
+        .filter((token) => token.name !== EOF && token.name !== ERROR)
+        .map((token) => parseTerminalRule(token.uid, token.name, token.expr))
     );
 
     const nfa = new NFA(
@@ -174,8 +173,8 @@ function createAutomata(tokens) {
  * @property {Object} tokens
  * @property {string} tokens.EOF
  * @property {string} tokens.ERROR
- * @property {number[]} stateIds
- * @property {string[]} stateNames
+ * @property {(number | undefined)[]} tokenIds
+ * @property {(string | undefined)[]} tokenNames
  * @property {number} errorState
  * @property {[number, [number, number][]][]} transitions
  * @property {number} start
@@ -190,6 +189,15 @@ export function generateFromTokens(tokens) {
   const traceStart = performance.now();
   log("enter generateFromTokens");
   try {
+    const eofToken = tokens.find((token) => token.name === EOF);
+    if (!eofToken) {
+      throw new Error(`Unable to find ${EOF} token`);
+    }
+    const errorToken = tokens.find((token) => token.name === ERROR);
+    if (!errorToken) {
+      throw new Error(`Unable to find ${ERROR} token`);
+    }
+
     const dfa = createAutomata(tokens);
 
     const d = dfa.description;
@@ -220,16 +228,24 @@ export function generateFromTokens(tokens) {
         .map(([state]) => state)
         .find((state) => !finals.includes(state)) ?? -1;
 
-    const stateIds = d.states.map((state) => state.uids[0]);
-    const stateNames = d.states.map((state) => state.names[0]);
+    const tokenIds = [
+      eofToken.uid,
+      errorToken.uid,
+      ...d.states.map((state) => state.uids[0]),
+    ];
+    const tokenNames = [
+      eofToken.name,
+      errorToken.name,
+      ...d.states.map((state) => state.names[0]),
+    ];
 
     return {
       tokens: {
         EOF,
         ERROR,
       },
-      stateIds,
-      stateNames,
+      tokenIds,
+      tokenNames,
       errorState,
       transitions,
       start,

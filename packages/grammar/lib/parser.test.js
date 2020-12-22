@@ -1,4 +1,4 @@
-import { parse } from "./parser.js";
+import { EOF, ERROR, parse } from "./parser.js";
 
 describe("parse", () => {
   let testGrammar = `
@@ -23,29 +23,35 @@ describe("parse", () => {
     expect(result).toEqual(
       expect.objectContaining({
         tokens: [
+          expect.objectContaining({
+            name: EOF,
+          }),
+          expect.objectContaining({
+            name: ERROR,
+          }),
           {
             uid: expect.any(Number),
             name: "WS",
             expr: " ",
-            state: "initial",
+            state: ["initial"],
           },
           {
             uid: expect.any(Number),
             name: "NUMBER",
             expr: "0|1|2|3|4|5|6|7|8|9",
-            state: "initial",
+            state: ["initial"],
           },
           {
             uid: expect.any(Number),
             name: "PLUS",
             expr: "+",
-            state: "initial",
+            state: ["initial"],
           },
           {
             uid: expect.any(Number),
             name: "MINUS",
             expr: "-",
-            state: "initial",
+            state: ["initial"],
           },
         ],
       })
@@ -97,11 +103,17 @@ describe("parse", () => {
 
     expect(result).toEqual({
       tokens: [
+        expect.objectContaining({
+          name: EOF,
+        }),
+        expect.objectContaining({
+          name: ERROR,
+        }),
         {
           uid: expect.any(Number),
           name: "A",
           expr: " ",
-          state: "initial",
+          state: expect.any(Array),
         },
       ],
       rules: [
@@ -122,11 +134,17 @@ describe("parse", () => {
 
     expect(result).toEqual({
       tokens: [
+        expect.objectContaining({
+          name: EOF,
+        }),
+        expect.objectContaining({
+          name: ERROR,
+        }),
         {
           uid: expect.any(Number),
           name: "A_B",
           expr: " ",
-          state: "initial",
+          state: expect.any(Array),
         },
       ],
       rules: [],
@@ -145,17 +163,23 @@ describe("parse", () => {
     `);
     expect(grammar).toEqual({
       tokens: [
+        expect.objectContaining({
+          name: EOF,
+        }),
+        expect.objectContaining({
+          name: ERROR,
+        }),
         {
           uid: expect.any(Number),
           name: "A",
           expr: "a",
-          state: "initial",
+          state: expect.any(Array),
         },
         {
           uid: expect.any(Number),
           name: "B",
           expr: "b",
-          state: "initial",
+          state: expect.any(Array),
         },
       ],
       rules: [
@@ -183,17 +207,23 @@ describe("parse", () => {
     `);
     expect(grammar).toEqual({
       tokens: [
+        expect.objectContaining({
+          name: EOF,
+        }),
+        expect.objectContaining({
+          name: ERROR,
+        }),
         {
           uid: expect.any(Number),
           name: "A",
           expr: "a",
-          state: "initial",
+          state: expect.any(Array),
         },
         {
           uid: expect.any(Number),
           name: "B",
           expr: "b",
-          state: "initial",
+          state: expect.any(Array),
         },
       ],
       rules: expect.arrayContaining([
@@ -235,17 +265,23 @@ describe("parse", () => {
     expect(grammar).toEqual(
       expect.objectContaining({
         tokens: [
+          expect.objectContaining({
+            name: EOF,
+          }),
+          expect.objectContaining({
+            name: ERROR,
+          }),
           {
             uid: expect.any(Number),
             name: "A",
             expr: "a",
-            state: "initial",
+            state: expect.any(Array),
           },
           {
             uid: expect.any(Number),
             name: "B",
             expr: "b",
-            state: "initial",
+            state: expect.any(Array),
           },
         ],
         rules: [
@@ -263,7 +299,7 @@ describe("parse", () => {
     );
   });
 
-  it("should allow semantic actions in rules", () => {
+  it("should allow lexer states in tokens", () => {
     const grammar = parse(`
       A := 'a';
       B := 'b' @ b;
@@ -273,17 +309,23 @@ describe("parse", () => {
     expect(grammar).toEqual(
       expect.objectContaining({
         tokens: [
+          expect.objectContaining({
+            name: EOF,
+          }),
+          expect.objectContaining({
+            name: ERROR,
+          }),
           {
             uid: expect.any(Number),
             name: "A",
             expr: "a",
-            state: "initial",
+            state: ["initial"],
           },
           {
             uid: expect.any(Number),
             name: "B",
             expr: "b",
-            state: "b",
+            state: ["b"],
           },
         ],
         rules: [
@@ -310,28 +352,36 @@ describe("parse", () => {
     expect(grammar).toEqual(
       expect.objectContaining({
         tokens: [
-          {
+          expect.objectContaining({
             uid: 0,
+            name: EOF,
+          }),
+          expect.objectContaining({
+            uid: 1,
+            name: ERROR,
+          }),
+          {
+            uid: 2,
             name: "A",
             expr: "a",
-            state: "initial",
+            state: expect.any(Array),
           },
           {
-            uid: 1,
+            uid: 3,
             name: "B",
             expr: "b",
-            state: "initial",
+            state: expect.any(Array),
           },
         ],
         rules: [
           {
-            uid: 2,
+            uid: 4,
             name: "Rule1",
             symbols: ["A"],
             actions: [],
           },
           {
-            uid: 3,
+            uid: 5,
             name: "Rule2",
             symbols: ["B"],
             actions: [],
