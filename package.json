@@ -38,10 +38,12 @@
   "prettier": {},
   "jest": {
     "projects": [
-      "<rootDir>/packages/*"
+      "<rootDir>/packages/*",
+      "<rootDir>/parsers/*"
     ],
     "testPathIgnorePatterns": [
-      "/packages/"
+      "/packages/",
+      "/parsers/"
     ]
   },
   "renovate": {
