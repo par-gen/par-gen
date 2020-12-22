@@ -387,6 +387,7 @@ export class JavaScriptBaseCodegen {
 
           switch (action.op) {
             case ${actionOps.indexOf("done")}: // done
+              lexer.pop();
               return stack[sp].tree;
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(() => `console.log('action: shift', lookahead);`)}
@@ -496,8 +497,6 @@ export class JavaScriptBaseCodegen {
               throw new Error("Parser Error");
           }
         }
-
-        lexer.pop();
       }
 
       ${this._parserExports()}
