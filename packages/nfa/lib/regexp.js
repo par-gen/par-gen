@@ -318,3 +318,48 @@ function next(stack, input) {
     }
   }
 }
+
+/**
+ * @template U
+ * @param {ParseTree<U>} tree
+ * @param {(value: U | undefined) => string} valueMapper
+ * @returns {string}
+ */
+export function print(tree, valueMapper) {
+  return printNode(tree, valueMapper);
+}
+
+/**
+ * @template U
+ * @param {ParseTree<U> | undefined} node
+ * @param {(value: U | undefined) => string} valueMapper
+ * @returns {string}
+ */
+function printNode(node, valueMapper) {
+  if (!node) {
+    return "";
+  }
+
+  switch (node.op) {
+    case ops.match:
+      return valueMapper(node.value) ?? "";
+    case ops.sequence:
+      return node.nodes?.length === 1
+        ? printNode(node.nodes[0], valueMapper) ?? ""
+        : `(${
+            node.nodes?.map((node) => printNode(node, valueMapper)).join("") ??
+            ""
+          })`;
+    case ops.any:
+      return ".";
+    case ops.optional:
+      return `${printNode(node.node, valueMapper)}*`;
+    case ops.choice:
+      return `${printNode(node.left, valueMapper)}|${printNode(
+        node.right,
+        valueMapper
+      )}`;
+    default:
+      return "";
+  }
+}
