@@ -216,6 +216,7 @@ export class JavaScriptBaseCodegen {
 
     const debug = this._debug.bind(this);
 
+    const actionOps = ["shift", "reduce", "done"];
     let requiresSemanticActions = false;
 
     const code = `
@@ -278,7 +279,7 @@ export class JavaScriptBaseCodegen {
           .flatMap(([, action]) => {
             return Array.from(action.entries()).map(([, to]) => {
               return `{
-                op: "${to.op}",
+                op: ${actionOps.indexOf(to.op)}, // ${to.op}
                 state: ${
                   to.state ? `${states.indexOf(to.state)}` : "undefined"
                 },
@@ -387,9 +388,9 @@ export class JavaScriptBaseCodegen {
           const action = actions[actionLookup];
 
           switch (action.op) {
-            case "done":
+            case ${actionOps.indexOf("done")}: // done
               return stack[sp].tree;
-            case "shift":
+            case ${actionOps.indexOf("shift")}: // shift
               ${debug(() => `console.log('action: shift', lookahead);`)}
               const stackItem = {
                 state: action.state,
@@ -431,7 +432,7 @@ export class JavaScriptBaseCodegen {
                 `
               )}
               break;
-            case "reduce":
+            case ${actionOps.indexOf("reduce")}: // reduce
               ${debug(() => `console.log('action: reduce', action.symbol);`)}
               ${debug(
                 () => `
