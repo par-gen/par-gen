@@ -7,5 +7,12 @@
   },
   "dependencies": {
     "@knisterpeter/expound-cli": "workspace:0.1.0"
+  },
+  "jest": {
+    "displayName": "JSON",
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
