@@ -216,6 +216,8 @@ export class JavaScriptBaseCodegen {
 
     const debug = this._debug.bind(this);
 
+    let requiresSemanticActions = false;
+
     const code = `
       ${this._parserImports(lexerData)}
 
@@ -255,7 +257,8 @@ export class JavaScriptBaseCodegen {
                   lookahead: '${item.lookahead}',
                   semanticAction: ${
                     item.semanticAction
-                      ? `(stack, sp) => { ${item.semanticAction}; }`
+                      ? ((requiresSemanticActions = true),
+                        `(stack, sp) => { ${item.semanticAction}; }`)
                       : "undefined"
                   }
                 }`
@@ -392,10 +395,16 @@ export class JavaScriptBaseCodegen {
                 state: action.state,
                 tree: { name: lookahead, start, end, items: undefined },
               };
+              ${
+                requiresSemanticActions
+                  ? `
               for (const item of states[currentState].values()) {
                 if (item.tokens[item.marker] === lookahead) {
                   item.semanticAction?.(stack, sp);
                 }
+              }
+                  `
+                  : ""
               }
 
               result = nextToken(stream, offset);
@@ -445,7 +454,11 @@ export class JavaScriptBaseCodegen {
                   \`No valid state \${action.symbol}(\${lookahead}) found\`
                 );
               }
-              item.semanticAction?.(stack, sp);
+              ${
+                requiresSemanticActions
+                  ? "item.semanticAction?.(stack, sp);"
+                  : ""
+              }
 
               const items = new Array(item.tokens.length);
               for (let i = 0; i < item.tokens.length; i++) {
