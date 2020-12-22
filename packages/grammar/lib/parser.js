@@ -2,6 +2,7 @@ import { optionals } from "./optionals.js";
 
 /**
  * @typedef {Object} Token
+ * @property {number} uid
  * @property {string} name
  * @property {string} expr
  * @property {string} state
@@ -15,6 +16,7 @@ import { optionals } from "./optionals.js";
 
 /**
  * @typedef {Object} Rule
+ * @property {number} uid
  * @property {string} name
  * @property {string[]} symbols
  * @property {RuleAction[]} actions
@@ -30,12 +32,13 @@ function nonFalsyValues(input) {
 }
 
 /**
+ * @param {number} uid
  * @param {Object} match
  * @param {string} match.rule
  * @param {string} match.expr
  * @returns {Rule}
  */
-function parseRule(match) {
+function parseRule(uid, match) {
   /** @type {string[]} */
   const symbols = [];
   /** @type {{at: number, code: string}[]} */
@@ -86,6 +89,7 @@ function parseRule(match) {
   }
 
   return {
+    uid,
     name: match.rule?.trim(),
     symbols,
     actions,
@@ -97,6 +101,8 @@ function parseRule(match) {
  * @returns {{tokens: Token[], rules: Rule[]}}
  */
 export function parse(grammar) {
+  let uid = 0;
+
   const lines = grammar
     .split("\n")
     .map((line) => line.trimStart())
@@ -116,6 +122,7 @@ export function parse(grammar) {
     .map(
       (match) =>
         /** @type {Token} */ ({
+          uid: uid++,
           name: match.groups?.token?.trim(),
           expr: match.groups?.expr,
           state: match.groups?.state ?? "initial",
@@ -143,7 +150,7 @@ export function parse(grammar) {
       /** @returns {match is {rule: string, expr: string}} */
       (match) => Boolean(match.rule && !tokenNames.includes(match.rule))
     )
-    .map(parseRule)
+    .map((match) => parseRule(uid++, match))
     .flatMap((rule) => {
       return optionals(rule.symbols).map((symbols) => ({
         ...rule,

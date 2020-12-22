@@ -87,6 +87,7 @@ export function generate(grammar) {
     const augmentedRules = [
       /** @type {Rule} */
       ({
+        uid: Number.MAX_SAFE_INTEGER,
         name: "S",
         symbols: [rules[0].name],
         actions: [],
@@ -491,6 +492,8 @@ function calculateFollows(firsts, tokens, EOF, rules) {
 
     if (rules[0].name === ruleName) {
       follows.add({
+        // todo: move into grammer parser
+        uid: Number.MAX_SAFE_INTEGER - 1,
         name: EOF,
         expr: EOF,
         state: "initial",

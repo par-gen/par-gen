@@ -24,21 +24,25 @@ describe("parse", () => {
       expect.objectContaining({
         tokens: [
           {
+            uid: expect.any(Number),
             name: "WS",
             expr: " ",
             state: "initial",
           },
           {
+            uid: expect.any(Number),
             name: "NUMBER",
             expr: "0|1|2|3|4|5|6|7|8|9",
             state: "initial",
           },
           {
+            uid: expect.any(Number),
             name: "PLUS",
             expr: "+",
             state: "initial",
           },
           {
+            uid: expect.any(Number),
             name: "MINUS",
             expr: "-",
             state: "initial",
@@ -55,21 +59,25 @@ describe("parse", () => {
       expect.objectContaining({
         rules: [
           {
+            uid: expect.any(Number),
             name: "Expression",
             symbols: ["Plus"],
             actions: [],
           },
           {
+            uid: expect.any(Number),
             name: "Expression",
             symbols: ["Minus"],
             actions: [],
           },
           {
+            uid: expect.any(Number),
             name: "Plus",
             symbols: ["NUMBER", "WS", "PLUS", "WS", "NUMBER"],
             actions: [],
           },
           {
+            uid: expect.any(Number),
             name: "Minus",
             symbols: ["NUMBER", "WS", "MINUS", "WS", "NUMBER"],
             actions: [],
@@ -90,6 +98,7 @@ describe("parse", () => {
     expect(result).toEqual({
       tokens: [
         {
+          uid: expect.any(Number),
           name: "A",
           expr: " ",
           state: "initial",
@@ -97,6 +106,7 @@ describe("parse", () => {
       ],
       rules: [
         {
+          uid: expect.any(Number),
           name: "Rule",
           symbols: ["A"],
           actions: [],
@@ -113,6 +123,7 @@ describe("parse", () => {
     expect(result).toEqual({
       tokens: [
         {
+          uid: expect.any(Number),
           name: "A_B",
           expr: " ",
           state: "initial",
@@ -134,16 +145,28 @@ describe("parse", () => {
     `);
     expect(grammar).toEqual({
       tokens: [
-        { name: "A", expr: "a", state: "initial" },
-        { name: "B", expr: "b", state: "initial" },
+        {
+          uid: expect.any(Number),
+          name: "A",
+          expr: "a",
+          state: "initial",
+        },
+        {
+          uid: expect.any(Number),
+          name: "B",
+          expr: "b",
+          state: "initial",
+        },
       ],
       rules: [
         {
+          uid: expect.any(Number),
           name: "Rule",
           symbols: ["A"],
           actions: [],
         },
         {
+          uid: expect.any(Number),
           name: "Rule",
           symbols: ["B"],
           actions: [],
@@ -160,26 +183,40 @@ describe("parse", () => {
     `);
     expect(grammar).toEqual({
       tokens: [
-        { name: "A", expr: "a", state: "initial" },
-        { name: "B", expr: "b", state: "initial" },
+        {
+          uid: expect.any(Number),
+          name: "A",
+          expr: "a",
+          state: "initial",
+        },
+        {
+          uid: expect.any(Number),
+          name: "B",
+          expr: "b",
+          state: "initial",
+        },
       ],
       rules: expect.arrayContaining([
         {
+          uid: expect.any(Number),
           name: "Rule",
           symbols: ["A", "B", "A"],
           actions: [],
         },
         {
+          uid: expect.any(Number),
           name: "Rule",
           symbols: ["B", "A"],
           actions: [],
         },
         {
+          uid: expect.any(Number),
           name: "Rule",
           symbols: ["A", "B"],
           actions: [],
         },
         {
+          uid: expect.any(Number),
           name: "Rule",
           symbols: ["B"],
           actions: [],
@@ -199,11 +236,13 @@ describe("parse", () => {
       expect.objectContaining({
         tokens: [
           {
+            uid: expect.any(Number),
             name: "A",
             expr: "a",
             state: "initial",
           },
           {
+            uid: expect.any(Number),
             name: "B",
             expr: "b",
             state: "initial",
@@ -211,6 +250,7 @@ describe("parse", () => {
         ],
         rules: [
           {
+            uid: expect.any(Number),
             name: "Rule",
             symbols: ["A", "B", "A"],
             actions: [
@@ -234,11 +274,13 @@ describe("parse", () => {
       expect.objectContaining({
         tokens: [
           {
+            uid: expect.any(Number),
             name: "A",
             expr: "a",
             state: "initial",
           },
           {
+            uid: expect.any(Number),
             name: "B",
             expr: "b",
             state: "b",
@@ -246,8 +288,52 @@ describe("parse", () => {
         ],
         rules: [
           {
+            uid: expect.any(Number),
             name: "Rule",
             symbols: ["A", "B"],
+            actions: [],
+          },
+        ],
+      })
+    );
+  });
+
+  it("should assign unique ids to all tokens and rules", () => {
+    const grammar = parse(`
+      A := 'a';
+      B := 'b';
+
+      Rule1 := A;
+      Rule2 := B;
+    `);
+
+    expect(grammar).toEqual(
+      expect.objectContaining({
+        tokens: [
+          {
+            uid: 0,
+            name: "A",
+            expr: "a",
+            state: "initial",
+          },
+          {
+            uid: 1,
+            name: "B",
+            expr: "b",
+            state: "initial",
+          },
+        ],
+        rules: [
+          {
+            uid: 2,
+            name: "Rule1",
+            symbols: ["A"],
+            actions: [],
+          },
+          {
+            uid: 3,
+            name: "Rule2",
+            symbols: ["B"],
             actions: [],
           },
         ],
