@@ -476,11 +476,6 @@ export class JavaScriptBaseCodegen {
               const nextState = gotoTable[stack[sp].state * ${
                 nonTerminals.length
               } + nonTerminals.indexOf(action.symbol)]
-              if (nextState === -1) {
-                throw new Error(
-                  \`Unable to lookup goto state (\${action.symbol}) for\\n\${printState(states[stack[sp].state])}\`
-                );
-              }
               stack[++sp] = {
                 state: nextState,
                 tree,
