@@ -281,7 +281,9 @@ export class JavaScriptBaseCodegen {
                 state: ${
                   to.state ? `${states.indexOf(to.state)}` : "undefined"
                 },
-                symbol: ${to.symbol ? `"${to.symbol}"` : "undefined"},
+                symbol: ${
+                  to.symbol ? nonTerminals.indexOf(to.symbol) : "undefined"
+                },
               }`;
             });
           })
@@ -398,11 +400,11 @@ export class JavaScriptBaseCodegen {
               ${
                 requiresSemanticActions
                   ? `
-              for (const item of states[currentState].values()) {
-                if (item.tokens[item.marker] === lookahead) {
-                  item.semanticAction?.(stack, sp);
-                }
-              }
+                  for (const item of states[currentState].values()) {
+                    if (item.tokens[item.marker] === lookahead) {
+                      item.semanticAction?.(stack, sp);
+                    }
+                  }
                   `
                   : ""
               }
@@ -443,15 +445,16 @@ export class JavaScriptBaseCodegen {
                 `
               )}
               let item;
+              const actionSymbol = nonTerminals[action.symbol];
               for (const value of states[currentState].values()) {
-                if (value.name === action.symbol && value.lookahead === lookahead) {
+                if (value.name === actionSymbol && value.lookahead === lookahead) {
                   item = value;
                   break;
                 }
               }
               if (!item) {
                 throw new Error(
-                  \`No valid state \${action.symbol}(\${lookahead}) found\`
+                  \`No valid state \${actionSymbol}(\${lookahead}) found\`
                 );
               }
               ${
@@ -467,7 +470,7 @@ export class JavaScriptBaseCodegen {
               sp -= item.tokens.length;
 
               const tree = {
-                name: action.symbol,
+                name: actionSymbol,
                 start: -1,
                 end: -1,
                 items,
@@ -475,7 +478,7 @@ export class JavaScriptBaseCodegen {
 
               const nextState = gotoTable[stack[sp].state * ${
                 nonTerminals.length
-              } + nonTerminals.indexOf(action.symbol)]
+              } + action.symbol]
               stack[++sp] = {
                 state: nextState,
                 tree,
