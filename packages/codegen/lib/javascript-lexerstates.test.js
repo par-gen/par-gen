@@ -42,8 +42,8 @@ describe("Lexer States", () => {
       B := 'b' @ state;
       C := 'c';
 
-      RuleA := A RuleB;
-      RuleB := { lexer.push('state') } B { lexer.pop() } RuleC;
+      RuleA := { lexer.push('state') } A RuleB;
+      RuleB := { lexer.pop() } B RuleC;
       RuleC := C;
     `;
 
