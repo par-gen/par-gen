@@ -272,8 +272,6 @@ export class JavaScriptBaseCodegen {
       const terminals = ${JSON.stringify(terminals)};
       const nonTerminals = ${JSON.stringify(nonTerminals)};
 
-      const startState = states[${states.indexOf(start)}];
-
       const actions = [
         ${Array.from(actions.entries())
           .flatMap(([, action]) => {
@@ -371,7 +369,7 @@ export class JavaScriptBaseCodegen {
 
         const stack = new Array(10);
         stack[0] = {
-          state: states.indexOf(startState),
+          state: ${states.indexOf(start)},
           tree: undefined,
         };
         let sp = 0;
