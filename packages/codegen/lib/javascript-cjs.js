@@ -31,7 +31,7 @@ export class JavaScriptCommonJsCodegen extends JavaScriptBaseCodegen {
 
   _lexerExport() {
     return `
-      module.exports = { EOF, next };
+      module.exports = { EOF, ERROR, tokenNames, next };
     `;
   }
 

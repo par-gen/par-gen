@@ -68,6 +68,7 @@ export class JavaScriptBaseCodegen {
   _lexerCode(data) {
     const {
       tokens: { EOF, ERROR },
+      tokenIds,
       tokenNames,
       errorState,
       transitions,
@@ -87,9 +88,12 @@ export class JavaScriptBaseCodegen {
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
 
-      const states = ${JSON.stringify(tokenNames)};
+      const tokenNames = ${JSON.stringify(tokenNames)};
+      const tokenIds = [
+        ${tokenIds.map((id, i) => `${id}, // ${tokenNames[i]}`).join("\n")}
+      ];
 
-      const table = new Uint16Array(${columns * tokenNames.length});
+      const table = new Uint16Array(${columns * tokenIds.length});
       table.fill(${errorState ?? -1});
       ${transitions
         .flatMap(([from, transition]) =>
@@ -97,7 +101,9 @@ export class JavaScriptBaseCodegen {
             if (to === errorState) {
               return undefined;
             }
-            return `table[${from + symbol}] = ${to};`;
+            return `table[${from + symbol}] = ${to}; // ${
+              tokenNames[to / columns]
+            }`;
           })
         )
         .filter(Boolean)
@@ -140,13 +146,15 @@ export class JavaScriptBaseCodegen {
 
         if (success) {
           return {
-            state: states[(visited[n] / ${columns}) + 2],
+            state: tokenIds[(visited[n] / ${columns}) + 2],
             start: offset,
             end: offset + n,
           };
         }
         return {
-          state: i === l ? EOF : ERROR,
+          state: i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+      tokenIds[tokenNames.indexOf(ERROR)]
+    },
           start: -1,
           end: -1,
         };
@@ -208,14 +216,16 @@ export class JavaScriptBaseCodegen {
       lexerData,
       rules,
       states,
-      terminals,
-      nonTerminals,
+      parserSymbols,
+      parserSymbolIds,
+      grammarRuleNames,
       actions,
       goto,
       start,
     } = data;
 
-    let actionsIndex = 0;
+    let actionIndex = 0;
+    let actionsTableIndex = 0;
 
     const debug = this._debug.bind(this);
 
@@ -236,14 +246,14 @@ export class JavaScriptBaseCodegen {
           .map(
             (state, i) =>
               `
-              // state ${i}
+              // 'state ${i}'
               new Set([${Array.from(state.values())
                 .map(
                   (item) => `{
                   name: '${item.name}',
                   tokens: ${JSON.stringify(item.tokens)},
                   marker: ${item.marker},
-                  lookahead: '${item.lookahead}',
+                  lookahead: ${parserSymbols.indexOf(item.lookahead)},
                   semanticAction: ${
                     item.semanticAction
                       ? ((requiresSemanticActions = true),
@@ -257,53 +267,66 @@ export class JavaScriptBaseCodegen {
           .join(",\n")}
       ];
 
-      const terminals = ${JSON.stringify(terminals)};
-      const nonTerminals = ${JSON.stringify(nonTerminals)};
+      const parserSymbols = [
+        ${parserSymbols
+          .map((symbol, i) => {
+            return `"${symbol}", // ${parserSymbolIds[i]}`;
+          })
+          .join("\n")}
+      ];
+      const grammarRuleNames = ${JSON.stringify(grammarRuleNames)};
 
       const actions = [
         ${Array.from(actions.entries())
           .flatMap(([, action]) => {
             return Array.from(action.entries()).map(([, to]) => {
-              return `{
+              return `// 'action ${actionIndex++}'
+              {
                 op: ${actionOps.indexOf(to.op)}, // ${to.op}
                 state: ${
-                  to.state ? `${states.indexOf(to.state)}` : "undefined"
-                },
+                  to.state
+                    ? `${states.indexOf(to.state)}, // 'state ${states.indexOf(
+                        to.state
+                      )}'`
+                    : "undefined,"
+                }
                 symbol: ${
-                  to.symbol ? nonTerminals.indexOf(to.symbol) : "undefined"
-                },
+                  to.symbol
+                    ? `${grammarRuleNames.indexOf(to.symbol)}, // ${to.symbol}`
+                    : "undefined,"
+                }
               }`;
             });
           })
           .join(",\n")}
       ];
       const actionsTable = new Uint16Array(${
-        states.length * terminals.length
+        states.length * parserSymbolIds.length
       }).fill(0xffff);
       ${Array.from(actions.entries())
         .flatMap(([from, action]) => {
           return Array.from(action.entries()).map(([symbol, to]) => {
-            return `// actionTable ${states.indexOf(from)} -> ${symbol} -> ${
-              to.op
-            }
-            actionsTable[${
-              states.indexOf(from) * terminals.length +
-              terminals.indexOf(symbol)
-            }] = ${actionsIndex++};`;
+            const action = actionsTableIndex++;
+            return `actionsTable[${
+              states.indexOf(from) * parserSymbolIds.length +
+              parserSymbols.indexOf(symbol)
+            }] = ${action}; // 'state ${states.indexOf(
+              from
+            )}' -> ${symbol} -> ${to.op} -> 'action ${action}'`;
           });
         })
         .join("\n")}
 
       const gotoTable = new Uint16Array(${
-        states.length * nonTerminals.length
+        states.length * grammarRuleNames.length
       }).fill(0xffff);
       ${Array.from(goto.entries())
         .flatMap(([from, target]) => {
           return Array.from(target.entries()).map(([symbol, to]) => {
             return `gotoTable[${
-              states.indexOf(from) * nonTerminals.length +
-              nonTerminals.indexOf(symbol)
-            }] = ${states.indexOf(to)};`;
+              states.indexOf(from) * grammarRuleNames.length +
+              grammarRuleNames.indexOf(symbol)
+            }] = ${states.indexOf(to)}; // 'state ${states.indexOf(to)}'`;
           });
         })
         .join("\n")}
@@ -346,10 +369,9 @@ export class JavaScriptBaseCodegen {
         let result = nextToken(stream, offset);
         let { state: lookahead, start, end } = result;
         offset = end;
-        let lookaheadIndex = terminals.indexOf(lookahead);
         ${debug(
           () => `
-          console.log('  lookahead', lookahead, '(' + start + ',' + end + ')');
+          console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
           console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
           if (start !== -1) {
             console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
@@ -368,10 +390,10 @@ export class JavaScriptBaseCodegen {
           const currentState = stack[sp].state;
 
           const actionLookup = actionsTable[currentState * ${
-            terminals.length
-          } + lookaheadIndex];
+            parserSymbolIds.length
+          } + lookahead];
           if (actionLookup === 0xffff) {
-            throw new Error(\`Unexpected lookahead \${lookahead}\`);
+            throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]}\`);
           }
           const action = actions[actionLookup];
 
@@ -380,16 +402,19 @@ export class JavaScriptBaseCodegen {
               lexer.pop();
               return stack[sp].tree;
             case ${actionOps.indexOf("shift")}: // shift
-              ${debug(() => `console.log('action: shift', lookahead);`)}
+              ${debug(
+                () =>
+                  `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
+              )}
               const stackItem = {
                 state: action.state,
-                tree: { name: lookahead, start, end, items: undefined },
+                tree: { name: parserSymbols[lookahead], start, end, items: undefined },
               };
               ${
                 requiresSemanticActions
                   ? `
                   for (const item of states[currentState].values()) {
-                    if (item.tokens[item.marker] === lookahead) {
+                    if (item.tokens[item.marker] === parserSymbols[lookahead]) {
                       item.semanticAction?.(stack, sp);
                     }
                   }
@@ -399,12 +424,11 @@ export class JavaScriptBaseCodegen {
 
               result = nextToken(stream, offset);
               lookahead = result.state;
-              lookaheadIndex = terminals.indexOf(lookahead);
               start = result.start;
               offset = end = result.end;
               ${debug(
                 () => `
-                console.log('  lookahead', lookahead, '(' + start + ',' + end + ')');
+                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
                 console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
                 if (start !== -1) {
                   console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
@@ -425,7 +449,7 @@ export class JavaScriptBaseCodegen {
               ${debug(() => `console.log('action: reduce', action.symbol);`)}
               ${debug(
                 () => `
-                console.log('  lookahead', lookahead, '(' + start + ',' + end + ')');
+                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
                 console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
                 if (start !== -1) {
                   console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
@@ -433,7 +457,7 @@ export class JavaScriptBaseCodegen {
                 `
               )}
               let item;
-              const actionSymbol = nonTerminals[action.symbol];
+              const actionSymbol = grammarRuleNames[action.symbol];
               for (const value of states[currentState].values()) {
                 if (value.name === actionSymbol && value.lookahead === lookahead) {
                   item = value;
@@ -465,7 +489,7 @@ export class JavaScriptBaseCodegen {
               };
 
               const nextState = gotoTable[stack[sp].state * ${
-                nonTerminals.length
+                grammarRuleNames.length
               } + action.symbol]
               stack[++sp] = {
                 state: nextState,

@@ -27,7 +27,7 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
 
   _lexerExport() {
     return `
-      export { EOF, next };
+      export { EOF, ERROR, tokenNames, next };
     `;
   }
 

@@ -29,9 +29,12 @@ describe("JavaScriptModuleCodegen", () => {
   });
 
   it("should be possible to write a lexer into a file", async () => {
+    /** @type {string[]} */
+    let tokenNames = [];
     let results;
-    /** @type {(_results: *) => void}  */
-    const output = (_results) => {
+    /** @type {(_tokenNames: *, _results: *) => void}  */
+    const output = (_tokenNames, _results) => {
+      tokenNames = _tokenNames;
       results = _results;
     };
 
@@ -54,12 +57,12 @@ describe("JavaScriptModuleCodegen", () => {
 
     const module = new SourceTextModule(
       `
-        import { next } from '${lexerStateFile}';
+        import { tokenNames, next } from '${lexerStateFile}';
 
         const input = Buffer.from("abc");
         const matched = next(input, 0);
 
-        output(matched);
+        output(tokenNames, matched);
       `,
       { context }
     );
@@ -83,7 +86,7 @@ describe("JavaScriptModuleCodegen", () => {
     await module.evaluate();
 
     expect(results).toEqual({
-      state: "A",
+      state: tokenNames.indexOf("A"),
       start: 0,
       end: 3,
     });

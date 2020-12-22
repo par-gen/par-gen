@@ -29,9 +29,12 @@ describe("JavaScriptCommonJsCodegen", () => {
   });
 
   it("should be possible to write a lexer into a file", async () => {
+    /** @type {string[]} */
+    let tokenNames = [];
     let results;
-    /** @type {(_results: *) => void}  */
-    const output = (_results) => {
+    /** @type {(_tokenNames: *, _results: *) => void}  */
+    const output = (_tokenNames, _results) => {
+      tokenNames = _tokenNames;
       results = _results;
     };
 
@@ -63,19 +66,19 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     const script = new vm.Script(
       `
-        const { next } = require('${lexerStateFile}');
+        const { tokenNames, next } = require('${lexerStateFile}');
 
         const input = Buffer.from("abc");
         const matched = next(input, 0);
 
-        output(matched);
+        output(tokenNames, matched);
       `
     );
 
     script.runInContext(context);
 
     expect(results).toEqual({
-      state: "A",
+      state: tokenNames.indexOf("A"),
       start: 0,
       end: 3,
     });

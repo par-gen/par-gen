@@ -44,8 +44,9 @@ const log = debug("expound:parser");
  * @typedef {Object} ParserData
  * @property {Rule[]} rules
  * @property {Set<Item>[]} states
- * @property {string[]} terminals
- * @property {string[]} nonTerminals
+ * @property {string[]} parserSymbols
+ * @property {number[]} parserSymbolIds
+ * @property {string[]} grammarRuleNames
  * @property {Map<Set<Item>, Map<string, Shift | Reduce | Done>>} actions
  * @property {Map<Set<Item>, Map<string, Set<Item>>>} goto
  * @property {ItemState} start
@@ -121,13 +122,27 @@ export function generate(grammar) {
 
     const start = dfa.description.start;
 
+    const allTokenNames = Object.values(lexers).flatMap(
+      (data) => data.tokenNames
+    );
+
+    const parserSymbols = Array.from(
+      new Set([EOF, ...dfa.description.symbols])
+    );
+    const parserSymbolIds = parserSymbols.map((symbol) => {
+      let index = allTokenNames.indexOf(symbol);
+      if (index === -1) {
+        // lookup from rules?
+      }
+      return index;
+    });
+
     return {
       rules,
       states: Array.from(states),
-      // todo: rename terminals and nonTerminals
-      // these are rule symbols (e.g. for lookahead) and rule names
-      terminals: [EOF, ...dfa.description.symbols],
-      nonTerminals: rules.map((rule) => rule.name),
+      parserSymbols,
+      parserSymbolIds,
+      grammarRuleNames: rules.map((rule) => rule.name),
       actions,
       goto,
       start: start,
