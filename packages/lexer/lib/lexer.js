@@ -22,15 +22,15 @@ const log = debug("expound:lexer");
  */
 
 /**
- * @typedef {ParseTree<{name: string, value: string | undefined}>} NamedParseTree
+ * @typedef {ParseTree<{uid: number, name: string, value: string | undefined}>} NamedParseTree
  */
 
 /**
- * @typedef {NFA<{ n: number; name: string | undefined; }, string>} StringNFA
+ * @typedef {NFA<{ n: number; uid: number | undefined, name: string | undefined; }, string>} StringNFA
  */
 
 /**
- * @typedef {DFA<{ n: number; names: string[]; }, string>} StringDFA
+ * @typedef {DFA<{ n: number; uids: number[], names: string[]; }, string>} StringDFA
  */
 
 export const EOF = "@expound.EOF";
@@ -42,29 +42,31 @@ export const ERROR = "@expound.ERROR";
  * @returns {value is T}
  */
 function nonFalsyValues(value) {
-  return Boolean(value);
+  return value !== null && value !== undefined;
 }
 
 /**
+ * @param {number} uid
  * @param {string} name
- * @returns {(value: string | undefined) => {name: string, value: string | undefined}}
+ * @returns {(value: string | undefined) => {uid: number, name: string, value: string | undefined}}
  */
-function addTag(name) {
+function addTag(uid, name) {
   /**
    * @param {string | undefined} value
-   * @returns {{name: string, value: string | undefined}}
+   * @returns {{uid: number, name: string, value: string | undefined}}
    */
-  const fn = (value) => ({ name, value });
+  const fn = (value) => ({ uid, name, value });
   return fn;
 }
 
 /**
+ * @param {number} uid
  * @param {string} name
  * @param {string} expression
  * @returns {NamedParseTree}
  */
-function parseTerminalRule(name, expression) {
-  return convertNode(parseRegExp(expression), addTag(name));
+function parseTerminalRule(uid, name, expression) {
+  return convertNode(parseRegExp(expression), addTag(uid, name));
 }
 
 /**
@@ -87,6 +89,7 @@ function createOptimalDFA(nfa) {
     const dfa = new DFA(
       fromNFA(nfa, (n, states) => ({
         n,
+        uids: states.map((state) => state.uid).filter(nonFalsyValues),
         names: states.map((state) => state.name).filter(nonFalsyValues),
       }))
     );
@@ -100,18 +103,19 @@ function createOptimalDFA(nfa) {
 
     const optimizedStateMapper = () => {
       /**
-       * @type {Map<number, {n: number, names: string[]}>}
+       * @type {Map<number, {n: number, uids: number[], names: string[]}>}
        */
       const cache = new Map();
       /**
        * @param {number} n
-       * @param {{ n: number; names: string[]; }[]} states
+       * @param {{ n: number; uids: number[]; names: string[]; }[]} states
        */
       const fn = (n, states) => {
         let state = cache.get(n);
         if (!state) {
           state = {
             n,
+            uids: states.flatMap((s) => s.uids).filter(nonFalsyValues),
             names: states.flatMap((s) => s.names).filter(nonFalsyValues),
           };
           cache.set(n, state);
@@ -142,7 +146,9 @@ function createAutomata(tokens) {
   log("enter createAutomata");
   try {
     const tree = createCombinedExpression(
-      ...tokens.map((token) => parseTerminalRule(token.name, token.expr))
+      ...tokens.map((token) =>
+        parseTerminalRule(token.uid, token.name, token.expr)
+      )
     );
 
     const nfa = new NFA(
@@ -150,6 +156,7 @@ function createAutomata(tokens) {
         symbolMapper: (value) => value?.value,
         stateFactory: (n, tree) => ({
           n,
+          uid: tree.value?.uid,
           name: tree.value?.name,
         }),
       })
@@ -167,6 +174,7 @@ function createAutomata(tokens) {
  * @property {Object} tokens
  * @property {string} tokens.EOF
  * @property {string} tokens.ERROR
+ * @property {number[]} stateIds
  * @property {string[]} stateNames
  * @property {number} errorState
  * @property {[number, [number, number][]][]} transitions
@@ -212,6 +220,7 @@ export function generateFromTokens(tokens) {
         .map(([state]) => state)
         .find((state) => !finals.includes(state)) ?? -1;
 
+    const stateIds = d.states.map((state) => state.uids[0]);
     const stateNames = d.states.map((state) => state.names[0]);
 
     return {
@@ -219,6 +228,7 @@ export function generateFromTokens(tokens) {
         EOF,
         ERROR,
       },
+      stateIds,
       stateNames,
       errorState,
       transitions,
