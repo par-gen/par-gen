@@ -105,7 +105,7 @@ export class JavaScriptBaseCodegen {
         let i = offset;
         let j = 0;
         let l = input.length;
-        while (i < l) {
+        while (state !== ${errorState} && i < l) {
           state = table[state + input[i]];
           i++;
           j++;
