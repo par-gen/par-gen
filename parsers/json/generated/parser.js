@@ -51,21 +51,6 @@ Spaces := Spaces WS;
 Spaces := WS;
       */
 
-function printState(state) {
-  return Array.from(state.values())
-    .map((item) => printItem(item))
-    .join("\n");
-}
-
-function printItem(item) {
-  const head = [...(item.tokens ?? [])].slice(0, item.marker ?? 0);
-  const tail = [...(item.tokens ?? [])].slice(item.marker ?? 0);
-
-  return `${item.name} -> ${[...head, "•", ...tail].join(" ")}, ${
-    item.lookahead
-  }`;
-}
-
 const states = [
   // state 0
   new Set([

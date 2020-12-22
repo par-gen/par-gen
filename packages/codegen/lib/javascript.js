@@ -77,6 +77,11 @@ export class JavaScriptBaseCodegen {
 
     const columns = 256;
 
+    let isOptimizable = finals.every((final) => final % columns === 0);
+    for (let i = 1; i < finals.length && isOptimizable; i++) {
+      isOptimizable = finals[i] / columns - finals[i - 1] / columns === 1;
+    }
+
     const code = `${this._lexerPreCode()}
 
       const EOF = "${EOF}";
@@ -88,11 +93,15 @@ export class JavaScriptBaseCodegen {
       table.fill(${errorState ?? -1});
       ${transitions
         .flatMap(([from, transition]) =>
-          transition.map(([symbol, to]) => `table[${from + symbol}] = ${to};`)
+          transition.map(([symbol, to]) => {
+            if (to === errorState) {
+              return undefined;
+            }
+            return `table[${from + symbol}] = ${to};`;
+          })
         )
+        .filter(Boolean)
         .join("\n")}
-
-      const finals = ${JSON.stringify(finals)};
 
       const visited = new Uint16Array(1024);
 
@@ -117,12 +126,6 @@ export class JavaScriptBaseCodegen {
         let n = j;
         while (!success && n > 0) {
           ${(() => {
-            let isOptimizable = finals.every((final) => final % columns === 0);
-            for (let i = 1; i < finals.length && isOptimizable; i++) {
-              isOptimizable =
-                finals[i] / columns - finals[i - 1] / columns === 1;
-            }
-
             return isOptimizable
               ? `success = visited[n] <= ${
                   finals[finals.length - 1]
@@ -143,7 +146,7 @@ export class JavaScriptBaseCodegen {
           };
         }
         return {
-          state: i === input.length ? EOF : ERROR,
+          state: i === l ? EOF : ERROR,
           start: -1,
           end: -1,
         };
@@ -227,21 +230,6 @@ export class JavaScriptBaseCodegen {
         .map((rule) => `${rule.name} := ${rule.symbols.join(" ")};`)
         .join("\n")}
       */
-
-      function printState(state) {
-        return Array.from(state.values())
-          .map((item) => printItem(item))
-          .join("\\n");
-      }
-
-      function printItem(item) {
-        const head = [...(item.tokens ?? [])].slice(0, item.marker ?? 0);
-        const tail = [...(item.tokens ?? [])].slice(item.marker ?? 0);
-
-        return \`\${item.name} -> \${[...head, "•", ...tail].join(" ")}, \${
-          item.lookahead
-        }\`;
-      }
 
       const states = [
         ${states
