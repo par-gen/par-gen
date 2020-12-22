@@ -1,4 +1,4 @@
-import { parse, ops, convertNode } from "./regexp.js";
+import { parse, ops, convertNode, print } from "./regexp.js";
 
 /**
  * @template T
@@ -546,6 +546,204 @@ describe("convertNode", () => {
         ],
       })
     );
+  });
+});
+
+describe("print", () => {
+  const valueMapper = (value) => value;
+  it("should print a sequence node", () => {
+    expect(
+      print(
+        node({
+          op: ops.sequence,
+          nodes: [
+            node({
+              op: ops.match,
+              value: "a",
+            }),
+            node({
+              op: ops.match,
+              value: "b",
+            }),
+            node({
+              op: ops.match,
+              value: "c",
+            }),
+          ],
+        }),
+        valueMapper
+      )
+    ).toEqual("abc");
+  });
+
+  it("should print an any node", () => {
+    expect(
+      print(
+        node({
+          op: ops.sequence,
+          nodes: [
+            node({
+              op: ops.any,
+            }),
+          ],
+        }),
+        valueMapper
+      )
+    ).toEqual(".");
+  });
+
+  it("should print an optional node", () => {
+    expect(
+      print(
+        node({
+          op: ops.sequence,
+          nodes: [
+            node({
+              op: ops.optional,
+              node: node({
+                op: ops.match,
+                value: "a",
+              }),
+            }),
+          ],
+        }),
+        valueMapper
+      )
+    ).toEqual("a*");
+  });
+
+  it("should print a choice node", () => {
+    expect(
+      print(
+        node({
+          op: ops.sequence,
+          nodes: [
+            node({
+              op: ops.choice,
+              left: node({
+                op: ops.sequence,
+                nodes: [
+                  node({
+                    op: ops.match,
+                    value: "a",
+                  }),
+                  node({
+                    op: ops.match,
+                    value: "a",
+                  }),
+                ],
+              }),
+              right: node({
+                op: ops.sequence,
+                nodes: [
+                  node({
+                    op: ops.match,
+                    value: "b",
+                  }),
+                  node({
+                    op: ops.match,
+                    value: "b",
+                  }),
+                ],
+              }),
+            }),
+          ],
+        }),
+        valueMapper
+      )
+    ).toEqual("aa|bb");
+  });
+
+  it("should print a sub expression", () => {
+    expect(
+      print(
+        node({
+          op: ops.sequence,
+          nodes: [
+            node({
+              op: ops.sequence,
+              nodes: [
+                node({
+                  op: ops.match,
+                  value: "a",
+                }),
+                node({
+                  op: ops.match,
+                  value: "b",
+                }),
+              ],
+            }),
+          ],
+        }),
+        valueMapper
+      )
+    ).toEqual("(ab)");
+  });
+
+  it("should print a complex expression", () => {
+    expect(
+      print(
+        node({
+          op: ops.sequence,
+          nodes: [
+            node({
+              op: ops.match,
+              value: "a",
+            }),
+            node({
+              op: ops.match,
+              value: "a",
+            }),
+            node({
+              op: ops.optional,
+              node: node({
+                op: ops.sequence,
+                nodes: [
+                  node({
+                    op: ops.choice,
+                    left: node({
+                      op: ops.sequence,
+                      nodes: [
+                        node({
+                          op: ops.match,
+                          value: "a",
+                        }),
+                        node({
+                          op: ops.match,
+                          value: "a",
+                        }),
+                      ],
+                    }),
+                    right: node({
+                      op: ops.sequence,
+                      nodes: [
+                        node({
+                          op: ops.match,
+                          value: "b",
+                        }),
+                        node({
+                          op: ops.match,
+                          value: "b",
+                        }),
+                      ],
+                    }),
+                  }),
+                ],
+              }),
+            }),
+            node({
+              op: ops.match,
+              value: "c",
+            }),
+            node({
+              op: ops.match,
+              value: "c",
+            }),
+          ],
+        }),
+        valueMapper
+      )
+    ).toEqual("aa(aa|bb)*cc");
   });
 });
 

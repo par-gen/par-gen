@@ -6,6 +6,7 @@ import {
   fromRegExpParseTree,
   createChoiceTree,
   convertNode,
+  print,
 } from "@par-gen/nfa";
 import debug from "debug";
 import { performance } from "perf_hooks";
@@ -148,6 +149,53 @@ function createAutomata(tokens) {
       ...tokens
         .filter((token) => token.name !== EOF && token.name !== ERROR)
         .map((token) => parseTerminalRule(token.uid, token.name, token.expr))
+    );
+
+    console.log(
+      tree,
+      tokens,
+      print(tree, (value) => {
+        if (value?.value === "\n") {
+          return "\\n";
+        } else if (value?.value === "\t") {
+          return "\\t";
+        } else if (value?.value === "\r") {
+          return "\\r";
+        } else if (value?.value === "{") {
+          return "\\{";
+        } else if (value?.value === "}") {
+          return "\\}";
+        } else if (value?.value === "[") {
+          return "\\[";
+        } else if (value?.value === "]") {
+          return "\\]";
+        } else if (value?.value === "(") {
+          return "\\(";
+        } else if (value?.value === ")") {
+          return "\\)";
+        } else if (value?.value === ".") {
+          return "\\.";
+        } else if (value?.value === "+") {
+          return "\\+";
+        } else if (value?.value === "*") {
+          return "\\*";
+        } else if (value?.value === "|") {
+          return "\\|";
+        } else if (value?.value === "?") {
+          return "\\?";
+        } else if (value?.value === "/") {
+          return "\\/";
+        }
+        return value.value
+          ?.split("")
+          .map((c) => c.charCodeAt(0))
+          .map((c) =>
+            c < 32 || c > 126
+              ? `\\x${c.toString(16).padStart(2, "0")}`
+              : String.fromCharCode(c)
+          )
+          .join("");
+      })
     );
 
     const nfa = new NFA(
