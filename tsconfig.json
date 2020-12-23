@@ -44,6 +44,9 @@
     },
     {
       "path": "packages/parser"
+    },
+    {
+      "path": "parsers/json"
     }
   ]
 }
