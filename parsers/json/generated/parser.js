@@ -15225,15 +15225,13 @@ function parse(input) {
   let end = result.end;
   let offset = end;
 
-  const stack = new Array(10);
-  stack[0] = {
-    state: 0,
-    tree: undefined,
-  };
+  const stack = new Uint8Array(512);
+  const treeStack = new Array(512);
+  stack[0] = 0;
   let sp = 0;
 
   while (true) {
-    const currentState = stack[sp].state;
+    const currentState = stack[sp];
 
     const actionLookup = actionsTable[currentState * 30 + lookahead];
     if (actionLookup === 0xffff) {
@@ -15244,24 +15242,20 @@ function parse(input) {
     switch (action.op) {
       case 2: // done
         lexer.pop();
-        return stack[sp].tree;
+        return treeStack[sp];
       case 0: // shift
-        const stackItem = {
-          state: action.state,
-          tree: {
-            name: parserSymbols[lookahead],
-            start,
-            end,
-            items: undefined,
-          },
+        stack[++sp] = action.state;
+        treeStack[sp] = {
+          name: parserSymbols[lookahead],
+          start,
+          end,
+          items: undefined,
         };
 
         result = nextToken(stream, offset);
         lookahead = result.state;
         start = result.start;
         offset = end = result.end;
-
-        stack[++sp] = stackItem;
 
         break;
       case 1: // reduce
@@ -15279,7 +15273,7 @@ function parse(input) {
 
         const items = new Array(item.tokens.length);
         for (let i = 0; i < item.tokens.length; i++) {
-          items[i] = stack[i + sp + 1 - item.tokens.length].tree;
+          items[i] = treeStack[i + sp + 1 - item.tokens.length];
         }
         sp -= item.tokens.length;
 
@@ -15290,11 +15284,9 @@ function parse(input) {
           items,
         };
 
-        const nextState = gotoTable[stack[sp].state * 26 + action.symbol];
-        stack[++sp] = {
-          state: nextState,
-          tree,
-        };
+        const nextState = gotoTable[stack[sp] * 26 + action.symbol];
+        stack[++sp] = nextState;
+        treeStack[sp] = tree;
 
         break;
       default:
