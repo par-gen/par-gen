@@ -388,17 +388,17 @@ export class JavaScriptBaseCodegen {
           `
         )}
 
-        const stack = new Array(10);
-        stack[0] = {
-          state: ${states.indexOf(start)},
-          tree: undefined,
+        const stack = ${
+          states.length < 256 ? `new Uint8Array(512)` : `new Uint16Array(512)`
         };
+        const treeStack = new Array(512);
+        stack[0] = ${states.indexOf(start)};
         let sp = 0;
 
         ${debug(() => `let steps = 0;`)}
         while (true) {
           ${debug(() => `steps++;`)}
-          const currentState = stack[sp].state;
+          const currentState = stack[sp];
 
           const actionLookup = actionsTable[currentState * ${
             parserSymbolIds.length
@@ -412,16 +412,12 @@ export class JavaScriptBaseCodegen {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
               lexer.pop();
-              return stack[sp].tree;
+              return treeStack[sp];
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(
                 () =>
                   `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
               )}
-              const stackItem = {
-                state: action.state,
-                tree: { name: parserSymbols[lookahead], start, end, items: undefined },
-              };
               ${
                 requiresSemanticActions
                   ? `
@@ -433,6 +429,9 @@ export class JavaScriptBaseCodegen {
                   `
                   : ""
               }
+
+              stack[++sp] = action.state;
+              treeStack[sp] = { name: parserSymbols[lookahead], start, end, items: undefined };
 
               result = nextToken(stream, offset);
               lookahead = result.state;
@@ -448,11 +447,9 @@ export class JavaScriptBaseCodegen {
                 `
               )}
 
-              stack[++sp] = stackItem;
-
               ${debug(
                 () => `
-                console.log('  next state', stack[sp].state);
+                console.log('  next state', stack[sp]);
                 console.log('');
                 `
               )}
@@ -492,7 +489,7 @@ export class JavaScriptBaseCodegen {
 
               const items = new Array(item.tokens.length);
               for (let i = 0; i < item.tokens.length; i++) {
-                items[i] = stack[i + sp + 1 - item.tokens.length].tree;
+                items[i] = treeStack[i + sp + 1 - item.tokens.length];
               }
               sp -= item.tokens.length;
 
@@ -503,13 +500,11 @@ export class JavaScriptBaseCodegen {
                 items,
               };
 
-              const nextState = gotoTable[stack[sp].state * ${
+              const nextState = gotoTable[stack[sp] * ${
                 grammarRuleNames.length
               } + action.symbol]
-              stack[++sp] = {
-                state: nextState,
-                tree,
-              };
+              stack[++sp] = nextState;
+              treeStack[sp] = tree;
 
               ${debug(
                 () => `
