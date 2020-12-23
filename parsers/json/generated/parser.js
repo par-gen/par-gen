@@ -15218,11 +15218,12 @@ function parse(input) {
   lexer.push("initial");
 
   const stream = Buffer.from(input);
-  let offset = 0;
 
-  let result = nextToken(stream, offset);
-  let { state: lookahead, start, end } = result;
-  offset = end;
+  let result = nextToken(stream, 0);
+  let lookahead = result.state;
+  let start = result.start;
+  let end = result.end;
+  let offset = end;
 
   const stack = new Array(10);
   stack[0] = {

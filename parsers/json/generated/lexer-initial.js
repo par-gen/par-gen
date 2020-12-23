@@ -1508,6 +1508,13 @@ table[28772] = 28160; // NULL
 
 const visited = new Uint16Array(1024);
 
+// the currently matched lexeme
+const lexeme = {
+  state: -1,
+  start: -1,
+  end: -1,
+};
+
 const next = (input, offset) => {
   // 93
   let state = 23808;
@@ -1534,17 +1541,15 @@ const next = (input, offset) => {
   n = n + 1;
 
   if (success) {
-    return {
-      state: tokenIds[visited[n] / 256 + 2],
-      start: offset,
-      end: offset + n,
-    };
+    lexeme.state = tokenIds[visited[n] / 256 + 2];
+    lexeme.start = offset;
+    lexeme.end = offset + n;
+    return lexeme;
   }
-  return {
-    state: i === l ? 0 : 1,
-    start: -1,
-    end: -1,
-  };
+  lexeme.state = i === l ? 0 : 1;
+  lexeme.start = -1;
+  lexeme.end = -1;
+  return lexeme;
 };
 
 export { EOF, ERROR, tokenNames, next };
