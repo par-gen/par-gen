@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 

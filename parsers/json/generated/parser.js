@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { next as nextTokenInitial } from "./lexer-initial.js";
 
 /*
