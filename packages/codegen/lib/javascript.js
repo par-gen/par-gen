@@ -255,7 +255,7 @@ export class JavaScriptBaseCodegen {
               new Set([${Array.from(state.values())
                 .map(
                   (item) => `{
-                  name: '${item.name}',
+                  name: ${grammarRuleNames.indexOf(item.name)}, // ${item.name}
                   tokens: ${JSON.stringify(item.tokens)},
                   marker: ${item.marker},
                   lookahead: ${parserSymbols.indexOf(item.lookahead)}, // ${
@@ -469,16 +469,15 @@ export class JavaScriptBaseCodegen {
                 `
               )}
               let item;
-              const actionSymbol = grammarRuleNames[action.symbol];
               for (const value of states[currentState].values()) {
-                if (value.name === actionSymbol && value.lookahead === lookahead) {
+                if (value.name === action.symbol && value.lookahead === lookahead) {
                   item = value;
                   break;
                 }
               }
               if (!item) {
                 throw new Error(
-                  \`No valid state \${actionSymbol}(\${lookahead}) found\`
+                  \`No valid state \${grammarRuleNames[action.symbol]}(\${lookahead}) found\`
                 );
               }
               ${
@@ -498,7 +497,7 @@ export class JavaScriptBaseCodegen {
               } + action.symbol]
               stack[++sp] = nextState;
               treeStack[sp] = {
-                name: actionSymbol,
+                name: grammarRuleNames[action.symbol],
                 start: -1,
                 end: -1,
                 items,
