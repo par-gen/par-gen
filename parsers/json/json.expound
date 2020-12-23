@@ -13,13 +13,6 @@ COLON := ':';
 STRING := '"([^"\\]|\\["\\/bfnrt]|\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])*"';
 BRACKET_OPEN := '\[';
 BRACKET_CLOSE := '\]';
-ZERO := '0';
-ONE_NINE := '[1-9]';
-DOT := '\.';
-UPPER_E := 'E';
-LOWER_E := 'e';
-PLUS := '+';
-MINUS := '-';
 
 # NUMBER: '-'? INT ('.' [0-9] +)? EXP?
 # INT: '0' | [1-9] [0-9]*
