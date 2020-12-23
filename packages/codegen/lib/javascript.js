@@ -111,6 +111,13 @@ export class JavaScriptBaseCodegen {
 
       const visited = new Uint16Array(1024);
 
+      // the currently matched lexeme
+      const lexeme = {
+        state: -1,
+        start: -1,
+        end: -1,
+      };
+
       const next = (input, offset) => {
         // ${start / columns}
         let state = ${start};
@@ -145,19 +152,17 @@ export class JavaScriptBaseCodegen {
         n = n + 1;
 
         if (success) {
-          return {
-            state: tokenIds[(visited[n] / ${columns}) + 2],
-            start: offset,
-            end: offset + n,
-          };
+          lexeme.state = tokenIds[(visited[n] / ${columns}) + 2];
+          lexeme.start = offset;
+          lexeme.end = offset + n;
+          return lexeme;
         }
-        return {
-          state: i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+        lexeme.state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
       tokenIds[tokenNames.indexOf(ERROR)]
-    },
-          start: -1,
-          end: -1,
-        };
+    };
+        lexeme.start = -1;
+        lexeme.end = -1;
+        return lexeme;
       };
 
       ${this._lexerExport()}
@@ -366,11 +371,13 @@ export class JavaScriptBaseCodegen {
         lexer.push('initial');
 
         const stream = Buffer.from(input);
-        let offset = 0;
 
-        let result = nextToken(stream, offset);
-        let { state: lookahead, start, end } = result;
-        offset = end;
+        let result = nextToken(stream, 0);
+        let lookahead = result.state;
+        let start = result.start;
+        let end = result.end;
+        let offset = end;
+
         ${debug(
           () => `
           console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
