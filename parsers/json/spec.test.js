@@ -15,12 +15,17 @@ describe("JSON", () => {
     expect(parse(literal)).toBeTruthy();
   });
 
-  it.each(["-12.34e56", "0", "-12.34", "12e56", "-12.34e-56", "-12.34E+56"])(
-    "should accept '%s' number",
-    (literal) => {
-      expect(parse(literal)).toBeTruthy();
-    }
-  );
+  it.each([
+    "-12.34e56",
+    "0",
+    "1",
+    "-12.34",
+    "12e56",
+    "-12.34e-56",
+    "-12.34E+56",
+  ])("should accept '%s' number", (literal) => {
+    expect(parse(literal)).toBeTruthy();
+  });
 
   it.each([" { } ", " [ ] ", "\ntrue\n"])(
     "should accept spaces in '%s'",
