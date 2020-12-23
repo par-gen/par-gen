@@ -493,18 +493,16 @@ export class JavaScriptBaseCodegen {
               }
               sp -= item.tokens.length;
 
-              const tree = {
+              const nextState = gotoTable[stack[sp] * ${
+                grammarRuleNames.length
+              } + action.symbol]
+              stack[++sp] = nextState;
+              treeStack[sp] = {
                 name: actionSymbol,
                 start: -1,
                 end: -1,
                 items,
               };
-
-              const nextState = gotoTable[stack[sp] * ${
-                grammarRuleNames.length
-              } + action.symbol]
-              stack[++sp] = nextState;
-              treeStack[sp] = tree;
 
               ${debug(
                 () => `
