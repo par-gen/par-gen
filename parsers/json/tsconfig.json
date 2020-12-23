@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "composite": true,
+    "noEmit": true,
+    "emitDeclarationOnly": false
+  },
+  "include": ["."],
+  "exclude": ["**/node_modules/**"],
+  "references": [
+    {
+      "path": "../../packages/cli"
+    }
+  ]
+}

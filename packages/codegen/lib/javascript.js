@@ -84,6 +84,7 @@ export class JavaScriptBaseCodegen {
     }
 
     const code = `${this._lexerPreCode()}
+      // @ts-nocheck
 
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
@@ -235,7 +236,7 @@ export class JavaScriptBaseCodegen {
       Array.from(state.values()).some((item) => item.semanticAction)
     );
 
-    const code = `
+    const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
 
       /*
