@@ -253,7 +253,9 @@ export class JavaScriptBaseCodegen {
                   name: '${item.name}',
                   tokens: ${JSON.stringify(item.tokens)},
                   marker: ${item.marker},
-                  lookahead: ${parserSymbols.indexOf(item.lookahead)},
+                  lookahead: ${parserSymbols.indexOf(item.lookahead)}, // ${
+                    item.lookahead
+                  }
                   semanticAction: ${
                     item.semanticAction
                       ? ((requiresSemanticActions = true),
@@ -357,7 +359,7 @@ export class JavaScriptBaseCodegen {
         ${debug(
           () => `
           console.log('--- parse input');
-          console.log(input.substr(0, Math.min(input.length, 20)).replace(/\\n/g, '\\\\n') + (Math.min(input.length, 20) < input.length ? '...' : ''));
+          console.log(input.toString().substr(0, Math.min(input.length, 20)).replace(/\\n/g, '\\\\n') + (Math.min(input.length, 20) < input.length ? '...' : ''));
           console.log('---');
           `
         )}
@@ -372,7 +374,7 @@ export class JavaScriptBaseCodegen {
         ${debug(
           () => `
           console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
-          console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
+          console.log("    '" + input.toString().substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
           if (start !== -1) {
             console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
           }
@@ -386,7 +388,9 @@ export class JavaScriptBaseCodegen {
         };
         let sp = 0;
 
+        ${debug(() => `let steps = 0;`)}
         while (true) {
+          ${debug(() => `steps++;`)}
           const currentState = stack[sp].state;
 
           const actionLookup = actionsTable[currentState * ${
@@ -399,6 +403,7 @@ export class JavaScriptBaseCodegen {
 
           switch (action.op) {
             case ${actionOps.indexOf("done")}: // done
+              ${debug(() => `console.log('steps', steps);`)}
               lexer.pop();
               return stack[sp].tree;
             case ${actionOps.indexOf("shift")}: // shift
@@ -429,7 +434,7 @@ export class JavaScriptBaseCodegen {
               ${debug(
                 () => `
                 console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
-                console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
+                console.log("    '" + input.toString().substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
                 if (start !== -1) {
                   console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
                 }
@@ -441,16 +446,19 @@ export class JavaScriptBaseCodegen {
               ${debug(
                 () => `
                 console.log('  next state', stack[sp].state);
-                console.log();
+                console.log('');
                 `
               )}
               break;
             case ${actionOps.indexOf("reduce")}: // reduce
-              ${debug(() => `console.log('action: reduce', action.symbol);`)}
+              ${debug(
+                () =>
+                  `console.log('action: reduce', action.symbol, grammarRuleNames[action.symbol]);`
+              )}
               ${debug(
                 () => `
                 console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
-                console.log("    '" + input.substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
+                console.log("    '" + input.toString().substring(Math.max(0, start - 10), Math.min(start + 10, input.length)) + "'");
                 if (start !== -1) {
                   console.log("     " + Array(start - Math.max(0, start - 10)).fill(' ').join('') + "^");
                 }
@@ -499,7 +507,7 @@ export class JavaScriptBaseCodegen {
               ${debug(
                 () => `
                 console.log('  next state', stack[sp].state);
-                console.log();
+                console.log('');
                 `
               )}
               break;
