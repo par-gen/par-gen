@@ -126,9 +126,19 @@ export function generate(grammar) {
       (data) => data.tokenNames
     );
 
-    const parserSymbols = Array.from(
-      new Set([EOF, ...dfa.description.symbols])
-    );
+    let parserSymbols = Array.from(new Set([EOF, ...dfa.description.symbols]));
+    // add to align to power of 2
+    for (
+      let i = 0,
+        n =
+          Math.pow(2, Math.ceil(Math.sqrt(parserSymbols.length))) -
+          parserSymbols.length;
+      i < n;
+      i++
+    ) {
+      parserSymbols.push(/** @type {*} */ (undefined));
+    }
+
     const parserSymbolIds = parserSymbols.map((symbol) => {
       let index = allTokenNames.indexOf(symbol);
       if (index === -1) {
