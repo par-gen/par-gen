@@ -444,7 +444,7 @@ export class JavaScriptBaseCodegen {
         )}
         lexer.push('initial');
 
-        const stream = Buffer.from(input);
+        const stream = Buffer.isBuffer(input) ? input : Buffer.from(input);
 
         let result = nextToken(stream, 0);
         let lookahead = result.state;
