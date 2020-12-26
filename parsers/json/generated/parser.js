@@ -5555,6 +5555,8 @@ const lexer = {
 };
 let nextToken;
 
+const stack = new Uint8Array(512);
+
 function parse(input) {
   lexer.push("initial");
 
@@ -5566,7 +5568,6 @@ function parse(input) {
   let end = result.end;
   let offset = end;
 
-  const stack = new Uint8Array(512);
   const treeStack = new Array(512);
   stack[0] = 0;
   let sp = 0;

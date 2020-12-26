@@ -434,6 +434,10 @@ export class JavaScriptBaseCodegen {
       };
       let nextToken;
 
+      const stack = ${
+        states.length < 256 ? `new Uint8Array(512)` : `new Uint16Array(512)`
+      };
+
       function parse(input) {
         ${debug(
           () => `
@@ -462,9 +466,6 @@ export class JavaScriptBaseCodegen {
           `
         )}
 
-        const stack = ${
-          states.length < 256 ? `new Uint8Array(512)` : `new Uint16Array(512)`
-        };
         const treeStack = new Array(512);
         stack[0] = ${states.indexOf(start)};
         let sp = 0;
