@@ -40,6 +40,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 2' -> Value -> @expound.EOF
@@ -66,171 +78,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 2' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 2' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> CURLY_CLOSE
-      1, // 'state 2' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 2' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 2' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> CURLY_CLOSE
-      1, // 'state 2' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 2' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 2' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> CURLY_CLOSE
-      1, // 'state 2' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 2' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 2' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> CURLY_CLOSE
-      1, // 'state 2' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 2' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 2' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> CURLY_CLOSE
-      1, // 'state 2' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 2' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 2' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> CURLY_CLOSE
-      1, // 'state 2' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 2' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -244,6 +91,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 3' -> Value -> @expound.EOF
@@ -270,171 +129,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 3' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 3' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> CURLY_CLOSE
-      1, // 'state 3' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 3' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 3' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> CURLY_CLOSE
-      1, // 'state 3' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 3' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 3' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> CURLY_CLOSE
-      1, // 'state 3' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 3' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 3' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> CURLY_CLOSE
-      1, // 'state 3' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 3' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 3' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> CURLY_CLOSE
-      1, // 'state 3' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 3' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 3' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> CURLY_CLOSE
-      1, // 'state 3' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 3' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -448,6 +142,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 4' -> Value -> @expound.EOF
@@ -474,171 +180,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 4' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 4' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> CURLY_CLOSE
-      1, // 'state 4' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 4' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 4' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> CURLY_CLOSE
-      1, // 'state 4' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 4' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 4' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> CURLY_CLOSE
-      1, // 'state 4' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 4' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 4' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> CURLY_CLOSE
-      1, // 'state 4' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 4' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 4' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> CURLY_CLOSE
-      1, // 'state 4' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 4' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 4' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> CURLY_CLOSE
-      1, // 'state 4' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 4' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -653,6 +194,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 6' -> Value -> @expound.EOF
@@ -679,171 +232,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 6' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 6' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> CURLY_CLOSE
-      1, // 'state 6' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 6' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 6' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> CURLY_CLOSE
-      1, // 'state 6' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 6' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 6' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> CURLY_CLOSE
-      1, // 'state 6' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 6' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 6' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> CURLY_CLOSE
-      1, // 'state 6' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 6' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 6' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> CURLY_CLOSE
-      1, // 'state 6' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 6' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 6' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> CURLY_CLOSE
-      1, // 'state 6' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 6' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -858,162 +246,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Value
-    [
-      1, // 'state 8' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 8' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> CURLY_CLOSE
-      1, // 'state 8' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 8' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 8' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> CURLY_CLOSE
-      1, // 'state 8' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 8' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 8' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> CURLY_CLOSE
-      1, // 'state 8' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 8' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 8' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> CURLY_CLOSE
-      1, // 'state 8' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 8' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 8' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> CURLY_CLOSE
-      1, // 'state 8' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 8' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 8' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> CURLY_CLOSE
-      1, // 'state 8' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 8' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 8' -> Value -> @expound.EOF
@@ -1045,7 +289,49 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+  ],
+  // 'state 9'
+  [
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // S
+    [
+      1, // 'state 9' -> S -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
     undefined,
@@ -1055,9 +341,23 @@ const reducerStates = [
     undefined,
     undefined,
   ],
-  undefined,
   // 'state 10'
   [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Json
     [
       1, // 'state 10' -> Json -> @expound.EOF
@@ -1091,28 +391,25 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   // 'state 11'
   [
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Element
     [
       1, // 'state 11' -> Element -> @expound.EOF
@@ -1139,99 +436,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Element
-    [
-      1, // 'state 11' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 11' -> Element -> CURLY_CLOSE
-      1, // 'state 11' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 11' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      1, // 'state 11' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 11' -> Element -> CURLY_CLOSE
-      1, // 'state 11' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 11' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      1, // 'state 11' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 11' -> Element -> CURLY_CLOSE
-      1, // 'state 11' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 11' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -1246,6 +450,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 12' -> Value -> @expound.EOF
@@ -1272,171 +488,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 12' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 12' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> CURLY_CLOSE
-      1, // 'state 12' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 12' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 12' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> CURLY_CLOSE
-      1, // 'state 12' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 12' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 12' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> CURLY_CLOSE
-      1, // 'state 12' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 12' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 12' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> CURLY_CLOSE
-      1, // 'state 12' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 12' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 12' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> CURLY_CLOSE
-      1, // 'state 12' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 12' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 12' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> CURLY_CLOSE
-      1, // 'state 12' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 12' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -1450,6 +501,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 13' -> Value -> @expound.EOF
@@ -1476,171 +539,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 13' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 13' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> CURLY_CLOSE
-      1, // 'state 13' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 13' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 13' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> CURLY_CLOSE
-      1, // 'state 13' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 13' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 13' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> CURLY_CLOSE
-      1, // 'state 13' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 13' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 13' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> CURLY_CLOSE
-      1, // 'state 13' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 13' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 13' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> CURLY_CLOSE
-      1, // 'state 13' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 13' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 13' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> CURLY_CLOSE
-      1, // 'state 13' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 13' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -1650,6 +548,21 @@ const reducerStates = [
   // 'state 14'
   [
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Element
     [
       2, // 'state 14' -> Element -> @expound.EOF
@@ -1676,99 +589,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Element
-    [
-      2, // 'state 14' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 14' -> Element -> CURLY_CLOSE
-      2, // 'state 14' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 14' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      2, // 'state 14' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 14' -> Element -> CURLY_CLOSE
-      2, // 'state 14' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 14' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      2, // 'state 14' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 14' -> Element -> CURLY_CLOSE
-      2, // 'state 14' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 14' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -1783,6 +603,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 15' -> Value -> @expound.EOF
@@ -1809,171 +641,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 15' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 15' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> CURLY_CLOSE
-      1, // 'state 15' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 15' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 15' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> CURLY_CLOSE
-      1, // 'state 15' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 15' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 15' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> CURLY_CLOSE
-      1, // 'state 15' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 15' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 15' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> CURLY_CLOSE
-      1, // 'state 15' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 15' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 15' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> CURLY_CLOSE
-      1, // 'state 15' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 15' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 15' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> CURLY_CLOSE
-      1, // 'state 15' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 15' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -1987,6 +654,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 16' -> Value -> @expound.EOF
@@ -2013,171 +692,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 16' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 16' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> CURLY_CLOSE
-      1, // 'state 16' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 16' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 16' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> CURLY_CLOSE
-      1, // 'state 16' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 16' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 16' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> CURLY_CLOSE
-      1, // 'state 16' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 16' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 16' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> CURLY_CLOSE
-      1, // 'state 16' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 16' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 16' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> CURLY_CLOSE
-      1, // 'state 16' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 16' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 16' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> CURLY_CLOSE
-      1, // 'state 16' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 16' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -2191,6 +705,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 17' -> Value -> @expound.EOF
@@ -2217,171 +743,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 17' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 17' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> CURLY_CLOSE
-      1, // 'state 17' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 17' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 17' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> CURLY_CLOSE
-      1, // 'state 17' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 17' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 17' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> CURLY_CLOSE
-      1, // 'state 17' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 17' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 17' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> CURLY_CLOSE
-      1, // 'state 17' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 17' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 17' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> CURLY_CLOSE
-      1, // 'state 17' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 17' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 17' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> CURLY_CLOSE
-      1, // 'state 17' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 17' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -2396,6 +757,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 19' -> Value -> @expound.EOF
@@ -2422,171 +795,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 19' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 19' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> CURLY_CLOSE
-      1, // 'state 19' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 19' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 19' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> CURLY_CLOSE
-      1, // 'state 19' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 19' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 19' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> CURLY_CLOSE
-      1, // 'state 19' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 19' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 19' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> CURLY_CLOSE
-      1, // 'state 19' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 19' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 19' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> CURLY_CLOSE
-      1, // 'state 19' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 19' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 19' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> CURLY_CLOSE
-      1, // 'state 19' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 19' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -2601,6 +809,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 21' -> Value -> @expound.EOF
@@ -2627,171 +847,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 21' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 21' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> CURLY_CLOSE
-      1, // 'state 21' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 21' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 21' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> CURLY_CLOSE
-      1, // 'state 21' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 21' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 21' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> CURLY_CLOSE
-      1, // 'state 21' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 21' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 21' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> CURLY_CLOSE
-      1, // 'state 21' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 21' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 21' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> CURLY_CLOSE
-      1, // 'state 21' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 21' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 21' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> CURLY_CLOSE
-      1, // 'state 21' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 21' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -2801,6 +856,21 @@ const reducerStates = [
   // 'state 22'
   [
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Element
     [
       2, // 'state 22' -> Element -> @expound.EOF
@@ -2827,99 +897,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Element
-    [
-      2, // 'state 22' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 22' -> Element -> CURLY_CLOSE
-      2, // 'state 22' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 22' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      2, // 'state 22' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 22' -> Element -> CURLY_CLOSE
-      2, // 'state 22' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 22' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      2, // 'state 22' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 22' -> Element -> CURLY_CLOSE
-      2, // 'state 22' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 22' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -2934,6 +911,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 23' -> Value -> @expound.EOF
@@ -2960,171 +949,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 23' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 23' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> CURLY_CLOSE
-      1, // 'state 23' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 23' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 23' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> CURLY_CLOSE
-      1, // 'state 23' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 23' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 23' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> CURLY_CLOSE
-      1, // 'state 23' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 23' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 23' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> CURLY_CLOSE
-      1, // 'state 23' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 23' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 23' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> CURLY_CLOSE
-      1, // 'state 23' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 23' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 23' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> CURLY_CLOSE
-      1, // 'state 23' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 23' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -3138,6 +962,18 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Value
     [
       1, // 'state 24' -> Value -> @expound.EOF
@@ -3164,171 +1000,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Value
-    [
-      1, // 'state 24' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 24' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> CURLY_CLOSE
-      1, // 'state 24' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 24' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 24' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> CURLY_CLOSE
-      1, // 'state 24' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 24' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 24' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> CURLY_CLOSE
-      1, // 'state 24' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 24' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 24' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> CURLY_CLOSE
-      1, // 'state 24' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 24' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 24' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> CURLY_CLOSE
-      1, // 'state 24' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Value
-    [
-      1, // 'state 24' -> Value -> @expound.EOF
-      -1,
-      1, // 'state 24' -> Value -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> CURLY_CLOSE
-      1, // 'state 24' -> Value -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 24' -> Value -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -3350,6 +1021,12 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Object
     [
       2, // 'state 26' -> Object -> @expound.EOF
@@ -3376,65 +1053,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Object
-    [
-      2, // 'state 26' -> Object -> @expound.EOF
-      -1,
-      2, // 'state 26' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 26' -> Object -> CURLY_CLOSE
-      2, // 'state 26' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 26' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Object
-    [
-      2, // 'state 26' -> Object -> @expound.EOF
-      -1,
-      2, // 'state 26' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 26' -> Object -> CURLY_CLOSE
-      2, // 'state 26' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 26' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -3459,6 +1077,10 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Members
     [
       -1,
@@ -3485,38 +1107,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Members
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 29' -> Members -> CURLY_CLOSE
-      1, // 'state 29' -> Members -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -3571,59 +1161,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Array
-    [
-      2, // 'state 31' -> Array -> @expound.EOF
-      -1,
-      2, // 'state 31' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 31' -> Array -> CURLY_CLOSE
-      2, // 'state 31' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 31' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Array
-    [
-      2, // 'state 31' -> Array -> @expound.EOF
-      -1,
-      2, // 'state 31' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 31' -> Array -> CURLY_CLOSE
-      2, // 'state 31' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 31' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
     undefined,
   ],
   // 'state 32'
@@ -3650,34 +1187,6 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    undefined,
-    undefined,
-    // Elements
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 32' -> Elements -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 32' -> Elements -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     // Elements
     [
       -1,
@@ -3709,6 +1218,21 @@ const reducerStates = [
   // 'state 34'
   [
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Element
     [
       3, // 'state 34' -> Element -> @expound.EOF
@@ -3735,99 +1259,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Element
-    [
-      3, // 'state 34' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 34' -> Element -> CURLY_CLOSE
-      3, // 'state 34' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 34' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      3, // 'state 34' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 34' -> Element -> CURLY_CLOSE
-      3, // 'state 34' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 34' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Element
-    [
-      3, // 'state 34' -> Element -> @expound.EOF
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 34' -> Element -> CURLY_CLOSE
-      3, // 'state 34' -> Element -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 34' -> Element -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -3850,6 +1281,12 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Object
     [
       2, // 'state 36' -> Object -> @expound.EOF
@@ -3876,65 +1313,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Object
-    [
-      2, // 'state 36' -> Object -> @expound.EOF
-      -1,
-      2, // 'state 36' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 36' -> Object -> CURLY_CLOSE
-      2, // 'state 36' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 36' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Object
-    [
-      2, // 'state 36' -> Object -> @expound.EOF
-      -1,
-      2, // 'state 36' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 36' -> Object -> CURLY_CLOSE
-      2, // 'state 36' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 36' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -3959,6 +1337,10 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Members
     [
       -1,
@@ -3985,38 +1367,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Members
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 39' -> Members -> CURLY_CLOSE
-      1, // 'state 39' -> Members -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -4071,59 +1421,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Array
-    [
-      2, // 'state 41' -> Array -> @expound.EOF
-      -1,
-      2, // 'state 41' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 41' -> Array -> CURLY_CLOSE
-      2, // 'state 41' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 41' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Array
-    [
-      2, // 'state 41' -> Array -> @expound.EOF
-      -1,
-      2, // 'state 41' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      2, // 'state 41' -> Array -> CURLY_CLOSE
-      2, // 'state 41' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      2, // 'state 41' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
     undefined,
   ],
   // 'state 42'
@@ -4150,34 +1447,6 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    undefined,
-    undefined,
-    // Elements
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      1, // 'state 42' -> Elements -> COMMA
-      -1,
-      -1,
-      -1,
-      1, // 'state 42' -> Elements -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     // Elements
     [
       -1,
@@ -4220,6 +1489,12 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Object
     [
       3, // 'state 44' -> Object -> @expound.EOF
@@ -4246,65 +1521,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Object
-    [
-      3, // 'state 44' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 44' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 44' -> Object -> CURLY_CLOSE
-      3, // 'state 44' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 44' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Object
-    [
-      3, // 'state 44' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 44' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 44' -> Object -> CURLY_CLOSE
-      3, // 'state 44' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 44' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -4325,6 +1541,12 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Object
     [
       3, // 'state 46' -> Object -> @expound.EOF
@@ -4351,65 +1573,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Object
-    [
-      3, // 'state 46' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 46' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 46' -> Object -> CURLY_CLOSE
-      3, // 'state 46' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 46' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Object
-    [
-      3, // 'state 46' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 46' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 46' -> Object -> CURLY_CLOSE
-      3, // 'state 46' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 46' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -4467,59 +1630,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Array
-    [
-      3, // 'state 50' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 50' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 50' -> Array -> CURLY_CLOSE
-      3, // 'state 50' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 50' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Array
-    [
-      3, // 'state 50' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 50' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 50' -> Array -> CURLY_CLOSE
-      3, // 'state 50' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 50' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
     undefined,
   ],
   undefined,
@@ -4572,59 +1682,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Array
-    [
-      3, // 'state 52' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 52' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 52' -> Array -> CURLY_CLOSE
-      3, // 'state 52' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 52' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Array
-    [
-      3, // 'state 52' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 52' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 52' -> Array -> CURLY_CLOSE
-      3, // 'state 52' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 52' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
     undefined,
   ],
   // 'state 53'
@@ -4641,6 +1698,12 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Object
     [
       3, // 'state 53' -> Object -> @expound.EOF
@@ -4667,65 +1730,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Object
-    [
-      3, // 'state 53' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 53' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 53' -> Object -> CURLY_CLOSE
-      3, // 'state 53' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 53' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Object
-    [
-      3, // 'state 53' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 53' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 53' -> Object -> CURLY_CLOSE
-      3, // 'state 53' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 53' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -4746,6 +1750,12 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Object
     [
       3, // 'state 55' -> Object -> @expound.EOF
@@ -4772,65 +1782,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Object
-    [
-      3, // 'state 55' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 55' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 55' -> Object -> CURLY_CLOSE
-      3, // 'state 55' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 55' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Object
-    [
-      3, // 'state 55' -> Object -> @expound.EOF
-      -1,
-      3, // 'state 55' -> Object -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 55' -> Object -> CURLY_CLOSE
-      3, // 'state 55' -> Object -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 55' -> Object -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -4888,59 +1839,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Array
-    [
-      3, // 'state 59' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 59' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 59' -> Array -> CURLY_CLOSE
-      3, // 'state 59' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 59' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Array
-    [
-      3, // 'state 59' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 59' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 59' -> Array -> CURLY_CLOSE
-      3, // 'state 59' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 59' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
     undefined,
   ],
   undefined,
@@ -4993,59 +1891,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Array
-    [
-      3, // 'state 61' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 61' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 61' -> Array -> CURLY_CLOSE
-      3, // 'state 61' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 61' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Array
-    [
-      3, // 'state 61' -> Array -> @expound.EOF
-      -1,
-      3, // 'state 61' -> Array -> WS
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 61' -> Array -> CURLY_CLOSE
-      3, // 'state 61' -> Array -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 61' -> Array -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
     undefined,
   ],
   undefined,
@@ -5068,6 +1913,10 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Members
     [
       -1,
@@ -5094,38 +1943,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Members
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 65' -> Members -> CURLY_CLOSE
-      3, // 'state 65' -> Members -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -5149,113 +1966,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 66' -> Member -> CURLY_CLOSE
-      3, // 'state 66' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 66' -> Member -> CURLY_CLOSE
-      3, // 'state 66' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 66' -> Member -> CURLY_CLOSE
-      3, // 'state 66' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 66' -> Member -> CURLY_CLOSE
-      3, // 'state 66' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 66' -> Member -> CURLY_CLOSE
+      3, // 'state 66' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -5284,34 +2023,6 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    undefined,
-    undefined,
-    // Elements
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 68' -> Elements -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 68' -> Elements -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     // Elements
     [
       -1,
@@ -5359,6 +2070,10 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     // Members
     [
       -1,
@@ -5385,38 +2100,6 @@ const reducerStates = [
       -1,
       -1,
     ],
-    // Members
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 72' -> Members -> CURLY_CLOSE
-      3, // 'state 72' -> Members -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -5440,113 +2123,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 73' -> Member -> CURLY_CLOSE
-      3, // 'state 73' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 73' -> Member -> CURLY_CLOSE
-      3, // 'state 73' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 73' -> Member -> CURLY_CLOSE
-      3, // 'state 73' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 73' -> Member -> CURLY_CLOSE
-      3, // 'state 73' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 73' -> Member -> CURLY_CLOSE
+      3, // 'state 73' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -5575,34 +2180,6 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    undefined,
-    undefined,
-    // Elements
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      3, // 'state 75' -> Elements -> COMMA
-      -1,
-      -1,
-      -1,
-      3, // 'state 75' -> Elements -> BRACKET_CLOSE
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     // Elements
     [
       -1,
@@ -5649,113 +2226,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 76' -> Member -> CURLY_CLOSE
-      4, // 'state 76' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 76' -> Member -> CURLY_CLOSE
-      4, // 'state 76' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 76' -> Member -> CURLY_CLOSE
-      4, // 'state 76' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 76' -> Member -> CURLY_CLOSE
-      4, // 'state 76' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 76' -> Member -> CURLY_CLOSE
+      4, // 'state 76' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -5779,113 +2278,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 78' -> Member -> CURLY_CLOSE
-      4, // 'state 78' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 78' -> Member -> CURLY_CLOSE
-      4, // 'state 78' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 78' -> Member -> CURLY_CLOSE
-      4, // 'state 78' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 78' -> Member -> CURLY_CLOSE
-      4, // 'state 78' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 78' -> Member -> CURLY_CLOSE
+      4, // 'state 78' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -5908,113 +2329,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 79' -> Member -> CURLY_CLOSE
-      4, // 'state 79' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 79' -> Member -> CURLY_CLOSE
-      4, // 'state 79' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 79' -> Member -> CURLY_CLOSE
-      4, // 'state 79' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 79' -> Member -> CURLY_CLOSE
-      4, // 'state 79' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 79' -> Member -> CURLY_CLOSE
+      4, // 'state 79' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -6038,113 +2381,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 81' -> Member -> CURLY_CLOSE
-      4, // 'state 81' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 81' -> Member -> CURLY_CLOSE
-      4, // 'state 81' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 81' -> Member -> CURLY_CLOSE
-      4, // 'state 81' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      4, // 'state 81' -> Member -> CURLY_CLOSE
-      4, // 'state 81' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 81' -> Member -> CURLY_CLOSE
+      4, // 'state 81' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -6167,113 +2432,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 82' -> Member -> CURLY_CLOSE
-      5, // 'state 82' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 82' -> Member -> CURLY_CLOSE
-      5, // 'state 82' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 82' -> Member -> CURLY_CLOSE
-      5, // 'state 82' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 82' -> Member -> CURLY_CLOSE
-      5, // 'state 82' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 82' -> Member -> CURLY_CLOSE
+      5, // 'state 82' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -6296,113 +2483,35 @@ const reducerStates = [
     undefined,
     undefined,
     undefined,
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 83' -> Member -> CURLY_CLOSE
-      5, // 'state 83' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 83' -> Member -> CURLY_CLOSE
-      5, // 'state 83' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 83' -> Member -> CURLY_CLOSE
-      5, // 'state 83' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
-    // Member
-    [
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      5, // 'state 83' -> Member -> CURLY_CLOSE
-      5, // 'state 83' -> Member -> COMMA
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-      -1,
-    ],
     undefined,
     undefined,
     undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 83' -> Member -> CURLY_CLOSE
+      5, // 'state 83' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
     undefined,
     undefined,
   ],
@@ -6412,54 +2521,26 @@ const parserSymbols = [
   "@expound.EOF", // 0
   "@expound.ERROR", // 1
   "WS", // 2
-  "TRUE", // 57
-  "FALSE", // 79
-  "NULL", // 58
+  "TRUE", // 3
+  "FALSE", // 4
+  "NULL", // 5
   "CURLY_OPEN", // 6
   "CURLY_CLOSE", // 7
   "COMMA", // 8
   "COLON", // 9
-  "STRING", // 26
-  "BRACKET_OPEN", // 20
-  "BRACKET_CLOSE", // 21
-  "NUMBER", // 10
-  "S", // -1
-  "Json", // -1
-  "Element", // -1
-  "Value", // -1
-  "Object", // -1
-  "Members", // -1
-  "Member", // -1
-  "Array", // -1
-  "Elements", // -1
-];
-const grammarRuleNames = [
-  "Json",
-  "Element",
-  "Element",
-  "Element",
-  "Element",
-  "Value",
-  "Value",
-  "Value",
-  "Value",
-  "Value",
-  "Value",
-  "Value",
-  "Object",
-  "Object",
-  "Object",
-  "Members",
-  "Members",
-  "Member",
-  "Member",
-  "Member",
-  "Member",
-  "Array",
-  "Array",
-  "Array",
-  "Elements",
-  "Elements",
+  "STRING", // 10
+  "BRACKET_OPEN", // 11
+  "BRACKET_CLOSE", // 12
+  "NUMBER", // 13
+  "S", // 14
+  "Json", // 15
+  "Element", // 16
+  "Value", // 17
+  "Object", // 18
+  "Members", // 19
+  "Member", // 20
+  "Array", // 21
+  "Elements", // 22
 ];
 
 const actions = [
@@ -6551,7 +2632,7 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 0, // Json
+    symbol: 15, // Json
   },
   // 'action 15'
   {
@@ -6563,25 +2644,25 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 17'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 18'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 19'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 20'
   {
@@ -6647,211 +2728,211 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 31'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 32'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 33'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 34'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 35'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 36'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 37'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 38'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 39'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 40'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 41'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 42'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 43'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 44'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 45'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 46'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 47'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 48'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 49'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 50'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 51'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 52'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 53'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 54'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 55'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 56'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 57'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 58'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 59'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 60'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 61'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 62'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 63'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 64'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 65'
   {
@@ -6971,25 +3052,25 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 85'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 86'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 87'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 88'
   {
@@ -7001,235 +3082,235 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 90'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 91'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 92'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 93'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 94'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 95'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 96'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 97'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 98'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 99'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 100'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 101'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 102'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 103'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 104'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 105'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 106'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 107'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 108'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 109'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 110'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 111'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 112'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 113'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 114'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 115'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 116'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 117'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 118'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 119'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 120'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 121'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 122'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 123'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 124'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 125'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 126'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 127'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 5, // Value
+    symbol: 17, // Value
   },
   // 'action 128'
   {
@@ -7349,31 +3430,31 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 148'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 149'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 150'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 151'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 152'
   {
@@ -7403,13 +3484,13 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 157'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 158'
   {
@@ -7535,67 +3616,67 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 179'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 180'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 181'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 182'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 183'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 1, // Element
+    symbol: 16, // Element
   },
   // 'action 184'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 185'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 186'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 187'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 188'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 189'
   {
@@ -7625,13 +3706,13 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 194'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 195'
   {
@@ -7757,43 +3838,43 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 216'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 217'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 218'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 219'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 220'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 221'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 222'
   {
@@ -7811,31 +3892,31 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 225'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 226'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 227'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 228'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 229'
   {
@@ -8069,31 +4150,31 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 268'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 269'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 270'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 271'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 272'
   {
@@ -8111,31 +4192,31 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 275'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 276'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 277'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 278'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 12, // Object
+    symbol: 18, // Object
   },
   // 'action 279'
   {
@@ -8447,13 +4528,13 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 331'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 332'
   {
@@ -8465,13 +4546,13 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 334'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 335'
   {
@@ -8549,13 +4630,13 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 348'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 349'
   {
@@ -8639,13 +4720,13 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 363'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 15, // Members
+    symbol: 19, // Members
   },
   // 'action 364'
   {
@@ -8657,13 +4738,13 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 366'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 367'
   {
@@ -8741,25 +4822,25 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 380'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 24, // Elements
+    symbol: 22, // Elements
   },
   // 'action 381'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 382'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 383'
   {
@@ -8837,25 +4918,25 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 396'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 397'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 398'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 399'
   {
@@ -8933,37 +5014,37 @@ const actions = [
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 412'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 413'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 414'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 415'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
   // 'action 416'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 17, // Member
+    symbol: 20, // Member
   },
 ];
 const actionsTable = new Uint16Array(1932).fill(0xffff);
@@ -9385,77 +5466,77 @@ actionsTable[1894] = 414; // 'state 82' -> COMMA -> reduce -> 'action 414'
 actionsTable[1916] = 415; // 'state 83' -> CURLY_CLOSE -> reduce -> 'action 415'
 actionsTable[1917] = 416; // 'state 83' -> COMMA -> reduce -> 'action 416'
 
-const gotoTable = new Uint16Array(2184).fill(0xffff);
-gotoTable[0] = 9; // 'state 9'
-gotoTable[1] = 10; // 'state 10'
-gotoTable[5] = 11; // 'state 11'
-gotoTable[12] = 12; // 'state 12'
+const gotoTable = new Uint16Array(1932).fill(0xffff);
+gotoTable[15] = 9; // 'state 9'
+gotoTable[16] = 10; // 'state 10'
+gotoTable[17] = 11; // 'state 11'
+gotoTable[18] = 12; // 'state 12'
 gotoTable[21] = 13; // 'state 13'
-gotoTable[31] = 22; // 'state 22'
-gotoTable[38] = 23; // 'state 23'
-gotoTable[47] = 24; // 'state 24'
-gotoTable[145] = 28; // 'state 28'
-gotoTable[147] = 29; // 'state 29'
-gotoTable[206] = 33; // 'state 33'
-gotoTable[183] = 32; // 'state 32'
-gotoTable[187] = 11; // 'state 11'
-gotoTable[194] = 12; // 'state 12'
-gotoTable[203] = 13; // 'state 13'
-gotoTable[483] = 38; // 'state 38'
-gotoTable[485] = 39; // 'state 39'
-gotoTable[544] = 43; // 'state 43'
-gotoTable[521] = 42; // 'state 42'
-gotoTable[525] = 11; // 'state 11'
-gotoTable[532] = 12; // 'state 12'
-gotoTable[541] = 13; // 'state 13'
-gotoTable[785] = 22; // 'state 22'
-gotoTable[792] = 12; // 'state 12'
-gotoTable[801] = 13; // 'state 13'
-gotoTable[1045] = 22; // 'state 22'
-gotoTable[1052] = 12; // 'state 12'
-gotoTable[1061] = 13; // 'state 13'
-gotoTable[1239] = 65; // 'state 65'
-gotoTable[1275] = 66; // 'state 66'
-gotoTable[1279] = 11; // 'state 11'
-gotoTable[1286] = 12; // 'state 12'
-gotoTable[1295] = 13; // 'state 13'
-gotoTable[1327] = 68; // 'state 68'
-gotoTable[1331] = 11; // 'state 11'
-gotoTable[1338] = 12; // 'state 12'
-gotoTable[1347] = 13; // 'state 13'
-gotoTable[1473] = 72; // 'state 72'
-gotoTable[1509] = 73; // 'state 73'
-gotoTable[1513] = 11; // 'state 11'
-gotoTable[1520] = 12; // 'state 12'
-gotoTable[1529] = 13; // 'state 13'
-gotoTable[1561] = 75; // 'state 75'
-gotoTable[1565] = 11; // 'state 11'
-gotoTable[1572] = 12; // 'state 12'
-gotoTable[1581] = 13; // 'state 13'
-gotoTable[1639] = 76; // 'state 76'
-gotoTable[1643] = 11; // 'state 11'
-gotoTable[1650] = 12; // 'state 12'
-gotoTable[1659] = 13; // 'state 13'
-gotoTable[1743] = 78; // 'state 78'
-gotoTable[1747] = 11; // 'state 11'
-gotoTable[1754] = 12; // 'state 12'
-gotoTable[1763] = 13; // 'state 13'
-gotoTable[1821] = 79; // 'state 79'
-gotoTable[1825] = 11; // 'state 11'
-gotoTable[1832] = 12; // 'state 12'
-gotoTable[1841] = 13; // 'state 13'
-gotoTable[1925] = 81; // 'state 81'
-gotoTable[1929] = 11; // 'state 11'
-gotoTable[1936] = 12; // 'state 12'
-gotoTable[1945] = 13; // 'state 13'
-gotoTable[2003] = 82; // 'state 82'
-gotoTable[2007] = 11; // 'state 11'
-gotoTable[2014] = 12; // 'state 12'
-gotoTable[2023] = 13; // 'state 13'
-gotoTable[2081] = 83; // 'state 83'
-gotoTable[2085] = 11; // 'state 11'
-gotoTable[2092] = 12; // 'state 12'
-gotoTable[2101] = 13; // 'state 13'
+gotoTable[40] = 22; // 'state 22'
+gotoTable[41] = 23; // 'state 23'
+gotoTable[44] = 24; // 'state 24'
+gotoTable[134] = 28; // 'state 28'
+gotoTable[135] = 29; // 'state 29'
+gotoTable[183] = 33; // 'state 33'
+gotoTable[177] = 32; // 'state 32'
+gotoTable[178] = 11; // 'state 11'
+gotoTable[179] = 12; // 'state 12'
+gotoTable[182] = 13; // 'state 13'
+gotoTable[433] = 38; // 'state 38'
+gotoTable[434] = 39; // 'state 39'
+gotoTable[482] = 43; // 'state 43'
+gotoTable[476] = 42; // 'state 42'
+gotoTable[477] = 11; // 'state 11'
+gotoTable[478] = 12; // 'state 12'
+gotoTable[481] = 13; // 'state 13'
+gotoTable[707] = 22; // 'state 22'
+gotoTable[708] = 12; // 'state 12'
+gotoTable[711] = 13; // 'state 13'
+gotoTable[937] = 22; // 'state 22'
+gotoTable[938] = 12; // 'state 12'
+gotoTable[941] = 13; // 'state 13'
+gotoTable[1101] = 65; // 'state 65'
+gotoTable[1143] = 66; // 'state 66'
+gotoTable[1144] = 11; // 'state 11'
+gotoTable[1145] = 12; // 'state 12'
+gotoTable[1148] = 13; // 'state 13'
+gotoTable[1189] = 68; // 'state 68'
+gotoTable[1190] = 11; // 'state 11'
+gotoTable[1191] = 12; // 'state 12'
+gotoTable[1194] = 13; // 'state 13'
+gotoTable[1308] = 72; // 'state 72'
+gotoTable[1350] = 73; // 'state 73'
+gotoTable[1351] = 11; // 'state 11'
+gotoTable[1352] = 12; // 'state 12'
+gotoTable[1355] = 13; // 'state 13'
+gotoTable[1396] = 75; // 'state 75'
+gotoTable[1397] = 11; // 'state 11'
+gotoTable[1398] = 12; // 'state 12'
+gotoTable[1401] = 13; // 'state 13'
+gotoTable[1465] = 76; // 'state 76'
+gotoTable[1466] = 11; // 'state 11'
+gotoTable[1467] = 12; // 'state 12'
+gotoTable[1470] = 13; // 'state 13'
+gotoTable[1557] = 78; // 'state 78'
+gotoTable[1558] = 11; // 'state 11'
+gotoTable[1559] = 12; // 'state 12'
+gotoTable[1562] = 13; // 'state 13'
+gotoTable[1626] = 79; // 'state 79'
+gotoTable[1627] = 11; // 'state 11'
+gotoTable[1628] = 12; // 'state 12'
+gotoTable[1631] = 13; // 'state 13'
+gotoTable[1718] = 81; // 'state 81'
+gotoTable[1719] = 11; // 'state 11'
+gotoTable[1720] = 12; // 'state 12'
+gotoTable[1723] = 13; // 'state 13'
+gotoTable[1787] = 82; // 'state 82'
+gotoTable[1788] = 11; // 'state 11'
+gotoTable[1789] = 12; // 'state 12'
+gotoTable[1792] = 13; // 'state 13'
+gotoTable[1856] = 83; // 'state 83'
+gotoTable[1857] = 11; // 'state 11'
+gotoTable[1858] = 12; // 'state 12'
+gotoTable[1861] = 13; // 'state 13'
 
 const nextTokens = {
   initial: nextTokenInitial,
@@ -9528,10 +5609,10 @@ function parse(input) {
         }
         sp -= stackItemsToReduce;
 
-        const nextState = gotoTable[stack[sp] * 26 + action.symbol];
+        const nextState = gotoTable[stack[sp] * 23 + action.symbol];
         stack[++sp] = nextState;
         treeStack[sp] = {
-          name: grammarRuleNames[action.symbol],
+          name: parserSymbols[action.symbol],
           start: -1,
           end: -1,
           items,
