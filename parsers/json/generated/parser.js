@@ -6437,9 +6437,6 @@ function parse(input) {
 
   let result = nextToken(stream, 0);
   let lookahead = result.state;
-  let start = result.start;
-  let end = result.end;
-  let offset = end;
 
   const treeStack = new Array(512);
   stack[0] = 0;
@@ -6462,15 +6459,13 @@ function parse(input) {
         stack[++sp] = action.state;
         treeStack[sp] = {
           name: parserSymbols[lookahead],
-          start,
-          end,
+          start: result.start,
+          end: result.end,
           items: undefined,
         };
 
-        result = nextToken(stream, offset);
+        result = nextToken(stream, result.end);
         lookahead = result.state;
-        start = result.start;
-        offset = end = result.end;
 
         break;
       case 1: // reduce
