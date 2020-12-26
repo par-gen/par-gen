@@ -235,7 +235,9 @@ export class JavaScriptBaseCodegen {
     const debug = this._debug.bind(this);
 
     const actionOps = ["shift", "reduce", "done"];
-    let requiresSemanticActions = false;
+    const requiresSemanticActions = states.some((state) =>
+      Array.from(state.values()).some((item) => item.semanticAction)
+    );
 
     const code = `
       ${this._parserImports(lexerData)}
@@ -246,33 +248,110 @@ export class JavaScriptBaseCodegen {
         .join("\n")}
       */
 
-      const states = [
+      // currentState -> nameIndex -> lookaheadIndex -> length of items to reduce
+      const reducerStates = [
         ${states
-          .map(
-            (state, i) =>
-              `
-              // 'state ${i}'
-              new Set([${Array.from(state.values())
-                .map(
-                  (item) => `{
-                  name: ${grammarRuleNames.indexOf(item.name)}, // ${item.name}
-                  tokens: ${JSON.stringify(item.tokens)},
-                  marker: ${item.marker},
-                  lookahead: ${parserSymbols.indexOf(item.lookahead)}, // ${
-                    item.lookahead
-                  }
-                  semanticAction: ${
-                    item.semanticAction
-                      ? ((requiresSemanticActions = true),
-                        `(stack, sp) => { ${item.semanticAction}; }`)
-                      : "undefined"
-                  }
-                }`
-                )
-                .join(",\n")}])`
-          )
-          .join(",\n")}
+          .map((state, i) => {
+            const nameTable = grammarRuleNames.map((_, j) => {
+              const items = Array.from(state.values()).filter(
+                (item) =>
+                  item.name === grammarRuleNames[j] &&
+                  item.marker === item.tokens.length
+              );
+
+              const lengthTable = parserSymbols.map((_, k) => {
+                const matches = items.filter(
+                  (item) => item.lookahead === parserSymbols[k]
+                );
+                if (matches.length === 0) {
+                  return `-1,`;
+                }
+                if (matches.length > 1) {
+                  throw new Error(
+                    `Multiple items with name '${grammarRuleNames[j]}' and lookahead '${parserSymbols[k]}' found`
+                  );
+                }
+                return `${matches[0].tokens.length}, // 'state ${i}' -> ${grammarRuleNames[j]} -> ${parserSymbols[k]}`;
+              });
+
+              if (lengthTable.every((entry) => entry === "-1,")) {
+                return `undefined,`;
+              }
+
+              return `// ${grammarRuleNames[j]}
+                [
+                ${lengthTable.join("\n")}
+              ],`;
+            });
+
+            if (nameTable.every((entry) => entry === "undefined,")) {
+              return "undefined, ";
+            }
+
+            return `// 'state ${i}'
+              [
+              ${nameTable.join("\n")}
+            ],`;
+          })
+          .join("\n")}
       ];
+
+      ${
+        requiresSemanticActions
+          ? `const semanticReducerActions = [
+          ${states
+            .map((state) => {
+              const items = Array.from(state.values());
+              const hasSemanticActions = items.some((item) =>
+                Boolean(
+                  item.semanticAction && item.marker === item.tokens.length
+                )
+              );
+              if (hasSemanticActions) {
+                throw new Error("Semantic reducer actions are not implemented");
+              }
+              return `undefined,`;
+            })
+            .join("\n")}
+          ];
+          `
+          : ""
+      }
+
+      ${
+        requiresSemanticActions
+          ? `
+          const states = [
+            ${states
+              .map(
+                (state, i) =>
+                  `
+                  // 'state ${i}'
+                  new Set([${Array.from(state.values())
+                    .map(
+                      (item) => `{
+                      name: ${grammarRuleNames.indexOf(item.name)}, // ${
+                        item.name
+                      }
+                      tokens: ${JSON.stringify(item.tokens)},
+                      marker: ${item.marker},
+                      lookahead: ${parserSymbols.indexOf(item.lookahead)}, // ${
+                        item.lookahead
+                      }
+                      semanticAction: ${
+                        item.semanticAction
+                          ? `(stack, sp) => { ${item.semanticAction}; }`
+                          : "undefined"
+                      }
+                    }`
+                    )
+                    .join(",\n")}])`
+              )
+              .join(",\n")}
+          ];
+          `
+          : ""
+      }
 
       const parserSymbols = [
         ${parserSymbols
@@ -404,7 +483,8 @@ export class JavaScriptBaseCodegen {
             parserSymbolIds.length
           } + lookahead];
           if (actionLookup === 0xffff) {
-            throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]}\`);
+            const context = input.toString().substr(result.start, 10);
+            throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
           }
           const action = actions[actionLookup];
 
@@ -468,29 +548,18 @@ export class JavaScriptBaseCodegen {
                 }
                 `
               )}
-              let item;
-              for (const value of states[currentState].values()) {
-                if (value.name === action.symbol && value.lookahead === lookahead) {
-                  item = value;
-                  break;
-                }
-              }
-              if (!item) {
-                throw new Error(
-                  \`No valid state \${grammarRuleNames[action.symbol]}(\${lookahead}) found\`
-                );
-              }
+              let stackItemsToReduce = reducerStates[currentState][action.symbol][lookahead];
               ${
                 requiresSemanticActions
-                  ? "item.semanticAction?.(stack, sp);"
+                  ? "semanticReducerActions[currentState]?.[action.symbol][lookahead](stack, sp);"
                   : ""
               }
 
-              const items = new Array(item.tokens.length);
-              for (let i = 0; i < item.tokens.length; i++) {
-                items[i] = treeStack[i + sp + 1 - item.tokens.length];
+              const items = new Array(stackItemsToReduce);
+              for (let i = 0; i < stackItemsToReduce; i++) {
+                items[i] = treeStack[i + sp + 1 - stackItemsToReduce];
               }
-              sp -= item.tokens.length;
+              sp -= stackItemsToReduce;
 
               const nextState = gotoTable[stack[sp] * ${
                 grammarRuleNames.length
