@@ -29,12116 +29,6383 @@ Elements := Element;
 Elements := Elements COMMA Element;
       */
 
-const states = [
-  // 'state 0'
-  new Set([
-    {
-      name: -1, // S
-      tokens: ["Json"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 0, // Json
-      tokens: ["Element"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 1'
-  new Set([
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-  ]),
-
+// currentState -> nameIndex -> lookaheadIndex -> length of items to reduce
+const reducerStates = [
+  undefined,
+  undefined,
   // 'state 2'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 2' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 2' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> CURLY_CLOSE
+      1, // 'state 2' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 2' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 2' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> CURLY_CLOSE
+      1, // 'state 2' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 2' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 2' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> CURLY_CLOSE
+      1, // 'state 2' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 2' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 2' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> CURLY_CLOSE
+      1, // 'state 2' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 2' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 2' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> CURLY_CLOSE
+      1, // 'state 2' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 2' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 2' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> CURLY_CLOSE
+      1, // 'state 2' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 2' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 2' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> CURLY_CLOSE
+      1, // 'state 2' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 2' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 3'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 3' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 3' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> CURLY_CLOSE
+      1, // 'state 3' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 3' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 3' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> CURLY_CLOSE
+      1, // 'state 3' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 3' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 3' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> CURLY_CLOSE
+      1, // 'state 3' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 3' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 3' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> CURLY_CLOSE
+      1, // 'state 3' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 3' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 3' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> CURLY_CLOSE
+      1, // 'state 3' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 3' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 3' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> CURLY_CLOSE
+      1, // 'state 3' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 3' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 3' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> CURLY_CLOSE
+      1, // 'state 3' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 3' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 4'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 5'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 4' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 4' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> CURLY_CLOSE
+      1, // 'state 4' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 4' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 4' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> CURLY_CLOSE
+      1, // 'state 4' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 4' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 4' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> CURLY_CLOSE
+      1, // 'state 4' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 4' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 4' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> CURLY_CLOSE
+      1, // 'state 4' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 4' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 4' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> CURLY_CLOSE
+      1, // 'state 4' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 4' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 4' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> CURLY_CLOSE
+      1, // 'state 4' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 4' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 4' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> CURLY_CLOSE
+      1, // 'state 4' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 4' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 6'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 7'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 6' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 6' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> CURLY_CLOSE
+      1, // 'state 6' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 6' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 6' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> CURLY_CLOSE
+      1, // 'state 6' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 6' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 6' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> CURLY_CLOSE
+      1, // 'state 6' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 6' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 6' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> CURLY_CLOSE
+      1, // 'state 6' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 6' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 6' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> CURLY_CLOSE
+      1, // 'state 6' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 6' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 6' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> CURLY_CLOSE
+      1, // 'state 6' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 6' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 6' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> CURLY_CLOSE
+      1, // 'state 6' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 6' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 8'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 9'
-  new Set([
-    {
-      name: -1, // S
-      tokens: ["Json"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 8' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 8' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> CURLY_CLOSE
+      1, // 'state 8' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 8' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 8' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> CURLY_CLOSE
+      1, // 'state 8' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 8' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 8' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> CURLY_CLOSE
+      1, // 'state 8' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 8' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 8' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> CURLY_CLOSE
+      1, // 'state 8' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 8' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 8' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> CURLY_CLOSE
+      1, // 'state 8' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 8' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 8' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> CURLY_CLOSE
+      1, // 'state 8' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 8' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 8' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> CURLY_CLOSE
+      1, // 'state 8' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 8' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 10'
-  new Set([
-    {
-      name: 0, // Json
-      tokens: ["Element"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    // Json
+    [
+      1, // 'state 10' -> Json -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 11'
-  new Set([
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    // Element
+    [
+      1, // 'state 11' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> CURLY_CLOSE
+      1, // 'state 11' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      1, // 'state 11' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> CURLY_CLOSE
+      1, // 'state 11' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      1, // 'state 11' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> CURLY_CLOSE
+      1, // 'state 11' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      1, // 'state 11' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> CURLY_CLOSE
+      1, // 'state 11' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 11' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 12'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 12' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 12' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> CURLY_CLOSE
+      1, // 'state 12' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 12' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 12' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> CURLY_CLOSE
+      1, // 'state 12' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 12' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 12' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> CURLY_CLOSE
+      1, // 'state 12' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 12' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 12' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> CURLY_CLOSE
+      1, // 'state 12' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 12' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 12' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> CURLY_CLOSE
+      1, // 'state 12' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 12' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 12' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> CURLY_CLOSE
+      1, // 'state 12' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 12' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 12' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> CURLY_CLOSE
+      1, // 'state 12' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 12' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 13'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 13' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 13' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> CURLY_CLOSE
+      1, // 'state 13' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 13' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 13' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> CURLY_CLOSE
+      1, // 'state 13' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 13' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 13' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> CURLY_CLOSE
+      1, // 'state 13' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 13' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 13' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> CURLY_CLOSE
+      1, // 'state 13' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 13' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 13' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> CURLY_CLOSE
+      1, // 'state 13' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 13' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 13' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> CURLY_CLOSE
+      1, // 'state 13' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 13' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 13' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> CURLY_CLOSE
+      1, // 'state 13' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 13' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 14'
-  new Set([
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    // Element
+    [
+      2, // 'state 14' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> CURLY_CLOSE
+      2, // 'state 14' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      2, // 'state 14' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> CURLY_CLOSE
+      2, // 'state 14' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      2, // 'state 14' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> CURLY_CLOSE
+      2, // 'state 14' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      2, // 'state 14' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> CURLY_CLOSE
+      2, // 'state 14' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 14' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 15'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 15' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 15' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> CURLY_CLOSE
+      1, // 'state 15' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 15' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 15' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> CURLY_CLOSE
+      1, // 'state 15' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 15' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 15' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> CURLY_CLOSE
+      1, // 'state 15' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 15' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 15' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> CURLY_CLOSE
+      1, // 'state 15' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 15' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 15' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> CURLY_CLOSE
+      1, // 'state 15' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 15' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 15' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> CURLY_CLOSE
+      1, // 'state 15' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 15' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 15' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> CURLY_CLOSE
+      1, // 'state 15' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 15' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 16'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 16' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 16' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> CURLY_CLOSE
+      1, // 'state 16' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 16' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 16' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> CURLY_CLOSE
+      1, // 'state 16' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 16' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 16' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> CURLY_CLOSE
+      1, // 'state 16' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 16' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 16' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> CURLY_CLOSE
+      1, // 'state 16' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 16' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 16' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> CURLY_CLOSE
+      1, // 'state 16' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 16' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 16' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> CURLY_CLOSE
+      1, // 'state 16' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 16' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 16' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> CURLY_CLOSE
+      1, // 'state 16' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 16' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 17'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 18'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 17' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 17' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> CURLY_CLOSE
+      1, // 'state 17' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 17' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 17' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> CURLY_CLOSE
+      1, // 'state 17' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 17' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 17' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> CURLY_CLOSE
+      1, // 'state 17' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 17' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 17' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> CURLY_CLOSE
+      1, // 'state 17' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 17' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 17' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> CURLY_CLOSE
+      1, // 'state 17' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 17' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 17' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> CURLY_CLOSE
+      1, // 'state 17' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 17' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 17' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> CURLY_CLOSE
+      1, // 'state 17' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 17' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 19'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 20'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 19' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 19' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> CURLY_CLOSE
+      1, // 'state 19' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 19' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 19' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> CURLY_CLOSE
+      1, // 'state 19' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 19' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 19' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> CURLY_CLOSE
+      1, // 'state 19' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 19' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 19' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> CURLY_CLOSE
+      1, // 'state 19' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 19' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 19' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> CURLY_CLOSE
+      1, // 'state 19' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 19' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 19' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> CURLY_CLOSE
+      1, // 'state 19' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 19' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 19' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> CURLY_CLOSE
+      1, // 'state 19' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 19' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 21'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 21' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 21' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> CURLY_CLOSE
+      1, // 'state 21' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 21' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 21' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> CURLY_CLOSE
+      1, // 'state 21' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 21' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 21' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> CURLY_CLOSE
+      1, // 'state 21' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 21' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 21' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> CURLY_CLOSE
+      1, // 'state 21' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 21' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 21' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> CURLY_CLOSE
+      1, // 'state 21' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 21' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 21' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> CURLY_CLOSE
+      1, // 'state 21' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 21' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 21' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> CURLY_CLOSE
+      1, // 'state 21' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 21' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 22'
-  new Set([
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    // Element
+    [
+      2, // 'state 22' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> CURLY_CLOSE
+      2, // 'state 22' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      2, // 'state 22' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> CURLY_CLOSE
+      2, // 'state 22' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      2, // 'state 22' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> CURLY_CLOSE
+      2, // 'state 22' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      2, // 'state 22' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> CURLY_CLOSE
+      2, // 'state 22' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 22' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 23'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 23' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 23' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> CURLY_CLOSE
+      1, // 'state 23' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 23' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 23' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> CURLY_CLOSE
+      1, // 'state 23' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 23' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 23' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> CURLY_CLOSE
+      1, // 'state 23' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 23' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 23' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> CURLY_CLOSE
+      1, // 'state 23' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 23' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 23' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> CURLY_CLOSE
+      1, // 'state 23' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 23' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 23' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> CURLY_CLOSE
+      1, // 'state 23' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 23' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 23' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> CURLY_CLOSE
+      1, // 'state 23' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 23' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 24'
-  new Set([
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 1,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 25'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Value
+    [
+      1, // 'state 24' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 24' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> CURLY_CLOSE
+      1, // 'state 24' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 24' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 24' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> CURLY_CLOSE
+      1, // 'state 24' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 24' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 24' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> CURLY_CLOSE
+      1, // 'state 24' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 24' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 24' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> CURLY_CLOSE
+      1, // 'state 24' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 24' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 24' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> CURLY_CLOSE
+      1, // 'state 24' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 24' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 24' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> CURLY_CLOSE
+      1, // 'state 24' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Value
+    [
+      1, // 'state 24' -> Value -> @expound.EOF
+      -1,
+      1, // 'state 24' -> Value -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> CURLY_CLOSE
+      1, // 'state 24' -> Value -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 24' -> Value -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 26'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 27'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 28'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Object
+    [
+      2, // 'state 26' -> Object -> @expound.EOF
+      -1,
+      2, // 'state 26' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 26' -> Object -> CURLY_CLOSE
+      2, // 'state 26' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 26' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      2, // 'state 26' -> Object -> @expound.EOF
+      -1,
+      2, // 'state 26' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 26' -> Object -> CURLY_CLOSE
+      2, // 'state 26' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 26' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      2, // 'state 26' -> Object -> @expound.EOF
+      -1,
+      2, // 'state 26' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 26' -> Object -> CURLY_CLOSE
+      2, // 'state 26' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 26' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
+  undefined,
   // 'state 29'
-  new Set([
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 30'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 29' -> Members -> CURLY_CLOSE
+      1, // 'state 29' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 29' -> Members -> CURLY_CLOSE
+      1, // 'state 29' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 31'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Array
+    [
+      2, // 'state 31' -> Array -> @expound.EOF
+      -1,
+      2, // 'state 31' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 31' -> Array -> CURLY_CLOSE
+      2, // 'state 31' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 31' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      2, // 'state 31' -> Array -> @expound.EOF
+      -1,
+      2, // 'state 31' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 31' -> Array -> CURLY_CLOSE
+      2, // 'state 31' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 31' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      2, // 'state 31' -> Array -> @expound.EOF
+      -1,
+      2, // 'state 31' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 31' -> Array -> CURLY_CLOSE
+      2, // 'state 31' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 31' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+  ],
   // 'state 32'
-  new Set([
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 33'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 32' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 32' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 32' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 32' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+  ],
+  undefined,
   // 'state 34'
-  new Set([
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 35'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    // Element
+    [
+      3, // 'state 34' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> CURLY_CLOSE
+      3, // 'state 34' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      3, // 'state 34' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> CURLY_CLOSE
+      3, // 'state 34' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      3, // 'state 34' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> CURLY_CLOSE
+      3, // 'state 34' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Element
+    [
+      3, // 'state 34' -> Element -> @expound.EOF
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> CURLY_CLOSE
+      3, // 'state 34' -> Element -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 34' -> Element -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 36'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 37'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 38'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Object
+    [
+      2, // 'state 36' -> Object -> @expound.EOF
+      -1,
+      2, // 'state 36' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 36' -> Object -> CURLY_CLOSE
+      2, // 'state 36' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 36' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      2, // 'state 36' -> Object -> @expound.EOF
+      -1,
+      2, // 'state 36' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 36' -> Object -> CURLY_CLOSE
+      2, // 'state 36' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 36' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      2, // 'state 36' -> Object -> @expound.EOF
+      -1,
+      2, // 'state 36' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 36' -> Object -> CURLY_CLOSE
+      2, // 'state 36' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 36' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
+  undefined,
   // 'state 39'
-  new Set([
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Member"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 40'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 39' -> Members -> CURLY_CLOSE
+      1, // 'state 39' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 39' -> Members -> CURLY_CLOSE
+      1, // 'state 39' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 41'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Array
+    [
+      2, // 'state 41' -> Array -> @expound.EOF
+      -1,
+      2, // 'state 41' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 41' -> Array -> CURLY_CLOSE
+      2, // 'state 41' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 41' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      2, // 'state 41' -> Array -> @expound.EOF
+      -1,
+      2, // 'state 41' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 41' -> Array -> CURLY_CLOSE
+      2, // 'state 41' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 41' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      2, // 'state 41' -> Array -> @expound.EOF
+      -1,
+      2, // 'state 41' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      2, // 'state 41' -> Array -> CURLY_CLOSE
+      2, // 'state 41' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      2, // 'state 41' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+  ],
   // 'state 42'
-  new Set([
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 43'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 2,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 1,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 42' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 42' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1, // 'state 42' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      1, // 'state 42' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+  ],
+  undefined,
   // 'state 44'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 45'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Object
+    [
+      3, // 'state 44' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 44' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 44' -> Object -> CURLY_CLOSE
+      3, // 'state 44' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 44' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 44' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 44' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 44' -> Object -> CURLY_CLOSE
+      3, // 'state 44' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 44' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 44' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 44' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 44' -> Object -> CURLY_CLOSE
+      3, // 'state 44' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 44' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 46'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 47'
-  new Set([
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 48'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 49'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Object
+    [
+      3, // 'state 46' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 46' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 46' -> Object -> CURLY_CLOSE
+      3, // 'state 46' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 46' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 46' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 46' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 46' -> Object -> CURLY_CLOSE
+      3, // 'state 46' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 46' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 46' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 46' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 46' -> Object -> CURLY_CLOSE
+      3, // 'state 46' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 46' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
+  undefined,
+  undefined,
   // 'state 50'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 51'
-  new Set([
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Array
+    [
+      3, // 'state 50' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 50' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 50' -> Array -> CURLY_CLOSE
+      3, // 'state 50' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 50' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 50' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 50' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 50' -> Array -> CURLY_CLOSE
+      3, // 'state 50' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 50' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 50' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 50' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 50' -> Array -> CURLY_CLOSE
+      3, // 'state 50' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 50' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 52'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Array
+    [
+      3, // 'state 52' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 52' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 52' -> Array -> CURLY_CLOSE
+      3, // 'state 52' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 52' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 52' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 52' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 52' -> Array -> CURLY_CLOSE
+      3, // 'state 52' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 52' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 52' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 52' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 52' -> Array -> CURLY_CLOSE
+      3, // 'state 52' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 52' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+  ],
   // 'state 53'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 54'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Object
+    [
+      3, // 'state 53' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 53' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 53' -> Object -> CURLY_CLOSE
+      3, // 'state 53' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 53' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 53' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 53' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 53' -> Object -> CURLY_CLOSE
+      3, // 'state 53' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 53' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 53' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 53' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 53' -> Object -> CURLY_CLOSE
+      3, // 'state 53' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 53' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 55'
-  new Set([
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 56'
-  new Set([
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 57'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 58'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Object
+    [
+      3, // 'state 55' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 55' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 55' -> Object -> CURLY_CLOSE
+      3, // 'state 55' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 55' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 55' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 55' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 55' -> Object -> CURLY_CLOSE
+      3, // 'state 55' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 55' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Object
+    [
+      3, // 'state 55' -> Object -> @expound.EOF
+      -1,
+      3, // 'state 55' -> Object -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 55' -> Object -> CURLY_CLOSE
+      3, // 'state 55' -> Object -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 55' -> Object -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
+  undefined,
+  undefined,
   // 'state 59'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 60'
-  new Set([
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 2,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 2,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Array
+    [
+      3, // 'state 59' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 59' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 59' -> Array -> CURLY_CLOSE
+      3, // 'state 59' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 59' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 59' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 59' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 59' -> Array -> CURLY_CLOSE
+      3, // 'state 59' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 59' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 59' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 59' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 59' -> Array -> CURLY_CLOSE
+      3, // 'state 59' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 59' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 61'
-  new Set([
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 3,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 62'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 63'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 64'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Array
+    [
+      3, // 'state 61' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 61' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 61' -> Array -> CURLY_CLOSE
+      3, // 'state 61' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 61' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 61' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 61' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 61' -> Array -> CURLY_CLOSE
+      3, // 'state 61' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 61' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Array
+    [
+      3, // 'state 61' -> Array -> @expound.EOF
+      -1,
+      3, // 'state 61' -> Array -> WS
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 61' -> Array -> CURLY_CLOSE
+      3, // 'state 61' -> Array -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 61' -> Array -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+  ],
+  undefined,
+  undefined,
+  undefined,
   // 'state 65'
-  new Set([
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 65' -> Members -> CURLY_CLOSE
+      3, // 'state 65' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 65' -> Members -> CURLY_CLOSE
+      3, // 'state 65' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 66'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 67'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 66' -> Member -> CURLY_CLOSE
+      3, // 'state 66' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 66' -> Member -> CURLY_CLOSE
+      3, // 'state 66' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 66' -> Member -> CURLY_CLOSE
+      3, // 'state 66' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 66' -> Member -> CURLY_CLOSE
+      3, // 'state 66' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 68'
-  new Set([
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 69'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 70'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 71'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 1,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 68' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 68' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 68' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 68' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+  ],
+  undefined,
+  undefined,
+  undefined,
   // 'state 72'
-  new Set([
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 15, // Members
-      tokens: ["Members", "COMMA", "Member"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 72' -> Members -> CURLY_CLOSE
+      3, // 'state 72' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Members
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 72' -> Members -> CURLY_CLOSE
+      3, // 'state 72' -> Members -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 73'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 74'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 73' -> Member -> CURLY_CLOSE
+      3, // 'state 73' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 73' -> Member -> CURLY_CLOSE
+      3, // 'state 73' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 73' -> Member -> CURLY_CLOSE
+      3, // 'state 73' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 73' -> Member -> CURLY_CLOSE
+      3, // 'state 73' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 75'
-  new Set([
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 3,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 24, // Elements
-      tokens: ["Elements", "COMMA", "Element"],
-      marker: 3,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 75' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 75' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Elements
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      3, // 'state 75' -> Elements -> COMMA
+      -1,
+      -1,
+      -1,
+      3, // 'state 75' -> Elements -> BRACKET_CLOSE
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+  ],
   // 'state 76'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 4,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 4,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 77'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 76' -> Member -> CURLY_CLOSE
+      4, // 'state 76' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 76' -> Member -> CURLY_CLOSE
+      4, // 'state 76' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 76' -> Member -> CURLY_CLOSE
+      4, // 'state 76' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 76' -> Member -> CURLY_CLOSE
+      4, // 'state 76' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 78'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 78' -> Member -> CURLY_CLOSE
+      4, // 'state 78' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 78' -> Member -> CURLY_CLOSE
+      4, // 'state 78' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 78' -> Member -> CURLY_CLOSE
+      4, // 'state 78' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 78' -> Member -> CURLY_CLOSE
+      4, // 'state 78' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 79'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 4,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "COLON", "Element"],
-      marker: 4,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
-  // 'state 80'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 1, // Element
-      tokens: ["WS", "Value", "WS"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Object"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["Array"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["STRING"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NUMBER"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["TRUE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["FALSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 5, // Value
-      tokens: ["NULL"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "WS", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 12, // Object
-      tokens: ["CURLY_OPEN", "Members", "CURLY_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "WS", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 0, // @expound.EOF
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 12, // BRACKET_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 21, // Array
-      tokens: ["BRACKET_OPEN", "Elements", "BRACKET_CLOSE"],
-      marker: 0,
-      lookahead: 2, // WS
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 79' -> Member -> CURLY_CLOSE
+      4, // 'state 79' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 79' -> Member -> CURLY_CLOSE
+      4, // 'state 79' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 79' -> Member -> CURLY_CLOSE
+      4, // 'state 79' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 79' -> Member -> CURLY_CLOSE
+      4, // 'state 79' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  undefined,
   // 'state 81'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["STRING", "WS", "COLON", "Element"],
-      marker: 4,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 81' -> Member -> CURLY_CLOSE
+      4, // 'state 81' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 81' -> Member -> CURLY_CLOSE
+      4, // 'state 81' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 81' -> Member -> CURLY_CLOSE
+      4, // 'state 81' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      4, // 'state 81' -> Member -> CURLY_CLOSE
+      4, // 'state 81' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 82'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 5,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 5,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
-
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 82' -> Member -> CURLY_CLOSE
+      5, // 'state 82' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 82' -> Member -> CURLY_CLOSE
+      5, // 'state 82' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 82' -> Member -> CURLY_CLOSE
+      5, // 'state 82' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 82' -> Member -> CURLY_CLOSE
+      5, // 'state 82' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
   // 'state 83'
-  new Set([
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 5,
-      lookahead: 7, // CURLY_CLOSE
-      semanticAction: undefined,
-    },
-    {
-      name: 17, // Member
-      tokens: ["WS", "STRING", "WS", "COLON", "Element"],
-      marker: 5,
-      lookahead: 8, // COMMA
-      semanticAction: undefined,
-    },
-  ]),
+  [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 83' -> Member -> CURLY_CLOSE
+      5, // 'state 83' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 83' -> Member -> CURLY_CLOSE
+      5, // 'state 83' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 83' -> Member -> CURLY_CLOSE
+      5, // 'state 83' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    // Member
+    [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      5, // 'state 83' -> Member -> CURLY_CLOSE
+      5, // 'state 83' -> Member -> COMMA
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
 ];
 
 const parserSymbols = [
@@ -15252,26 +9519,14 @@ function parse(input) {
 
         break;
       case 1: // reduce
-        let item;
-        for (const value of states[currentState].values()) {
-          if (value.name === action.symbol && value.lookahead === lookahead) {
-            item = value;
-            break;
-          }
-        }
-        if (!item) {
-          throw new Error(
-            `No valid state ${
-              grammarRuleNames[action.symbol]
-            }(${lookahead}) found`
-          );
-        }
+        let stackItemsToReduce =
+          reducerStates[currentState][action.symbol][lookahead];
 
-        const items = new Array(item.tokens.length);
-        for (let i = 0; i < item.tokens.length; i++) {
-          items[i] = treeStack[i + sp + 1 - item.tokens.length];
+        const items = new Array(stackItemsToReduce);
+        for (let i = 0; i < stackItemsToReduce; i++) {
+          items[i] = treeStack[i + sp + 1 - stackItemsToReduce];
         }
-        sp -= item.tokens.length;
+        sp -= stackItemsToReduce;
 
         const nextState = gotoTable[stack[sp] * 26 + action.symbol];
         stack[++sp] = nextState;
