@@ -452,9 +452,6 @@ export class JavaScriptBaseCodegen {
 
         let result = nextToken(stream, 0);
         let lookahead = result.state;
-        let start = result.start;
-        let end = result.end;
-        let offset = end;
 
         ${debug(
           () => `
@@ -507,12 +504,10 @@ export class JavaScriptBaseCodegen {
               }
 
               stack[++sp] = action.state;
-              treeStack[sp] = { name: parserSymbols[lookahead], start, end, items: undefined };
+              treeStack[sp] = { name: parserSymbols[lookahead], start: result.start, end: result.end, items: undefined };
 
-              result = nextToken(stream, offset);
+              result = nextToken(stream, result.end);
               lookahead = result.state;
-              start = result.start;
-              offset = end = result.end;
               ${debug(
                 () => `
                 console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + start + ',' + end + ')');
