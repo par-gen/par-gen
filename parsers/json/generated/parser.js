@@ -77,7 +77,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -128,7 +146,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -179,7 +215,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -231,7 +285,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -283,7 +355,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -331,7 +421,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -383,7 +491,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -435,7 +561,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -487,7 +631,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -538,7 +700,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -588,7 +768,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -640,7 +838,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -691,7 +907,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -742,7 +976,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -794,7 +1046,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -846,7 +1116,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -896,7 +1184,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -948,7 +1254,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -999,7 +1323,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1052,7 +1394,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1106,7 +1466,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1160,7 +1538,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
   ],
   // 'state 32'
@@ -1212,7 +1608,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
   ],
   undefined,
   // 'state 34'
@@ -1258,7 +1672,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1312,7 +1744,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1366,7 +1816,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1420,7 +1888,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
   ],
   // 'state 42'
@@ -1472,7 +1958,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
   ],
   undefined,
   // 'state 44'
@@ -1520,7 +2024,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1572,7 +2094,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1629,7 +2169,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
   ],
   undefined,
@@ -1681,7 +2239,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
   ],
   // 'state 53'
@@ -1729,7 +2305,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1781,7 +2375,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1838,7 +2450,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
   ],
   undefined,
@@ -1890,7 +2520,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
   ],
   undefined,
@@ -1942,7 +2590,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -1994,7 +2660,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2048,7 +2732,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
   ],
   undefined,
   undefined,
@@ -2099,7 +2801,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -2151,7 +2871,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2205,7 +2943,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
   ],
   // 'state 76'
   [
@@ -2254,7 +3010,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2306,7 +3080,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2357,7 +3149,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2409,7 +3219,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2460,7 +3288,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2511,7 +3357,25 @@ const reducerStates = [
       -1,
       -1,
       -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
     ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
     undefined,
     undefined,
   ],
@@ -2541,6 +3405,15 @@ const parserSymbols = [
   "Member", // 20
   "Array", // 21
   "Elements", // 22
+  "undefined", // 23
+  "undefined", // 24
+  "undefined", // 25
+  "undefined", // 26
+  "undefined", // 27
+  "undefined", // 28
+  "undefined", // 29
+  "undefined", // 30
+  "undefined", // 31
 ];
 
 const actions = [
@@ -5047,7 +5920,7 @@ const actions = [
     symbol: 20, // Member
   },
 ];
-const actionsTable = new Uint16Array(1932).fill(0xffff);
+const actionsTable = new Uint16Array(2688).fill(0xffff);
 actionsTable[2] = 0; // 'state 0' -> WS -> shift -> 'action 0'
 actionsTable[3] = 1; // 'state 0' -> TRUE -> shift -> 'action 1'
 actionsTable[4] = 2; // 'state 0' -> FALSE -> shift -> 'action 2'
@@ -5061,482 +5934,482 @@ actionsTable[16] = 9; // 'state 0' -> Element -> shift -> 'action 9'
 actionsTable[17] = 10; // 'state 0' -> Value -> shift -> 'action 10'
 actionsTable[18] = 11; // 'state 0' -> Object -> shift -> 'action 11'
 actionsTable[21] = 12; // 'state 0' -> Array -> shift -> 'action 12'
-actionsTable[207] = 13; // 'state 9' -> @expound.EOF -> done -> 'action 13'
-actionsTable[230] = 14; // 'state 10' -> @expound.EOF -> reduce -> 'action 14'
-actionsTable[255] = 15; // 'state 11' -> WS -> shift -> 'action 15'
-actionsTable[253] = 16; // 'state 11' -> @expound.EOF -> reduce -> 'action 16'
-actionsTable[260] = 17; // 'state 11' -> CURLY_CLOSE -> reduce -> 'action 17'
-actionsTable[261] = 18; // 'state 11' -> COMMA -> reduce -> 'action 18'
-actionsTable[265] = 19; // 'state 11' -> BRACKET_CLOSE -> reduce -> 'action 19'
-actionsTable[26] = 20; // 'state 1' -> TRUE -> shift -> 'action 20'
-actionsTable[27] = 21; // 'state 1' -> FALSE -> shift -> 'action 21'
-actionsTable[28] = 22; // 'state 1' -> NULL -> shift -> 'action 22'
-actionsTable[29] = 23; // 'state 1' -> CURLY_OPEN -> shift -> 'action 23'
-actionsTable[33] = 24; // 'state 1' -> STRING -> shift -> 'action 24'
-actionsTable[34] = 25; // 'state 1' -> BRACKET_OPEN -> shift -> 'action 25'
-actionsTable[36] = 26; // 'state 1' -> NUMBER -> shift -> 'action 26'
-actionsTable[40] = 27; // 'state 1' -> Value -> shift -> 'action 27'
-actionsTable[41] = 28; // 'state 1' -> Object -> shift -> 'action 28'
-actionsTable[44] = 29; // 'state 1' -> Array -> shift -> 'action 29'
-actionsTable[276] = 30; // 'state 12' -> @expound.EOF -> reduce -> 'action 30'
-actionsTable[278] = 31; // 'state 12' -> WS -> reduce -> 'action 31'
-actionsTable[283] = 32; // 'state 12' -> CURLY_CLOSE -> reduce -> 'action 32'
-actionsTable[284] = 33; // 'state 12' -> COMMA -> reduce -> 'action 33'
-actionsTable[288] = 34; // 'state 12' -> BRACKET_CLOSE -> reduce -> 'action 34'
-actionsTable[299] = 35; // 'state 13' -> @expound.EOF -> reduce -> 'action 35'
-actionsTable[301] = 36; // 'state 13' -> WS -> reduce -> 'action 36'
-actionsTable[306] = 37; // 'state 13' -> CURLY_CLOSE -> reduce -> 'action 37'
-actionsTable[307] = 38; // 'state 13' -> COMMA -> reduce -> 'action 38'
-actionsTable[311] = 39; // 'state 13' -> BRACKET_CLOSE -> reduce -> 'action 39'
-actionsTable[138] = 40; // 'state 6' -> @expound.EOF -> reduce -> 'action 40'
-actionsTable[140] = 41; // 'state 6' -> WS -> reduce -> 'action 41'
-actionsTable[145] = 42; // 'state 6' -> CURLY_CLOSE -> reduce -> 'action 42'
-actionsTable[146] = 43; // 'state 6' -> COMMA -> reduce -> 'action 43'
-actionsTable[150] = 44; // 'state 6' -> BRACKET_CLOSE -> reduce -> 'action 44'
-actionsTable[184] = 45; // 'state 8' -> @expound.EOF -> reduce -> 'action 45'
-actionsTable[186] = 46; // 'state 8' -> WS -> reduce -> 'action 46'
-actionsTable[191] = 47; // 'state 8' -> CURLY_CLOSE -> reduce -> 'action 47'
-actionsTable[192] = 48; // 'state 8' -> COMMA -> reduce -> 'action 48'
-actionsTable[196] = 49; // 'state 8' -> BRACKET_CLOSE -> reduce -> 'action 49'
-actionsTable[46] = 50; // 'state 2' -> @expound.EOF -> reduce -> 'action 50'
-actionsTable[48] = 51; // 'state 2' -> WS -> reduce -> 'action 51'
-actionsTable[53] = 52; // 'state 2' -> CURLY_CLOSE -> reduce -> 'action 52'
-actionsTable[54] = 53; // 'state 2' -> COMMA -> reduce -> 'action 53'
-actionsTable[58] = 54; // 'state 2' -> BRACKET_CLOSE -> reduce -> 'action 54'
-actionsTable[69] = 55; // 'state 3' -> @expound.EOF -> reduce -> 'action 55'
-actionsTable[71] = 56; // 'state 3' -> WS -> reduce -> 'action 56'
-actionsTable[76] = 57; // 'state 3' -> CURLY_CLOSE -> reduce -> 'action 57'
-actionsTable[77] = 58; // 'state 3' -> COMMA -> reduce -> 'action 58'
-actionsTable[81] = 59; // 'state 3' -> BRACKET_CLOSE -> reduce -> 'action 59'
-actionsTable[92] = 60; // 'state 4' -> @expound.EOF -> reduce -> 'action 60'
-actionsTable[94] = 61; // 'state 4' -> WS -> reduce -> 'action 61'
-actionsTable[99] = 62; // 'state 4' -> CURLY_CLOSE -> reduce -> 'action 62'
-actionsTable[100] = 63; // 'state 4' -> COMMA -> reduce -> 'action 63'
-actionsTable[104] = 64; // 'state 4' -> BRACKET_CLOSE -> reduce -> 'action 64'
-actionsTable[117] = 65; // 'state 5' -> WS -> shift -> 'action 65'
-actionsTable[122] = 66; // 'state 5' -> CURLY_CLOSE -> shift -> 'action 66'
-actionsTable[125] = 67; // 'state 5' -> STRING -> shift -> 'action 67'
-actionsTable[134] = 68; // 'state 5' -> Members -> shift -> 'action 68'
-actionsTable[135] = 69; // 'state 5' -> Member -> shift -> 'action 69'
-actionsTable[163] = 70; // 'state 7' -> WS -> shift -> 'action 70'
-actionsTable[164] = 71; // 'state 7' -> TRUE -> shift -> 'action 71'
-actionsTable[165] = 72; // 'state 7' -> FALSE -> shift -> 'action 72'
-actionsTable[166] = 73; // 'state 7' -> NULL -> shift -> 'action 73'
-actionsTable[167] = 74; // 'state 7' -> CURLY_OPEN -> shift -> 'action 74'
-actionsTable[171] = 75; // 'state 7' -> STRING -> shift -> 'action 75'
-actionsTable[172] = 76; // 'state 7' -> BRACKET_OPEN -> shift -> 'action 76'
-actionsTable[173] = 77; // 'state 7' -> BRACKET_CLOSE -> shift -> 'action 77'
-actionsTable[174] = 78; // 'state 7' -> NUMBER -> shift -> 'action 78'
-actionsTable[177] = 79; // 'state 7' -> Element -> shift -> 'action 79'
-actionsTable[178] = 80; // 'state 7' -> Value -> shift -> 'action 80'
-actionsTable[179] = 81; // 'state 7' -> Object -> shift -> 'action 81'
-actionsTable[182] = 82; // 'state 7' -> Array -> shift -> 'action 82'
-actionsTable[183] = 83; // 'state 7' -> Elements -> shift -> 'action 83'
-actionsTable[322] = 84; // 'state 14' -> @expound.EOF -> reduce -> 'action 84'
-actionsTable[329] = 85; // 'state 14' -> CURLY_CLOSE -> reduce -> 'action 85'
-actionsTable[330] = 86; // 'state 14' -> COMMA -> reduce -> 'action 86'
-actionsTable[334] = 87; // 'state 14' -> BRACKET_CLOSE -> reduce -> 'action 87'
-actionsTable[508] = 88; // 'state 22' -> WS -> shift -> 'action 88'
-actionsTable[506] = 89; // 'state 22' -> @expound.EOF -> reduce -> 'action 89'
-actionsTable[513] = 90; // 'state 22' -> CURLY_CLOSE -> reduce -> 'action 90'
-actionsTable[514] = 91; // 'state 22' -> COMMA -> reduce -> 'action 91'
-actionsTable[518] = 92; // 'state 22' -> BRACKET_CLOSE -> reduce -> 'action 92'
-actionsTable[529] = 93; // 'state 23' -> @expound.EOF -> reduce -> 'action 93'
-actionsTable[531] = 94; // 'state 23' -> WS -> reduce -> 'action 94'
-actionsTable[536] = 95; // 'state 23' -> CURLY_CLOSE -> reduce -> 'action 95'
-actionsTable[537] = 96; // 'state 23' -> COMMA -> reduce -> 'action 96'
-actionsTable[541] = 97; // 'state 23' -> BRACKET_CLOSE -> reduce -> 'action 97'
-actionsTable[552] = 98; // 'state 24' -> @expound.EOF -> reduce -> 'action 98'
-actionsTable[554] = 99; // 'state 24' -> WS -> reduce -> 'action 99'
-actionsTable[559] = 100; // 'state 24' -> CURLY_CLOSE -> reduce -> 'action 100'
-actionsTable[560] = 101; // 'state 24' -> COMMA -> reduce -> 'action 101'
-actionsTable[564] = 102; // 'state 24' -> BRACKET_CLOSE -> reduce -> 'action 102'
-actionsTable[437] = 103; // 'state 19' -> @expound.EOF -> reduce -> 'action 103'
-actionsTable[439] = 104; // 'state 19' -> WS -> reduce -> 'action 104'
-actionsTable[444] = 105; // 'state 19' -> CURLY_CLOSE -> reduce -> 'action 105'
-actionsTable[445] = 106; // 'state 19' -> COMMA -> reduce -> 'action 106'
-actionsTable[449] = 107; // 'state 19' -> BRACKET_CLOSE -> reduce -> 'action 107'
-actionsTable[483] = 108; // 'state 21' -> @expound.EOF -> reduce -> 'action 108'
-actionsTable[485] = 109; // 'state 21' -> WS -> reduce -> 'action 109'
-actionsTable[490] = 110; // 'state 21' -> CURLY_CLOSE -> reduce -> 'action 110'
-actionsTable[491] = 111; // 'state 21' -> COMMA -> reduce -> 'action 111'
-actionsTable[495] = 112; // 'state 21' -> BRACKET_CLOSE -> reduce -> 'action 112'
-actionsTable[345] = 113; // 'state 15' -> @expound.EOF -> reduce -> 'action 113'
-actionsTable[347] = 114; // 'state 15' -> WS -> reduce -> 'action 114'
-actionsTable[352] = 115; // 'state 15' -> CURLY_CLOSE -> reduce -> 'action 115'
-actionsTable[353] = 116; // 'state 15' -> COMMA -> reduce -> 'action 116'
-actionsTable[357] = 117; // 'state 15' -> BRACKET_CLOSE -> reduce -> 'action 117'
-actionsTable[368] = 118; // 'state 16' -> @expound.EOF -> reduce -> 'action 118'
-actionsTable[370] = 119; // 'state 16' -> WS -> reduce -> 'action 119'
-actionsTable[375] = 120; // 'state 16' -> CURLY_CLOSE -> reduce -> 'action 120'
-actionsTable[376] = 121; // 'state 16' -> COMMA -> reduce -> 'action 121'
-actionsTable[380] = 122; // 'state 16' -> BRACKET_CLOSE -> reduce -> 'action 122'
-actionsTable[391] = 123; // 'state 17' -> @expound.EOF -> reduce -> 'action 123'
-actionsTable[393] = 124; // 'state 17' -> WS -> reduce -> 'action 124'
-actionsTable[398] = 125; // 'state 17' -> CURLY_CLOSE -> reduce -> 'action 125'
-actionsTable[399] = 126; // 'state 17' -> COMMA -> reduce -> 'action 126'
-actionsTable[403] = 127; // 'state 17' -> BRACKET_CLOSE -> reduce -> 'action 127'
-actionsTable[416] = 128; // 'state 18' -> WS -> shift -> 'action 128'
-actionsTable[421] = 129; // 'state 18' -> CURLY_CLOSE -> shift -> 'action 129'
-actionsTable[424] = 130; // 'state 18' -> STRING -> shift -> 'action 130'
-actionsTable[433] = 131; // 'state 18' -> Members -> shift -> 'action 131'
-actionsTable[434] = 132; // 'state 18' -> Member -> shift -> 'action 132'
-actionsTable[462] = 133; // 'state 20' -> WS -> shift -> 'action 133'
-actionsTable[463] = 134; // 'state 20' -> TRUE -> shift -> 'action 134'
-actionsTable[464] = 135; // 'state 20' -> FALSE -> shift -> 'action 135'
-actionsTable[465] = 136; // 'state 20' -> NULL -> shift -> 'action 136'
-actionsTable[466] = 137; // 'state 20' -> CURLY_OPEN -> shift -> 'action 137'
-actionsTable[470] = 138; // 'state 20' -> STRING -> shift -> 'action 138'
-actionsTable[471] = 139; // 'state 20' -> BRACKET_OPEN -> shift -> 'action 139'
-actionsTable[472] = 140; // 'state 20' -> BRACKET_CLOSE -> shift -> 'action 140'
-actionsTable[473] = 141; // 'state 20' -> NUMBER -> shift -> 'action 141'
-actionsTable[476] = 142; // 'state 20' -> Element -> shift -> 'action 142'
-actionsTable[477] = 143; // 'state 20' -> Value -> shift -> 'action 143'
-actionsTable[478] = 144; // 'state 20' -> Object -> shift -> 'action 144'
-actionsTable[481] = 145; // 'state 20' -> Array -> shift -> 'action 145'
-actionsTable[482] = 146; // 'state 20' -> Elements -> shift -> 'action 146'
-actionsTable[598] = 147; // 'state 26' -> @expound.EOF -> reduce -> 'action 147'
-actionsTable[600] = 148; // 'state 26' -> WS -> reduce -> 'action 148'
-actionsTable[605] = 149; // 'state 26' -> CURLY_CLOSE -> reduce -> 'action 149'
-actionsTable[606] = 150; // 'state 26' -> COMMA -> reduce -> 'action 150'
-actionsTable[610] = 151; // 'state 26' -> BRACKET_CLOSE -> reduce -> 'action 151'
-actionsTable[582] = 152; // 'state 25' -> CURLY_CLOSE -> shift -> 'action 152'
-actionsTable[585] = 153; // 'state 25' -> STRING -> shift -> 'action 153'
-actionsTable[651] = 154; // 'state 28' -> CURLY_CLOSE -> shift -> 'action 154'
-actionsTable[652] = 155; // 'state 28' -> COMMA -> shift -> 'action 155'
-actionsTable[674] = 156; // 'state 29' -> CURLY_CLOSE -> reduce -> 'action 156'
-actionsTable[675] = 157; // 'state 29' -> COMMA -> reduce -> 'action 157'
-actionsTable[623] = 158; // 'state 27' -> WS -> shift -> 'action 158'
-actionsTable[630] = 159; // 'state 27' -> COLON -> shift -> 'action 159'
-actionsTable[713] = 160; // 'state 31' -> @expound.EOF -> reduce -> 'action 160'
-actionsTable[715] = 161; // 'state 31' -> WS -> reduce -> 'action 161'
-actionsTable[720] = 162; // 'state 31' -> CURLY_CLOSE -> reduce -> 'action 162'
-actionsTable[721] = 163; // 'state 31' -> COMMA -> reduce -> 'action 163'
-actionsTable[725] = 164; // 'state 31' -> BRACKET_CLOSE -> reduce -> 'action 164'
-actionsTable[693] = 165; // 'state 30' -> TRUE -> shift -> 'action 165'
-actionsTable[694] = 166; // 'state 30' -> FALSE -> shift -> 'action 166'
-actionsTable[695] = 167; // 'state 30' -> NULL -> shift -> 'action 167'
-actionsTable[696] = 168; // 'state 30' -> CURLY_OPEN -> shift -> 'action 168'
-actionsTable[700] = 169; // 'state 30' -> STRING -> shift -> 'action 169'
-actionsTable[701] = 170; // 'state 30' -> BRACKET_OPEN -> shift -> 'action 170'
-actionsTable[702] = 171; // 'state 30' -> BRACKET_CLOSE -> shift -> 'action 171'
-actionsTable[703] = 172; // 'state 30' -> NUMBER -> shift -> 'action 172'
-actionsTable[707] = 173; // 'state 30' -> Value -> shift -> 'action 173'
-actionsTable[708] = 174; // 'state 30' -> Object -> shift -> 'action 174'
-actionsTable[711] = 175; // 'state 30' -> Array -> shift -> 'action 175'
-actionsTable[767] = 176; // 'state 33' -> COMMA -> shift -> 'action 176'
-actionsTable[771] = 177; // 'state 33' -> BRACKET_CLOSE -> shift -> 'action 177'
-actionsTable[744] = 178; // 'state 32' -> COMMA -> reduce -> 'action 178'
-actionsTable[748] = 179; // 'state 32' -> BRACKET_CLOSE -> reduce -> 'action 179'
-actionsTable[782] = 180; // 'state 34' -> @expound.EOF -> reduce -> 'action 180'
-actionsTable[789] = 181; // 'state 34' -> CURLY_CLOSE -> reduce -> 'action 181'
-actionsTable[790] = 182; // 'state 34' -> COMMA -> reduce -> 'action 182'
-actionsTable[794] = 183; // 'state 34' -> BRACKET_CLOSE -> reduce -> 'action 183'
-actionsTable[828] = 184; // 'state 36' -> @expound.EOF -> reduce -> 'action 184'
-actionsTable[830] = 185; // 'state 36' -> WS -> reduce -> 'action 185'
-actionsTable[835] = 186; // 'state 36' -> CURLY_CLOSE -> reduce -> 'action 186'
-actionsTable[836] = 187; // 'state 36' -> COMMA -> reduce -> 'action 187'
-actionsTable[840] = 188; // 'state 36' -> BRACKET_CLOSE -> reduce -> 'action 188'
-actionsTable[812] = 189; // 'state 35' -> CURLY_CLOSE -> shift -> 'action 189'
-actionsTable[815] = 190; // 'state 35' -> STRING -> shift -> 'action 190'
-actionsTable[881] = 191; // 'state 38' -> CURLY_CLOSE -> shift -> 'action 191'
-actionsTable[882] = 192; // 'state 38' -> COMMA -> shift -> 'action 192'
-actionsTable[904] = 193; // 'state 39' -> CURLY_CLOSE -> reduce -> 'action 193'
-actionsTable[905] = 194; // 'state 39' -> COMMA -> reduce -> 'action 194'
-actionsTable[853] = 195; // 'state 37' -> WS -> shift -> 'action 195'
-actionsTable[860] = 196; // 'state 37' -> COLON -> shift -> 'action 196'
-actionsTable[943] = 197; // 'state 41' -> @expound.EOF -> reduce -> 'action 197'
-actionsTable[945] = 198; // 'state 41' -> WS -> reduce -> 'action 198'
-actionsTable[950] = 199; // 'state 41' -> CURLY_CLOSE -> reduce -> 'action 199'
-actionsTable[951] = 200; // 'state 41' -> COMMA -> reduce -> 'action 200'
-actionsTable[955] = 201; // 'state 41' -> BRACKET_CLOSE -> reduce -> 'action 201'
-actionsTable[923] = 202; // 'state 40' -> TRUE -> shift -> 'action 202'
-actionsTable[924] = 203; // 'state 40' -> FALSE -> shift -> 'action 203'
-actionsTable[925] = 204; // 'state 40' -> NULL -> shift -> 'action 204'
-actionsTable[926] = 205; // 'state 40' -> CURLY_OPEN -> shift -> 'action 205'
-actionsTable[930] = 206; // 'state 40' -> STRING -> shift -> 'action 206'
-actionsTable[931] = 207; // 'state 40' -> BRACKET_OPEN -> shift -> 'action 207'
-actionsTable[932] = 208; // 'state 40' -> BRACKET_CLOSE -> shift -> 'action 208'
-actionsTable[933] = 209; // 'state 40' -> NUMBER -> shift -> 'action 209'
-actionsTable[937] = 210; // 'state 40' -> Value -> shift -> 'action 210'
-actionsTable[938] = 211; // 'state 40' -> Object -> shift -> 'action 211'
-actionsTable[941] = 212; // 'state 40' -> Array -> shift -> 'action 212'
-actionsTable[997] = 213; // 'state 43' -> COMMA -> shift -> 'action 213'
-actionsTable[1001] = 214; // 'state 43' -> BRACKET_CLOSE -> shift -> 'action 214'
-actionsTable[974] = 215; // 'state 42' -> COMMA -> reduce -> 'action 215'
-actionsTable[978] = 216; // 'state 42' -> BRACKET_CLOSE -> reduce -> 'action 216'
-actionsTable[1012] = 217; // 'state 44' -> @expound.EOF -> reduce -> 'action 217'
-actionsTable[1014] = 218; // 'state 44' -> WS -> reduce -> 'action 218'
-actionsTable[1019] = 219; // 'state 44' -> CURLY_CLOSE -> reduce -> 'action 219'
-actionsTable[1020] = 220; // 'state 44' -> COMMA -> reduce -> 'action 220'
-actionsTable[1024] = 221; // 'state 44' -> BRACKET_CLOSE -> reduce -> 'action 221'
-actionsTable[1037] = 222; // 'state 45' -> WS -> shift -> 'action 222'
-actionsTable[1044] = 223; // 'state 45' -> COLON -> shift -> 'action 223'
-actionsTable[1058] = 224; // 'state 46' -> @expound.EOF -> reduce -> 'action 224'
-actionsTable[1060] = 225; // 'state 46' -> WS -> reduce -> 'action 225'
-actionsTable[1065] = 226; // 'state 46' -> CURLY_CLOSE -> reduce -> 'action 226'
-actionsTable[1066] = 227; // 'state 46' -> COMMA -> reduce -> 'action 227'
-actionsTable[1070] = 228; // 'state 46' -> BRACKET_CLOSE -> reduce -> 'action 228'
-actionsTable[1083] = 229; // 'state 47' -> WS -> shift -> 'action 229'
-actionsTable[1091] = 230; // 'state 47' -> STRING -> shift -> 'action 230'
-actionsTable[1101] = 231; // 'state 47' -> Member -> shift -> 'action 231'
-actionsTable[1129] = 232; // 'state 49' -> WS -> shift -> 'action 232'
-actionsTable[1130] = 233; // 'state 49' -> TRUE -> shift -> 'action 233'
-actionsTable[1131] = 234; // 'state 49' -> FALSE -> shift -> 'action 234'
-actionsTable[1132] = 235; // 'state 49' -> NULL -> shift -> 'action 235'
-actionsTable[1133] = 236; // 'state 49' -> CURLY_OPEN -> shift -> 'action 236'
-actionsTable[1137] = 237; // 'state 49' -> STRING -> shift -> 'action 237'
-actionsTable[1138] = 238; // 'state 49' -> BRACKET_OPEN -> shift -> 'action 238'
-actionsTable[1140] = 239; // 'state 49' -> NUMBER -> shift -> 'action 239'
-actionsTable[1143] = 240; // 'state 49' -> Element -> shift -> 'action 240'
-actionsTable[1144] = 241; // 'state 49' -> Value -> shift -> 'action 241'
-actionsTable[1145] = 242; // 'state 49' -> Object -> shift -> 'action 242'
-actionsTable[1148] = 243; // 'state 49' -> Array -> shift -> 'action 243'
-actionsTable[1113] = 244; // 'state 48' -> COLON -> shift -> 'action 244'
-actionsTable[1150] = 245; // 'state 50' -> @expound.EOF -> reduce -> 'action 245'
-actionsTable[1152] = 246; // 'state 50' -> WS -> reduce -> 'action 246'
-actionsTable[1157] = 247; // 'state 50' -> CURLY_CLOSE -> reduce -> 'action 247'
-actionsTable[1158] = 248; // 'state 50' -> COMMA -> reduce -> 'action 248'
-actionsTable[1162] = 249; // 'state 50' -> BRACKET_CLOSE -> reduce -> 'action 249'
-actionsTable[1196] = 250; // 'state 52' -> @expound.EOF -> reduce -> 'action 250'
-actionsTable[1198] = 251; // 'state 52' -> WS -> reduce -> 'action 251'
-actionsTable[1203] = 252; // 'state 52' -> CURLY_CLOSE -> reduce -> 'action 252'
-actionsTable[1204] = 253; // 'state 52' -> COMMA -> reduce -> 'action 253'
-actionsTable[1208] = 254; // 'state 52' -> BRACKET_CLOSE -> reduce -> 'action 254'
-actionsTable[1175] = 255; // 'state 51' -> WS -> shift -> 'action 255'
-actionsTable[1176] = 256; // 'state 51' -> TRUE -> shift -> 'action 256'
-actionsTable[1177] = 257; // 'state 51' -> FALSE -> shift -> 'action 257'
-actionsTable[1178] = 258; // 'state 51' -> NULL -> shift -> 'action 258'
-actionsTable[1179] = 259; // 'state 51' -> CURLY_OPEN -> shift -> 'action 259'
-actionsTable[1183] = 260; // 'state 51' -> STRING -> shift -> 'action 260'
-actionsTable[1184] = 261; // 'state 51' -> BRACKET_OPEN -> shift -> 'action 261'
-actionsTable[1186] = 262; // 'state 51' -> NUMBER -> shift -> 'action 262'
-actionsTable[1189] = 263; // 'state 51' -> Element -> shift -> 'action 263'
-actionsTable[1190] = 264; // 'state 51' -> Value -> shift -> 'action 264'
-actionsTable[1191] = 265; // 'state 51' -> Object -> shift -> 'action 265'
-actionsTable[1194] = 266; // 'state 51' -> Array -> shift -> 'action 266'
-actionsTable[1219] = 267; // 'state 53' -> @expound.EOF -> reduce -> 'action 267'
-actionsTable[1221] = 268; // 'state 53' -> WS -> reduce -> 'action 268'
-actionsTable[1226] = 269; // 'state 53' -> CURLY_CLOSE -> reduce -> 'action 269'
-actionsTable[1227] = 270; // 'state 53' -> COMMA -> reduce -> 'action 270'
-actionsTable[1231] = 271; // 'state 53' -> BRACKET_CLOSE -> reduce -> 'action 271'
-actionsTable[1244] = 272; // 'state 54' -> WS -> shift -> 'action 272'
-actionsTable[1251] = 273; // 'state 54' -> COLON -> shift -> 'action 273'
-actionsTable[1265] = 274; // 'state 55' -> @expound.EOF -> reduce -> 'action 274'
-actionsTable[1267] = 275; // 'state 55' -> WS -> reduce -> 'action 275'
-actionsTable[1272] = 276; // 'state 55' -> CURLY_CLOSE -> reduce -> 'action 276'
-actionsTable[1273] = 277; // 'state 55' -> COMMA -> reduce -> 'action 277'
-actionsTable[1277] = 278; // 'state 55' -> BRACKET_CLOSE -> reduce -> 'action 278'
-actionsTable[1290] = 279; // 'state 56' -> WS -> shift -> 'action 279'
-actionsTable[1298] = 280; // 'state 56' -> STRING -> shift -> 'action 280'
-actionsTable[1308] = 281; // 'state 56' -> Member -> shift -> 'action 281'
-actionsTable[1336] = 282; // 'state 58' -> WS -> shift -> 'action 282'
-actionsTable[1337] = 283; // 'state 58' -> TRUE -> shift -> 'action 283'
-actionsTable[1338] = 284; // 'state 58' -> FALSE -> shift -> 'action 284'
-actionsTable[1339] = 285; // 'state 58' -> NULL -> shift -> 'action 285'
-actionsTable[1340] = 286; // 'state 58' -> CURLY_OPEN -> shift -> 'action 286'
-actionsTable[1344] = 287; // 'state 58' -> STRING -> shift -> 'action 287'
-actionsTable[1345] = 288; // 'state 58' -> BRACKET_OPEN -> shift -> 'action 288'
-actionsTable[1347] = 289; // 'state 58' -> NUMBER -> shift -> 'action 289'
-actionsTable[1350] = 290; // 'state 58' -> Element -> shift -> 'action 290'
-actionsTable[1351] = 291; // 'state 58' -> Value -> shift -> 'action 291'
-actionsTable[1352] = 292; // 'state 58' -> Object -> shift -> 'action 292'
-actionsTable[1355] = 293; // 'state 58' -> Array -> shift -> 'action 293'
-actionsTable[1320] = 294; // 'state 57' -> COLON -> shift -> 'action 294'
-actionsTable[1357] = 295; // 'state 59' -> @expound.EOF -> reduce -> 'action 295'
-actionsTable[1359] = 296; // 'state 59' -> WS -> reduce -> 'action 296'
-actionsTable[1364] = 297; // 'state 59' -> CURLY_CLOSE -> reduce -> 'action 297'
-actionsTable[1365] = 298; // 'state 59' -> COMMA -> reduce -> 'action 298'
-actionsTable[1369] = 299; // 'state 59' -> BRACKET_CLOSE -> reduce -> 'action 299'
-actionsTable[1403] = 300; // 'state 61' -> @expound.EOF -> reduce -> 'action 300'
-actionsTable[1405] = 301; // 'state 61' -> WS -> reduce -> 'action 301'
-actionsTable[1410] = 302; // 'state 61' -> CURLY_CLOSE -> reduce -> 'action 302'
-actionsTable[1411] = 303; // 'state 61' -> COMMA -> reduce -> 'action 303'
-actionsTable[1415] = 304; // 'state 61' -> BRACKET_CLOSE -> reduce -> 'action 304'
-actionsTable[1382] = 305; // 'state 60' -> WS -> shift -> 'action 305'
-actionsTable[1383] = 306; // 'state 60' -> TRUE -> shift -> 'action 306'
-actionsTable[1384] = 307; // 'state 60' -> FALSE -> shift -> 'action 307'
-actionsTable[1385] = 308; // 'state 60' -> NULL -> shift -> 'action 308'
-actionsTable[1386] = 309; // 'state 60' -> CURLY_OPEN -> shift -> 'action 309'
-actionsTable[1390] = 310; // 'state 60' -> STRING -> shift -> 'action 310'
-actionsTable[1391] = 311; // 'state 60' -> BRACKET_OPEN -> shift -> 'action 311'
-actionsTable[1393] = 312; // 'state 60' -> NUMBER -> shift -> 'action 312'
-actionsTable[1396] = 313; // 'state 60' -> Element -> shift -> 'action 313'
-actionsTable[1397] = 314; // 'state 60' -> Value -> shift -> 'action 314'
-actionsTable[1398] = 315; // 'state 60' -> Object -> shift -> 'action 315'
-actionsTable[1401] = 316; // 'state 60' -> Array -> shift -> 'action 316'
-actionsTable[1451] = 317; // 'state 63' -> WS -> shift -> 'action 317'
-actionsTable[1452] = 318; // 'state 63' -> TRUE -> shift -> 'action 318'
-actionsTable[1453] = 319; // 'state 63' -> FALSE -> shift -> 'action 319'
-actionsTable[1454] = 320; // 'state 63' -> NULL -> shift -> 'action 320'
-actionsTable[1455] = 321; // 'state 63' -> CURLY_OPEN -> shift -> 'action 321'
-actionsTable[1459] = 322; // 'state 63' -> STRING -> shift -> 'action 322'
-actionsTable[1460] = 323; // 'state 63' -> BRACKET_OPEN -> shift -> 'action 323'
-actionsTable[1462] = 324; // 'state 63' -> NUMBER -> shift -> 'action 324'
-actionsTable[1465] = 325; // 'state 63' -> Element -> shift -> 'action 325'
-actionsTable[1466] = 326; // 'state 63' -> Value -> shift -> 'action 326'
-actionsTable[1467] = 327; // 'state 63' -> Object -> shift -> 'action 327'
-actionsTable[1470] = 328; // 'state 63' -> Array -> shift -> 'action 328'
-actionsTable[1435] = 329; // 'state 62' -> COLON -> shift -> 'action 329'
-actionsTable[1502] = 330; // 'state 65' -> CURLY_CLOSE -> reduce -> 'action 330'
-actionsTable[1503] = 331; // 'state 65' -> COMMA -> reduce -> 'action 331'
-actionsTable[1482] = 332; // 'state 64' -> STRING -> shift -> 'action 332'
-actionsTable[1525] = 333; // 'state 66' -> CURLY_CLOSE -> reduce -> 'action 333'
-actionsTable[1526] = 334; // 'state 66' -> COMMA -> reduce -> 'action 334'
-actionsTable[1543] = 335; // 'state 67' -> WS -> shift -> 'action 335'
-actionsTable[1544] = 336; // 'state 67' -> TRUE -> shift -> 'action 336'
-actionsTable[1545] = 337; // 'state 67' -> FALSE -> shift -> 'action 337'
-actionsTable[1546] = 338; // 'state 67' -> NULL -> shift -> 'action 338'
-actionsTable[1547] = 339; // 'state 67' -> CURLY_OPEN -> shift -> 'action 339'
-actionsTable[1551] = 340; // 'state 67' -> STRING -> shift -> 'action 340'
-actionsTable[1552] = 341; // 'state 67' -> BRACKET_OPEN -> shift -> 'action 341'
-actionsTable[1554] = 342; // 'state 67' -> NUMBER -> shift -> 'action 342'
-actionsTable[1557] = 343; // 'state 67' -> Element -> shift -> 'action 343'
-actionsTable[1558] = 344; // 'state 67' -> Value -> shift -> 'action 344'
-actionsTable[1559] = 345; // 'state 67' -> Object -> shift -> 'action 345'
-actionsTable[1562] = 346; // 'state 67' -> Array -> shift -> 'action 346'
-actionsTable[1572] = 347; // 'state 68' -> COMMA -> reduce -> 'action 347'
-actionsTable[1576] = 348; // 'state 68' -> BRACKET_CLOSE -> reduce -> 'action 348'
-actionsTable[1612] = 349; // 'state 70' -> WS -> shift -> 'action 349'
-actionsTable[1613] = 350; // 'state 70' -> TRUE -> shift -> 'action 350'
-actionsTable[1614] = 351; // 'state 70' -> FALSE -> shift -> 'action 351'
-actionsTable[1615] = 352; // 'state 70' -> NULL -> shift -> 'action 352'
-actionsTable[1616] = 353; // 'state 70' -> CURLY_OPEN -> shift -> 'action 353'
-actionsTable[1620] = 354; // 'state 70' -> STRING -> shift -> 'action 354'
-actionsTable[1621] = 355; // 'state 70' -> BRACKET_OPEN -> shift -> 'action 355'
-actionsTable[1623] = 356; // 'state 70' -> NUMBER -> shift -> 'action 356'
-actionsTable[1626] = 357; // 'state 70' -> Element -> shift -> 'action 357'
-actionsTable[1627] = 358; // 'state 70' -> Value -> shift -> 'action 358'
-actionsTable[1628] = 359; // 'state 70' -> Object -> shift -> 'action 359'
-actionsTable[1631] = 360; // 'state 70' -> Array -> shift -> 'action 360'
-actionsTable[1596] = 361; // 'state 69' -> COLON -> shift -> 'action 361'
-actionsTable[1663] = 362; // 'state 72' -> CURLY_CLOSE -> reduce -> 'action 362'
-actionsTable[1664] = 363; // 'state 72' -> COMMA -> reduce -> 'action 363'
-actionsTable[1643] = 364; // 'state 71' -> STRING -> shift -> 'action 364'
-actionsTable[1686] = 365; // 'state 73' -> CURLY_CLOSE -> reduce -> 'action 365'
-actionsTable[1687] = 366; // 'state 73' -> COMMA -> reduce -> 'action 366'
-actionsTable[1704] = 367; // 'state 74' -> WS -> shift -> 'action 367'
-actionsTable[1705] = 368; // 'state 74' -> TRUE -> shift -> 'action 368'
-actionsTable[1706] = 369; // 'state 74' -> FALSE -> shift -> 'action 369'
-actionsTable[1707] = 370; // 'state 74' -> NULL -> shift -> 'action 370'
-actionsTable[1708] = 371; // 'state 74' -> CURLY_OPEN -> shift -> 'action 371'
-actionsTable[1712] = 372; // 'state 74' -> STRING -> shift -> 'action 372'
-actionsTable[1713] = 373; // 'state 74' -> BRACKET_OPEN -> shift -> 'action 373'
-actionsTable[1715] = 374; // 'state 74' -> NUMBER -> shift -> 'action 374'
-actionsTable[1718] = 375; // 'state 74' -> Element -> shift -> 'action 375'
-actionsTable[1719] = 376; // 'state 74' -> Value -> shift -> 'action 376'
-actionsTable[1720] = 377; // 'state 74' -> Object -> shift -> 'action 377'
-actionsTable[1723] = 378; // 'state 74' -> Array -> shift -> 'action 378'
-actionsTable[1733] = 379; // 'state 75' -> COMMA -> reduce -> 'action 379'
-actionsTable[1737] = 380; // 'state 75' -> BRACKET_CLOSE -> reduce -> 'action 380'
-actionsTable[1755] = 381; // 'state 76' -> CURLY_CLOSE -> reduce -> 'action 381'
-actionsTable[1756] = 382; // 'state 76' -> COMMA -> reduce -> 'action 382'
-actionsTable[1773] = 383; // 'state 77' -> WS -> shift -> 'action 383'
-actionsTable[1774] = 384; // 'state 77' -> TRUE -> shift -> 'action 384'
-actionsTable[1775] = 385; // 'state 77' -> FALSE -> shift -> 'action 385'
-actionsTable[1776] = 386; // 'state 77' -> NULL -> shift -> 'action 386'
-actionsTable[1777] = 387; // 'state 77' -> CURLY_OPEN -> shift -> 'action 387'
-actionsTable[1781] = 388; // 'state 77' -> STRING -> shift -> 'action 388'
-actionsTable[1782] = 389; // 'state 77' -> BRACKET_OPEN -> shift -> 'action 389'
-actionsTable[1784] = 390; // 'state 77' -> NUMBER -> shift -> 'action 390'
-actionsTable[1787] = 391; // 'state 77' -> Element -> shift -> 'action 391'
-actionsTable[1788] = 392; // 'state 77' -> Value -> shift -> 'action 392'
-actionsTable[1789] = 393; // 'state 77' -> Object -> shift -> 'action 393'
-actionsTable[1792] = 394; // 'state 77' -> Array -> shift -> 'action 394'
-actionsTable[1801] = 395; // 'state 78' -> CURLY_CLOSE -> reduce -> 'action 395'
-actionsTable[1802] = 396; // 'state 78' -> COMMA -> reduce -> 'action 396'
-actionsTable[1824] = 397; // 'state 79' -> CURLY_CLOSE -> reduce -> 'action 397'
-actionsTable[1825] = 398; // 'state 79' -> COMMA -> reduce -> 'action 398'
-actionsTable[1842] = 399; // 'state 80' -> WS -> shift -> 'action 399'
-actionsTable[1843] = 400; // 'state 80' -> TRUE -> shift -> 'action 400'
-actionsTable[1844] = 401; // 'state 80' -> FALSE -> shift -> 'action 401'
-actionsTable[1845] = 402; // 'state 80' -> NULL -> shift -> 'action 402'
-actionsTable[1846] = 403; // 'state 80' -> CURLY_OPEN -> shift -> 'action 403'
-actionsTable[1850] = 404; // 'state 80' -> STRING -> shift -> 'action 404'
-actionsTable[1851] = 405; // 'state 80' -> BRACKET_OPEN -> shift -> 'action 405'
-actionsTable[1853] = 406; // 'state 80' -> NUMBER -> shift -> 'action 406'
-actionsTable[1856] = 407; // 'state 80' -> Element -> shift -> 'action 407'
-actionsTable[1857] = 408; // 'state 80' -> Value -> shift -> 'action 408'
-actionsTable[1858] = 409; // 'state 80' -> Object -> shift -> 'action 409'
-actionsTable[1861] = 410; // 'state 80' -> Array -> shift -> 'action 410'
-actionsTable[1870] = 411; // 'state 81' -> CURLY_CLOSE -> reduce -> 'action 411'
-actionsTable[1871] = 412; // 'state 81' -> COMMA -> reduce -> 'action 412'
-actionsTable[1893] = 413; // 'state 82' -> CURLY_CLOSE -> reduce -> 'action 413'
-actionsTable[1894] = 414; // 'state 82' -> COMMA -> reduce -> 'action 414'
-actionsTable[1916] = 415; // 'state 83' -> CURLY_CLOSE -> reduce -> 'action 415'
-actionsTable[1917] = 416; // 'state 83' -> COMMA -> reduce -> 'action 416'
+actionsTable[288] = 13; // 'state 9' -> @expound.EOF -> done -> 'action 13'
+actionsTable[320] = 14; // 'state 10' -> @expound.EOF -> reduce -> 'action 14'
+actionsTable[354] = 15; // 'state 11' -> WS -> shift -> 'action 15'
+actionsTable[352] = 16; // 'state 11' -> @expound.EOF -> reduce -> 'action 16'
+actionsTable[359] = 17; // 'state 11' -> CURLY_CLOSE -> reduce -> 'action 17'
+actionsTable[360] = 18; // 'state 11' -> COMMA -> reduce -> 'action 18'
+actionsTable[364] = 19; // 'state 11' -> BRACKET_CLOSE -> reduce -> 'action 19'
+actionsTable[35] = 20; // 'state 1' -> TRUE -> shift -> 'action 20'
+actionsTable[36] = 21; // 'state 1' -> FALSE -> shift -> 'action 21'
+actionsTable[37] = 22; // 'state 1' -> NULL -> shift -> 'action 22'
+actionsTable[38] = 23; // 'state 1' -> CURLY_OPEN -> shift -> 'action 23'
+actionsTable[42] = 24; // 'state 1' -> STRING -> shift -> 'action 24'
+actionsTable[43] = 25; // 'state 1' -> BRACKET_OPEN -> shift -> 'action 25'
+actionsTable[45] = 26; // 'state 1' -> NUMBER -> shift -> 'action 26'
+actionsTable[49] = 27; // 'state 1' -> Value -> shift -> 'action 27'
+actionsTable[50] = 28; // 'state 1' -> Object -> shift -> 'action 28'
+actionsTable[53] = 29; // 'state 1' -> Array -> shift -> 'action 29'
+actionsTable[384] = 30; // 'state 12' -> @expound.EOF -> reduce -> 'action 30'
+actionsTable[386] = 31; // 'state 12' -> WS -> reduce -> 'action 31'
+actionsTable[391] = 32; // 'state 12' -> CURLY_CLOSE -> reduce -> 'action 32'
+actionsTable[392] = 33; // 'state 12' -> COMMA -> reduce -> 'action 33'
+actionsTable[396] = 34; // 'state 12' -> BRACKET_CLOSE -> reduce -> 'action 34'
+actionsTable[416] = 35; // 'state 13' -> @expound.EOF -> reduce -> 'action 35'
+actionsTable[418] = 36; // 'state 13' -> WS -> reduce -> 'action 36'
+actionsTable[423] = 37; // 'state 13' -> CURLY_CLOSE -> reduce -> 'action 37'
+actionsTable[424] = 38; // 'state 13' -> COMMA -> reduce -> 'action 38'
+actionsTable[428] = 39; // 'state 13' -> BRACKET_CLOSE -> reduce -> 'action 39'
+actionsTable[192] = 40; // 'state 6' -> @expound.EOF -> reduce -> 'action 40'
+actionsTable[194] = 41; // 'state 6' -> WS -> reduce -> 'action 41'
+actionsTable[199] = 42; // 'state 6' -> CURLY_CLOSE -> reduce -> 'action 42'
+actionsTable[200] = 43; // 'state 6' -> COMMA -> reduce -> 'action 43'
+actionsTable[204] = 44; // 'state 6' -> BRACKET_CLOSE -> reduce -> 'action 44'
+actionsTable[256] = 45; // 'state 8' -> @expound.EOF -> reduce -> 'action 45'
+actionsTable[258] = 46; // 'state 8' -> WS -> reduce -> 'action 46'
+actionsTable[263] = 47; // 'state 8' -> CURLY_CLOSE -> reduce -> 'action 47'
+actionsTable[264] = 48; // 'state 8' -> COMMA -> reduce -> 'action 48'
+actionsTable[268] = 49; // 'state 8' -> BRACKET_CLOSE -> reduce -> 'action 49'
+actionsTable[64] = 50; // 'state 2' -> @expound.EOF -> reduce -> 'action 50'
+actionsTable[66] = 51; // 'state 2' -> WS -> reduce -> 'action 51'
+actionsTable[71] = 52; // 'state 2' -> CURLY_CLOSE -> reduce -> 'action 52'
+actionsTable[72] = 53; // 'state 2' -> COMMA -> reduce -> 'action 53'
+actionsTable[76] = 54; // 'state 2' -> BRACKET_CLOSE -> reduce -> 'action 54'
+actionsTable[96] = 55; // 'state 3' -> @expound.EOF -> reduce -> 'action 55'
+actionsTable[98] = 56; // 'state 3' -> WS -> reduce -> 'action 56'
+actionsTable[103] = 57; // 'state 3' -> CURLY_CLOSE -> reduce -> 'action 57'
+actionsTable[104] = 58; // 'state 3' -> COMMA -> reduce -> 'action 58'
+actionsTable[108] = 59; // 'state 3' -> BRACKET_CLOSE -> reduce -> 'action 59'
+actionsTable[128] = 60; // 'state 4' -> @expound.EOF -> reduce -> 'action 60'
+actionsTable[130] = 61; // 'state 4' -> WS -> reduce -> 'action 61'
+actionsTable[135] = 62; // 'state 4' -> CURLY_CLOSE -> reduce -> 'action 62'
+actionsTable[136] = 63; // 'state 4' -> COMMA -> reduce -> 'action 63'
+actionsTable[140] = 64; // 'state 4' -> BRACKET_CLOSE -> reduce -> 'action 64'
+actionsTable[162] = 65; // 'state 5' -> WS -> shift -> 'action 65'
+actionsTable[167] = 66; // 'state 5' -> CURLY_CLOSE -> shift -> 'action 66'
+actionsTable[170] = 67; // 'state 5' -> STRING -> shift -> 'action 67'
+actionsTable[179] = 68; // 'state 5' -> Members -> shift -> 'action 68'
+actionsTable[180] = 69; // 'state 5' -> Member -> shift -> 'action 69'
+actionsTable[226] = 70; // 'state 7' -> WS -> shift -> 'action 70'
+actionsTable[227] = 71; // 'state 7' -> TRUE -> shift -> 'action 71'
+actionsTable[228] = 72; // 'state 7' -> FALSE -> shift -> 'action 72'
+actionsTable[229] = 73; // 'state 7' -> NULL -> shift -> 'action 73'
+actionsTable[230] = 74; // 'state 7' -> CURLY_OPEN -> shift -> 'action 74'
+actionsTable[234] = 75; // 'state 7' -> STRING -> shift -> 'action 75'
+actionsTable[235] = 76; // 'state 7' -> BRACKET_OPEN -> shift -> 'action 76'
+actionsTable[236] = 77; // 'state 7' -> BRACKET_CLOSE -> shift -> 'action 77'
+actionsTable[237] = 78; // 'state 7' -> NUMBER -> shift -> 'action 78'
+actionsTable[240] = 79; // 'state 7' -> Element -> shift -> 'action 79'
+actionsTable[241] = 80; // 'state 7' -> Value -> shift -> 'action 80'
+actionsTable[242] = 81; // 'state 7' -> Object -> shift -> 'action 81'
+actionsTable[245] = 82; // 'state 7' -> Array -> shift -> 'action 82'
+actionsTable[246] = 83; // 'state 7' -> Elements -> shift -> 'action 83'
+actionsTable[448] = 84; // 'state 14' -> @expound.EOF -> reduce -> 'action 84'
+actionsTable[455] = 85; // 'state 14' -> CURLY_CLOSE -> reduce -> 'action 85'
+actionsTable[456] = 86; // 'state 14' -> COMMA -> reduce -> 'action 86'
+actionsTable[460] = 87; // 'state 14' -> BRACKET_CLOSE -> reduce -> 'action 87'
+actionsTable[706] = 88; // 'state 22' -> WS -> shift -> 'action 88'
+actionsTable[704] = 89; // 'state 22' -> @expound.EOF -> reduce -> 'action 89'
+actionsTable[711] = 90; // 'state 22' -> CURLY_CLOSE -> reduce -> 'action 90'
+actionsTable[712] = 91; // 'state 22' -> COMMA -> reduce -> 'action 91'
+actionsTable[716] = 92; // 'state 22' -> BRACKET_CLOSE -> reduce -> 'action 92'
+actionsTable[736] = 93; // 'state 23' -> @expound.EOF -> reduce -> 'action 93'
+actionsTable[738] = 94; // 'state 23' -> WS -> reduce -> 'action 94'
+actionsTable[743] = 95; // 'state 23' -> CURLY_CLOSE -> reduce -> 'action 95'
+actionsTable[744] = 96; // 'state 23' -> COMMA -> reduce -> 'action 96'
+actionsTable[748] = 97; // 'state 23' -> BRACKET_CLOSE -> reduce -> 'action 97'
+actionsTable[768] = 98; // 'state 24' -> @expound.EOF -> reduce -> 'action 98'
+actionsTable[770] = 99; // 'state 24' -> WS -> reduce -> 'action 99'
+actionsTable[775] = 100; // 'state 24' -> CURLY_CLOSE -> reduce -> 'action 100'
+actionsTable[776] = 101; // 'state 24' -> COMMA -> reduce -> 'action 101'
+actionsTable[780] = 102; // 'state 24' -> BRACKET_CLOSE -> reduce -> 'action 102'
+actionsTable[608] = 103; // 'state 19' -> @expound.EOF -> reduce -> 'action 103'
+actionsTable[610] = 104; // 'state 19' -> WS -> reduce -> 'action 104'
+actionsTable[615] = 105; // 'state 19' -> CURLY_CLOSE -> reduce -> 'action 105'
+actionsTable[616] = 106; // 'state 19' -> COMMA -> reduce -> 'action 106'
+actionsTable[620] = 107; // 'state 19' -> BRACKET_CLOSE -> reduce -> 'action 107'
+actionsTable[672] = 108; // 'state 21' -> @expound.EOF -> reduce -> 'action 108'
+actionsTable[674] = 109; // 'state 21' -> WS -> reduce -> 'action 109'
+actionsTable[679] = 110; // 'state 21' -> CURLY_CLOSE -> reduce -> 'action 110'
+actionsTable[680] = 111; // 'state 21' -> COMMA -> reduce -> 'action 111'
+actionsTable[684] = 112; // 'state 21' -> BRACKET_CLOSE -> reduce -> 'action 112'
+actionsTable[480] = 113; // 'state 15' -> @expound.EOF -> reduce -> 'action 113'
+actionsTable[482] = 114; // 'state 15' -> WS -> reduce -> 'action 114'
+actionsTable[487] = 115; // 'state 15' -> CURLY_CLOSE -> reduce -> 'action 115'
+actionsTable[488] = 116; // 'state 15' -> COMMA -> reduce -> 'action 116'
+actionsTable[492] = 117; // 'state 15' -> BRACKET_CLOSE -> reduce -> 'action 117'
+actionsTable[512] = 118; // 'state 16' -> @expound.EOF -> reduce -> 'action 118'
+actionsTable[514] = 119; // 'state 16' -> WS -> reduce -> 'action 119'
+actionsTable[519] = 120; // 'state 16' -> CURLY_CLOSE -> reduce -> 'action 120'
+actionsTable[520] = 121; // 'state 16' -> COMMA -> reduce -> 'action 121'
+actionsTable[524] = 122; // 'state 16' -> BRACKET_CLOSE -> reduce -> 'action 122'
+actionsTable[544] = 123; // 'state 17' -> @expound.EOF -> reduce -> 'action 123'
+actionsTable[546] = 124; // 'state 17' -> WS -> reduce -> 'action 124'
+actionsTable[551] = 125; // 'state 17' -> CURLY_CLOSE -> reduce -> 'action 125'
+actionsTable[552] = 126; // 'state 17' -> COMMA -> reduce -> 'action 126'
+actionsTable[556] = 127; // 'state 17' -> BRACKET_CLOSE -> reduce -> 'action 127'
+actionsTable[578] = 128; // 'state 18' -> WS -> shift -> 'action 128'
+actionsTable[583] = 129; // 'state 18' -> CURLY_CLOSE -> shift -> 'action 129'
+actionsTable[586] = 130; // 'state 18' -> STRING -> shift -> 'action 130'
+actionsTable[595] = 131; // 'state 18' -> Members -> shift -> 'action 131'
+actionsTable[596] = 132; // 'state 18' -> Member -> shift -> 'action 132'
+actionsTable[642] = 133; // 'state 20' -> WS -> shift -> 'action 133'
+actionsTable[643] = 134; // 'state 20' -> TRUE -> shift -> 'action 134'
+actionsTable[644] = 135; // 'state 20' -> FALSE -> shift -> 'action 135'
+actionsTable[645] = 136; // 'state 20' -> NULL -> shift -> 'action 136'
+actionsTable[646] = 137; // 'state 20' -> CURLY_OPEN -> shift -> 'action 137'
+actionsTable[650] = 138; // 'state 20' -> STRING -> shift -> 'action 138'
+actionsTable[651] = 139; // 'state 20' -> BRACKET_OPEN -> shift -> 'action 139'
+actionsTable[652] = 140; // 'state 20' -> BRACKET_CLOSE -> shift -> 'action 140'
+actionsTable[653] = 141; // 'state 20' -> NUMBER -> shift -> 'action 141'
+actionsTable[656] = 142; // 'state 20' -> Element -> shift -> 'action 142'
+actionsTable[657] = 143; // 'state 20' -> Value -> shift -> 'action 143'
+actionsTable[658] = 144; // 'state 20' -> Object -> shift -> 'action 144'
+actionsTable[661] = 145; // 'state 20' -> Array -> shift -> 'action 145'
+actionsTable[662] = 146; // 'state 20' -> Elements -> shift -> 'action 146'
+actionsTable[832] = 147; // 'state 26' -> @expound.EOF -> reduce -> 'action 147'
+actionsTable[834] = 148; // 'state 26' -> WS -> reduce -> 'action 148'
+actionsTable[839] = 149; // 'state 26' -> CURLY_CLOSE -> reduce -> 'action 149'
+actionsTable[840] = 150; // 'state 26' -> COMMA -> reduce -> 'action 150'
+actionsTable[844] = 151; // 'state 26' -> BRACKET_CLOSE -> reduce -> 'action 151'
+actionsTable[807] = 152; // 'state 25' -> CURLY_CLOSE -> shift -> 'action 152'
+actionsTable[810] = 153; // 'state 25' -> STRING -> shift -> 'action 153'
+actionsTable[903] = 154; // 'state 28' -> CURLY_CLOSE -> shift -> 'action 154'
+actionsTable[904] = 155; // 'state 28' -> COMMA -> shift -> 'action 155'
+actionsTable[935] = 156; // 'state 29' -> CURLY_CLOSE -> reduce -> 'action 156'
+actionsTable[936] = 157; // 'state 29' -> COMMA -> reduce -> 'action 157'
+actionsTable[866] = 158; // 'state 27' -> WS -> shift -> 'action 158'
+actionsTable[873] = 159; // 'state 27' -> COLON -> shift -> 'action 159'
+actionsTable[992] = 160; // 'state 31' -> @expound.EOF -> reduce -> 'action 160'
+actionsTable[994] = 161; // 'state 31' -> WS -> reduce -> 'action 161'
+actionsTable[999] = 162; // 'state 31' -> CURLY_CLOSE -> reduce -> 'action 162'
+actionsTable[1000] = 163; // 'state 31' -> COMMA -> reduce -> 'action 163'
+actionsTable[1004] = 164; // 'state 31' -> BRACKET_CLOSE -> reduce -> 'action 164'
+actionsTable[963] = 165; // 'state 30' -> TRUE -> shift -> 'action 165'
+actionsTable[964] = 166; // 'state 30' -> FALSE -> shift -> 'action 166'
+actionsTable[965] = 167; // 'state 30' -> NULL -> shift -> 'action 167'
+actionsTable[966] = 168; // 'state 30' -> CURLY_OPEN -> shift -> 'action 168'
+actionsTable[970] = 169; // 'state 30' -> STRING -> shift -> 'action 169'
+actionsTable[971] = 170; // 'state 30' -> BRACKET_OPEN -> shift -> 'action 170'
+actionsTable[972] = 171; // 'state 30' -> BRACKET_CLOSE -> shift -> 'action 171'
+actionsTable[973] = 172; // 'state 30' -> NUMBER -> shift -> 'action 172'
+actionsTable[977] = 173; // 'state 30' -> Value -> shift -> 'action 173'
+actionsTable[978] = 174; // 'state 30' -> Object -> shift -> 'action 174'
+actionsTable[981] = 175; // 'state 30' -> Array -> shift -> 'action 175'
+actionsTable[1064] = 176; // 'state 33' -> COMMA -> shift -> 'action 176'
+actionsTable[1068] = 177; // 'state 33' -> BRACKET_CLOSE -> shift -> 'action 177'
+actionsTable[1032] = 178; // 'state 32' -> COMMA -> reduce -> 'action 178'
+actionsTable[1036] = 179; // 'state 32' -> BRACKET_CLOSE -> reduce -> 'action 179'
+actionsTable[1088] = 180; // 'state 34' -> @expound.EOF -> reduce -> 'action 180'
+actionsTable[1095] = 181; // 'state 34' -> CURLY_CLOSE -> reduce -> 'action 181'
+actionsTable[1096] = 182; // 'state 34' -> COMMA -> reduce -> 'action 182'
+actionsTable[1100] = 183; // 'state 34' -> BRACKET_CLOSE -> reduce -> 'action 183'
+actionsTable[1152] = 184; // 'state 36' -> @expound.EOF -> reduce -> 'action 184'
+actionsTable[1154] = 185; // 'state 36' -> WS -> reduce -> 'action 185'
+actionsTable[1159] = 186; // 'state 36' -> CURLY_CLOSE -> reduce -> 'action 186'
+actionsTable[1160] = 187; // 'state 36' -> COMMA -> reduce -> 'action 187'
+actionsTable[1164] = 188; // 'state 36' -> BRACKET_CLOSE -> reduce -> 'action 188'
+actionsTable[1127] = 189; // 'state 35' -> CURLY_CLOSE -> shift -> 'action 189'
+actionsTable[1130] = 190; // 'state 35' -> STRING -> shift -> 'action 190'
+actionsTable[1223] = 191; // 'state 38' -> CURLY_CLOSE -> shift -> 'action 191'
+actionsTable[1224] = 192; // 'state 38' -> COMMA -> shift -> 'action 192'
+actionsTable[1255] = 193; // 'state 39' -> CURLY_CLOSE -> reduce -> 'action 193'
+actionsTable[1256] = 194; // 'state 39' -> COMMA -> reduce -> 'action 194'
+actionsTable[1186] = 195; // 'state 37' -> WS -> shift -> 'action 195'
+actionsTable[1193] = 196; // 'state 37' -> COLON -> shift -> 'action 196'
+actionsTable[1312] = 197; // 'state 41' -> @expound.EOF -> reduce -> 'action 197'
+actionsTable[1314] = 198; // 'state 41' -> WS -> reduce -> 'action 198'
+actionsTable[1319] = 199; // 'state 41' -> CURLY_CLOSE -> reduce -> 'action 199'
+actionsTable[1320] = 200; // 'state 41' -> COMMA -> reduce -> 'action 200'
+actionsTable[1324] = 201; // 'state 41' -> BRACKET_CLOSE -> reduce -> 'action 201'
+actionsTable[1283] = 202; // 'state 40' -> TRUE -> shift -> 'action 202'
+actionsTable[1284] = 203; // 'state 40' -> FALSE -> shift -> 'action 203'
+actionsTable[1285] = 204; // 'state 40' -> NULL -> shift -> 'action 204'
+actionsTable[1286] = 205; // 'state 40' -> CURLY_OPEN -> shift -> 'action 205'
+actionsTable[1290] = 206; // 'state 40' -> STRING -> shift -> 'action 206'
+actionsTable[1291] = 207; // 'state 40' -> BRACKET_OPEN -> shift -> 'action 207'
+actionsTable[1292] = 208; // 'state 40' -> BRACKET_CLOSE -> shift -> 'action 208'
+actionsTable[1293] = 209; // 'state 40' -> NUMBER -> shift -> 'action 209'
+actionsTable[1297] = 210; // 'state 40' -> Value -> shift -> 'action 210'
+actionsTable[1298] = 211; // 'state 40' -> Object -> shift -> 'action 211'
+actionsTable[1301] = 212; // 'state 40' -> Array -> shift -> 'action 212'
+actionsTable[1384] = 213; // 'state 43' -> COMMA -> shift -> 'action 213'
+actionsTable[1388] = 214; // 'state 43' -> BRACKET_CLOSE -> shift -> 'action 214'
+actionsTable[1352] = 215; // 'state 42' -> COMMA -> reduce -> 'action 215'
+actionsTable[1356] = 216; // 'state 42' -> BRACKET_CLOSE -> reduce -> 'action 216'
+actionsTable[1408] = 217; // 'state 44' -> @expound.EOF -> reduce -> 'action 217'
+actionsTable[1410] = 218; // 'state 44' -> WS -> reduce -> 'action 218'
+actionsTable[1415] = 219; // 'state 44' -> CURLY_CLOSE -> reduce -> 'action 219'
+actionsTable[1416] = 220; // 'state 44' -> COMMA -> reduce -> 'action 220'
+actionsTable[1420] = 221; // 'state 44' -> BRACKET_CLOSE -> reduce -> 'action 221'
+actionsTable[1442] = 222; // 'state 45' -> WS -> shift -> 'action 222'
+actionsTable[1449] = 223; // 'state 45' -> COLON -> shift -> 'action 223'
+actionsTable[1472] = 224; // 'state 46' -> @expound.EOF -> reduce -> 'action 224'
+actionsTable[1474] = 225; // 'state 46' -> WS -> reduce -> 'action 225'
+actionsTable[1479] = 226; // 'state 46' -> CURLY_CLOSE -> reduce -> 'action 226'
+actionsTable[1480] = 227; // 'state 46' -> COMMA -> reduce -> 'action 227'
+actionsTable[1484] = 228; // 'state 46' -> BRACKET_CLOSE -> reduce -> 'action 228'
+actionsTable[1506] = 229; // 'state 47' -> WS -> shift -> 'action 229'
+actionsTable[1514] = 230; // 'state 47' -> STRING -> shift -> 'action 230'
+actionsTable[1524] = 231; // 'state 47' -> Member -> shift -> 'action 231'
+actionsTable[1570] = 232; // 'state 49' -> WS -> shift -> 'action 232'
+actionsTable[1571] = 233; // 'state 49' -> TRUE -> shift -> 'action 233'
+actionsTable[1572] = 234; // 'state 49' -> FALSE -> shift -> 'action 234'
+actionsTable[1573] = 235; // 'state 49' -> NULL -> shift -> 'action 235'
+actionsTable[1574] = 236; // 'state 49' -> CURLY_OPEN -> shift -> 'action 236'
+actionsTable[1578] = 237; // 'state 49' -> STRING -> shift -> 'action 237'
+actionsTable[1579] = 238; // 'state 49' -> BRACKET_OPEN -> shift -> 'action 238'
+actionsTable[1581] = 239; // 'state 49' -> NUMBER -> shift -> 'action 239'
+actionsTable[1584] = 240; // 'state 49' -> Element -> shift -> 'action 240'
+actionsTable[1585] = 241; // 'state 49' -> Value -> shift -> 'action 241'
+actionsTable[1586] = 242; // 'state 49' -> Object -> shift -> 'action 242'
+actionsTable[1589] = 243; // 'state 49' -> Array -> shift -> 'action 243'
+actionsTable[1545] = 244; // 'state 48' -> COLON -> shift -> 'action 244'
+actionsTable[1600] = 245; // 'state 50' -> @expound.EOF -> reduce -> 'action 245'
+actionsTable[1602] = 246; // 'state 50' -> WS -> reduce -> 'action 246'
+actionsTable[1607] = 247; // 'state 50' -> CURLY_CLOSE -> reduce -> 'action 247'
+actionsTable[1608] = 248; // 'state 50' -> COMMA -> reduce -> 'action 248'
+actionsTable[1612] = 249; // 'state 50' -> BRACKET_CLOSE -> reduce -> 'action 249'
+actionsTable[1664] = 250; // 'state 52' -> @expound.EOF -> reduce -> 'action 250'
+actionsTable[1666] = 251; // 'state 52' -> WS -> reduce -> 'action 251'
+actionsTable[1671] = 252; // 'state 52' -> CURLY_CLOSE -> reduce -> 'action 252'
+actionsTable[1672] = 253; // 'state 52' -> COMMA -> reduce -> 'action 253'
+actionsTable[1676] = 254; // 'state 52' -> BRACKET_CLOSE -> reduce -> 'action 254'
+actionsTable[1634] = 255; // 'state 51' -> WS -> shift -> 'action 255'
+actionsTable[1635] = 256; // 'state 51' -> TRUE -> shift -> 'action 256'
+actionsTable[1636] = 257; // 'state 51' -> FALSE -> shift -> 'action 257'
+actionsTable[1637] = 258; // 'state 51' -> NULL -> shift -> 'action 258'
+actionsTable[1638] = 259; // 'state 51' -> CURLY_OPEN -> shift -> 'action 259'
+actionsTable[1642] = 260; // 'state 51' -> STRING -> shift -> 'action 260'
+actionsTable[1643] = 261; // 'state 51' -> BRACKET_OPEN -> shift -> 'action 261'
+actionsTable[1645] = 262; // 'state 51' -> NUMBER -> shift -> 'action 262'
+actionsTable[1648] = 263; // 'state 51' -> Element -> shift -> 'action 263'
+actionsTable[1649] = 264; // 'state 51' -> Value -> shift -> 'action 264'
+actionsTable[1650] = 265; // 'state 51' -> Object -> shift -> 'action 265'
+actionsTable[1653] = 266; // 'state 51' -> Array -> shift -> 'action 266'
+actionsTable[1696] = 267; // 'state 53' -> @expound.EOF -> reduce -> 'action 267'
+actionsTable[1698] = 268; // 'state 53' -> WS -> reduce -> 'action 268'
+actionsTable[1703] = 269; // 'state 53' -> CURLY_CLOSE -> reduce -> 'action 269'
+actionsTable[1704] = 270; // 'state 53' -> COMMA -> reduce -> 'action 270'
+actionsTable[1708] = 271; // 'state 53' -> BRACKET_CLOSE -> reduce -> 'action 271'
+actionsTable[1730] = 272; // 'state 54' -> WS -> shift -> 'action 272'
+actionsTable[1737] = 273; // 'state 54' -> COLON -> shift -> 'action 273'
+actionsTable[1760] = 274; // 'state 55' -> @expound.EOF -> reduce -> 'action 274'
+actionsTable[1762] = 275; // 'state 55' -> WS -> reduce -> 'action 275'
+actionsTable[1767] = 276; // 'state 55' -> CURLY_CLOSE -> reduce -> 'action 276'
+actionsTable[1768] = 277; // 'state 55' -> COMMA -> reduce -> 'action 277'
+actionsTable[1772] = 278; // 'state 55' -> BRACKET_CLOSE -> reduce -> 'action 278'
+actionsTable[1794] = 279; // 'state 56' -> WS -> shift -> 'action 279'
+actionsTable[1802] = 280; // 'state 56' -> STRING -> shift -> 'action 280'
+actionsTable[1812] = 281; // 'state 56' -> Member -> shift -> 'action 281'
+actionsTable[1858] = 282; // 'state 58' -> WS -> shift -> 'action 282'
+actionsTable[1859] = 283; // 'state 58' -> TRUE -> shift -> 'action 283'
+actionsTable[1860] = 284; // 'state 58' -> FALSE -> shift -> 'action 284'
+actionsTable[1861] = 285; // 'state 58' -> NULL -> shift -> 'action 285'
+actionsTable[1862] = 286; // 'state 58' -> CURLY_OPEN -> shift -> 'action 286'
+actionsTable[1866] = 287; // 'state 58' -> STRING -> shift -> 'action 287'
+actionsTable[1867] = 288; // 'state 58' -> BRACKET_OPEN -> shift -> 'action 288'
+actionsTable[1869] = 289; // 'state 58' -> NUMBER -> shift -> 'action 289'
+actionsTable[1872] = 290; // 'state 58' -> Element -> shift -> 'action 290'
+actionsTable[1873] = 291; // 'state 58' -> Value -> shift -> 'action 291'
+actionsTable[1874] = 292; // 'state 58' -> Object -> shift -> 'action 292'
+actionsTable[1877] = 293; // 'state 58' -> Array -> shift -> 'action 293'
+actionsTable[1833] = 294; // 'state 57' -> COLON -> shift -> 'action 294'
+actionsTable[1888] = 295; // 'state 59' -> @expound.EOF -> reduce -> 'action 295'
+actionsTable[1890] = 296; // 'state 59' -> WS -> reduce -> 'action 296'
+actionsTable[1895] = 297; // 'state 59' -> CURLY_CLOSE -> reduce -> 'action 297'
+actionsTable[1896] = 298; // 'state 59' -> COMMA -> reduce -> 'action 298'
+actionsTable[1900] = 299; // 'state 59' -> BRACKET_CLOSE -> reduce -> 'action 299'
+actionsTable[1952] = 300; // 'state 61' -> @expound.EOF -> reduce -> 'action 300'
+actionsTable[1954] = 301; // 'state 61' -> WS -> reduce -> 'action 301'
+actionsTable[1959] = 302; // 'state 61' -> CURLY_CLOSE -> reduce -> 'action 302'
+actionsTable[1960] = 303; // 'state 61' -> COMMA -> reduce -> 'action 303'
+actionsTable[1964] = 304; // 'state 61' -> BRACKET_CLOSE -> reduce -> 'action 304'
+actionsTable[1922] = 305; // 'state 60' -> WS -> shift -> 'action 305'
+actionsTable[1923] = 306; // 'state 60' -> TRUE -> shift -> 'action 306'
+actionsTable[1924] = 307; // 'state 60' -> FALSE -> shift -> 'action 307'
+actionsTable[1925] = 308; // 'state 60' -> NULL -> shift -> 'action 308'
+actionsTable[1926] = 309; // 'state 60' -> CURLY_OPEN -> shift -> 'action 309'
+actionsTable[1930] = 310; // 'state 60' -> STRING -> shift -> 'action 310'
+actionsTable[1931] = 311; // 'state 60' -> BRACKET_OPEN -> shift -> 'action 311'
+actionsTable[1933] = 312; // 'state 60' -> NUMBER -> shift -> 'action 312'
+actionsTable[1936] = 313; // 'state 60' -> Element -> shift -> 'action 313'
+actionsTable[1937] = 314; // 'state 60' -> Value -> shift -> 'action 314'
+actionsTable[1938] = 315; // 'state 60' -> Object -> shift -> 'action 315'
+actionsTable[1941] = 316; // 'state 60' -> Array -> shift -> 'action 316'
+actionsTable[2018] = 317; // 'state 63' -> WS -> shift -> 'action 317'
+actionsTable[2019] = 318; // 'state 63' -> TRUE -> shift -> 'action 318'
+actionsTable[2020] = 319; // 'state 63' -> FALSE -> shift -> 'action 319'
+actionsTable[2021] = 320; // 'state 63' -> NULL -> shift -> 'action 320'
+actionsTable[2022] = 321; // 'state 63' -> CURLY_OPEN -> shift -> 'action 321'
+actionsTable[2026] = 322; // 'state 63' -> STRING -> shift -> 'action 322'
+actionsTable[2027] = 323; // 'state 63' -> BRACKET_OPEN -> shift -> 'action 323'
+actionsTable[2029] = 324; // 'state 63' -> NUMBER -> shift -> 'action 324'
+actionsTable[2032] = 325; // 'state 63' -> Element -> shift -> 'action 325'
+actionsTable[2033] = 326; // 'state 63' -> Value -> shift -> 'action 326'
+actionsTable[2034] = 327; // 'state 63' -> Object -> shift -> 'action 327'
+actionsTable[2037] = 328; // 'state 63' -> Array -> shift -> 'action 328'
+actionsTable[1993] = 329; // 'state 62' -> COLON -> shift -> 'action 329'
+actionsTable[2087] = 330; // 'state 65' -> CURLY_CLOSE -> reduce -> 'action 330'
+actionsTable[2088] = 331; // 'state 65' -> COMMA -> reduce -> 'action 331'
+actionsTable[2058] = 332; // 'state 64' -> STRING -> shift -> 'action 332'
+actionsTable[2119] = 333; // 'state 66' -> CURLY_CLOSE -> reduce -> 'action 333'
+actionsTable[2120] = 334; // 'state 66' -> COMMA -> reduce -> 'action 334'
+actionsTable[2146] = 335; // 'state 67' -> WS -> shift -> 'action 335'
+actionsTable[2147] = 336; // 'state 67' -> TRUE -> shift -> 'action 336'
+actionsTable[2148] = 337; // 'state 67' -> FALSE -> shift -> 'action 337'
+actionsTable[2149] = 338; // 'state 67' -> NULL -> shift -> 'action 338'
+actionsTable[2150] = 339; // 'state 67' -> CURLY_OPEN -> shift -> 'action 339'
+actionsTable[2154] = 340; // 'state 67' -> STRING -> shift -> 'action 340'
+actionsTable[2155] = 341; // 'state 67' -> BRACKET_OPEN -> shift -> 'action 341'
+actionsTable[2157] = 342; // 'state 67' -> NUMBER -> shift -> 'action 342'
+actionsTable[2160] = 343; // 'state 67' -> Element -> shift -> 'action 343'
+actionsTable[2161] = 344; // 'state 67' -> Value -> shift -> 'action 344'
+actionsTable[2162] = 345; // 'state 67' -> Object -> shift -> 'action 345'
+actionsTable[2165] = 346; // 'state 67' -> Array -> shift -> 'action 346'
+actionsTable[2184] = 347; // 'state 68' -> COMMA -> reduce -> 'action 347'
+actionsTable[2188] = 348; // 'state 68' -> BRACKET_CLOSE -> reduce -> 'action 348'
+actionsTable[2242] = 349; // 'state 70' -> WS -> shift -> 'action 349'
+actionsTable[2243] = 350; // 'state 70' -> TRUE -> shift -> 'action 350'
+actionsTable[2244] = 351; // 'state 70' -> FALSE -> shift -> 'action 351'
+actionsTable[2245] = 352; // 'state 70' -> NULL -> shift -> 'action 352'
+actionsTable[2246] = 353; // 'state 70' -> CURLY_OPEN -> shift -> 'action 353'
+actionsTable[2250] = 354; // 'state 70' -> STRING -> shift -> 'action 354'
+actionsTable[2251] = 355; // 'state 70' -> BRACKET_OPEN -> shift -> 'action 355'
+actionsTable[2253] = 356; // 'state 70' -> NUMBER -> shift -> 'action 356'
+actionsTable[2256] = 357; // 'state 70' -> Element -> shift -> 'action 357'
+actionsTable[2257] = 358; // 'state 70' -> Value -> shift -> 'action 358'
+actionsTable[2258] = 359; // 'state 70' -> Object -> shift -> 'action 359'
+actionsTable[2261] = 360; // 'state 70' -> Array -> shift -> 'action 360'
+actionsTable[2217] = 361; // 'state 69' -> COLON -> shift -> 'action 361'
+actionsTable[2311] = 362; // 'state 72' -> CURLY_CLOSE -> reduce -> 'action 362'
+actionsTable[2312] = 363; // 'state 72' -> COMMA -> reduce -> 'action 363'
+actionsTable[2282] = 364; // 'state 71' -> STRING -> shift -> 'action 364'
+actionsTable[2343] = 365; // 'state 73' -> CURLY_CLOSE -> reduce -> 'action 365'
+actionsTable[2344] = 366; // 'state 73' -> COMMA -> reduce -> 'action 366'
+actionsTable[2370] = 367; // 'state 74' -> WS -> shift -> 'action 367'
+actionsTable[2371] = 368; // 'state 74' -> TRUE -> shift -> 'action 368'
+actionsTable[2372] = 369; // 'state 74' -> FALSE -> shift -> 'action 369'
+actionsTable[2373] = 370; // 'state 74' -> NULL -> shift -> 'action 370'
+actionsTable[2374] = 371; // 'state 74' -> CURLY_OPEN -> shift -> 'action 371'
+actionsTable[2378] = 372; // 'state 74' -> STRING -> shift -> 'action 372'
+actionsTable[2379] = 373; // 'state 74' -> BRACKET_OPEN -> shift -> 'action 373'
+actionsTable[2381] = 374; // 'state 74' -> NUMBER -> shift -> 'action 374'
+actionsTable[2384] = 375; // 'state 74' -> Element -> shift -> 'action 375'
+actionsTable[2385] = 376; // 'state 74' -> Value -> shift -> 'action 376'
+actionsTable[2386] = 377; // 'state 74' -> Object -> shift -> 'action 377'
+actionsTable[2389] = 378; // 'state 74' -> Array -> shift -> 'action 378'
+actionsTable[2408] = 379; // 'state 75' -> COMMA -> reduce -> 'action 379'
+actionsTable[2412] = 380; // 'state 75' -> BRACKET_CLOSE -> reduce -> 'action 380'
+actionsTable[2439] = 381; // 'state 76' -> CURLY_CLOSE -> reduce -> 'action 381'
+actionsTable[2440] = 382; // 'state 76' -> COMMA -> reduce -> 'action 382'
+actionsTable[2466] = 383; // 'state 77' -> WS -> shift -> 'action 383'
+actionsTable[2467] = 384; // 'state 77' -> TRUE -> shift -> 'action 384'
+actionsTable[2468] = 385; // 'state 77' -> FALSE -> shift -> 'action 385'
+actionsTable[2469] = 386; // 'state 77' -> NULL -> shift -> 'action 386'
+actionsTable[2470] = 387; // 'state 77' -> CURLY_OPEN -> shift -> 'action 387'
+actionsTable[2474] = 388; // 'state 77' -> STRING -> shift -> 'action 388'
+actionsTable[2475] = 389; // 'state 77' -> BRACKET_OPEN -> shift -> 'action 389'
+actionsTable[2477] = 390; // 'state 77' -> NUMBER -> shift -> 'action 390'
+actionsTable[2480] = 391; // 'state 77' -> Element -> shift -> 'action 391'
+actionsTable[2481] = 392; // 'state 77' -> Value -> shift -> 'action 392'
+actionsTable[2482] = 393; // 'state 77' -> Object -> shift -> 'action 393'
+actionsTable[2485] = 394; // 'state 77' -> Array -> shift -> 'action 394'
+actionsTable[2503] = 395; // 'state 78' -> CURLY_CLOSE -> reduce -> 'action 395'
+actionsTable[2504] = 396; // 'state 78' -> COMMA -> reduce -> 'action 396'
+actionsTable[2535] = 397; // 'state 79' -> CURLY_CLOSE -> reduce -> 'action 397'
+actionsTable[2536] = 398; // 'state 79' -> COMMA -> reduce -> 'action 398'
+actionsTable[2562] = 399; // 'state 80' -> WS -> shift -> 'action 399'
+actionsTable[2563] = 400; // 'state 80' -> TRUE -> shift -> 'action 400'
+actionsTable[2564] = 401; // 'state 80' -> FALSE -> shift -> 'action 401'
+actionsTable[2565] = 402; // 'state 80' -> NULL -> shift -> 'action 402'
+actionsTable[2566] = 403; // 'state 80' -> CURLY_OPEN -> shift -> 'action 403'
+actionsTable[2570] = 404; // 'state 80' -> STRING -> shift -> 'action 404'
+actionsTable[2571] = 405; // 'state 80' -> BRACKET_OPEN -> shift -> 'action 405'
+actionsTable[2573] = 406; // 'state 80' -> NUMBER -> shift -> 'action 406'
+actionsTable[2576] = 407; // 'state 80' -> Element -> shift -> 'action 407'
+actionsTable[2577] = 408; // 'state 80' -> Value -> shift -> 'action 408'
+actionsTable[2578] = 409; // 'state 80' -> Object -> shift -> 'action 409'
+actionsTable[2581] = 410; // 'state 80' -> Array -> shift -> 'action 410'
+actionsTable[2599] = 411; // 'state 81' -> CURLY_CLOSE -> reduce -> 'action 411'
+actionsTable[2600] = 412; // 'state 81' -> COMMA -> reduce -> 'action 412'
+actionsTable[2631] = 413; // 'state 82' -> CURLY_CLOSE -> reduce -> 'action 413'
+actionsTable[2632] = 414; // 'state 82' -> COMMA -> reduce -> 'action 414'
+actionsTable[2663] = 415; // 'state 83' -> CURLY_CLOSE -> reduce -> 'action 415'
+actionsTable[2664] = 416; // 'state 83' -> COMMA -> reduce -> 'action 416'
 
-const gotoTable = new Uint16Array(1932).fill(0xffff);
+const gotoTable = new Uint16Array(2688).fill(0xffff);
 gotoTable[15] = 9; // 'state 9'
 gotoTable[16] = 10; // 'state 10'
 gotoTable[17] = 11; // 'state 11'
 gotoTable[18] = 12; // 'state 12'
 gotoTable[21] = 13; // 'state 13'
-gotoTable[40] = 22; // 'state 22'
-gotoTable[41] = 23; // 'state 23'
-gotoTable[44] = 24; // 'state 24'
-gotoTable[134] = 28; // 'state 28'
-gotoTable[135] = 29; // 'state 29'
-gotoTable[183] = 33; // 'state 33'
-gotoTable[177] = 32; // 'state 32'
-gotoTable[178] = 11; // 'state 11'
-gotoTable[179] = 12; // 'state 12'
-gotoTable[182] = 13; // 'state 13'
-gotoTable[433] = 38; // 'state 38'
-gotoTable[434] = 39; // 'state 39'
-gotoTable[482] = 43; // 'state 43'
-gotoTable[476] = 42; // 'state 42'
-gotoTable[477] = 11; // 'state 11'
-gotoTable[478] = 12; // 'state 12'
-gotoTable[481] = 13; // 'state 13'
-gotoTable[707] = 22; // 'state 22'
-gotoTable[708] = 12; // 'state 12'
-gotoTable[711] = 13; // 'state 13'
-gotoTable[937] = 22; // 'state 22'
-gotoTable[938] = 12; // 'state 12'
-gotoTable[941] = 13; // 'state 13'
-gotoTable[1101] = 65; // 'state 65'
-gotoTable[1143] = 66; // 'state 66'
-gotoTable[1144] = 11; // 'state 11'
-gotoTable[1145] = 12; // 'state 12'
-gotoTable[1148] = 13; // 'state 13'
-gotoTable[1189] = 68; // 'state 68'
-gotoTable[1190] = 11; // 'state 11'
-gotoTable[1191] = 12; // 'state 12'
-gotoTable[1194] = 13; // 'state 13'
-gotoTable[1308] = 72; // 'state 72'
-gotoTable[1350] = 73; // 'state 73'
-gotoTable[1351] = 11; // 'state 11'
-gotoTable[1352] = 12; // 'state 12'
-gotoTable[1355] = 13; // 'state 13'
-gotoTable[1396] = 75; // 'state 75'
-gotoTable[1397] = 11; // 'state 11'
-gotoTable[1398] = 12; // 'state 12'
-gotoTable[1401] = 13; // 'state 13'
-gotoTable[1465] = 76; // 'state 76'
-gotoTable[1466] = 11; // 'state 11'
-gotoTable[1467] = 12; // 'state 12'
-gotoTable[1470] = 13; // 'state 13'
-gotoTable[1557] = 78; // 'state 78'
-gotoTable[1558] = 11; // 'state 11'
-gotoTable[1559] = 12; // 'state 12'
-gotoTable[1562] = 13; // 'state 13'
-gotoTable[1626] = 79; // 'state 79'
-gotoTable[1627] = 11; // 'state 11'
-gotoTable[1628] = 12; // 'state 12'
-gotoTable[1631] = 13; // 'state 13'
-gotoTable[1718] = 81; // 'state 81'
-gotoTable[1719] = 11; // 'state 11'
-gotoTable[1720] = 12; // 'state 12'
-gotoTable[1723] = 13; // 'state 13'
-gotoTable[1787] = 82; // 'state 82'
-gotoTable[1788] = 11; // 'state 11'
-gotoTable[1789] = 12; // 'state 12'
-gotoTable[1792] = 13; // 'state 13'
-gotoTable[1856] = 83; // 'state 83'
-gotoTable[1857] = 11; // 'state 11'
-gotoTable[1858] = 12; // 'state 12'
-gotoTable[1861] = 13; // 'state 13'
+gotoTable[49] = 22; // 'state 22'
+gotoTable[50] = 23; // 'state 23'
+gotoTable[53] = 24; // 'state 24'
+gotoTable[179] = 28; // 'state 28'
+gotoTable[180] = 29; // 'state 29'
+gotoTable[246] = 33; // 'state 33'
+gotoTable[240] = 32; // 'state 32'
+gotoTable[241] = 11; // 'state 11'
+gotoTable[242] = 12; // 'state 12'
+gotoTable[245] = 13; // 'state 13'
+gotoTable[595] = 38; // 'state 38'
+gotoTable[596] = 39; // 'state 39'
+gotoTable[662] = 43; // 'state 43'
+gotoTable[656] = 42; // 'state 42'
+gotoTable[657] = 11; // 'state 11'
+gotoTable[658] = 12; // 'state 12'
+gotoTable[661] = 13; // 'state 13'
+gotoTable[977] = 22; // 'state 22'
+gotoTable[978] = 12; // 'state 12'
+gotoTable[981] = 13; // 'state 13'
+gotoTable[1297] = 22; // 'state 22'
+gotoTable[1298] = 12; // 'state 12'
+gotoTable[1301] = 13; // 'state 13'
+gotoTable[1524] = 65; // 'state 65'
+gotoTable[1584] = 66; // 'state 66'
+gotoTable[1585] = 11; // 'state 11'
+gotoTable[1586] = 12; // 'state 12'
+gotoTable[1589] = 13; // 'state 13'
+gotoTable[1648] = 68; // 'state 68'
+gotoTable[1649] = 11; // 'state 11'
+gotoTable[1650] = 12; // 'state 12'
+gotoTable[1653] = 13; // 'state 13'
+gotoTable[1812] = 72; // 'state 72'
+gotoTable[1872] = 73; // 'state 73'
+gotoTable[1873] = 11; // 'state 11'
+gotoTable[1874] = 12; // 'state 12'
+gotoTable[1877] = 13; // 'state 13'
+gotoTable[1936] = 75; // 'state 75'
+gotoTable[1937] = 11; // 'state 11'
+gotoTable[1938] = 12; // 'state 12'
+gotoTable[1941] = 13; // 'state 13'
+gotoTable[2032] = 76; // 'state 76'
+gotoTable[2033] = 11; // 'state 11'
+gotoTable[2034] = 12; // 'state 12'
+gotoTable[2037] = 13; // 'state 13'
+gotoTable[2160] = 78; // 'state 78'
+gotoTable[2161] = 11; // 'state 11'
+gotoTable[2162] = 12; // 'state 12'
+gotoTable[2165] = 13; // 'state 13'
+gotoTable[2256] = 79; // 'state 79'
+gotoTable[2257] = 11; // 'state 11'
+gotoTable[2258] = 12; // 'state 12'
+gotoTable[2261] = 13; // 'state 13'
+gotoTable[2384] = 81; // 'state 81'
+gotoTable[2385] = 11; // 'state 11'
+gotoTable[2386] = 12; // 'state 12'
+gotoTable[2389] = 13; // 'state 13'
+gotoTable[2480] = 82; // 'state 82'
+gotoTable[2481] = 11; // 'state 11'
+gotoTable[2482] = 12; // 'state 12'
+gotoTable[2485] = 13; // 'state 13'
+gotoTable[2576] = 83; // 'state 83'
+gotoTable[2577] = 11; // 'state 11'
+gotoTable[2578] = 12; // 'state 12'
+gotoTable[2581] = 13; // 'state 13'
 
 const nextTokens = {
   initial: nextTokenInitial,
@@ -5575,7 +6448,7 @@ function parse(input) {
   while (true) {
     const currentState = stack[sp];
 
-    const actionLookup = actionsTable[currentState * 23 + lookahead];
+    const actionLookup = actionsTable[currentState * 32 + lookahead];
     if (actionLookup === 0xffff) {
       throw new Error(`Unexpected lookahead ${lookahead}`);
     }
@@ -5610,7 +6483,7 @@ function parse(input) {
         }
         sp -= stackItemsToReduce;
 
-        const nextState = gotoTable[stack[sp] * 23 + action.symbol];
+        const nextState = gotoTable[stack[sp] * 32 + action.symbol];
         stack[++sp] = nextState;
         treeStack[sp] = {
           name: parserSymbols[action.symbol],
