@@ -1383,7 +1383,7 @@ const next = (input, offset) => {
   let success = false;
   let n = j;
   while (!success && n > 0) {
-    success = visited[n] <= 19712 && visited[n] % 256 === 0;
+    success = visited[n] <= 19712;
     n--;
   }
   n = n + 1;
