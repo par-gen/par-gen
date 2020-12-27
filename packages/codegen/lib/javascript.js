@@ -244,53 +244,42 @@ export class JavaScriptBaseCodegen {
         .join("\n")}
       */
 
-      // currentState -> nameIndex -> lookaheadIndex -> length of items to reduce
-      const reducerStates = [
-        ${states
-          .map((state, i) => {
-            const nameTable = parserSymbols.map((_, j) => {
-              const items = Array.from(state.values()).filter(
-                (item) =>
-                  item.name === parserSymbols[j] &&
-                  item.marker === item.tokens.length
+      const reducerStates = new Uint8Array(${
+        states.length * parserSymbols.length * parserSymbols.length
+      });
+      ${states
+        .reduce((table, state, i) => {
+          const items = Array.from(state.values());
+
+          parserSymbols.forEach((symbol, j) => {
+            const matchedItems = items.filter(
+              (item) =>
+                item.name === symbol && item.marker === item.tokens.length
+            );
+
+            parserSymbols.forEach((lookahead, k) => {
+              const item = matchedItems.find(
+                (item) => item.lookahead === lookahead
               );
 
-              const lengthTable = parserSymbols.map((_, k) => {
-                const matches = items.filter(
-                  (item) => item.lookahead === parserSymbols[k]
-                );
-                if (matches.length === 0) {
-                  return `-1,`;
-                }
-                if (matches.length > 1) {
-                  throw new Error(
-                    `Multiple items with name '${parserSymbols[j]}' and lookahead '${parserSymbols[k]}' found`
-                  );
-                }
-                return `${matches[0].tokens.length}, // 'state ${i}' -> ${parserSymbols[j]} -> ${parserSymbols[k]}`;
-              });
-
-              if (lengthTable.every((entry) => entry === "-1,")) {
-                return `undefined,`;
+              if (!item) {
+                return;
               }
 
-              return `// ${parserSymbols[j]}
-                [
-                ${lengthTable.join("\n")}
-              ],`;
+              table.push(
+                `reducerStates[${
+                  i * states.length +
+                  j * parserSymbols.length +
+                  k * parserSymbols.length
+                }] = ${
+                  item.tokens.length
+                }; // 'state ${i}' -> ${symbol} -> ${lookahead}`
+              );
             });
-
-            if (nameTable.every((entry) => entry === "undefined,")) {
-              return "undefined, ";
-            }
-
-            return `// 'state ${i}'
-              [
-              ${nameTable.join("\n")}
-            ],`;
-          })
-          .join("\n")}
-      ];
+          });
+          return table;
+        }, /** @type {string[]} */ ([]))
+        .join("\n")}
 
       ${
         requiresSemanticActions
@@ -537,7 +526,11 @@ export class JavaScriptBaseCodegen {
                 }
                 `
               )}
-              let stackItemsToReduce = reducerStates[currentState][action.symbol][lookahead];
+              let stackItemsToReduce = reducerStates[(currentState * ${
+                states.length
+              }) + (action.symbol * ${parserSymbols.length}) + (lookahead * ${
+      parserSymbols.length
+    })];
               ${
                 requiresSemanticActions
                   ? "semanticReducerActions[currentState]?.[action.symbol][lookahead](stack, sp);"
