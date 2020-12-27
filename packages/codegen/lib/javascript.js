@@ -409,15 +409,15 @@ export class JavaScriptBaseCodegen {
           .join("\n")}
       };
 
+      let lexer_sp = 0;
       const lexer = {
         _stack: [],
         push(name) {
           nextToken = nextTokens[name];
-          lexer._stack.push(nextToken);
+          lexer._stack[lexer_sp++] = nextToken;
         },
         pop() {
-          lexer._stack.pop();
-          nextToken = lexer._stack[lexer._stack.length - 1];
+          nextToken = lexer._stack[lexer_sp--];
         }
       };
       let nextToken;
