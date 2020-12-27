@@ -140,9 +140,7 @@ export class JavaScriptBaseCodegen {
         while (!success && n > 0) {
           ${(() => {
             return isOptimizable
-              ? `success = visited[n] <= ${
-                  finals[finals.length - 1]
-                } && visited[n] % ${columns} === 0;`
+              ? `success = visited[n] <= ${finals[finals.length - 1]};`
               : `success = ${finals
                   .map((final) => `${final} === visited[n]`)
                   .join(" || ")};`;
