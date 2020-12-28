@@ -3258,7 +3258,80 @@ const lexer = {
 };
 let nextToken;
 
+/**
+ * We use the stack to store shifted/reduced states in [sp] and we also use
+ * [sp + 1] to store the tree pointer references to shifted/reduced nodes.
+ * This allows us to use a single typed array to store two kinds of data.
+ * * [sp] always points to the current state on top of the stack and
+ * * [sp + 1] always points to the tree item currently on top of the stack
+ * ___________________________________
+ * |_dummy_|_state_|_tp_|_state_|_tp_|...
+ */
 const stack = new Uint8Array(512);
+
+/**
+ * This typed array contains the syntax tree from a parse.
+ * A node is stored in the following layout:
+ * struct Node {
+ *  name: uint16,
+ *  start: uint16,
+ *  end: uint16,
+ *  numChildren: uint16,
+ *  firstChild: uint16,
+ *  nextSibling: uint16,
+ * }
+ * This enables efficient storage of nodes with variable number of children and
+ * fast DFS traversal.
+ */
+const tree = new Uint16Array(8192);
+
+const createProxy = (tree, pointer) => {
+  return new Proxy(
+    {},
+    {
+      get(target, prop) {
+        switch (prop) {
+          case "name":
+            return parserSymbols[tree[pointer]];
+          case "start":
+            return tree[pointer + 1] === 0xffff ? -1 : tree[pointer + 1];
+          case "end":
+            return tree[pointer + 2] === 0xffff ? -1 : tree[pointer + 2];
+          case "items":
+            const nChildren = tree[pointer + 3];
+
+            if (nChildren === 0) {
+              return undefined;
+            }
+
+            const firstChild = tree[pointer + 4];
+            const children = [createProxy(tree, firstChild)];
+
+            for (let i = 1; i < nChildren; i++) {
+              children.push(createProxy(tree, tree[firstChild + 5]));
+            }
+
+            return children;
+          case "__tree":
+            return tree;
+          case "__pointer":
+            return pointer;
+        }
+      },
+      ownKeys(target) {
+        return ["name", "start", "end", "items"];
+      },
+      has(target, prop) {
+        return this.ownKeys(target).includes(prop);
+      },
+      getOwnPropertyDescriptor(target, prop) {
+        return this.has(target, prop)
+          ? { enumerable: true, configurable: true }
+          : undefined;
+      },
+    }
+  );
+};
 
 function parse(input) {
   lexer.push("initial");
@@ -3268,9 +3341,13 @@ function parse(input) {
   let result = nextToken(stream, 0);
   let lookahead = result.state;
 
-  const treeStack = new Array(512);
+  // add a dummy entry to ensure no out-of-bounds reads for [sp - 1]
   stack[0] = 0;
-  let sp = 0;
+  stack[1] = 0; // starting state
+  let sp = 1;
+  // let the tree stack start from offset 6
+  // offset 0 means an error occurred and should be used by the parser
+  let tp = 6;
 
   while (true) {
     const currentState = stack[sp];
@@ -3287,15 +3364,21 @@ function parse(input) {
     switch (action.op) {
       case 2: // done
         lexer.pop();
-        return treeStack[sp];
+        return createProxy(tree, tp - 6);
       case 0: // shift
-        stack[++sp] = action.state;
-        treeStack[sp] = {
-          name: parserSymbols[lookahead],
-          start: result.start,
-          end: result.end,
-          items: undefined,
-        };
+        tree[tp] = lookahead; // name
+        tree[tp + 1] = result.start;
+        tree[tp + 2] = result.end;
+        // TODO: test with mac and win
+        // tree[tp + 3] is 0 by default and leaf nodes have no children
+        // tree[tp + 4] is 0 by default and leaf nodes need no first child
+        tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+        // shift current address on top of "address stack"
+        stack[sp + 1] = tp;
+
+        sp += 2;
+        stack[sp] = action.state;
 
         result = nextToken(stream, result.end);
         lookahead = result.state;
@@ -3307,25 +3390,28 @@ function parse(input) {
             currentState * 84 + action.symbol * 32 + lookahead * 32
           ];
 
-        const items = new Array(stackItemsToReduce);
-        for (let i = 0; i < stackItemsToReduce; i++) {
-          items[i] = treeStack[i + sp + 1 - stackItemsToReduce];
-        }
-        sp -= stackItemsToReduce;
+        // multiply by two because our stack contains adresses and states interleaved
+        sp -= stackItemsToReduce * 2;
+
+        tree[tp] = action.symbol; // name
+        tree[tp + 1] = -1; // start
+        tree[tp + 2] = -1; // end
+        tree[tp + 3] = stackItemsToReduce; // number of children
+        tree[tp + 4] = stack[sp + 1]; // first child
+        tree[stack[sp - 1] + 5] = tp; // next sibling
+
+        stack[sp + 1] = tp;
 
         const nextState = gotoTable[stack[sp] * 32 + action.symbol];
-        stack[++sp] = nextState;
-        treeStack[sp] = {
-          name: parserSymbols[action.symbol],
-          start: -1,
-          end: -1,
-          items,
-        };
+        sp += 2;
+        stack[sp] = nextState;
 
         break;
       default:
         throw new Error("Parser Error");
     }
+
+    tp += 6;
   }
 }
 
