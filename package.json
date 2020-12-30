@@ -20,6 +20,7 @@
     "preinstall": "npx only-allow pnpm",
     "check": "tsc --build .",
     "check-watch": "tsc --build . --watch",
+    "pretest": "pnpm run --dir parsers/json start",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --run-in-band"
   },
   "engines": {
