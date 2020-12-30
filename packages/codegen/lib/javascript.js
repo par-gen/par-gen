@@ -602,9 +602,20 @@ export class JavaScriptBaseCodegen {
               )}
               break;
             case ${actionOps.indexOf("reduce")}: // reduce
+              let stackItemsToReduce = reducerStates[(currentState * ${
+                states.length
+              }) + (action.symbol * ${parserSymbols.length}) + (lookahead * ${
+      parserSymbols.length
+    })];
+
               ${debug(
                 () =>
-                  `console.log('action: reduce', action.symbol, parserSymbols[action.symbol]);`
+                  `console.log('action: reduce', action.symbol,
+                    parserSymbols[action.symbol],
+                    Array.from({ length: stackItemsToReduce })
+                      .map((_, i) => parserSymbols[tree[stack[sp - i * 2 - 1]]])
+                      .reverse()
+                  );`
               )}
               ${debug(
                 () => `
@@ -615,11 +626,6 @@ export class JavaScriptBaseCodegen {
                 }
                 `
               )}
-              let stackItemsToReduce = reducerStates[(currentState * ${
-                states.length
-              }) + (action.symbol * ${parserSymbols.length}) + (lookahead * ${
-      parserSymbols.length
-    })];
               ${
                 requiresSemanticActions
                   ? "semanticReducerActions[currentState]?.[action.symbol][lookahead](stack, sp);"
