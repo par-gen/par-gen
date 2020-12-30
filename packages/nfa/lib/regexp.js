@@ -214,7 +214,7 @@ function next(stack, input) {
       let i = 0;
       while (i < values.length) {
         // character ranges
-        if (i < values.length + 2 && values[i + 1] === "-") {
+        if (i + 2 < values.length && values[i + 1] === "-") {
           for (
             let c = values[i].charCodeAt(0), last = values[i + 2].charCodeAt(0);
             c <= last;

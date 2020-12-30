@@ -338,6 +338,27 @@ describe("parse", () => {
     );
   });
 
+  it("should accept character classes including dash", () => {
+    expect(parse("[-]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: expect.any(Array),
+      })
+    );
+    expect(parse("[a-]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: expect.any(Array),
+      })
+    );
+    expect(parse("[-a]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: expect.any(Array),
+      })
+    );
+  });
+
   it("should accept negative character classes", () => {
     expect(parse("[^\x00-\x60\x64-\xff]")).toEqual(
       node({
