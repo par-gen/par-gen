@@ -1,7 +1,7 @@
 import { optionals } from "./optionals.js";
 
-export const EOF = "@expound.EOF";
-export const ERROR = "@expound.ERROR";
+export const EOF = "@par-gen.EOF";
+export const ERROR = "@par-gen.ERROR";
 
 /**
  * @typedef {Object} Token

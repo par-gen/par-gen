@@ -1,9 +1,9 @@
-const EOF = "@expound.EOF";
-const ERROR = "@expound.ERROR";
+const EOF = "@par-gen.EOF";
+const ERROR = "@par-gen.ERROR";
 
 const tokenNames = [
-  "@expound.EOF",
-  "@expound.ERROR",
+  "@par-gen.EOF",
+  "@par-gen.ERROR",
   "WS",
   "WS",
   "WS",
@@ -106,8 +106,8 @@ const tokenNames = [
   null,
 ];
 const tokenIds = [
-  0, // @expound.EOF
-  1, // @expound.ERROR
+  0, // @par-gen.EOF
+  1, // @par-gen.ERROR
   2, // WS
   2, // WS
   2, // WS
@@ -924,8 +924,8 @@ table[19511] = 18944; // NUMBER
 table[19512] = 19200; // NUMBER
 table[19513] = 19456; // NUMBER
 table[19525] = 20736; // NUMBER
-table[20000] = 0; // @expound.EOF
-table[19978] = 256; // @expound.ERROR
+table[20000] = 0; // @par-gen.EOF
+table[19978] = 256; // @par-gen.ERROR
 table[19981] = 512; // WS
 table[19977] = 768; // WS
 table[20084] = 23808; // FALSE

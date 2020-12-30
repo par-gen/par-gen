@@ -7,7 +7,7 @@ import { JavaScriptBaseCodegen } from "./javascript.js";
  */
 
 /**
- * @typedef {import('@knisterpeter/expound-parser/types/parser').Lexers} Lexers
+ * @typedef {import('@par-gen/parser/types/parser').Lexers} Lexers
  */
 
 /**

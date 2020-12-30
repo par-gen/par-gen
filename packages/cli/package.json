@@ -1,13 +1,13 @@
 {
-  "name": "@knisterpeter/expound-cli",
+  "name": "@par-gen/cli",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "expound": "./lib/index.js"
+    "par-gen": "./lib/index.js"
   },
   "dependencies": {
-    "@knisterpeter/expound-codegen": "workspace:0.1.0",
-    "@knisterpeter/expound-parser": "workspace:0.1.0",
+    "@par-gen/codegen": "workspace:0.1.0",
+    "@par-gen/parser": "workspace:0.1.0",
     "sade": "1.7.4"
   },
   "devDependencies": {

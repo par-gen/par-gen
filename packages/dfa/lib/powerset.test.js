@@ -1,4 +1,4 @@
-import { NFA } from "@knisterpeter/expound-nfa";
+import { NFA } from "@par-gen/nfa";
 
 import { fromNFA } from "./powerset.js";
 

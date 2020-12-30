@@ -1,4 +1,4 @@
-import { generate as genParser } from "@knisterpeter/expound-parser";
+import { generate as genParser } from "@par-gen/parser";
 import { promises as fsp, existsSync } from "fs";
 import { tmpdir } from "os";
 import { join, basename } from "path";

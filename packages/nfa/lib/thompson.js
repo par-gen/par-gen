@@ -3,7 +3,7 @@ import { parse, ops } from "./regexp.js";
 import debug from "debug";
 import { performance } from "perf_hooks";
 
-const log = debug("expound:nfa");
+const log = debug("par-gen:nfa");
 
 /**
  * @template VALUE

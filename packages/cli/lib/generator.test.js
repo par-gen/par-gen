@@ -1,7 +1,7 @@
 import {
   JavaScriptCommonJsCodegen,
   JavaScriptModuleCodegen,
-} from "@knisterpeter/expound-codegen";
+} from "@par-gen/codegen";
 
 import { createGenerator } from "./generator.js";
 

@@ -54,7 +54,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 2' -> Value -> @expound.EOF
+      1, // 'state 2' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 2' -> Value -> WS
       -1,
@@ -123,7 +123,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 3' -> Value -> @expound.EOF
+      1, // 'state 3' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 3' -> Value -> WS
       -1,
@@ -192,7 +192,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 4' -> Value -> @expound.EOF
+      1, // 'state 4' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 4' -> Value -> WS
       -1,
@@ -262,7 +262,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 6' -> Value -> @expound.EOF
+      1, // 'state 6' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 6' -> Value -> WS
       -1,
@@ -332,7 +332,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 8' -> Value -> @expound.EOF
+      1, // 'state 8' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 8' -> Value -> WS
       -1,
@@ -398,7 +398,7 @@ const reducerStates = [
     undefined,
     // S
     [
-      1, // 'state 9' -> S -> @expound.EOF
+      1, // 'state 9' -> S -> @par-gen.EOF
       -1,
       -1,
       -1,
@@ -468,7 +468,7 @@ const reducerStates = [
     undefined,
     // Json
     [
-      1, // 'state 10' -> Json -> @expound.EOF
+      1, // 'state 10' -> Json -> @par-gen.EOF
       -1,
       -1,
       -1,
@@ -538,7 +538,7 @@ const reducerStates = [
     undefined,
     // Element
     [
-      1, // 'state 11' -> Element -> @expound.EOF
+      1, // 'state 11' -> Element -> @par-gen.EOF
       -1,
       -1,
       -1,
@@ -608,7 +608,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 12' -> Value -> @expound.EOF
+      1, // 'state 12' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 12' -> Value -> WS
       -1,
@@ -677,7 +677,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 13' -> Value -> @expound.EOF
+      1, // 'state 13' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 13' -> Value -> WS
       -1,
@@ -745,7 +745,7 @@ const reducerStates = [
     undefined,
     // Element
     [
-      2, // 'state 14' -> Element -> @expound.EOF
+      2, // 'state 14' -> Element -> @par-gen.EOF
       -1,
       -1,
       -1,
@@ -815,7 +815,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 15' -> Value -> @expound.EOF
+      1, // 'state 15' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 15' -> Value -> WS
       -1,
@@ -884,7 +884,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 16' -> Value -> @expound.EOF
+      1, // 'state 16' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 16' -> Value -> WS
       -1,
@@ -953,7 +953,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 17' -> Value -> @expound.EOF
+      1, // 'state 17' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 17' -> Value -> WS
       -1,
@@ -1023,7 +1023,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 19' -> Value -> @expound.EOF
+      1, // 'state 19' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 19' -> Value -> WS
       -1,
@@ -1093,7 +1093,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 21' -> Value -> @expound.EOF
+      1, // 'state 21' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 21' -> Value -> WS
       -1,
@@ -1161,7 +1161,7 @@ const reducerStates = [
     undefined,
     // Element
     [
-      2, // 'state 22' -> Element -> @expound.EOF
+      2, // 'state 22' -> Element -> @par-gen.EOF
       -1,
       -1,
       -1,
@@ -1231,7 +1231,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 23' -> Value -> @expound.EOF
+      1, // 'state 23' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 23' -> Value -> WS
       -1,
@@ -1300,7 +1300,7 @@ const reducerStates = [
     undefined,
     // Value
     [
-      1, // 'state 24' -> Value -> @expound.EOF
+      1, // 'state 24' -> Value -> @par-gen.EOF
       -1,
       1, // 'state 24' -> Value -> WS
       -1,
@@ -1371,7 +1371,7 @@ const reducerStates = [
     undefined,
     // Object
     [
-      2, // 'state 26' -> Object -> @expound.EOF
+      2, // 'state 26' -> Object -> @par-gen.EOF
       -1,
       2, // 'state 26' -> Object -> WS
       -1,
@@ -1515,7 +1515,7 @@ const reducerStates = [
     undefined,
     // Array
     [
-      2, // 'state 31' -> Array -> @expound.EOF
+      2, // 'state 31' -> Array -> @par-gen.EOF
       -1,
       2, // 'state 31' -> Array -> WS
       -1,
@@ -1649,7 +1649,7 @@ const reducerStates = [
     undefined,
     // Element
     [
-      3, // 'state 34' -> Element -> @expound.EOF
+      3, // 'state 34' -> Element -> @par-gen.EOF
       -1,
       -1,
       -1,
@@ -1721,7 +1721,7 @@ const reducerStates = [
     undefined,
     // Object
     [
-      2, // 'state 36' -> Object -> @expound.EOF
+      2, // 'state 36' -> Object -> @par-gen.EOF
       -1,
       2, // 'state 36' -> Object -> WS
       -1,
@@ -1865,7 +1865,7 @@ const reducerStates = [
     undefined,
     // Array
     [
-      2, // 'state 41' -> Array -> @expound.EOF
+      2, // 'state 41' -> Array -> @par-gen.EOF
       -1,
       2, // 'state 41' -> Array -> WS
       -1,
@@ -2001,7 +2001,7 @@ const reducerStates = [
     undefined,
     // Object
     [
-      3, // 'state 44' -> Object -> @expound.EOF
+      3, // 'state 44' -> Object -> @par-gen.EOF
       -1,
       3, // 'state 44' -> Object -> WS
       -1,
@@ -2071,7 +2071,7 @@ const reducerStates = [
     undefined,
     // Object
     [
-      3, // 'state 46' -> Object -> @expound.EOF
+      3, // 'state 46' -> Object -> @par-gen.EOF
       -1,
       3, // 'state 46' -> Object -> WS
       -1,
@@ -2146,7 +2146,7 @@ const reducerStates = [
     undefined,
     // Array
     [
-      3, // 'state 50' -> Array -> @expound.EOF
+      3, // 'state 50' -> Array -> @par-gen.EOF
       -1,
       3, // 'state 50' -> Array -> WS
       -1,
@@ -2216,7 +2216,7 @@ const reducerStates = [
     undefined,
     // Array
     [
-      3, // 'state 52' -> Array -> @expound.EOF
+      3, // 'state 52' -> Array -> @par-gen.EOF
       -1,
       3, // 'state 52' -> Array -> WS
       -1,
@@ -2282,7 +2282,7 @@ const reducerStates = [
     undefined,
     // Object
     [
-      3, // 'state 53' -> Object -> @expound.EOF
+      3, // 'state 53' -> Object -> @par-gen.EOF
       -1,
       3, // 'state 53' -> Object -> WS
       -1,
@@ -2352,7 +2352,7 @@ const reducerStates = [
     undefined,
     // Object
     [
-      3, // 'state 55' -> Object -> @expound.EOF
+      3, // 'state 55' -> Object -> @par-gen.EOF
       -1,
       3, // 'state 55' -> Object -> WS
       -1,
@@ -2427,7 +2427,7 @@ const reducerStates = [
     undefined,
     // Array
     [
-      3, // 'state 59' -> Array -> @expound.EOF
+      3, // 'state 59' -> Array -> @par-gen.EOF
       -1,
       3, // 'state 59' -> Array -> WS
       -1,
@@ -2497,7 +2497,7 @@ const reducerStates = [
     undefined,
     // Array
     [
-      3, // 'state 61' -> Array -> @expound.EOF
+      3, // 'state 61' -> Array -> @par-gen.EOF
       -1,
       3, // 'state 61' -> Array -> WS
       -1,
@@ -3382,8 +3382,8 @@ const reducerStates = [
 ];
 
 const parserSymbols = [
-  "@expound.EOF", // 0
-  "@expound.ERROR", // 1
+  "@par-gen.EOF", // 0
+  "@par-gen.ERROR", // 1
   "WS", // 2
   "TRUE", // 3
   "FALSE", // 4
@@ -5934,10 +5934,10 @@ actionsTable[16] = 9; // 'state 0' -> Element -> shift -> 'action 9'
 actionsTable[17] = 10; // 'state 0' -> Value -> shift -> 'action 10'
 actionsTable[18] = 11; // 'state 0' -> Object -> shift -> 'action 11'
 actionsTable[21] = 12; // 'state 0' -> Array -> shift -> 'action 12'
-actionsTable[288] = 13; // 'state 9' -> @expound.EOF -> done -> 'action 13'
-actionsTable[320] = 14; // 'state 10' -> @expound.EOF -> reduce -> 'action 14'
+actionsTable[288] = 13; // 'state 9' -> @par-gen.EOF -> done -> 'action 13'
+actionsTable[320] = 14; // 'state 10' -> @par-gen.EOF -> reduce -> 'action 14'
 actionsTable[354] = 15; // 'state 11' -> WS -> shift -> 'action 15'
-actionsTable[352] = 16; // 'state 11' -> @expound.EOF -> reduce -> 'action 16'
+actionsTable[352] = 16; // 'state 11' -> @par-gen.EOF -> reduce -> 'action 16'
 actionsTable[359] = 17; // 'state 11' -> CURLY_CLOSE -> reduce -> 'action 17'
 actionsTable[360] = 18; // 'state 11' -> COMMA -> reduce -> 'action 18'
 actionsTable[364] = 19; // 'state 11' -> BRACKET_CLOSE -> reduce -> 'action 19'
@@ -5951,37 +5951,37 @@ actionsTable[45] = 26; // 'state 1' -> NUMBER -> shift -> 'action 26'
 actionsTable[49] = 27; // 'state 1' -> Value -> shift -> 'action 27'
 actionsTable[50] = 28; // 'state 1' -> Object -> shift -> 'action 28'
 actionsTable[53] = 29; // 'state 1' -> Array -> shift -> 'action 29'
-actionsTable[384] = 30; // 'state 12' -> @expound.EOF -> reduce -> 'action 30'
+actionsTable[384] = 30; // 'state 12' -> @par-gen.EOF -> reduce -> 'action 30'
 actionsTable[386] = 31; // 'state 12' -> WS -> reduce -> 'action 31'
 actionsTable[391] = 32; // 'state 12' -> CURLY_CLOSE -> reduce -> 'action 32'
 actionsTable[392] = 33; // 'state 12' -> COMMA -> reduce -> 'action 33'
 actionsTable[396] = 34; // 'state 12' -> BRACKET_CLOSE -> reduce -> 'action 34'
-actionsTable[416] = 35; // 'state 13' -> @expound.EOF -> reduce -> 'action 35'
+actionsTable[416] = 35; // 'state 13' -> @par-gen.EOF -> reduce -> 'action 35'
 actionsTable[418] = 36; // 'state 13' -> WS -> reduce -> 'action 36'
 actionsTable[423] = 37; // 'state 13' -> CURLY_CLOSE -> reduce -> 'action 37'
 actionsTable[424] = 38; // 'state 13' -> COMMA -> reduce -> 'action 38'
 actionsTable[428] = 39; // 'state 13' -> BRACKET_CLOSE -> reduce -> 'action 39'
-actionsTable[192] = 40; // 'state 6' -> @expound.EOF -> reduce -> 'action 40'
+actionsTable[192] = 40; // 'state 6' -> @par-gen.EOF -> reduce -> 'action 40'
 actionsTable[194] = 41; // 'state 6' -> WS -> reduce -> 'action 41'
 actionsTable[199] = 42; // 'state 6' -> CURLY_CLOSE -> reduce -> 'action 42'
 actionsTable[200] = 43; // 'state 6' -> COMMA -> reduce -> 'action 43'
 actionsTable[204] = 44; // 'state 6' -> BRACKET_CLOSE -> reduce -> 'action 44'
-actionsTable[256] = 45; // 'state 8' -> @expound.EOF -> reduce -> 'action 45'
+actionsTable[256] = 45; // 'state 8' -> @par-gen.EOF -> reduce -> 'action 45'
 actionsTable[258] = 46; // 'state 8' -> WS -> reduce -> 'action 46'
 actionsTable[263] = 47; // 'state 8' -> CURLY_CLOSE -> reduce -> 'action 47'
 actionsTable[264] = 48; // 'state 8' -> COMMA -> reduce -> 'action 48'
 actionsTable[268] = 49; // 'state 8' -> BRACKET_CLOSE -> reduce -> 'action 49'
-actionsTable[64] = 50; // 'state 2' -> @expound.EOF -> reduce -> 'action 50'
+actionsTable[64] = 50; // 'state 2' -> @par-gen.EOF -> reduce -> 'action 50'
 actionsTable[66] = 51; // 'state 2' -> WS -> reduce -> 'action 51'
 actionsTable[71] = 52; // 'state 2' -> CURLY_CLOSE -> reduce -> 'action 52'
 actionsTable[72] = 53; // 'state 2' -> COMMA -> reduce -> 'action 53'
 actionsTable[76] = 54; // 'state 2' -> BRACKET_CLOSE -> reduce -> 'action 54'
-actionsTable[96] = 55; // 'state 3' -> @expound.EOF -> reduce -> 'action 55'
+actionsTable[96] = 55; // 'state 3' -> @par-gen.EOF -> reduce -> 'action 55'
 actionsTable[98] = 56; // 'state 3' -> WS -> reduce -> 'action 56'
 actionsTable[103] = 57; // 'state 3' -> CURLY_CLOSE -> reduce -> 'action 57'
 actionsTable[104] = 58; // 'state 3' -> COMMA -> reduce -> 'action 58'
 actionsTable[108] = 59; // 'state 3' -> BRACKET_CLOSE -> reduce -> 'action 59'
-actionsTable[128] = 60; // 'state 4' -> @expound.EOF -> reduce -> 'action 60'
+actionsTable[128] = 60; // 'state 4' -> @par-gen.EOF -> reduce -> 'action 60'
 actionsTable[130] = 61; // 'state 4' -> WS -> reduce -> 'action 61'
 actionsTable[135] = 62; // 'state 4' -> CURLY_CLOSE -> reduce -> 'action 62'
 actionsTable[136] = 63; // 'state 4' -> COMMA -> reduce -> 'action 63'
@@ -6005,46 +6005,46 @@ actionsTable[241] = 80; // 'state 7' -> Value -> shift -> 'action 80'
 actionsTable[242] = 81; // 'state 7' -> Object -> shift -> 'action 81'
 actionsTable[245] = 82; // 'state 7' -> Array -> shift -> 'action 82'
 actionsTable[246] = 83; // 'state 7' -> Elements -> shift -> 'action 83'
-actionsTable[448] = 84; // 'state 14' -> @expound.EOF -> reduce -> 'action 84'
+actionsTable[448] = 84; // 'state 14' -> @par-gen.EOF -> reduce -> 'action 84'
 actionsTable[455] = 85; // 'state 14' -> CURLY_CLOSE -> reduce -> 'action 85'
 actionsTable[456] = 86; // 'state 14' -> COMMA -> reduce -> 'action 86'
 actionsTable[460] = 87; // 'state 14' -> BRACKET_CLOSE -> reduce -> 'action 87'
 actionsTable[706] = 88; // 'state 22' -> WS -> shift -> 'action 88'
-actionsTable[704] = 89; // 'state 22' -> @expound.EOF -> reduce -> 'action 89'
+actionsTable[704] = 89; // 'state 22' -> @par-gen.EOF -> reduce -> 'action 89'
 actionsTable[711] = 90; // 'state 22' -> CURLY_CLOSE -> reduce -> 'action 90'
 actionsTable[712] = 91; // 'state 22' -> COMMA -> reduce -> 'action 91'
 actionsTable[716] = 92; // 'state 22' -> BRACKET_CLOSE -> reduce -> 'action 92'
-actionsTable[736] = 93; // 'state 23' -> @expound.EOF -> reduce -> 'action 93'
+actionsTable[736] = 93; // 'state 23' -> @par-gen.EOF -> reduce -> 'action 93'
 actionsTable[738] = 94; // 'state 23' -> WS -> reduce -> 'action 94'
 actionsTable[743] = 95; // 'state 23' -> CURLY_CLOSE -> reduce -> 'action 95'
 actionsTable[744] = 96; // 'state 23' -> COMMA -> reduce -> 'action 96'
 actionsTable[748] = 97; // 'state 23' -> BRACKET_CLOSE -> reduce -> 'action 97'
-actionsTable[768] = 98; // 'state 24' -> @expound.EOF -> reduce -> 'action 98'
+actionsTable[768] = 98; // 'state 24' -> @par-gen.EOF -> reduce -> 'action 98'
 actionsTable[770] = 99; // 'state 24' -> WS -> reduce -> 'action 99'
 actionsTable[775] = 100; // 'state 24' -> CURLY_CLOSE -> reduce -> 'action 100'
 actionsTable[776] = 101; // 'state 24' -> COMMA -> reduce -> 'action 101'
 actionsTable[780] = 102; // 'state 24' -> BRACKET_CLOSE -> reduce -> 'action 102'
-actionsTable[608] = 103; // 'state 19' -> @expound.EOF -> reduce -> 'action 103'
+actionsTable[608] = 103; // 'state 19' -> @par-gen.EOF -> reduce -> 'action 103'
 actionsTable[610] = 104; // 'state 19' -> WS -> reduce -> 'action 104'
 actionsTable[615] = 105; // 'state 19' -> CURLY_CLOSE -> reduce -> 'action 105'
 actionsTable[616] = 106; // 'state 19' -> COMMA -> reduce -> 'action 106'
 actionsTable[620] = 107; // 'state 19' -> BRACKET_CLOSE -> reduce -> 'action 107'
-actionsTable[672] = 108; // 'state 21' -> @expound.EOF -> reduce -> 'action 108'
+actionsTable[672] = 108; // 'state 21' -> @par-gen.EOF -> reduce -> 'action 108'
 actionsTable[674] = 109; // 'state 21' -> WS -> reduce -> 'action 109'
 actionsTable[679] = 110; // 'state 21' -> CURLY_CLOSE -> reduce -> 'action 110'
 actionsTable[680] = 111; // 'state 21' -> COMMA -> reduce -> 'action 111'
 actionsTable[684] = 112; // 'state 21' -> BRACKET_CLOSE -> reduce -> 'action 112'
-actionsTable[480] = 113; // 'state 15' -> @expound.EOF -> reduce -> 'action 113'
+actionsTable[480] = 113; // 'state 15' -> @par-gen.EOF -> reduce -> 'action 113'
 actionsTable[482] = 114; // 'state 15' -> WS -> reduce -> 'action 114'
 actionsTable[487] = 115; // 'state 15' -> CURLY_CLOSE -> reduce -> 'action 115'
 actionsTable[488] = 116; // 'state 15' -> COMMA -> reduce -> 'action 116'
 actionsTable[492] = 117; // 'state 15' -> BRACKET_CLOSE -> reduce -> 'action 117'
-actionsTable[512] = 118; // 'state 16' -> @expound.EOF -> reduce -> 'action 118'
+actionsTable[512] = 118; // 'state 16' -> @par-gen.EOF -> reduce -> 'action 118'
 actionsTable[514] = 119; // 'state 16' -> WS -> reduce -> 'action 119'
 actionsTable[519] = 120; // 'state 16' -> CURLY_CLOSE -> reduce -> 'action 120'
 actionsTable[520] = 121; // 'state 16' -> COMMA -> reduce -> 'action 121'
 actionsTable[524] = 122; // 'state 16' -> BRACKET_CLOSE -> reduce -> 'action 122'
-actionsTable[544] = 123; // 'state 17' -> @expound.EOF -> reduce -> 'action 123'
+actionsTable[544] = 123; // 'state 17' -> @par-gen.EOF -> reduce -> 'action 123'
 actionsTable[546] = 124; // 'state 17' -> WS -> reduce -> 'action 124'
 actionsTable[551] = 125; // 'state 17' -> CURLY_CLOSE -> reduce -> 'action 125'
 actionsTable[552] = 126; // 'state 17' -> COMMA -> reduce -> 'action 126'
@@ -6068,7 +6068,7 @@ actionsTable[657] = 143; // 'state 20' -> Value -> shift -> 'action 143'
 actionsTable[658] = 144; // 'state 20' -> Object -> shift -> 'action 144'
 actionsTable[661] = 145; // 'state 20' -> Array -> shift -> 'action 145'
 actionsTable[662] = 146; // 'state 20' -> Elements -> shift -> 'action 146'
-actionsTable[832] = 147; // 'state 26' -> @expound.EOF -> reduce -> 'action 147'
+actionsTable[832] = 147; // 'state 26' -> @par-gen.EOF -> reduce -> 'action 147'
 actionsTable[834] = 148; // 'state 26' -> WS -> reduce -> 'action 148'
 actionsTable[839] = 149; // 'state 26' -> CURLY_CLOSE -> reduce -> 'action 149'
 actionsTable[840] = 150; // 'state 26' -> COMMA -> reduce -> 'action 150'
@@ -6081,7 +6081,7 @@ actionsTable[935] = 156; // 'state 29' -> CURLY_CLOSE -> reduce -> 'action 156'
 actionsTable[936] = 157; // 'state 29' -> COMMA -> reduce -> 'action 157'
 actionsTable[866] = 158; // 'state 27' -> WS -> shift -> 'action 158'
 actionsTable[873] = 159; // 'state 27' -> COLON -> shift -> 'action 159'
-actionsTable[992] = 160; // 'state 31' -> @expound.EOF -> reduce -> 'action 160'
+actionsTable[992] = 160; // 'state 31' -> @par-gen.EOF -> reduce -> 'action 160'
 actionsTable[994] = 161; // 'state 31' -> WS -> reduce -> 'action 161'
 actionsTable[999] = 162; // 'state 31' -> CURLY_CLOSE -> reduce -> 'action 162'
 actionsTable[1000] = 163; // 'state 31' -> COMMA -> reduce -> 'action 163'
@@ -6101,11 +6101,11 @@ actionsTable[1064] = 176; // 'state 33' -> COMMA -> shift -> 'action 176'
 actionsTable[1068] = 177; // 'state 33' -> BRACKET_CLOSE -> shift -> 'action 177'
 actionsTable[1032] = 178; // 'state 32' -> COMMA -> reduce -> 'action 178'
 actionsTable[1036] = 179; // 'state 32' -> BRACKET_CLOSE -> reduce -> 'action 179'
-actionsTable[1088] = 180; // 'state 34' -> @expound.EOF -> reduce -> 'action 180'
+actionsTable[1088] = 180; // 'state 34' -> @par-gen.EOF -> reduce -> 'action 180'
 actionsTable[1095] = 181; // 'state 34' -> CURLY_CLOSE -> reduce -> 'action 181'
 actionsTable[1096] = 182; // 'state 34' -> COMMA -> reduce -> 'action 182'
 actionsTable[1100] = 183; // 'state 34' -> BRACKET_CLOSE -> reduce -> 'action 183'
-actionsTable[1152] = 184; // 'state 36' -> @expound.EOF -> reduce -> 'action 184'
+actionsTable[1152] = 184; // 'state 36' -> @par-gen.EOF -> reduce -> 'action 184'
 actionsTable[1154] = 185; // 'state 36' -> WS -> reduce -> 'action 185'
 actionsTable[1159] = 186; // 'state 36' -> CURLY_CLOSE -> reduce -> 'action 186'
 actionsTable[1160] = 187; // 'state 36' -> COMMA -> reduce -> 'action 187'
@@ -6118,7 +6118,7 @@ actionsTable[1255] = 193; // 'state 39' -> CURLY_CLOSE -> reduce -> 'action 193'
 actionsTable[1256] = 194; // 'state 39' -> COMMA -> reduce -> 'action 194'
 actionsTable[1186] = 195; // 'state 37' -> WS -> shift -> 'action 195'
 actionsTable[1193] = 196; // 'state 37' -> COLON -> shift -> 'action 196'
-actionsTable[1312] = 197; // 'state 41' -> @expound.EOF -> reduce -> 'action 197'
+actionsTable[1312] = 197; // 'state 41' -> @par-gen.EOF -> reduce -> 'action 197'
 actionsTable[1314] = 198; // 'state 41' -> WS -> reduce -> 'action 198'
 actionsTable[1319] = 199; // 'state 41' -> CURLY_CLOSE -> reduce -> 'action 199'
 actionsTable[1320] = 200; // 'state 41' -> COMMA -> reduce -> 'action 200'
@@ -6138,14 +6138,14 @@ actionsTable[1384] = 213; // 'state 43' -> COMMA -> shift -> 'action 213'
 actionsTable[1388] = 214; // 'state 43' -> BRACKET_CLOSE -> shift -> 'action 214'
 actionsTable[1352] = 215; // 'state 42' -> COMMA -> reduce -> 'action 215'
 actionsTable[1356] = 216; // 'state 42' -> BRACKET_CLOSE -> reduce -> 'action 216'
-actionsTable[1408] = 217; // 'state 44' -> @expound.EOF -> reduce -> 'action 217'
+actionsTable[1408] = 217; // 'state 44' -> @par-gen.EOF -> reduce -> 'action 217'
 actionsTable[1410] = 218; // 'state 44' -> WS -> reduce -> 'action 218'
 actionsTable[1415] = 219; // 'state 44' -> CURLY_CLOSE -> reduce -> 'action 219'
 actionsTable[1416] = 220; // 'state 44' -> COMMA -> reduce -> 'action 220'
 actionsTable[1420] = 221; // 'state 44' -> BRACKET_CLOSE -> reduce -> 'action 221'
 actionsTable[1442] = 222; // 'state 45' -> WS -> shift -> 'action 222'
 actionsTable[1449] = 223; // 'state 45' -> COLON -> shift -> 'action 223'
-actionsTable[1472] = 224; // 'state 46' -> @expound.EOF -> reduce -> 'action 224'
+actionsTable[1472] = 224; // 'state 46' -> @par-gen.EOF -> reduce -> 'action 224'
 actionsTable[1474] = 225; // 'state 46' -> WS -> reduce -> 'action 225'
 actionsTable[1479] = 226; // 'state 46' -> CURLY_CLOSE -> reduce -> 'action 226'
 actionsTable[1480] = 227; // 'state 46' -> COMMA -> reduce -> 'action 227'
@@ -6166,12 +6166,12 @@ actionsTable[1585] = 241; // 'state 49' -> Value -> shift -> 'action 241'
 actionsTable[1586] = 242; // 'state 49' -> Object -> shift -> 'action 242'
 actionsTable[1589] = 243; // 'state 49' -> Array -> shift -> 'action 243'
 actionsTable[1545] = 244; // 'state 48' -> COLON -> shift -> 'action 244'
-actionsTable[1600] = 245; // 'state 50' -> @expound.EOF -> reduce -> 'action 245'
+actionsTable[1600] = 245; // 'state 50' -> @par-gen.EOF -> reduce -> 'action 245'
 actionsTable[1602] = 246; // 'state 50' -> WS -> reduce -> 'action 246'
 actionsTable[1607] = 247; // 'state 50' -> CURLY_CLOSE -> reduce -> 'action 247'
 actionsTable[1608] = 248; // 'state 50' -> COMMA -> reduce -> 'action 248'
 actionsTable[1612] = 249; // 'state 50' -> BRACKET_CLOSE -> reduce -> 'action 249'
-actionsTable[1664] = 250; // 'state 52' -> @expound.EOF -> reduce -> 'action 250'
+actionsTable[1664] = 250; // 'state 52' -> @par-gen.EOF -> reduce -> 'action 250'
 actionsTable[1666] = 251; // 'state 52' -> WS -> reduce -> 'action 251'
 actionsTable[1671] = 252; // 'state 52' -> CURLY_CLOSE -> reduce -> 'action 252'
 actionsTable[1672] = 253; // 'state 52' -> COMMA -> reduce -> 'action 253'
@@ -6188,14 +6188,14 @@ actionsTable[1648] = 263; // 'state 51' -> Element -> shift -> 'action 263'
 actionsTable[1649] = 264; // 'state 51' -> Value -> shift -> 'action 264'
 actionsTable[1650] = 265; // 'state 51' -> Object -> shift -> 'action 265'
 actionsTable[1653] = 266; // 'state 51' -> Array -> shift -> 'action 266'
-actionsTable[1696] = 267; // 'state 53' -> @expound.EOF -> reduce -> 'action 267'
+actionsTable[1696] = 267; // 'state 53' -> @par-gen.EOF -> reduce -> 'action 267'
 actionsTable[1698] = 268; // 'state 53' -> WS -> reduce -> 'action 268'
 actionsTable[1703] = 269; // 'state 53' -> CURLY_CLOSE -> reduce -> 'action 269'
 actionsTable[1704] = 270; // 'state 53' -> COMMA -> reduce -> 'action 270'
 actionsTable[1708] = 271; // 'state 53' -> BRACKET_CLOSE -> reduce -> 'action 271'
 actionsTable[1730] = 272; // 'state 54' -> WS -> shift -> 'action 272'
 actionsTable[1737] = 273; // 'state 54' -> COLON -> shift -> 'action 273'
-actionsTable[1760] = 274; // 'state 55' -> @expound.EOF -> reduce -> 'action 274'
+actionsTable[1760] = 274; // 'state 55' -> @par-gen.EOF -> reduce -> 'action 274'
 actionsTable[1762] = 275; // 'state 55' -> WS -> reduce -> 'action 275'
 actionsTable[1767] = 276; // 'state 55' -> CURLY_CLOSE -> reduce -> 'action 276'
 actionsTable[1768] = 277; // 'state 55' -> COMMA -> reduce -> 'action 277'
@@ -6216,12 +6216,12 @@ actionsTable[1873] = 291; // 'state 58' -> Value -> shift -> 'action 291'
 actionsTable[1874] = 292; // 'state 58' -> Object -> shift -> 'action 292'
 actionsTable[1877] = 293; // 'state 58' -> Array -> shift -> 'action 293'
 actionsTable[1833] = 294; // 'state 57' -> COLON -> shift -> 'action 294'
-actionsTable[1888] = 295; // 'state 59' -> @expound.EOF -> reduce -> 'action 295'
+actionsTable[1888] = 295; // 'state 59' -> @par-gen.EOF -> reduce -> 'action 295'
 actionsTable[1890] = 296; // 'state 59' -> WS -> reduce -> 'action 296'
 actionsTable[1895] = 297; // 'state 59' -> CURLY_CLOSE -> reduce -> 'action 297'
 actionsTable[1896] = 298; // 'state 59' -> COMMA -> reduce -> 'action 298'
 actionsTable[1900] = 299; // 'state 59' -> BRACKET_CLOSE -> reduce -> 'action 299'
-actionsTable[1952] = 300; // 'state 61' -> @expound.EOF -> reduce -> 'action 300'
+actionsTable[1952] = 300; // 'state 61' -> @par-gen.EOF -> reduce -> 'action 300'
 actionsTable[1954] = 301; // 'state 61' -> WS -> reduce -> 'action 301'
 actionsTable[1959] = 302; // 'state 61' -> CURLY_CLOSE -> reduce -> 'action 302'
 actionsTable[1960] = 303; // 'state 61' -> COMMA -> reduce -> 'action 303'
@@ -6447,7 +6447,10 @@ function parse(input) {
 
     const actionLookup = actionsTable[currentState * 32 + lookahead];
     if (actionLookup === 0xffff) {
-      throw new Error(`Unexpected lookahead ${lookahead}`);
+      const context = input.toString().substr(result.start, 10);
+      throw new Error(
+        `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
+      );
     }
     const action = actions[actionLookup];
 

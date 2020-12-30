@@ -1,13 +1,13 @@
 {
-  "name": "@knisterpeter/expound-lexer",
+  "name": "@par-gen/lexer",
   "version": "0.1.0",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "dependencies": {
-    "@knisterpeter/expound-dfa": "workspace:0.1.0",
-    "@knisterpeter/expound-grammar": "workspace:0.1.0",
-    "@knisterpeter/expound-nfa": "workspace:0.1.0",
+    "@par-gen/dfa": "workspace:0.1.0",
+    "@par-gen/grammar": "workspace:0.1.0",
+    "@par-gen/nfa": "workspace:0.1.0",
     "debug": "^4.3.1"
   },
   "devDependencies": {

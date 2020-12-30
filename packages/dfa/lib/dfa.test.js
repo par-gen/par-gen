@@ -1,11 +1,11 @@
 import { performance } from "perf_hooks";
-import { NFA } from "@knisterpeter/expound-nfa";
+import { NFA } from "@par-gen/nfa";
 
 import { DFA } from "./dfa.js";
 
 /**
  * @template T
- * @typedef {import('@knisterpeter/expound-nfa/types/regexp').ParseTree<T>} ParseTree
+ * @typedef {import('@par-gen/nfa/types/regexp').ParseTree<T>} ParseTree
  */
 
 describe("DFA", () => {

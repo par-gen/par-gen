@@ -1,12 +1,12 @@
 {
-  "name": "@knisterpeter/expound-codegen",
+  "name": "@par-gen/codegen",
   "version": "0.1.0",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "dependencies": {
-    "@knisterpeter/expound-lexer": "workspace:0.1.0",
-    "@knisterpeter/expound-parser": "workspace:0.1.0",
+    "@par-gen/lexer": "workspace:0.1.0",
+    "@par-gen/parser": "workspace:0.1.0",
     "prettier": "2.2.1"
   },
   "devDependencies": {

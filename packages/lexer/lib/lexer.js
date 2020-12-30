@@ -1,26 +1,26 @@
-import { DFA, fromNFA, minimize } from "@knisterpeter/expound-dfa";
-import { EOF, ERROR, parse } from "@knisterpeter/expound-grammar";
+import { DFA, fromNFA, minimize } from "@par-gen/dfa";
+import { EOF, ERROR, parse } from "@par-gen/grammar";
 import {
   NFA,
   parseRegExp,
   fromRegExpParseTree,
   createChoiceTree,
   convertNode,
-} from "@knisterpeter/expound-nfa";
+} from "@par-gen/nfa";
 import debug from "debug";
 import { performance } from "perf_hooks";
 
 export { EOF, ERROR };
 
-const log = debug("expound:lexer");
+const log = debug("par-gen:lexer");
 
 /**
- * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
+ * @typedef {import('@par-gen/grammar/types/parser').Token} Token
  */
 
 /**
  * @template T
- * @typedef {import('@knisterpeter/expound-nfa/types/regexp').ParseTree<T>} ParseTree
+ * @typedef {import('@par-gen/nfa/types/regexp').ParseTree<T>} ParseTree
  */
 
 /**

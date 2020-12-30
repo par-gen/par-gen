@@ -1,21 +1,21 @@
-import { DFA } from "@knisterpeter/expound-dfa";
-import { parse } from "@knisterpeter/expound-grammar";
-import { generateFromTokens } from "@knisterpeter/expound-lexer";
+import { DFA } from "@par-gen/dfa";
+import { parse } from "@par-gen/grammar";
+import { generateFromTokens } from "@par-gen/lexer";
 import debug from "debug";
 import { performance } from "perf_hooks";
 
-const log = debug("expound:parser");
+const log = debug("par-gen:parser");
 
 /**
- * @typedef {import('@knisterpeter/expound-grammar/types/parser').Token} Token
+ * @typedef {import('@par-gen/grammar/types/parser').Token} Token
  */
 
 /**
- * @typedef {import('@knisterpeter/expound-grammar/types/parser').Rule} Rule
+ * @typedef {import('@par-gen/grammar/types/parser').Rule} Rule
  */
 
 /**
- * @typedef {import('@knisterpeter/expound-lexer/types/lexer').LexerData} LexerData
+ * @typedef {import('@par-gen/lexer/types/lexer').LexerData} LexerData
  */
 
 /**
@@ -24,7 +24,7 @@ const log = debug("expound:parser");
 
 /**
  * @template STATE, SYMBOL
- * @typedef {import('@knisterpeter/expound-dfa/types/dfa').DFADescription<STATE, SYMBOL>} DFADescription
+ * @typedef {import('@par-gen/dfa/types/dfa').DFADescription<STATE, SYMBOL>} DFADescription
  */
 
 /**

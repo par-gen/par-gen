@@ -1,21 +1,21 @@
 {
   "private": true,
-  "name": "@knisterpeter/expound-root",
+  "name": "@par-gen/root",
   "version": "0.1.0",
   "description": "Fast JavaScript/TypeScript LR(1) parser generator",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KnisterPeter/expound.git"
+    "url": "git+https://github.com/par-gen/par-gen.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/KnisterPeter/expound/issues"
+    "url": "https://github.com/par-gen/par-gen/issues"
   },
-  "homepage": "https://github.com/KnisterPeter/expound#readme",
+  "homepage": "https://github.com/par-gen/par-gen#readme",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "check": "tsc --build .",

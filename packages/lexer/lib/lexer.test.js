@@ -7,9 +7,9 @@ describe("generate", () => {
     `);
 
     expect(data).toEqual({
-      tokens: { EOF: "@expound.EOF", ERROR: "@expound.ERROR" },
+      tokens: { EOF: "@par-gen.EOF", ERROR: "@par-gen.ERROR" },
       tokenIds: [0, 1, 2, 2, undefined],
-      tokenNames: ["@expound.EOF", "@expound.ERROR", "A", "A", undefined],
+      tokenNames: ["@par-gen.EOF", "@par-gen.ERROR", "A", "A", undefined],
       errorState: 512,
       transitions: [
         [0, [[97, 512]]],

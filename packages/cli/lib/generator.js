@@ -1,12 +1,12 @@
 import {
   JavaScriptCommonJsCodegen,
   JavaScriptModuleCodegen,
-} from "@knisterpeter/expound-codegen";
-import { generate } from "@knisterpeter/expound-parser";
+} from "@par-gen/codegen";
+import { generate } from "@par-gen/parser";
 import { promises as fsp } from "fs";
 
 /**
- * @typedef {import('@knisterpeter/expound-codegen/types/type').Codegen} Codegen
+ * @typedef {import('@par-gen/codegen/types/type').Codegen} Codegen
  */
 
 /**

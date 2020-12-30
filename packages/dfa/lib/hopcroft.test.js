@@ -1,4 +1,4 @@
-import { NFA } from "@knisterpeter/expound-nfa";
+import { NFA } from "@par-gen/nfa";
 import { DFA } from "./dfa.js";
 
 import { minimize } from "./hopcroft.js";

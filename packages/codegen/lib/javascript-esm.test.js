@@ -1,5 +1,5 @@
-import { generate as genLexer } from "@knisterpeter/expound-lexer";
-import { generate as genParser } from "@knisterpeter/expound-parser";
+import { generate as genLexer } from "@par-gen/lexer";
+import { generate as genParser } from "@par-gen/parser";
 import { promises as fsp } from "fs";
 import { tmpdir } from "os";
 import { join, basename } from "path";

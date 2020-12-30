@@ -1,7 +1,7 @@
 import debug from "debug";
 import { performance } from "perf_hooks";
 
-const log = debug("expound:dfa");
+const log = debug("par-gen:dfa");
 
 /**
  * @template STATE, SYMBOL

@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
-import { generate as genLexer } from "@knisterpeter/expound-lexer";
-import { generate as genParser } from "@knisterpeter/expound-parser";
+import { generate as genLexer } from "@par-gen/lexer";
+import { generate as genParser } from "@par-gen/parser";
 
 import { JavaScriptFunctionCodegen } from "./javascript-function.js";
 

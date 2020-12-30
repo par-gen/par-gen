@@ -1,5 +1,5 @@
 {
-  "name": "@knisterpeter/expound-nfa",
+  "name": "@par-gen/nfa",
   "version": "0.1.0",
   "type": "module",
   "main": "./lib/index.js",

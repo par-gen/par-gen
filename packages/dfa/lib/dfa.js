@@ -5,7 +5,7 @@ import { fromNFA } from "./powerset.js";
 
 /**
  * @template STATE, SYMBOL
- * @typedef {import('@knisterpeter/expound-nfa').NFA<STATE, SYMBOL>} NFA
+ * @typedef {import('@par-gen/nfa').NFA<STATE, SYMBOL>} NFA
  */
 
 /**
@@ -136,7 +136,7 @@ export class DFA {
           )
         )
         .join("\n")}
-  
+
       return (input) => {
         let state = ${start};
         for (let i = 0, l = input.length; i < l; i++) {

@@ -7,7 +7,7 @@ import sade from "sade";
 
 import { createGenerator, execute } from "./generator.js";
 
-const cli = sade("expound");
+const cli = sade("par-gen");
 
 cli.version(
   JSON.parse(
@@ -30,7 +30,7 @@ cli
     "esm"
   )
   .option("--debug, -d", "Creates parser with debug output", false)
-  .example("codegen ./json.expound ./generated")
+  .example("codegen ./json.pargen ./generated")
   .action(
     /**
      * @param {string} grammarFile
