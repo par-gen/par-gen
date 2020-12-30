@@ -3,8 +3,6 @@
   "name": "@par-gen/root",
   "version": "0.1.0",
   "description": "Fast JavaScript/TypeScript LR(1) parser generator",
-  "main": "./lib/index.js",
-  "types": "./types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/par-gen/par-gen.git"
@@ -19,7 +17,6 @@
   "scripts": {
     "check": "tsc --build .",
     "check-watch": "tsc --build . --watch",
-    "pretest": "cd parsers/json && npm start",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --run-in-band"
   },
   "engines": {
