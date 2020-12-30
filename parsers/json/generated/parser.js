@@ -3292,59 +3292,44 @@ const stack = new Uint16Array(32768);
  */
 const tree = new Uint16Array(32768);
 
-const createProxy = (stream, tree, pointer) => {
-  return new Proxy(
-    {},
-    {
-      get(target, prop, receiver) {
-        const nChildren = tree[pointer + 3];
+function view(stream, tree, pointer) {
+  const name = parserSymbols[tree[pointer]];
+  const start = tree[pointer + 1];
+  const end = tree[pointer + 2];
+  const nChildren = tree[pointer + 3];
+  const firstChild = tree[pointer + 4];
 
-        switch (prop) {
-          case "name":
-            return parserSymbols[tree[pointer]];
-          case "start":
-            return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
-          case "end":
-            return nChildren > 0
-              ? receiver.items[nChildren - 1].end
-              : tree[pointer + 2];
-          case "value":
-            return stream.subarray(receiver.start, receiver.end);
-          case "items":
-            if (nChildren === 0) {
-              return undefined;
-            }
+  const node = {
+    name,
+    start: start === 0xffff ? -1 : start,
+    end: end === 0xffff ? -1 : end,
+    get value() {
+      return stream.subarray(start, end);
+    },
+    get items() {
+      if (nChildren === 0) {
+        return undefined;
+      }
 
-            const firstChild = tree[pointer + 4];
-            const children = [createProxy(stream, tree, firstChild)];
-            let nextChild = tree[firstChild + 5];
+      const children = [view(tree, firstChild)];
+      let nextChild = tree[firstChild + 5];
 
-            for (let i = 1; i < nChildren; i++) {
-              children.push(createProxy(stream, tree, nextChild));
-              nextChild = tree[nextChild + 5];
-            }
+      for (let i = 1; i < nChildren; i++) {
+        children.push(view(tree, nextChild));
+        nextChild = tree[nextChild + 5];
+      }
 
-            return children;
-          case "__tree":
-            return tree;
-          case "__pointer":
-            return pointer;
-        }
-      },
-      ownKeys(target) {
-        return ["name", "start", "end", "value", "items"];
-      },
-      has(target, prop) {
-        return this.ownKeys(target).includes(prop);
-      },
-      getOwnPropertyDescriptor(target, prop) {
-        return this.has(target, prop)
-          ? { enumerable: true, configurable: true }
-          : undefined;
-      },
-    }
-  );
-};
+      return children;
+    },
+    __tree: tree,
+    __pointer: pointer,
+    [Symbol.for("nodejs.util.inspect.custom")]() {
+      return JSON.parse(JSON.stringify(view(tree, pointer)));
+    },
+  };
+
+  return node;
+}
 
 /**
  * @typedef {Object} Node
@@ -3390,7 +3375,7 @@ function parse(input) {
     switch (action.op) {
       case 2: // done
         lexer.pop(true);
-        return createProxy(stream, tree, tp - 6);
+        return view(stream, tree, tp - 6);
       case 0: // shift
         tree[tp] = lookahead; // name
         tree[tp + 1] = result.start;
