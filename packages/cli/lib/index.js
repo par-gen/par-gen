@@ -2,7 +2,7 @@
 
 import { readFileSync } from "fs";
 import { dirname, join } from "path";
-import { URL } from "url";
+import { fileURLToPath } from "url";
 import sade from "sade";
 
 import { createGenerator, execute } from "./generator.js";
@@ -12,7 +12,7 @@ const cli = sade("expound");
 cli.version(
   JSON.parse(
     readFileSync(
-      join(dirname(new URL(import.meta.url).pathname), "../package.json"),
+      join(dirname(fileURLToPath(import.meta.url)), "../package.json"),
       "utf-8"
     )
   ).version
