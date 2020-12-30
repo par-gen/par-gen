@@ -6,8 +6,8 @@
     "par-gen": "./lib/index.js"
   },
   "dependencies": {
-    "@par-gen/codegen": "workspace:0.1.0",
-    "@par-gen/parser": "workspace:0.1.0",
+    "@par-gen/codegen": "0.1.0",
+    "@par-gen/parser": "0.1.0",
     "sade": "1.7.4"
   },
   "devDependencies": {

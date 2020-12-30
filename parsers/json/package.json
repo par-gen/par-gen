@@ -6,7 +6,7 @@
     "start": "par-gen codegen json.pargen ./generated"
   },
   "dependencies": {
-    "@par-gen/cli": "workspace:0.1.0"
+    "@par-gen/cli": "0.1.0"
   },
   "jest": {
     "displayName": "JSON",
