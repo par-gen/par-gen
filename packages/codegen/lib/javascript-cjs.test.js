@@ -53,7 +53,7 @@ describe("JavaScriptCommonJsCodegen", () => {
        * @param {string} id
        */
       require(id) {
-        if (id === lexerStateFile) {
+        if (id === 'lexer-file') {
           const context = vm.createContext({ module: {} });
           new vm.Script(readFileSync(lexerStateFile, "utf-8")).runInContext(
             context
@@ -66,7 +66,7 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     const script = new vm.Script(
       `
-        const { tokenNames, next } = require('${lexerStateFile}');
+        const { tokenNames, next } = require('lexer-file');
 
         const input = Buffer.from("abc");
         const matched = next(input, 0);
@@ -115,7 +115,7 @@ describe("JavaScriptCommonJsCodegen", () => {
             innerContext
           );
           return innerContext.module.exports;
-        } else if (id === parserFile) {
+        } else if (id === 'parser-file') {
           const innerContext = vm.createContext({
             module: {},
             require: context.require,
@@ -132,7 +132,7 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     const script = new vm.Script(
       `
-        const { parse } = require('${parserFile}');
+        const { parse } = require('parser-file');
 
         const matched = parse("abc");
 
