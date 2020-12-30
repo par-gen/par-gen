@@ -1,6 +1,5 @@
 import { promises as fsp } from "fs";
 import { dirname, join } from "path";
-import { URL } from "url";
 import * as vm from "vm";
 import { jest } from "@jest/globals";
 
@@ -14,7 +13,7 @@ describe("cli", () => {
   let base;
 
   beforeAll(() => {
-    base = dirname(new URL(import.meta.url).pathname);
+    base = dirname(url.fileURLToPath(import.meta.url));
   });
 
   /**
@@ -36,7 +35,7 @@ describe("cli", () => {
          * @param {*} meta
          */
         initializeImportMeta(meta) {
-          meta.url = `file://${join(base, "index.js")}`;
+          meta.url = url.pathToFileURL(join(base, "index.js")).toString();
         },
       }
     );
@@ -121,8 +120,8 @@ describe("cli", () => {
 
     expect(processExit).not.toHaveBeenCalled();
     expect(createGeneratorMock).toHaveBeenCalledWith("javascript", "esm", {
-      lexerFile: "target/lexer.js",
-      parserFile: "target/parser.js",
+      lexerFile: expect.any(String),
+      parserFile: expect.any(String),
       debug: false,
     });
     expect(executeMock).toHaveBeenCalledWith("grammar", codegen);

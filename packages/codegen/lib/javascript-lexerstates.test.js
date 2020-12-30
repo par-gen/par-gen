@@ -64,7 +64,7 @@ describe("Lexer States", () => {
 
     const module = new SourceTextModule(
       `
-        import { parse } from '${parserFile}';
+        import { parse } from 'parser-file';
 
         const matched = parse("abc");
 
@@ -91,7 +91,7 @@ describe("Lexer States", () => {
             context: referencingModule.context,
             identifier: lexerStateFile,
           });
-        } else if (specifier === parserFile) {
+        } else if (specifier === 'parser-file') {
           const code = await fsp.readFile(parserFile, "utf-8");
 
           return new SourceTextModule(code, {
