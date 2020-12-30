@@ -24,7 +24,7 @@ const node = (template) => {
   if (template.node) {
     template.node.parent = parent;
   }
-  if (template.nodes) {
+  if (template.nodes?.forEach) {
     template.nodes.forEach((child) => (child.parent = parent));
   }
   if (template.left) {
@@ -60,16 +60,33 @@ describe("parse", () => {
   });
 
   it("should parse an any character", () => {
-    expect(parse(".")).toEqual(
-      node({
-        op: ops.sequence,
-        nodes: [
-          node({
-            op: ops.any,
-          }),
-        ],
-      })
-    );
+    const tree = parse(".");
+
+    /**
+     * @param {ParseTree<string> | undefined} tree
+     * @returns {ParseTree<string>[]}
+     */
+    const getNodes = (tree) => {
+      if (!tree) {
+        return [];
+      }
+      return [
+        tree,
+        ...getNodes(tree.left),
+        ...getNodes(tree.right),
+        ...getNodes(tree.node),
+        ...(tree.nodes ?? []).flatMap((node) => getNodes(node)),
+      ];
+    };
+
+    const values = getNodes(tree)
+      .filter((node) => node.op === ops.match)
+      .map((node) => node.value);
+
+    // should contain all 256 possible bytes
+    for (let i = 0; i < 256; i++) {
+      expect(values).toContain(String.fromCharCode(i));
+    }
   });
 
   it("should parse an optional expression", () => {
@@ -385,29 +402,6 @@ describe("parse", () => {
 });
 
 describe("convertNode", () => {
-  it("should convert an any node", () => {
-    expect(
-      convertNode(
-        node({
-          op: ops.any,
-          value: undefined,
-        }),
-        (value) => ({
-          name: "name",
-          value: value,
-        })
-      )
-    ).toEqual(
-      node({
-        op: ops.any,
-        value: {
-          name: "name",
-          value: undefined,
-        },
-      })
-    );
-  });
-
   it("should convert a match node", () => {
     expect(
       convertNode(

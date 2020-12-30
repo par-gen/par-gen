@@ -3,7 +3,6 @@ export const ops = {
   match: Symbol("regexp.match"),
   optional: Symbol("regexp.optional"),
   choice: Symbol("regexp.choice"),
-  any: Symbol("regexp.any"),
 };
 
 /**
@@ -185,15 +184,8 @@ function next(stack, input) {
   }
   switch (input[0]) {
     case ".": {
-      stack.push({
-        parent: undefined,
-        op: ops.any,
-        value: undefined,
-        node: undefined,
-        nodes: undefined,
-        left: undefined,
-        right: undefined,
-      });
+      const node = parse('[\x00-\xff]');
+      stack.push(node);
       return 1;
     }
     case "(": {
