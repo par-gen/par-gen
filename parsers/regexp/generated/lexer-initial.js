@@ -1,0 +1,578 @@
+// @ts-nocheck
+
+const EOF = "@par-gen.EOF";
+const ERROR = "@par-gen.ERROR";
+
+const tokenIds = [
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  4, // QUANTIFIER
+  4, // QUANTIFIER
+  4, // QUANTIFIER
+  2, // PAREN_OPEN
+  3, // PAREN_CLOSE
+  1, // UNION
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  0, // CHARACTER
+  undefined, // undefined
+  0, // CHARACTER
+  undefined, // undefined
+  5, // @par-gen.EOF
+  6, // @par-gen.ERROR
+];
+
+const table = new Uint32Array(68096);
+table.fill(67328);
+table[66816] = 0; // CHARACTER
+table[66817] = 256; // CHARACTER
+table[66818] = 512; // CHARACTER
+table[66819] = 768; // CHARACTER
+table[66820] = 1024; // CHARACTER
+table[66821] = 1280; // CHARACTER
+table[66822] = 1536; // CHARACTER
+table[66823] = 1792; // CHARACTER
+table[66908] = 67072; // CHARACTER
+table[66827] = 2048; // CHARACTER
+table[66830] = 2304; // CHARACTER
+table[66831] = 2560; // CHARACTER
+table[66832] = 2816; // CHARACTER
+table[66833] = 3072; // CHARACTER
+table[66834] = 3328; // CHARACTER
+table[66835] = 3584; // CHARACTER
+table[66836] = 3840; // CHARACTER
+table[66837] = 4096; // CHARACTER
+table[66838] = 4352; // CHARACTER
+table[66839] = 4608; // CHARACTER
+table[66840] = 4864; // CHARACTER
+table[66841] = 5120; // CHARACTER
+table[66842] = 5376; // CHARACTER
+table[66843] = 5632; // CHARACTER
+table[66844] = 5888; // CHARACTER
+table[66845] = 6144; // CHARACTER
+table[66846] = 6400; // CHARACTER
+table[66847] = 6656; // CHARACTER
+table[66848] = 6912; // CHARACTER
+table[66849] = 7168; // CHARACTER
+table[66850] = 7424; // CHARACTER
+table[66851] = 7680; // CHARACTER
+table[66852] = 7936; // CHARACTER
+table[66853] = 8192; // CHARACTER
+table[66854] = 8448; // CHARACTER
+table[66855] = 8704; // CHARACTER
+table[66860] = 8960; // CHARACTER
+table[66861] = 9216; // CHARACTER
+table[66862] = 9472; // CHARACTER
+table[66863] = 9728; // CHARACTER
+table[66864] = 9984; // CHARACTER
+table[66865] = 10240; // CHARACTER
+table[66866] = 10496; // CHARACTER
+table[66867] = 10752; // CHARACTER
+table[66868] = 11008; // CHARACTER
+table[66869] = 11264; // CHARACTER
+table[66870] = 11520; // CHARACTER
+table[66871] = 11776; // CHARACTER
+table[66872] = 12032; // CHARACTER
+table[66873] = 12288; // CHARACTER
+table[66874] = 12544; // CHARACTER
+table[66875] = 12800; // CHARACTER
+table[66876] = 13056; // CHARACTER
+table[66877] = 13312; // CHARACTER
+table[66878] = 13568; // CHARACTER
+table[66880] = 13824; // CHARACTER
+table[66881] = 14080; // CHARACTER
+table[66882] = 14336; // CHARACTER
+table[66883] = 14592; // CHARACTER
+table[66884] = 14848; // CHARACTER
+table[66885] = 15104; // CHARACTER
+table[66886] = 15360; // CHARACTER
+table[66887] = 15616; // CHARACTER
+table[66888] = 15872; // CHARACTER
+table[66889] = 16128; // CHARACTER
+table[66890] = 16384; // CHARACTER
+table[66891] = 16640; // CHARACTER
+table[66892] = 16896; // CHARACTER
+table[66893] = 17152; // CHARACTER
+table[66894] = 17408; // CHARACTER
+table[66895] = 17664; // CHARACTER
+table[66896] = 17920; // CHARACTER
+table[66897] = 18176; // CHARACTER
+table[66898] = 18432; // CHARACTER
+table[66899] = 18688; // CHARACTER
+table[66900] = 18944; // CHARACTER
+table[66901] = 19200; // CHARACTER
+table[66902] = 19456; // CHARACTER
+table[66903] = 19712; // CHARACTER
+table[66904] = 19968; // CHARACTER
+table[66905] = 20224; // CHARACTER
+table[66906] = 20480; // CHARACTER
+table[66907] = 20736; // CHARACTER
+table[66909] = 20992; // CHARACTER
+table[66910] = 21248; // CHARACTER
+table[66911] = 21504; // CHARACTER
+table[66912] = 21760; // CHARACTER
+table[66913] = 22016; // CHARACTER
+table[66914] = 22272; // CHARACTER
+table[66915] = 22528; // CHARACTER
+table[66916] = 22784; // CHARACTER
+table[66917] = 23040; // CHARACTER
+table[66918] = 23296; // CHARACTER
+table[66919] = 23552; // CHARACTER
+table[66920] = 23808; // CHARACTER
+table[66921] = 24064; // CHARACTER
+table[66922] = 24320; // CHARACTER
+table[66923] = 24576; // CHARACTER
+table[66924] = 24832; // CHARACTER
+table[66925] = 25088; // CHARACTER
+table[66926] = 25344; // CHARACTER
+table[66927] = 25600; // CHARACTER
+table[66928] = 25856; // CHARACTER
+table[66929] = 26112; // CHARACTER
+table[66930] = 26368; // CHARACTER
+table[66931] = 26624; // CHARACTER
+table[66932] = 26880; // CHARACTER
+table[66933] = 27136; // CHARACTER
+table[66934] = 27392; // CHARACTER
+table[66935] = 27648; // CHARACTER
+table[66936] = 27904; // CHARACTER
+table[66937] = 28160; // CHARACTER
+table[66938] = 28416; // CHARACTER
+table[66939] = 28672; // CHARACTER
+table[66941] = 28928; // CHARACTER
+table[66942] = 29184; // CHARACTER
+table[66943] = 29440; // CHARACTER
+table[66944] = 29696; // CHARACTER
+table[66945] = 29952; // CHARACTER
+table[66946] = 30208; // CHARACTER
+table[66947] = 30464; // CHARACTER
+table[66948] = 30720; // CHARACTER
+table[66949] = 30976; // CHARACTER
+table[66950] = 31232; // CHARACTER
+table[66951] = 31488; // CHARACTER
+table[66952] = 31744; // CHARACTER
+table[66953] = 32000; // CHARACTER
+table[66954] = 32256; // CHARACTER
+table[66955] = 32512; // CHARACTER
+table[66956] = 32768; // CHARACTER
+table[66957] = 33024; // CHARACTER
+table[66958] = 33280; // CHARACTER
+table[66959] = 33536; // CHARACTER
+table[66960] = 33792; // CHARACTER
+table[66961] = 34048; // CHARACTER
+table[66962] = 34304; // CHARACTER
+table[66963] = 34560; // CHARACTER
+table[66964] = 34816; // CHARACTER
+table[66965] = 35072; // CHARACTER
+table[66966] = 35328; // CHARACTER
+table[66967] = 35584; // CHARACTER
+table[66968] = 35840; // CHARACTER
+table[66969] = 36096; // CHARACTER
+table[66970] = 36352; // CHARACTER
+table[66971] = 36608; // CHARACTER
+table[66972] = 36864; // CHARACTER
+table[66973] = 37120; // CHARACTER
+table[66974] = 37376; // CHARACTER
+table[66975] = 37632; // CHARACTER
+table[66976] = 37888; // CHARACTER
+table[66977] = 38144; // CHARACTER
+table[66978] = 38400; // CHARACTER
+table[66979] = 38656; // CHARACTER
+table[66980] = 38912; // CHARACTER
+table[66981] = 39168; // CHARACTER
+table[66982] = 39424; // CHARACTER
+table[66983] = 39680; // CHARACTER
+table[66984] = 39936; // CHARACTER
+table[66985] = 40192; // CHARACTER
+table[66986] = 40448; // CHARACTER
+table[66987] = 40704; // CHARACTER
+table[66988] = 40960; // CHARACTER
+table[66989] = 41216; // CHARACTER
+table[66990] = 41472; // CHARACTER
+table[66991] = 41728; // CHARACTER
+table[66992] = 41984; // CHARACTER
+table[66993] = 42240; // CHARACTER
+table[66994] = 42496; // CHARACTER
+table[66995] = 42752; // CHARACTER
+table[66996] = 43008; // CHARACTER
+table[66997] = 43264; // CHARACTER
+table[66998] = 43520; // CHARACTER
+table[66999] = 43776; // CHARACTER
+table[67000] = 44032; // CHARACTER
+table[67001] = 44288; // CHARACTER
+table[67002] = 44544; // CHARACTER
+table[67003] = 44800; // CHARACTER
+table[67004] = 45056; // CHARACTER
+table[67005] = 45312; // CHARACTER
+table[67006] = 45568; // CHARACTER
+table[67007] = 45824; // CHARACTER
+table[67008] = 46080; // CHARACTER
+table[67009] = 46336; // CHARACTER
+table[67010] = 46592; // CHARACTER
+table[67011] = 46848; // CHARACTER
+table[67012] = 47104; // CHARACTER
+table[67013] = 47360; // CHARACTER
+table[67014] = 47616; // CHARACTER
+table[67015] = 47872; // CHARACTER
+table[67016] = 48128; // CHARACTER
+table[67017] = 48384; // CHARACTER
+table[67018] = 48640; // CHARACTER
+table[67019] = 48896; // CHARACTER
+table[67020] = 49152; // CHARACTER
+table[67021] = 49408; // CHARACTER
+table[67022] = 49664; // CHARACTER
+table[67023] = 49920; // CHARACTER
+table[67024] = 50176; // CHARACTER
+table[67025] = 50432; // CHARACTER
+table[67026] = 50688; // CHARACTER
+table[67027] = 50944; // CHARACTER
+table[67028] = 51200; // CHARACTER
+table[67029] = 51456; // CHARACTER
+table[67030] = 51712; // CHARACTER
+table[67031] = 51968; // CHARACTER
+table[67032] = 52224; // CHARACTER
+table[67033] = 52480; // CHARACTER
+table[67034] = 52736; // CHARACTER
+table[67035] = 52992; // CHARACTER
+table[67036] = 53248; // CHARACTER
+table[67037] = 53504; // CHARACTER
+table[67038] = 53760; // CHARACTER
+table[67039] = 54016; // CHARACTER
+table[67040] = 54272; // CHARACTER
+table[67041] = 54528; // CHARACTER
+table[67042] = 54784; // CHARACTER
+table[67043] = 55040; // CHARACTER
+table[67044] = 55296; // CHARACTER
+table[67045] = 55552; // CHARACTER
+table[67046] = 55808; // CHARACTER
+table[67047] = 56064; // CHARACTER
+table[67048] = 56320; // CHARACTER
+table[67049] = 56576; // CHARACTER
+table[67050] = 56832; // CHARACTER
+table[67051] = 57088; // CHARACTER
+table[67052] = 57344; // CHARACTER
+table[67053] = 57600; // CHARACTER
+table[67054] = 57856; // CHARACTER
+table[67055] = 58112; // CHARACTER
+table[67056] = 58368; // CHARACTER
+table[67057] = 58624; // CHARACTER
+table[67058] = 58880; // CHARACTER
+table[67059] = 59136; // CHARACTER
+table[67060] = 59392; // CHARACTER
+table[67061] = 59648; // CHARACTER
+table[67062] = 59904; // CHARACTER
+table[67063] = 60160; // CHARACTER
+table[67064] = 60416; // CHARACTER
+table[67065] = 60672; // CHARACTER
+table[67066] = 60928; // CHARACTER
+table[67067] = 61184; // CHARACTER
+table[67068] = 61440; // CHARACTER
+table[67069] = 61696; // CHARACTER
+table[67070] = 61952; // CHARACTER
+table[66858] = 62208; // QUANTIFIER
+table[66859] = 62464; // QUANTIFIER
+table[66879] = 62720; // QUANTIFIER
+table[66856] = 62976; // PAREN_OPEN
+table[66857] = 63232; // PAREN_CLOSE
+table[66940] = 63488; // UNION
+table[67164] = 63744; // CHARACTER
+table[67080] = 64000; // CHARACTER
+table[67081] = 64256; // CHARACTER
+table[67082] = 64512; // CHARACTER
+table[67084] = 64768; // CHARACTER
+table[67085] = 65024; // CHARACTER
+table[67114] = 65280; // CHARACTER
+table[67115] = 65536; // CHARACTER
+table[67135] = 65792; // CHARACTER
+table[67112] = 66048; // CHARACTER
+table[67113] = 66304; // CHARACTER
+table[67196] = 66560; // CHARACTER
+
+// the currently matched lexeme
+const lexeme = {
+  state: -1,
+  start: -1,
+  end: -1,
+};
+
+const next = (input, offset) => {
+  // 261
+  let state = 66816;
+  let successState = 67328;
+  let successPos = 0;
+
+  // try to find match
+  let i = offset;
+  const l = input.length;
+  while (i < l) {
+    state = table[state + input[i++]];
+    if (state <= 66560) {
+      successState = state;
+      successPos = i;
+    } else if (state === 67328) {
+      break;
+    }
+  }
+
+  if (successState !== 67328) {
+    lexeme.state = tokenIds[successState / 256];
+    lexeme.start = offset;
+    lexeme.end = successPos;
+    return lexeme;
+  }
+  lexeme.state = i === l ? 5 : 6;
+  lexeme.start = -1;
+  lexeme.end = -1;
+  return lexeme;
+};
+
+export { EOF, ERROR, next };

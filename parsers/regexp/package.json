@@ -1,0 +1,19 @@
+{
+  "name": "@par-gen/regexp",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "par-gen codegen regexp.pargen ./generated"
+  },
+  "dependencies": {
+    "@par-gen/cli": "0.1.0"
+  },
+  "jest": {
+    "displayName": "RegExp",
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "globalSetup": "<rootDir>/generate-grammar.cjs"
+  }
+}

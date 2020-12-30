@@ -1,0 +1,37 @@
+#######################################
+#
+# Tokens
+#
+CHARACTER := '[^\\\|\(\)\*?+]|\\[\*\+\?\\\(\)\|]';
+UNION := '\|';
+PAREN_OPEN := '\(';
+PAREN_CLOSE := '\)';
+QUANTIFIER := '[\*?+]';
+
+#######################################
+#
+# Rules
+#
+
+RegExp := Expression;
+
+Expression := Union | Group;
+
+Group :=
+    PAREN_OPEN Union PAREN_CLOSE
+  | PAREN_OPEN Union PAREN_CLOSE QUANTIFIER
+  ;
+
+Union :=
+    Sequence
+  | Union UNION Sequence
+  ;
+
+Sequence :=
+    CHARACTER
+  | CHARACTER QUANTIFIER
+  | Sequence CHARACTER
+  | Sequence CHARACTER QUANTIFIER
+  | Group
+  | Sequence Group
+  ;
