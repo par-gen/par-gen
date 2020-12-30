@@ -3373,9 +3373,8 @@ function parse(input) {
         tree[tp] = lookahead; // name
         tree[tp + 1] = result.start;
         tree[tp + 2] = result.end;
-        // TODO: test with mac and win
-        // tree[tp + 3] is 0 by default and leaf nodes have no children
-        // tree[tp + 4] is 0 by default and leaf nodes need no first child
+        tree[tp + 3] = 0; // leaf nodes have no children
+        tree[tp + 4] = 0; // leaf nodes have first child
         tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
 
         // shift current address on top of "address stack"
