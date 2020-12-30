@@ -24,7 +24,7 @@ const node = (template) => {
   if (template.node) {
     template.node.parent = parent;
   }
-  if (template.nodes) {
+  if (template.nodes?.forEach) {
     template.nodes.forEach((child) => (child.parent = parent));
   }
   if (template.left) {
@@ -317,6 +317,27 @@ describe("parse", () => {
             }),
           }),
         ],
+      })
+    );
+  });
+
+  it("should accept character classes including dash", () => {
+    expect(parse("[-]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: expect.any(Array),
+      })
+    );
+    expect(parse("[a-]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: expect.any(Array),
+      })
+    );
+    expect(parse("[-a]")).toEqual(
+      node({
+        op: ops.sequence,
+        nodes: expect.any(Array),
       })
     );
   });
