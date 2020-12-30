@@ -3308,9 +3308,11 @@ const createProxy = (tree, pointer) => {
 
             const firstChild = tree[pointer + 4];
             const children = [createProxy(tree, firstChild)];
+            let nextChild = tree[firstChild + 5];
 
             for (let i = 1; i < nChildren; i++) {
-              children.push(createProxy(tree, tree[firstChild + 5]));
+              children.push(createProxy(tree, nextChild));
+              nextChild = tree[nextChild + 5];
             }
 
             return children;
