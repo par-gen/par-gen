@@ -454,55 +454,41 @@ export class JavaScriptBaseCodegen {
        */
       const tree = new Uint16Array(32768);
 
-      const createProxy = (tree, pointer) => {
-        return new Proxy(
-          {},
-          {
-            get(target, prop) {
-              switch (prop) {
-                case "name":
-                  return parserSymbols[tree[pointer]];
-                case "start":
-                  return tree[pointer + 1] === 0xffff ? -1 : tree[pointer + 1];
-                case "end":
-                  return tree[pointer + 2] === 0xffff ? -1 : tree[pointer + 2];
-                case "items":
-                  const nChildren = tree[pointer + 3];
+      function view(tree, tp) {
+        const name = parserSymbols[tree[tp]];
+        const start = tree[tp + 1];
+        const end = tree[tp + 2];
+        const nChildren = tree[tp + 3];
+        const firstChild = tree[tp + 4];
 
-                  if (nChildren === 0) {
-                    return undefined;
-                  }
+        const node = {
+          name,
+          start: start === 0xffff ? -1 : start,
+          end: end === 0xffff ? -1 : end,
+          get items() {
+            if (nChildren === 0) {
+              return undefined;
+            }
 
-                  const firstChild = tree[pointer + 4];
-                  const children = [createProxy(tree, firstChild)];
-                  let nextChild = tree[firstChild + 5];
+            const children = [view(tree, firstChild)];
+            let nextChild = tree[firstChild + 5];
 
-                  for (let i = 1; i < nChildren; i++) {
-                    children.push(createProxy(tree, nextChild));
-                    nextChild = tree[nextChild + 5];
-                  }
+            for (let i = 1; i < nChildren; i++) {
+              children.push(view(tree, nextChild));
+              nextChild = tree[nextChild + 5];
+            }
 
-                  return children;
-                case "__tree":
-                  return tree;
-                case "__pointer":
-                  return pointer;
-              }
-            },
-            ownKeys(target) {
-              return ["name", "start", "end", "items"];
-            },
-            has(target, prop) {
-              return this.ownKeys(target).includes(prop);
-            },
-            getOwnPropertyDescriptor(target, prop) {
-              return this.has(target, prop)
-                ? { enumerable: true, configurable: true }
-                : undefined;
-            },
-          }
-        );
-      };
+            return children;
+          },
+        };
+
+        Object.defineProperty(node, Symbol.for('nodejs.util.inspect.custom'), {
+          enumerable: false,
+          value: () => JSON.parse(JSON.stringify(view(tree, tp))),
+        });
+
+        return node;
+      }
 
       function parse(input) {
         ${debug(
@@ -555,7 +541,7 @@ export class JavaScriptBaseCodegen {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
               lexer.pop(true);
-              return createProxy(tree, tp - 6);
+              return view(tree, tp - 6);
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(
                 () =>
