@@ -151,7 +151,7 @@ export class JavaScriptBaseCodegen {
         n = n + 1;
 
         if (success) {
-          lexeme.state = tokenIds[(visited[n] / ${columns}) + 2];
+          lexeme.state = tokenIds[(visited[n] / ${columns})];
           lexeme.start = offset;
           lexeme.end = offset + n;
           return lexeme;

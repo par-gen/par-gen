@@ -22,7 +22,7 @@ describe("parse", () => {
 
     expect(result).toEqual(
       expect.objectContaining({
-        tokens: [
+        tokens: expect.arrayContaining([
           expect.objectContaining({
             name: EOF,
           }),
@@ -53,7 +53,7 @@ describe("parse", () => {
             expr: "-",
             state: ["initial"],
           },
-        ],
+        ]),
       })
     );
   });
@@ -102,7 +102,7 @@ describe("parse", () => {
     `);
 
     expect(result).toEqual({
-      tokens: [
+      tokens: expect.arrayContaining([
         expect.objectContaining({
           name: EOF,
         }),
@@ -115,7 +115,7 @@ describe("parse", () => {
           expr: " ",
           state: expect.any(Array),
         },
-      ],
+      ]),
       rules: [
         {
           uid: expect.any(Number),
@@ -133,7 +133,7 @@ describe("parse", () => {
     `);
 
     expect(result).toEqual({
-      tokens: [
+      tokens: expect.arrayContaining([
         expect.objectContaining({
           name: EOF,
         }),
@@ -146,7 +146,7 @@ describe("parse", () => {
           expr: " ",
           state: expect.any(Array),
         },
-      ],
+      ]),
       rules: [],
     });
   });
@@ -162,7 +162,7 @@ describe("parse", () => {
       Rule := A | B;
     `);
     expect(grammar).toEqual({
-      tokens: [
+      tokens: expect.arrayContaining([
         expect.objectContaining({
           name: EOF,
         }),
@@ -181,7 +181,7 @@ describe("parse", () => {
           expr: "b",
           state: expect.any(Array),
         },
-      ],
+      ]),
       rules: [
         {
           uid: expect.any(Number),
@@ -206,7 +206,7 @@ describe("parse", () => {
       Rule := A? B A?;
     `);
     expect(grammar).toEqual({
-      tokens: [
+      tokens: expect.arrayContaining([
         expect.objectContaining({
           name: EOF,
         }),
@@ -225,7 +225,7 @@ describe("parse", () => {
           expr: "b",
           state: expect.any(Array),
         },
-      ],
+      ]),
       rules: expect.arrayContaining([
         {
           uid: expect.any(Number),
@@ -264,7 +264,7 @@ describe("parse", () => {
 
     expect(grammar).toEqual(
       expect.objectContaining({
-        tokens: [
+        tokens: expect.arrayContaining([
           expect.objectContaining({
             name: EOF,
           }),
@@ -283,7 +283,7 @@ describe("parse", () => {
             expr: "b",
             state: expect.any(Array),
           },
-        ],
+        ]),
         rules: [
           {
             uid: expect.any(Number),
@@ -308,7 +308,7 @@ describe("parse", () => {
 
     expect(grammar).toEqual(
       expect.objectContaining({
-        tokens: [
+        tokens: expect.arrayContaining([
           expect.objectContaining({
             name: EOF,
           }),
@@ -327,7 +327,7 @@ describe("parse", () => {
             expr: "b",
             state: ["b"],
           },
-        ],
+        ]),
         rules: [
           {
             uid: expect.any(Number),
@@ -351,28 +351,28 @@ describe("parse", () => {
 
     expect(grammar).toEqual(
       expect.objectContaining({
-        tokens: [
-          expect.objectContaining({
-            uid: 0,
-            name: EOF,
-          }),
-          expect.objectContaining({
-            uid: 1,
-            name: ERROR,
-          }),
+        tokens: expect.arrayContaining([
           {
-            uid: 2,
+            uid: 0,
             name: "A",
             expr: "a",
             state: expect.any(Array),
           },
           {
-            uid: 3,
+            uid: 1,
             name: "B",
             expr: "b",
             state: expect.any(Array),
           },
-        ],
+          expect.objectContaining({
+            uid: 2,
+            name: EOF,
+          }),
+          expect.objectContaining({
+            uid: 3,
+            name: ERROR,
+          }),
+        ]),
         rules: [
           {
             uid: 4,

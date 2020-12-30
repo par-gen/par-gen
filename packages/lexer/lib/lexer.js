@@ -229,14 +229,14 @@ export function generateFromTokens(tokens) {
         .find((state) => !finals.includes(state)) ?? -1;
 
     const tokenIds = [
+      ...d.states.map((state) => state.uids[0]),
       eofToken.uid,
       errorToken.uid,
-      ...d.states.map((state) => state.uids[0]),
     ];
     const tokenNames = [
+      ...d.states.map((state) => state.names[0]),
       eofToken.name,
       errorToken.name,
-      ...d.states.map((state) => state.names[0]),
     ];
 
     return {

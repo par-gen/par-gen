@@ -126,7 +126,7 @@ export function generate(grammar) {
       (data) => data.tokenNames
     );
 
-    let parserSymbols = Array.from(new Set([EOF, ...dfa.description.symbols]));
+    let parserSymbols = Array.from(new Set(dfa.description.symbols));
     // add to align to power of 2
     for (
       let i = 0,
@@ -679,7 +679,7 @@ function createActionTable(dfa, EOF) {
         );
       }
     });
-    [...dfa.description.symbols, EOF].forEach((symbol) => {
+    dfa.description.symbols.forEach((symbol) => {
       const ends = Array.from(currentState.values()).filter(
         (item) => item.marker >= item.tokens.length
       );
