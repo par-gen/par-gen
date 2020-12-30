@@ -5,9 +5,9 @@
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "dependencies": {
-    "@par-gen/dfa": "workspace:0.1.0",
-    "@par-gen/grammar": "workspace:0.1.0",
-    "@par-gen/nfa": "workspace:0.1.0",
+    "@par-gen/dfa": "0.1.0",
+    "@par-gen/grammar": "0.1.0",
+    "@par-gen/nfa": "0.1.0",
     "debug": "^4.3.1"
   },
   "devDependencies": {
