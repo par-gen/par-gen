@@ -47,6 +47,9 @@
     },
     {
       "path": "parsers/json"
+    },
+    {
+      "path": "parsers/regexp"
     }
   ]
 }

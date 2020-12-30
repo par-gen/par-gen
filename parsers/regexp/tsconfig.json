@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "types",
+    "composite": true
+  },
+  "include": ["./"],
+  "exclude": ["**/node_modules/**", "./generate-grammar.cjs"],
+  "references": []
+}
