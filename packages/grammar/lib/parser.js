@@ -117,7 +117,7 @@ export function parse(grammar) {
 
   /** @type {Token} */
   const eofToken = {
-    uid: uid++,
+    uid: -1,
     name: EOF,
     expr: "",
     state: ["initial"],
@@ -125,15 +125,13 @@ export function parse(grammar) {
 
   /** @type {Token} */
   const errorToken = {
-    uid: uid++,
+    uid: -1,
     name: ERROR,
     expr: "",
     state: ["initial"],
   };
 
   const tokens = [
-    eofToken,
-    errorToken,
     ...lines
       .map((line) =>
         line.match(
@@ -150,12 +148,16 @@ export function parse(grammar) {
             state: match.groups?.state?.split(" ") ?? ["initial"],
           })
       ),
+    eofToken,
+    errorToken,
   ];
   const tokenNames = tokens.map((token) => token.name);
   const tokenStates = Array.from(
     new Set(tokens.flatMap((token) => token.state))
   );
+  eofToken.uid = uid++;
   eofToken.state = tokenStates;
+  errorToken.uid = uid++;
   errorToken.state = tokenStates;
 
   const rules = lines

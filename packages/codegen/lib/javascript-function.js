@@ -115,7 +115,7 @@ export class JavaScriptFunctionCodegen {
       const [success, n] = finalStateLoop(false, j);
 
       if (success) {
-        const state = states[visited[n] / columns + 2];
+        const state = states[visited[n] / columns];
         if (state) {
           return {
             state: state,
