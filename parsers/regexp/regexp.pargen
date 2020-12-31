@@ -15,15 +15,17 @@ QUANTIFIER := '[\*?+]';
 
 RegExp := Expression;
 
-Expression := Union | Group;
+Expression := Union | Group | Sequence;
 
 Group :=
     PAREN_OPEN Union PAREN_CLOSE
   | PAREN_OPEN Union PAREN_CLOSE QUANTIFIER
+  | PAREN_OPEN Sequence PAREN_CLOSE
+  | PAREN_OPEN Sequence PAREN_CLOSE QUANTIFIER
   ;
 
 Union :=
-    Sequence
+    Sequence UNION Sequence
   | Union UNION Sequence
   ;
 

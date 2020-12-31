@@ -6,9 +6,12 @@ import { next as nextTokenInitial } from "./lexer-initial.js";
       RegExp := Expression;
 Expression := Union;
 Expression := Group;
+Expression := Sequence;
 Group := PAREN_OPEN Union PAREN_CLOSE;
 Group := PAREN_OPEN Union PAREN_CLOSE QUANTIFIER;
-Union := Sequence;
+Group := PAREN_OPEN Sequence PAREN_CLOSE;
+Group := PAREN_OPEN Sequence PAREN_CLOSE QUANTIFIER;
+Union := Sequence UNION Sequence;
 Union := Union UNION Sequence;
 Sequence := Atom;
 Sequence := Sequence Atom;
@@ -18,111 +21,141 @@ Atom := Group;
 Atom := Group QUANTIFIER;
       */
 
-const reducerStates = new Uint8Array(7424);
+const reducerStates = new Uint8Array(9728);
 reducerStates[29] = 1; // 'state 1' -> Atom -> CHARACTER
-reducerStates[493] = 1; // 'state 1' -> Atom -> UNION
-reducerStates[957] = 1; // 'state 1' -> Atom -> PAREN_OPEN
-reducerStates[1421] = 1; // 'state 1' -> Atom -> PAREN_CLOSE
-reducerStates[2349] = 1; // 'state 1' -> Atom -> @par-gen.EOF
-reducerStates[2375] = 1; // 'state 3' -> S -> @par-gen.EOF
-reducerStates[2392] = 1; // 'state 4' -> RegExp -> @par-gen.EOF
-reducerStates[2409] = 1; // 'state 5' -> Expression -> @par-gen.EOF
+reducerStates[637] = 1; // 'state 1' -> Atom -> UNION
+reducerStates[1245] = 1; // 'state 1' -> Atom -> PAREN_OPEN
+reducerStates[1853] = 1; // 'state 1' -> Atom -> PAREN_CLOSE
+reducerStates[3069] = 1; // 'state 1' -> Atom -> @par-gen.EOF
+reducerStates[3095] = 1; // 'state 3' -> S -> @par-gen.EOF
+reducerStates[3112] = 1; // 'state 4' -> RegExp -> @par-gen.EOF
+reducerStates[3129] = 1; // 'state 5' -> Expression -> @par-gen.EOF
 reducerStates[93] = 1; // 'state 5' -> Atom -> CHARACTER
-reducerStates[557] = 1; // 'state 5' -> Atom -> UNION
-reducerStates[1021] = 1; // 'state 5' -> Atom -> PAREN_OPEN
-reducerStates[1485] = 1; // 'state 5' -> Atom -> PAREN_CLOSE
-reducerStates[2413] = 1; // 'state 5' -> Atom -> @par-gen.EOF
-reducerStates[2425] = 1; // 'state 6' -> Expression -> @par-gen.EOF
-reducerStates[587] = 1; // 'state 7' -> Union -> UNION
-reducerStates[1515] = 1; // 'state 7' -> Union -> PAREN_CLOSE
-reducerStates[2443] = 1; // 'state 7' -> Union -> @par-gen.EOF
+reducerStates[701] = 1; // 'state 5' -> Atom -> UNION
+reducerStates[1309] = 1; // 'state 5' -> Atom -> PAREN_OPEN
+reducerStates[1917] = 1; // 'state 5' -> Atom -> PAREN_CLOSE
+reducerStates[3133] = 1; // 'state 5' -> Atom -> @par-gen.EOF
+reducerStates[3145] = 1; // 'state 6' -> Expression -> @par-gen.EOF
+reducerStates[3161] = 1; // 'state 7' -> Expression -> @par-gen.EOF
 reducerStates[140] = 1; // 'state 8' -> Sequence -> CHARACTER
-reducerStates[604] = 1; // 'state 8' -> Sequence -> UNION
-reducerStates[1068] = 1; // 'state 8' -> Sequence -> PAREN_OPEN
-reducerStates[1532] = 1; // 'state 8' -> Sequence -> PAREN_CLOSE
-reducerStates[2460] = 1; // 'state 8' -> Sequence -> @par-gen.EOF
+reducerStates[748] = 1; // 'state 8' -> Sequence -> UNION
+reducerStates[1356] = 1; // 'state 8' -> Sequence -> PAREN_OPEN
+reducerStates[1964] = 1; // 'state 8' -> Sequence -> PAREN_CLOSE
+reducerStates[3180] = 1; // 'state 8' -> Sequence -> @par-gen.EOF
 reducerStates[173] = 2; // 'state 10' -> Atom -> CHARACTER
-reducerStates[637] = 2; // 'state 10' -> Atom -> UNION
-reducerStates[1101] = 2; // 'state 10' -> Atom -> PAREN_OPEN
-reducerStates[1565] = 2; // 'state 10' -> Atom -> PAREN_CLOSE
-reducerStates[2493] = 2; // 'state 10' -> Atom -> @par-gen.EOF
+reducerStates[781] = 2; // 'state 10' -> Atom -> UNION
+reducerStates[1389] = 2; // 'state 10' -> Atom -> PAREN_OPEN
+reducerStates[1997] = 2; // 'state 10' -> Atom -> PAREN_CLOSE
+reducerStates[3213] = 2; // 'state 10' -> Atom -> @par-gen.EOF
 reducerStates[189] = 1; // 'state 11' -> Atom -> CHARACTER
-reducerStates[653] = 1; // 'state 11' -> Atom -> UNION
-reducerStates[1117] = 1; // 'state 11' -> Atom -> PAREN_OPEN
-reducerStates[1581] = 1; // 'state 11' -> Atom -> PAREN_CLOSE
-reducerStates[2509] = 1; // 'state 11' -> Atom -> @par-gen.EOF
-reducerStates[221] = 1; // 'state 13' -> Atom -> CHARACTER
-reducerStates[685] = 1; // 'state 13' -> Atom -> UNION
-reducerStates[1149] = 1; // 'state 13' -> Atom -> PAREN_OPEN
-reducerStates[1613] = 1; // 'state 13' -> Atom -> PAREN_CLOSE
-reducerStates[2541] = 1; // 'state 13' -> Atom -> @par-gen.EOF
-reducerStates[236] = 2; // 'state 14' -> Sequence -> CHARACTER
-reducerStates[700] = 2; // 'state 14' -> Sequence -> UNION
-reducerStates[1164] = 2; // 'state 14' -> Sequence -> PAREN_OPEN
-reducerStates[1628] = 2; // 'state 14' -> Sequence -> PAREN_CLOSE
-reducerStates[2556] = 2; // 'state 14' -> Sequence -> @par-gen.EOF
-reducerStates[253] = 1; // 'state 15' -> Atom -> CHARACTER
-reducerStates[717] = 1; // 'state 15' -> Atom -> UNION
-reducerStates[1181] = 1; // 'state 15' -> Atom -> PAREN_OPEN
-reducerStates[1645] = 1; // 'state 15' -> Atom -> PAREN_CLOSE
-reducerStates[2573] = 1; // 'state 15' -> Atom -> @par-gen.EOF
+reducerStates[797] = 1; // 'state 11' -> Atom -> UNION
+reducerStates[1405] = 1; // 'state 11' -> Atom -> PAREN_OPEN
+reducerStates[2013] = 1; // 'state 11' -> Atom -> PAREN_CLOSE
+reducerStates[3229] = 1; // 'state 11' -> Atom -> @par-gen.EOF
+reducerStates[237] = 1; // 'state 14' -> Atom -> CHARACTER
+reducerStates[845] = 1; // 'state 14' -> Atom -> UNION
+reducerStates[1453] = 1; // 'state 14' -> Atom -> PAREN_OPEN
+reducerStates[2061] = 1; // 'state 14' -> Atom -> PAREN_CLOSE
+reducerStates[3277] = 1; // 'state 14' -> Atom -> @par-gen.EOF
+reducerStates[252] = 2; // 'state 15' -> Sequence -> CHARACTER
+reducerStates[860] = 2; // 'state 15' -> Sequence -> UNION
+reducerStates[1468] = 2; // 'state 15' -> Sequence -> PAREN_OPEN
+reducerStates[2076] = 2; // 'state 15' -> Sequence -> PAREN_CLOSE
+reducerStates[3292] = 2; // 'state 15' -> Sequence -> @par-gen.EOF
 reducerStates[269] = 1; // 'state 16' -> Atom -> CHARACTER
-reducerStates[733] = 1; // 'state 16' -> Atom -> UNION
-reducerStates[1197] = 1; // 'state 16' -> Atom -> PAREN_OPEN
-reducerStates[1661] = 1; // 'state 16' -> Atom -> PAREN_CLOSE
-reducerStates[2589] = 1; // 'state 16' -> Atom -> @par-gen.EOF
-reducerStates[300] = 1; // 'state 18' -> Sequence -> CHARACTER
-reducerStates[764] = 1; // 'state 18' -> Sequence -> UNION
-reducerStates[1228] = 1; // 'state 18' -> Sequence -> PAREN_OPEN
-reducerStates[1692] = 1; // 'state 18' -> Sequence -> PAREN_CLOSE
-reducerStates[2620] = 1; // 'state 18' -> Sequence -> @par-gen.EOF
-reducerStates[317] = 2; // 'state 19' -> Atom -> CHARACTER
-reducerStates[781] = 2; // 'state 19' -> Atom -> UNION
-reducerStates[1245] = 2; // 'state 19' -> Atom -> PAREN_OPEN
-reducerStates[1709] = 2; // 'state 19' -> Atom -> PAREN_CLOSE
-reducerStates[2637] = 2; // 'state 19' -> Atom -> @par-gen.EOF
-reducerStates[333] = 1; // 'state 20' -> Atom -> CHARACTER
-reducerStates[797] = 1; // 'state 20' -> Atom -> UNION
-reducerStates[1261] = 1; // 'state 20' -> Atom -> PAREN_OPEN
-reducerStates[1725] = 1; // 'state 20' -> Atom -> PAREN_CLOSE
-reducerStates[2653] = 1; // 'state 20' -> Atom -> @par-gen.EOF
-reducerStates[811] = 3; // 'state 21' -> Union -> UNION
-reducerStates[1739] = 3; // 'state 21' -> Union -> PAREN_CLOSE
-reducerStates[2667] = 3; // 'state 21' -> Union -> @par-gen.EOF
-reducerStates[365] = 2; // 'state 22' -> Atom -> CHARACTER
-reducerStates[829] = 2; // 'state 22' -> Atom -> UNION
-reducerStates[1293] = 2; // 'state 22' -> Atom -> PAREN_OPEN
-reducerStates[1757] = 2; // 'state 22' -> Atom -> PAREN_CLOSE
-reducerStates[2685] = 2; // 'state 22' -> Atom -> @par-gen.EOF
-reducerStates[394] = 3; // 'state 24' -> Group -> CHARACTER
-reducerStates[858] = 3; // 'state 24' -> Group -> UNION
-reducerStates[1322] = 3; // 'state 24' -> Group -> PAREN_OPEN
-reducerStates[1786] = 3; // 'state 24' -> Group -> PAREN_CLOSE
-reducerStates[2250] = 3; // 'state 24' -> Group -> QUANTIFIER
-reducerStates[2714] = 3; // 'state 24' -> Group -> @par-gen.EOF
-reducerStates[413] = 2; // 'state 25' -> Atom -> CHARACTER
-reducerStates[877] = 2; // 'state 25' -> Atom -> UNION
-reducerStates[1341] = 2; // 'state 25' -> Atom -> PAREN_OPEN
-reducerStates[1805] = 2; // 'state 25' -> Atom -> PAREN_CLOSE
-reducerStates[2733] = 2; // 'state 25' -> Atom -> @par-gen.EOF
-reducerStates[426] = 3; // 'state 26' -> Group -> CHARACTER
-reducerStates[890] = 3; // 'state 26' -> Group -> UNION
-reducerStates[1354] = 3; // 'state 26' -> Group -> PAREN_OPEN
-reducerStates[1818] = 3; // 'state 26' -> Group -> PAREN_CLOSE
-reducerStates[2282] = 3; // 'state 26' -> Group -> QUANTIFIER
-reducerStates[2746] = 3; // 'state 26' -> Group -> @par-gen.EOF
-reducerStates[442] = 4; // 'state 27' -> Group -> CHARACTER
-reducerStates[906] = 4; // 'state 27' -> Group -> UNION
-reducerStates[1370] = 4; // 'state 27' -> Group -> PAREN_OPEN
-reducerStates[1834] = 4; // 'state 27' -> Group -> PAREN_CLOSE
-reducerStates[2298] = 4; // 'state 27' -> Group -> QUANTIFIER
-reducerStates[2762] = 4; // 'state 27' -> Group -> @par-gen.EOF
-reducerStates[458] = 4; // 'state 28' -> Group -> CHARACTER
-reducerStates[922] = 4; // 'state 28' -> Group -> UNION
-reducerStates[1386] = 4; // 'state 28' -> Group -> PAREN_OPEN
-reducerStates[1850] = 4; // 'state 28' -> Group -> PAREN_CLOSE
-reducerStates[2314] = 4; // 'state 28' -> Group -> QUANTIFIER
-reducerStates[2778] = 4; // 'state 28' -> Group -> @par-gen.EOF
+reducerStates[877] = 1; // 'state 16' -> Atom -> UNION
+reducerStates[1485] = 1; // 'state 16' -> Atom -> PAREN_OPEN
+reducerStates[2093] = 1; // 'state 16' -> Atom -> PAREN_CLOSE
+reducerStates[3309] = 1; // 'state 16' -> Atom -> @par-gen.EOF
+reducerStates[285] = 1; // 'state 17' -> Atom -> CHARACTER
+reducerStates[893] = 1; // 'state 17' -> Atom -> UNION
+reducerStates[1501] = 1; // 'state 17' -> Atom -> PAREN_OPEN
+reducerStates[2109] = 1; // 'state 17' -> Atom -> PAREN_CLOSE
+reducerStates[3325] = 1; // 'state 17' -> Atom -> @par-gen.EOF
+reducerStates[332] = 1; // 'state 20' -> Sequence -> CHARACTER
+reducerStates[940] = 1; // 'state 20' -> Sequence -> UNION
+reducerStates[1548] = 1; // 'state 20' -> Sequence -> PAREN_OPEN
+reducerStates[2156] = 1; // 'state 20' -> Sequence -> PAREN_CLOSE
+reducerStates[3372] = 1; // 'state 20' -> Sequence -> @par-gen.EOF
+reducerStates[349] = 2; // 'state 21' -> Atom -> CHARACTER
+reducerStates[957] = 2; // 'state 21' -> Atom -> UNION
+reducerStates[1565] = 2; // 'state 21' -> Atom -> PAREN_OPEN
+reducerStates[2173] = 2; // 'state 21' -> Atom -> PAREN_CLOSE
+reducerStates[3389] = 2; // 'state 21' -> Atom -> @par-gen.EOF
+reducerStates[365] = 1; // 'state 22' -> Atom -> CHARACTER
+reducerStates[973] = 1; // 'state 22' -> Atom -> UNION
+reducerStates[1581] = 1; // 'state 22' -> Atom -> PAREN_OPEN
+reducerStates[2189] = 1; // 'state 22' -> Atom -> PAREN_CLOSE
+reducerStates[3405] = 1; // 'state 22' -> Atom -> @par-gen.EOF
+reducerStates[987] = 3; // 'state 23' -> Union -> UNION
+reducerStates[2203] = 3; // 'state 23' -> Union -> PAREN_CLOSE
+reducerStates[3419] = 3; // 'state 23' -> Union -> @par-gen.EOF
+reducerStates[397] = 1; // 'state 24' -> Atom -> CHARACTER
+reducerStates[1005] = 1; // 'state 24' -> Atom -> UNION
+reducerStates[1613] = 1; // 'state 24' -> Atom -> PAREN_OPEN
+reducerStates[2221] = 1; // 'state 24' -> Atom -> PAREN_CLOSE
+reducerStates[3437] = 1; // 'state 24' -> Atom -> @par-gen.EOF
+reducerStates[1019] = 3; // 'state 25' -> Union -> UNION
+reducerStates[2235] = 3; // 'state 25' -> Union -> PAREN_CLOSE
+reducerStates[3451] = 3; // 'state 25' -> Union -> @par-gen.EOF
+reducerStates[429] = 2; // 'state 26' -> Atom -> CHARACTER
+reducerStates[1037] = 2; // 'state 26' -> Atom -> UNION
+reducerStates[1645] = 2; // 'state 26' -> Atom -> PAREN_OPEN
+reducerStates[2253] = 2; // 'state 26' -> Atom -> PAREN_CLOSE
+reducerStates[3469] = 2; // 'state 26' -> Atom -> @par-gen.EOF
+reducerStates[474] = 3; // 'state 29' -> Group -> CHARACTER
+reducerStates[1082] = 3; // 'state 29' -> Group -> UNION
+reducerStates[1690] = 3; // 'state 29' -> Group -> PAREN_OPEN
+reducerStates[2298] = 3; // 'state 29' -> Group -> PAREN_CLOSE
+reducerStates[2906] = 3; // 'state 29' -> Group -> QUANTIFIER
+reducerStates[3514] = 3; // 'state 29' -> Group -> @par-gen.EOF
+reducerStates[490] = 3; // 'state 30' -> Group -> CHARACTER
+reducerStates[1098] = 3; // 'state 30' -> Group -> UNION
+reducerStates[1706] = 3; // 'state 30' -> Group -> PAREN_OPEN
+reducerStates[2314] = 3; // 'state 30' -> Group -> PAREN_CLOSE
+reducerStates[2922] = 3; // 'state 30' -> Group -> QUANTIFIER
+reducerStates[3530] = 3; // 'state 30' -> Group -> @par-gen.EOF
+reducerStates[509] = 2; // 'state 31' -> Atom -> CHARACTER
+reducerStates[1117] = 2; // 'state 31' -> Atom -> UNION
+reducerStates[1725] = 2; // 'state 31' -> Atom -> PAREN_OPEN
+reducerStates[2333] = 2; // 'state 31' -> Atom -> PAREN_CLOSE
+reducerStates[3549] = 2; // 'state 31' -> Atom -> @par-gen.EOF
+reducerStates[522] = 3; // 'state 32' -> Group -> CHARACTER
+reducerStates[1130] = 3; // 'state 32' -> Group -> UNION
+reducerStates[1738] = 3; // 'state 32' -> Group -> PAREN_OPEN
+reducerStates[2346] = 3; // 'state 32' -> Group -> PAREN_CLOSE
+reducerStates[2954] = 3; // 'state 32' -> Group -> QUANTIFIER
+reducerStates[3562] = 3; // 'state 32' -> Group -> @par-gen.EOF
+reducerStates[538] = 3; // 'state 33' -> Group -> CHARACTER
+reducerStates[1146] = 3; // 'state 33' -> Group -> UNION
+reducerStates[1754] = 3; // 'state 33' -> Group -> PAREN_OPEN
+reducerStates[2362] = 3; // 'state 33' -> Group -> PAREN_CLOSE
+reducerStates[2970] = 3; // 'state 33' -> Group -> QUANTIFIER
+reducerStates[3578] = 3; // 'state 33' -> Group -> @par-gen.EOF
+reducerStates[554] = 4; // 'state 34' -> Group -> CHARACTER
+reducerStates[1162] = 4; // 'state 34' -> Group -> UNION
+reducerStates[1770] = 4; // 'state 34' -> Group -> PAREN_OPEN
+reducerStates[2378] = 4; // 'state 34' -> Group -> PAREN_CLOSE
+reducerStates[2986] = 4; // 'state 34' -> Group -> QUANTIFIER
+reducerStates[3594] = 4; // 'state 34' -> Group -> @par-gen.EOF
+reducerStates[570] = 4; // 'state 35' -> Group -> CHARACTER
+reducerStates[1178] = 4; // 'state 35' -> Group -> UNION
+reducerStates[1786] = 4; // 'state 35' -> Group -> PAREN_OPEN
+reducerStates[2394] = 4; // 'state 35' -> Group -> PAREN_CLOSE
+reducerStates[3002] = 4; // 'state 35' -> Group -> QUANTIFIER
+reducerStates[3610] = 4; // 'state 35' -> Group -> @par-gen.EOF
+reducerStates[586] = 4; // 'state 36' -> Group -> CHARACTER
+reducerStates[1194] = 4; // 'state 36' -> Group -> UNION
+reducerStates[1802] = 4; // 'state 36' -> Group -> PAREN_OPEN
+reducerStates[2410] = 4; // 'state 36' -> Group -> PAREN_CLOSE
+reducerStates[3018] = 4; // 'state 36' -> Group -> QUANTIFIER
+reducerStates[3626] = 4; // 'state 36' -> Group -> @par-gen.EOF
+reducerStates[602] = 4; // 'state 37' -> Group -> CHARACTER
+reducerStates[1210] = 4; // 'state 37' -> Group -> UNION
+reducerStates[1818] = 4; // 'state 37' -> Group -> PAREN_OPEN
+reducerStates[2426] = 4; // 'state 37' -> Group -> PAREN_CLOSE
+reducerStates[3034] = 4; // 'state 37' -> Group -> QUANTIFIER
+reducerStates[3642] = 4; // 'state 37' -> Group -> @par-gen.EOF
 
 const parserSymbols = [
   "CHARACTER", // 0
@@ -278,57 +311,57 @@ const actions = [
   },
   // 'action 22'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 11, // Union
+    op: 0, // shift
+    state: 15, // 'state 15'
+    symbol: undefined,
   },
   // 'action 23'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 11, // Union
+    symbol: 9, // Expression
   },
   // 'action 24'
-  {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 11, // Union
-  },
-  // 'action 25'
-  {
-    op: 0, // shift
-    state: 15, // 'state 15'
-    symbol: undefined,
-  },
-  // 'action 26'
-  {
-    op: 0, // shift
-    state: 2, // 'state 2'
-    symbol: undefined,
-  },
-  // 'action 27'
   {
     op: 0, // shift
     state: 16, // 'state 16'
     symbol: undefined,
   },
-  // 'action 28'
+  // 'action 25'
+  {
+    op: 0, // shift
+    state: 2, // 'state 2'
+    symbol: undefined,
+  },
+  // 'action 26'
   {
     op: 0, // shift
     state: 17, // 'state 17'
     symbol: undefined,
   },
-  // 'action 29'
-  {
-    op: 0, // shift
-    state: 7, // 'state 7'
-    symbol: undefined,
-  },
-  // 'action 30'
+  // 'action 27'
   {
     op: 0, // shift
     state: 18, // 'state 18'
     symbol: undefined,
+  },
+  // 'action 28'
+  {
+    op: 0, // shift
+    state: 19, // 'state 19'
+    symbol: undefined,
+  },
+  // 'action 29'
+  {
+    op: 0, // shift
+    state: 20, // 'state 20'
+    symbol: undefined,
+  },
+  // 'action 30'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 12, // Sequence
   },
   // 'action 31'
   {
@@ -356,15 +389,15 @@ const actions = [
   },
   // 'action 35'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 21, // 'state 21'
+    symbol: undefined,
   },
   // 'action 36'
   {
-    op: 0, // shift
-    state: 19, // 'state 19'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 37'
   {
@@ -392,39 +425,39 @@ const actions = [
   },
   // 'action 41'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
-  },
-  // 'action 42'
-  {
     op: 0, // shift
     state: 1, // 'state 1'
     symbol: undefined,
   },
-  // 'action 43'
+  // 'action 42'
   {
     op: 0, // shift
     state: 2, // 'state 2'
     symbol: undefined,
   },
+  // 'action 43'
+  {
+    op: 0, // shift
+    state: 22, // 'state 22'
+    symbol: undefined,
+  },
   // 'action 44'
   {
     op: 0, // shift
-    state: 20, // 'state 20'
+    state: 23, // 'state 23'
     symbol: undefined,
   },
   // 'action 45'
   {
     op: 0, // shift
-    state: 21, // 'state 21'
+    state: 8, // 'state 8'
     symbol: undefined,
   },
   // 'action 46'
   {
-    op: 0, // shift
-    state: 8, // 'state 8'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 47'
   {
@@ -452,33 +485,33 @@ const actions = [
   },
   // 'action 51'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 1, // 'state 1'
+    symbol: undefined,
   },
   // 'action 52'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 2, // 'state 2'
+    symbol: undefined,
   },
   // 'action 53'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 24, // 'state 24'
+    symbol: undefined,
   },
   // 'action 54'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 25, // 'state 25'
+    symbol: undefined,
   },
   // 'action 55'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 8, // 'state 8'
+    symbol: undefined,
   },
   // 'action 56'
   {
@@ -488,33 +521,33 @@ const actions = [
   },
   // 'action 57'
   {
-    op: 0, // shift
-    state: 22, // 'state 22'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 12, // Sequence
   },
   // 'action 58'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 12, // Sequence
   },
   // 'action 59'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 12, // Sequence
   },
   // 'action 60'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 12, // Sequence
   },
   // 'action 61'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 26, // 'state 26'
+    symbol: undefined,
   },
   // 'action 62'
   {
@@ -524,9 +557,9 @@ const actions = [
   },
   // 'action 63'
   {
-    op: 0, // shift
-    state: 10, // 'state 10'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 64'
   {
@@ -548,9 +581,9 @@ const actions = [
   },
   // 'action 67'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 10, // 'state 10'
+    symbol: undefined,
   },
   // 'action 68'
   {
@@ -560,147 +593,147 @@ const actions = [
   },
   // 'action 69'
   {
-    op: 0, // shift
-    state: 1, // 'state 1'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 70'
   {
-    op: 0, // shift
-    state: 2, // 'state 2'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 71'
   {
-    op: 0, // shift
-    state: 13, // 'state 13'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 72'
   {
-    op: 0, // shift
-    state: 23, // 'state 23'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 73'
   {
     op: 0, // shift
-    state: 7, // 'state 7'
+    state: 1, // 'state 1'
     symbol: undefined,
   },
   // 'action 74'
   {
     op: 0, // shift
-    state: 8, // 'state 8'
+    state: 2, // 'state 2'
     symbol: undefined,
   },
   // 'action 75'
   {
     op: 0, // shift
-    state: 9, // 'state 9'
+    state: 14, // 'state 14'
     symbol: undefined,
   },
   // 'action 76'
   {
     op: 0, // shift
-    state: 24, // 'state 24'
+    state: 27, // 'state 27'
     symbol: undefined,
   },
   // 'action 77'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 28, // 'state 28'
+    symbol: undefined,
   },
   // 'action 78'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 8, // 'state 8'
+    symbol: undefined,
   },
   // 'action 79'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 9, // 'state 9'
+    symbol: undefined,
   },
   // 'action 80'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 29, // 'state 29'
+    symbol: undefined,
   },
   // 'action 81'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 12, // Sequence
+    op: 0, // shift
+    state: 1, // 'state 1'
+    symbol: undefined,
   },
   // 'action 82'
   {
     op: 0, // shift
-    state: 25, // 'state 25'
+    state: 12, // 'state 12'
     symbol: undefined,
   },
   // 'action 83'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 2, // 'state 2'
+    symbol: undefined,
   },
   // 'action 84'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 30, // 'state 30'
+    symbol: undefined,
   },
   // 'action 85'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 14, // 'state 14'
+    symbol: undefined,
   },
   // 'action 86'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 15, // 'state 15'
+    symbol: undefined,
   },
   // 'action 87'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 12, // Sequence
   },
   // 'action 88'
   {
-    op: 0, // shift
-    state: 10, // 'state 10'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 12, // Sequence
   },
   // 'action 89'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 12, // Sequence
   },
   // 'action 90'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 12, // Sequence
   },
   // 'action 91'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 12, // Sequence
   },
   // 'action 92'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 31, // 'state 31'
+    symbol: undefined,
   },
   // 'action 93'
   {
@@ -734,57 +767,57 @@ const actions = [
   },
   // 'action 98'
   {
+    op: 0, // shift
+    state: 10, // 'state 10'
+    symbol: undefined,
+  },
+  // 'action 99'
+  {
     op: 1, // reduce
     state: undefined,
     symbol: 13, // Atom
   },
-  // 'action 99'
-  {
-    op: 0, // shift
-    state: 1, // 'state 1'
-    symbol: undefined,
-  },
   // 'action 100'
   {
-    op: 0, // shift
-    state: 2, // 'state 2'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 101'
   {
-    op: 0, // shift
-    state: 13, // 'state 13'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 102'
   {
-    op: 0, // shift
-    state: 14, // 'state 14'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 103'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 11, // Union
+    symbol: 13, // Atom
   },
   // 'action 104'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 11, // Union
+    symbol: 13, // Atom
   },
   // 'action 105'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 11, // Union
+    symbol: 13, // Atom
   },
   // 'action 106'
   {
-    op: 0, // shift
-    state: 10, // 'state 10'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 107'
   {
@@ -800,240 +833,558 @@ const actions = [
   },
   // 'action 109'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 1, // 'state 1'
+    symbol: undefined,
   },
   // 'action 110'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 2, // 'state 2'
+    symbol: undefined,
   },
   // 'action 111'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 14, // 'state 14'
+    symbol: undefined,
   },
   // 'action 112'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 15, // 'state 15'
+    symbol: undefined,
   },
   // 'action 113'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 11, // Union
   },
   // 'action 114'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 11, // Union
   },
   // 'action 115'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 11, // Union
   },
   // 'action 116'
+  {
+    op: 0, // shift
+    state: 10, // 'state 10'
+    symbol: undefined,
+  },
+  // 'action 117'
   {
     op: 1, // reduce
     state: undefined,
     symbol: 13, // Atom
   },
-  // 'action 117'
-  {
-    op: 0, // shift
-    state: 9, // 'state 9'
-    symbol: undefined,
-  },
   // 'action 118'
   {
-    op: 0, // shift
-    state: 26, // 'state 26'
-    symbol: undefined,
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
   },
   // 'action 119'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 120'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 121'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 122'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 1, // 'state 1'
+    symbol: undefined,
   },
   // 'action 123'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 2, // 'state 2'
+    symbol: undefined,
   },
   // 'action 124'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 14, // 'state 14'
+    symbol: undefined,
   },
   // 'action 125'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 15, // 'state 15'
+    symbol: undefined,
   },
   // 'action 126'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 11, // Union
   },
   // 'action 127'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 11, // Union
   },
   // 'action 128'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 13, // Atom
+    symbol: 11, // Union
   },
   // 'action 129'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 13, // Atom
+    op: 0, // shift
+    state: 10, // 'state 10'
+    symbol: undefined,
   },
   // 'action 130'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 131'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 132'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 133'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 134'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 135'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 136'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 137'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 138'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 139'
   {
     op: 1, // reduce
     state: undefined,
-    symbol: 10, // Group
+    symbol: 13, // Atom
   },
   // 'action 140'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 9, // 'state 9'
+    symbol: undefined,
   },
   // 'action 141'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 32, // 'state 32'
+    symbol: undefined,
   },
   // 'action 142'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 1, // 'state 1'
+    symbol: undefined,
   },
   // 'action 143'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 12, // 'state 12'
+    symbol: undefined,
   },
   // 'action 144'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 2, // 'state 2'
+    symbol: undefined,
   },
   // 'action 145'
   {
-    op: 1, // reduce
-    state: undefined,
-    symbol: 10, // Group
+    op: 0, // shift
+    state: 33, // 'state 33'
+    symbol: undefined,
   },
   // 'action 146'
+  {
+    op: 0, // shift
+    state: 14, // 'state 14'
+    symbol: undefined,
+  },
+  // 'action 147'
+  {
+    op: 0, // shift
+    state: 15, // 'state 15'
+    symbol: undefined,
+  },
+  // 'action 148'
   {
     op: 1, // reduce
     state: undefined,
     symbol: 10, // Group
   },
-  // 'action 147'
+  // 'action 149'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 150'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 151'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 152'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 153'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 154'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 155'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 156'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 157'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 158'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 159'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 160'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
+  },
+  // 'action 161'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
+  },
+  // 'action 162'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
+  },
+  // 'action 163'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
+  },
+  // 'action 164'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 13, // Atom
+  },
+  // 'action 165'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 166'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 167'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 168'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 169'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 170'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 171'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 172'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 173'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 174'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 175'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 176'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 177'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 178'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 179'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 180'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 181'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 182'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 183'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 184'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 185'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 186'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 187'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 188'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 189'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 190'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 191'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 192'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 193'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 194'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 195'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 196'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 197'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 198'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 199'
+  {
+    op: 1, // reduce
+    state: undefined,
+    symbol: 10, // Group
+  },
+  // 'action 200'
   {
     op: 1, // reduce
     state: undefined,
     symbol: 10, // Group
   },
 ];
-const actionsTable = new Uint16Array(464).fill(0xffff);
+const actionsTable = new Uint16Array(608).fill(0xffff);
 actionsTable[0] = 0; // 'state 0' -> CHARACTER -> shift -> 'action 0'
 actionsTable[2] = 1; // 'state 0' -> PAREN_OPEN -> shift -> 'action 1'
 actionsTable[8] = 2; // 'state 0' -> RegExp -> shift -> 'action 2'
@@ -1053,158 +1404,220 @@ actionsTable[82] = 15; // 'state 5' -> PAREN_OPEN -> reduce -> 'action 15'
 actionsTable[83] = 16; // 'state 5' -> PAREN_CLOSE -> reduce -> 'action 16'
 actionsTable[85] = 17; // 'state 5' -> @par-gen.EOF -> reduce -> 'action 17'
 actionsTable[112] = 18; // 'state 7' -> CHARACTER -> shift -> 'action 18'
-actionsTable[114] = 19; // 'state 7' -> PAREN_OPEN -> shift -> 'action 19'
-actionsTable[122] = 20; // 'state 7' -> Group -> shift -> 'action 20'
-actionsTable[125] = 21; // 'state 7' -> Atom -> shift -> 'action 21'
-actionsTable[113] = 22; // 'state 7' -> UNION -> reduce -> 'action 22'
-actionsTable[115] = 23; // 'state 7' -> PAREN_CLOSE -> reduce -> 'action 23'
-actionsTable[117] = 24; // 'state 7' -> @par-gen.EOF -> reduce -> 'action 24'
-actionsTable[32] = 25; // 'state 2' -> CHARACTER -> shift -> 'action 25'
-actionsTable[34] = 26; // 'state 2' -> PAREN_OPEN -> shift -> 'action 26'
-actionsTable[42] = 27; // 'state 2' -> Group -> shift -> 'action 27'
-actionsTable[43] = 28; // 'state 2' -> Union -> shift -> 'action 28'
-actionsTable[44] = 29; // 'state 2' -> Sequence -> shift -> 'action 29'
-actionsTable[45] = 30; // 'state 2' -> Atom -> shift -> 'action 30'
-actionsTable[128] = 31; // 'state 8' -> CHARACTER -> reduce -> 'action 31'
-actionsTable[129] = 32; // 'state 8' -> UNION -> reduce -> 'action 32'
-actionsTable[130] = 33; // 'state 8' -> PAREN_OPEN -> reduce -> 'action 33'
-actionsTable[131] = 34; // 'state 8' -> PAREN_CLOSE -> reduce -> 'action 34'
-actionsTable[133] = 35; // 'state 8' -> @par-gen.EOF -> reduce -> 'action 35'
-actionsTable[20] = 36; // 'state 1' -> QUANTIFIER -> shift -> 'action 36'
-actionsTable[16] = 37; // 'state 1' -> CHARACTER -> reduce -> 'action 37'
-actionsTable[17] = 38; // 'state 1' -> UNION -> reduce -> 'action 38'
-actionsTable[18] = 39; // 'state 1' -> PAREN_OPEN -> reduce -> 'action 39'
-actionsTable[19] = 40; // 'state 1' -> PAREN_CLOSE -> reduce -> 'action 40'
-actionsTable[21] = 41; // 'state 1' -> @par-gen.EOF -> reduce -> 'action 41'
-actionsTable[144] = 42; // 'state 9' -> CHARACTER -> shift -> 'action 42'
-actionsTable[146] = 43; // 'state 9' -> PAREN_OPEN -> shift -> 'action 43'
-actionsTable[154] = 44; // 'state 9' -> Group -> shift -> 'action 44'
-actionsTable[156] = 45; // 'state 9' -> Sequence -> shift -> 'action 45'
-actionsTable[157] = 46; // 'state 9' -> Atom -> shift -> 'action 46'
-actionsTable[160] = 47; // 'state 10' -> CHARACTER -> reduce -> 'action 47'
-actionsTable[161] = 48; // 'state 10' -> UNION -> reduce -> 'action 48'
-actionsTable[162] = 49; // 'state 10' -> PAREN_OPEN -> reduce -> 'action 49'
-actionsTable[163] = 50; // 'state 10' -> PAREN_CLOSE -> reduce -> 'action 50'
-actionsTable[165] = 51; // 'state 10' -> @par-gen.EOF -> reduce -> 'action 51'
-actionsTable[224] = 52; // 'state 14' -> CHARACTER -> reduce -> 'action 52'
-actionsTable[225] = 53; // 'state 14' -> UNION -> reduce -> 'action 53'
-actionsTable[226] = 54; // 'state 14' -> PAREN_OPEN -> reduce -> 'action 54'
-actionsTable[227] = 55; // 'state 14' -> PAREN_CLOSE -> reduce -> 'action 55'
-actionsTable[229] = 56; // 'state 14' -> @par-gen.EOF -> reduce -> 'action 56'
-actionsTable[180] = 57; // 'state 11' -> QUANTIFIER -> shift -> 'action 57'
-actionsTable[176] = 58; // 'state 11' -> CHARACTER -> reduce -> 'action 58'
-actionsTable[177] = 59; // 'state 11' -> UNION -> reduce -> 'action 59'
-actionsTable[178] = 60; // 'state 11' -> PAREN_OPEN -> reduce -> 'action 60'
-actionsTable[179] = 61; // 'state 11' -> PAREN_CLOSE -> reduce -> 'action 61'
-actionsTable[181] = 62; // 'state 11' -> @par-gen.EOF -> reduce -> 'action 62'
-actionsTable[212] = 63; // 'state 13' -> QUANTIFIER -> shift -> 'action 63'
-actionsTable[208] = 64; // 'state 13' -> CHARACTER -> reduce -> 'action 64'
-actionsTable[209] = 65; // 'state 13' -> UNION -> reduce -> 'action 65'
-actionsTable[210] = 66; // 'state 13' -> PAREN_OPEN -> reduce -> 'action 66'
-actionsTable[211] = 67; // 'state 13' -> PAREN_CLOSE -> reduce -> 'action 67'
-actionsTable[213] = 68; // 'state 13' -> @par-gen.EOF -> reduce -> 'action 68'
-actionsTable[192] = 69; // 'state 12' -> CHARACTER -> shift -> 'action 69'
-actionsTable[194] = 70; // 'state 12' -> PAREN_OPEN -> shift -> 'action 70'
-actionsTable[202] = 71; // 'state 12' -> Group -> shift -> 'action 71'
-actionsTable[203] = 72; // 'state 12' -> Union -> shift -> 'action 72'
-actionsTable[204] = 73; // 'state 12' -> Sequence -> shift -> 'action 73'
-actionsTable[205] = 74; // 'state 12' -> Atom -> shift -> 'action 74'
-actionsTable[273] = 75; // 'state 17' -> UNION -> shift -> 'action 75'
-actionsTable[275] = 76; // 'state 17' -> PAREN_CLOSE -> shift -> 'action 76'
-actionsTable[288] = 77; // 'state 18' -> CHARACTER -> reduce -> 'action 77'
-actionsTable[289] = 78; // 'state 18' -> UNION -> reduce -> 'action 78'
-actionsTable[290] = 79; // 'state 18' -> PAREN_OPEN -> reduce -> 'action 79'
-actionsTable[291] = 80; // 'state 18' -> PAREN_CLOSE -> reduce -> 'action 80'
-actionsTable[293] = 81; // 'state 18' -> @par-gen.EOF -> reduce -> 'action 81'
-actionsTable[244] = 82; // 'state 15' -> QUANTIFIER -> shift -> 'action 82'
-actionsTable[240] = 83; // 'state 15' -> CHARACTER -> reduce -> 'action 83'
-actionsTable[241] = 84; // 'state 15' -> UNION -> reduce -> 'action 84'
-actionsTable[242] = 85; // 'state 15' -> PAREN_OPEN -> reduce -> 'action 85'
-actionsTable[243] = 86; // 'state 15' -> PAREN_CLOSE -> reduce -> 'action 86'
-actionsTable[245] = 87; // 'state 15' -> @par-gen.EOF -> reduce -> 'action 87'
-actionsTable[260] = 88; // 'state 16' -> QUANTIFIER -> shift -> 'action 88'
-actionsTable[256] = 89; // 'state 16' -> CHARACTER -> reduce -> 'action 89'
-actionsTable[257] = 90; // 'state 16' -> UNION -> reduce -> 'action 90'
-actionsTable[258] = 91; // 'state 16' -> PAREN_OPEN -> reduce -> 'action 91'
-actionsTable[259] = 92; // 'state 16' -> PAREN_CLOSE -> reduce -> 'action 92'
-actionsTable[261] = 93; // 'state 16' -> @par-gen.EOF -> reduce -> 'action 93'
-actionsTable[304] = 94; // 'state 19' -> CHARACTER -> reduce -> 'action 94'
-actionsTable[305] = 95; // 'state 19' -> UNION -> reduce -> 'action 95'
-actionsTable[306] = 96; // 'state 19' -> PAREN_OPEN -> reduce -> 'action 96'
-actionsTable[307] = 97; // 'state 19' -> PAREN_CLOSE -> reduce -> 'action 97'
-actionsTable[309] = 98; // 'state 19' -> @par-gen.EOF -> reduce -> 'action 98'
-actionsTable[336] = 99; // 'state 21' -> CHARACTER -> shift -> 'action 99'
-actionsTable[338] = 100; // 'state 21' -> PAREN_OPEN -> shift -> 'action 100'
-actionsTable[346] = 101; // 'state 21' -> Group -> shift -> 'action 101'
-actionsTable[349] = 102; // 'state 21' -> Atom -> shift -> 'action 102'
-actionsTable[337] = 103; // 'state 21' -> UNION -> reduce -> 'action 103'
-actionsTable[339] = 104; // 'state 21' -> PAREN_CLOSE -> reduce -> 'action 104'
-actionsTable[341] = 105; // 'state 21' -> @par-gen.EOF -> reduce -> 'action 105'
-actionsTable[324] = 106; // 'state 20' -> QUANTIFIER -> shift -> 'action 106'
-actionsTable[320] = 107; // 'state 20' -> CHARACTER -> reduce -> 'action 107'
-actionsTable[321] = 108; // 'state 20' -> UNION -> reduce -> 'action 108'
-actionsTable[322] = 109; // 'state 20' -> PAREN_OPEN -> reduce -> 'action 109'
-actionsTable[323] = 110; // 'state 20' -> PAREN_CLOSE -> reduce -> 'action 110'
-actionsTable[325] = 111; // 'state 20' -> @par-gen.EOF -> reduce -> 'action 111'
-actionsTable[352] = 112; // 'state 22' -> CHARACTER -> reduce -> 'action 112'
-actionsTable[353] = 113; // 'state 22' -> UNION -> reduce -> 'action 113'
-actionsTable[354] = 114; // 'state 22' -> PAREN_OPEN -> reduce -> 'action 114'
-actionsTable[355] = 115; // 'state 22' -> PAREN_CLOSE -> reduce -> 'action 115'
-actionsTable[357] = 116; // 'state 22' -> @par-gen.EOF -> reduce -> 'action 116'
-actionsTable[369] = 117; // 'state 23' -> UNION -> shift -> 'action 117'
-actionsTable[371] = 118; // 'state 23' -> PAREN_CLOSE -> shift -> 'action 118'
-actionsTable[388] = 119; // 'state 24' -> QUANTIFIER -> reduce -> 'action 119'
-actionsTable[384] = 120; // 'state 24' -> CHARACTER -> reduce -> 'action 120'
-actionsTable[385] = 121; // 'state 24' -> UNION -> reduce -> 'action 121'
-actionsTable[386] = 122; // 'state 24' -> PAREN_OPEN -> reduce -> 'action 122'
-actionsTable[387] = 123; // 'state 24' -> PAREN_CLOSE -> reduce -> 'action 123'
-actionsTable[389] = 124; // 'state 24' -> @par-gen.EOF -> reduce -> 'action 124'
-actionsTable[400] = 125; // 'state 25' -> CHARACTER -> reduce -> 'action 125'
+actionsTable[113] = 19; // 'state 7' -> UNION -> shift -> 'action 19'
+actionsTable[114] = 20; // 'state 7' -> PAREN_OPEN -> shift -> 'action 20'
+actionsTable[122] = 21; // 'state 7' -> Group -> shift -> 'action 21'
+actionsTable[125] = 22; // 'state 7' -> Atom -> shift -> 'action 22'
+actionsTable[117] = 23; // 'state 7' -> @par-gen.EOF -> reduce -> 'action 23'
+actionsTable[32] = 24; // 'state 2' -> CHARACTER -> shift -> 'action 24'
+actionsTable[34] = 25; // 'state 2' -> PAREN_OPEN -> shift -> 'action 25'
+actionsTable[42] = 26; // 'state 2' -> Group -> shift -> 'action 26'
+actionsTable[43] = 27; // 'state 2' -> Union -> shift -> 'action 27'
+actionsTable[44] = 28; // 'state 2' -> Sequence -> shift -> 'action 28'
+actionsTable[45] = 29; // 'state 2' -> Atom -> shift -> 'action 29'
+actionsTable[128] = 30; // 'state 8' -> CHARACTER -> reduce -> 'action 30'
+actionsTable[129] = 31; // 'state 8' -> UNION -> reduce -> 'action 31'
+actionsTable[130] = 32; // 'state 8' -> PAREN_OPEN -> reduce -> 'action 32'
+actionsTable[131] = 33; // 'state 8' -> PAREN_CLOSE -> reduce -> 'action 33'
+actionsTable[133] = 34; // 'state 8' -> @par-gen.EOF -> reduce -> 'action 34'
+actionsTable[20] = 35; // 'state 1' -> QUANTIFIER -> shift -> 'action 35'
+actionsTable[16] = 36; // 'state 1' -> CHARACTER -> reduce -> 'action 36'
+actionsTable[17] = 37; // 'state 1' -> UNION -> reduce -> 'action 37'
+actionsTable[18] = 38; // 'state 1' -> PAREN_OPEN -> reduce -> 'action 38'
+actionsTable[19] = 39; // 'state 1' -> PAREN_CLOSE -> reduce -> 'action 39'
+actionsTable[21] = 40; // 'state 1' -> @par-gen.EOF -> reduce -> 'action 40'
+actionsTable[144] = 41; // 'state 9' -> CHARACTER -> shift -> 'action 41'
+actionsTable[146] = 42; // 'state 9' -> PAREN_OPEN -> shift -> 'action 42'
+actionsTable[154] = 43; // 'state 9' -> Group -> shift -> 'action 43'
+actionsTable[156] = 44; // 'state 9' -> Sequence -> shift -> 'action 44'
+actionsTable[157] = 45; // 'state 9' -> Atom -> shift -> 'action 45'
+actionsTable[160] = 46; // 'state 10' -> CHARACTER -> reduce -> 'action 46'
+actionsTable[161] = 47; // 'state 10' -> UNION -> reduce -> 'action 47'
+actionsTable[162] = 48; // 'state 10' -> PAREN_OPEN -> reduce -> 'action 48'
+actionsTable[163] = 49; // 'state 10' -> PAREN_CLOSE -> reduce -> 'action 49'
+actionsTable[165] = 50; // 'state 10' -> @par-gen.EOF -> reduce -> 'action 50'
+actionsTable[192] = 51; // 'state 12' -> CHARACTER -> shift -> 'action 51'
+actionsTable[194] = 52; // 'state 12' -> PAREN_OPEN -> shift -> 'action 52'
+actionsTable[202] = 53; // 'state 12' -> Group -> shift -> 'action 53'
+actionsTable[204] = 54; // 'state 12' -> Sequence -> shift -> 'action 54'
+actionsTable[205] = 55; // 'state 12' -> Atom -> shift -> 'action 55'
+actionsTable[240] = 56; // 'state 15' -> CHARACTER -> reduce -> 'action 56'
+actionsTable[241] = 57; // 'state 15' -> UNION -> reduce -> 'action 57'
+actionsTable[242] = 58; // 'state 15' -> PAREN_OPEN -> reduce -> 'action 58'
+actionsTable[243] = 59; // 'state 15' -> PAREN_CLOSE -> reduce -> 'action 59'
+actionsTable[245] = 60; // 'state 15' -> @par-gen.EOF -> reduce -> 'action 60'
+actionsTable[180] = 61; // 'state 11' -> QUANTIFIER -> shift -> 'action 61'
+actionsTable[176] = 62; // 'state 11' -> CHARACTER -> reduce -> 'action 62'
+actionsTable[177] = 63; // 'state 11' -> UNION -> reduce -> 'action 63'
+actionsTable[178] = 64; // 'state 11' -> PAREN_OPEN -> reduce -> 'action 64'
+actionsTable[179] = 65; // 'state 11' -> PAREN_CLOSE -> reduce -> 'action 65'
+actionsTable[181] = 66; // 'state 11' -> @par-gen.EOF -> reduce -> 'action 66'
+actionsTable[228] = 67; // 'state 14' -> QUANTIFIER -> shift -> 'action 67'
+actionsTable[224] = 68; // 'state 14' -> CHARACTER -> reduce -> 'action 68'
+actionsTable[225] = 69; // 'state 14' -> UNION -> reduce -> 'action 69'
+actionsTable[226] = 70; // 'state 14' -> PAREN_OPEN -> reduce -> 'action 70'
+actionsTable[227] = 71; // 'state 14' -> PAREN_CLOSE -> reduce -> 'action 71'
+actionsTable[229] = 72; // 'state 14' -> @par-gen.EOF -> reduce -> 'action 72'
+actionsTable[208] = 73; // 'state 13' -> CHARACTER -> shift -> 'action 73'
+actionsTable[210] = 74; // 'state 13' -> PAREN_OPEN -> shift -> 'action 74'
+actionsTable[218] = 75; // 'state 13' -> Group -> shift -> 'action 75'
+actionsTable[219] = 76; // 'state 13' -> Union -> shift -> 'action 76'
+actionsTable[220] = 77; // 'state 13' -> Sequence -> shift -> 'action 77'
+actionsTable[221] = 78; // 'state 13' -> Atom -> shift -> 'action 78'
+actionsTable[289] = 79; // 'state 18' -> UNION -> shift -> 'action 79'
+actionsTable[291] = 80; // 'state 18' -> PAREN_CLOSE -> shift -> 'action 80'
+actionsTable[304] = 81; // 'state 19' -> CHARACTER -> shift -> 'action 81'
+actionsTable[305] = 82; // 'state 19' -> UNION -> shift -> 'action 82'
+actionsTable[306] = 83; // 'state 19' -> PAREN_OPEN -> shift -> 'action 83'
+actionsTable[307] = 84; // 'state 19' -> PAREN_CLOSE -> shift -> 'action 84'
+actionsTable[314] = 85; // 'state 19' -> Group -> shift -> 'action 85'
+actionsTable[317] = 86; // 'state 19' -> Atom -> shift -> 'action 86'
+actionsTable[320] = 87; // 'state 20' -> CHARACTER -> reduce -> 'action 87'
+actionsTable[321] = 88; // 'state 20' -> UNION -> reduce -> 'action 88'
+actionsTable[322] = 89; // 'state 20' -> PAREN_OPEN -> reduce -> 'action 89'
+actionsTable[323] = 90; // 'state 20' -> PAREN_CLOSE -> reduce -> 'action 90'
+actionsTable[325] = 91; // 'state 20' -> @par-gen.EOF -> reduce -> 'action 91'
+actionsTable[260] = 92; // 'state 16' -> QUANTIFIER -> shift -> 'action 92'
+actionsTable[256] = 93; // 'state 16' -> CHARACTER -> reduce -> 'action 93'
+actionsTable[257] = 94; // 'state 16' -> UNION -> reduce -> 'action 94'
+actionsTable[258] = 95; // 'state 16' -> PAREN_OPEN -> reduce -> 'action 95'
+actionsTable[259] = 96; // 'state 16' -> PAREN_CLOSE -> reduce -> 'action 96'
+actionsTable[261] = 97; // 'state 16' -> @par-gen.EOF -> reduce -> 'action 97'
+actionsTable[276] = 98; // 'state 17' -> QUANTIFIER -> shift -> 'action 98'
+actionsTable[272] = 99; // 'state 17' -> CHARACTER -> reduce -> 'action 99'
+actionsTable[273] = 100; // 'state 17' -> UNION -> reduce -> 'action 100'
+actionsTable[274] = 101; // 'state 17' -> PAREN_OPEN -> reduce -> 'action 101'
+actionsTable[275] = 102; // 'state 17' -> PAREN_CLOSE -> reduce -> 'action 102'
+actionsTable[277] = 103; // 'state 17' -> @par-gen.EOF -> reduce -> 'action 103'
+actionsTable[336] = 104; // 'state 21' -> CHARACTER -> reduce -> 'action 104'
+actionsTable[337] = 105; // 'state 21' -> UNION -> reduce -> 'action 105'
+actionsTable[338] = 106; // 'state 21' -> PAREN_OPEN -> reduce -> 'action 106'
+actionsTable[339] = 107; // 'state 21' -> PAREN_CLOSE -> reduce -> 'action 107'
+actionsTable[341] = 108; // 'state 21' -> @par-gen.EOF -> reduce -> 'action 108'
+actionsTable[368] = 109; // 'state 23' -> CHARACTER -> shift -> 'action 109'
+actionsTable[370] = 110; // 'state 23' -> PAREN_OPEN -> shift -> 'action 110'
+actionsTable[378] = 111; // 'state 23' -> Group -> shift -> 'action 111'
+actionsTable[381] = 112; // 'state 23' -> Atom -> shift -> 'action 112'
+actionsTable[369] = 113; // 'state 23' -> UNION -> reduce -> 'action 113'
+actionsTable[371] = 114; // 'state 23' -> PAREN_CLOSE -> reduce -> 'action 114'
+actionsTable[373] = 115; // 'state 23' -> @par-gen.EOF -> reduce -> 'action 115'
+actionsTable[356] = 116; // 'state 22' -> QUANTIFIER -> shift -> 'action 116'
+actionsTable[352] = 117; // 'state 22' -> CHARACTER -> reduce -> 'action 117'
+actionsTable[353] = 118; // 'state 22' -> UNION -> reduce -> 'action 118'
+actionsTable[354] = 119; // 'state 22' -> PAREN_OPEN -> reduce -> 'action 119'
+actionsTable[355] = 120; // 'state 22' -> PAREN_CLOSE -> reduce -> 'action 120'
+actionsTable[357] = 121; // 'state 22' -> @par-gen.EOF -> reduce -> 'action 121'
+actionsTable[400] = 122; // 'state 25' -> CHARACTER -> shift -> 'action 122'
+actionsTable[402] = 123; // 'state 25' -> PAREN_OPEN -> shift -> 'action 123'
+actionsTable[410] = 124; // 'state 25' -> Group -> shift -> 'action 124'
+actionsTable[413] = 125; // 'state 25' -> Atom -> shift -> 'action 125'
 actionsTable[401] = 126; // 'state 25' -> UNION -> reduce -> 'action 126'
-actionsTable[402] = 127; // 'state 25' -> PAREN_OPEN -> reduce -> 'action 127'
-actionsTable[403] = 128; // 'state 25' -> PAREN_CLOSE -> reduce -> 'action 128'
-actionsTable[405] = 129; // 'state 25' -> @par-gen.EOF -> reduce -> 'action 129'
-actionsTable[420] = 130; // 'state 26' -> QUANTIFIER -> reduce -> 'action 130'
-actionsTable[416] = 131; // 'state 26' -> CHARACTER -> reduce -> 'action 131'
-actionsTable[417] = 132; // 'state 26' -> UNION -> reduce -> 'action 132'
-actionsTable[418] = 133; // 'state 26' -> PAREN_OPEN -> reduce -> 'action 133'
-actionsTable[419] = 134; // 'state 26' -> PAREN_CLOSE -> reduce -> 'action 134'
-actionsTable[421] = 135; // 'state 26' -> @par-gen.EOF -> reduce -> 'action 135'
-actionsTable[432] = 136; // 'state 27' -> CHARACTER -> reduce -> 'action 136'
-actionsTable[433] = 137; // 'state 27' -> UNION -> reduce -> 'action 137'
-actionsTable[434] = 138; // 'state 27' -> PAREN_OPEN -> reduce -> 'action 138'
-actionsTable[435] = 139; // 'state 27' -> PAREN_CLOSE -> reduce -> 'action 139'
-actionsTable[436] = 140; // 'state 27' -> QUANTIFIER -> reduce -> 'action 140'
-actionsTable[437] = 141; // 'state 27' -> @par-gen.EOF -> reduce -> 'action 141'
-actionsTable[448] = 142; // 'state 28' -> CHARACTER -> reduce -> 'action 142'
-actionsTable[449] = 143; // 'state 28' -> UNION -> reduce -> 'action 143'
-actionsTable[450] = 144; // 'state 28' -> PAREN_OPEN -> reduce -> 'action 144'
-actionsTable[451] = 145; // 'state 28' -> PAREN_CLOSE -> reduce -> 'action 145'
-actionsTable[452] = 146; // 'state 28' -> QUANTIFIER -> reduce -> 'action 146'
-actionsTable[453] = 147; // 'state 28' -> @par-gen.EOF -> reduce -> 'action 147'
+actionsTable[403] = 127; // 'state 25' -> PAREN_CLOSE -> reduce -> 'action 127'
+actionsTable[405] = 128; // 'state 25' -> @par-gen.EOF -> reduce -> 'action 128'
+actionsTable[388] = 129; // 'state 24' -> QUANTIFIER -> shift -> 'action 129'
+actionsTable[384] = 130; // 'state 24' -> CHARACTER -> reduce -> 'action 130'
+actionsTable[385] = 131; // 'state 24' -> UNION -> reduce -> 'action 131'
+actionsTable[386] = 132; // 'state 24' -> PAREN_OPEN -> reduce -> 'action 132'
+actionsTable[387] = 133; // 'state 24' -> PAREN_CLOSE -> reduce -> 'action 133'
+actionsTable[389] = 134; // 'state 24' -> @par-gen.EOF -> reduce -> 'action 134'
+actionsTable[416] = 135; // 'state 26' -> CHARACTER -> reduce -> 'action 135'
+actionsTable[417] = 136; // 'state 26' -> UNION -> reduce -> 'action 136'
+actionsTable[418] = 137; // 'state 26' -> PAREN_OPEN -> reduce -> 'action 137'
+actionsTable[419] = 138; // 'state 26' -> PAREN_CLOSE -> reduce -> 'action 138'
+actionsTable[421] = 139; // 'state 26' -> @par-gen.EOF -> reduce -> 'action 139'
+actionsTable[433] = 140; // 'state 27' -> UNION -> shift -> 'action 140'
+actionsTable[435] = 141; // 'state 27' -> PAREN_CLOSE -> shift -> 'action 141'
+actionsTable[448] = 142; // 'state 28' -> CHARACTER -> shift -> 'action 142'
+actionsTable[449] = 143; // 'state 28' -> UNION -> shift -> 'action 143'
+actionsTable[450] = 144; // 'state 28' -> PAREN_OPEN -> shift -> 'action 144'
+actionsTable[451] = 145; // 'state 28' -> PAREN_CLOSE -> shift -> 'action 145'
+actionsTable[458] = 146; // 'state 28' -> Group -> shift -> 'action 146'
+actionsTable[461] = 147; // 'state 28' -> Atom -> shift -> 'action 147'
+actionsTable[468] = 148; // 'state 29' -> QUANTIFIER -> reduce -> 'action 148'
+actionsTable[464] = 149; // 'state 29' -> CHARACTER -> reduce -> 'action 149'
+actionsTable[465] = 150; // 'state 29' -> UNION -> reduce -> 'action 150'
+actionsTable[466] = 151; // 'state 29' -> PAREN_OPEN -> reduce -> 'action 151'
+actionsTable[467] = 152; // 'state 29' -> PAREN_CLOSE -> reduce -> 'action 152'
+actionsTable[469] = 153; // 'state 29' -> @par-gen.EOF -> reduce -> 'action 153'
+actionsTable[484] = 154; // 'state 30' -> QUANTIFIER -> reduce -> 'action 154'
+actionsTable[480] = 155; // 'state 30' -> CHARACTER -> reduce -> 'action 155'
+actionsTable[481] = 156; // 'state 30' -> UNION -> reduce -> 'action 156'
+actionsTable[482] = 157; // 'state 30' -> PAREN_OPEN -> reduce -> 'action 157'
+actionsTable[483] = 158; // 'state 30' -> PAREN_CLOSE -> reduce -> 'action 158'
+actionsTable[485] = 159; // 'state 30' -> @par-gen.EOF -> reduce -> 'action 159'
+actionsTable[496] = 160; // 'state 31' -> CHARACTER -> reduce -> 'action 160'
+actionsTable[497] = 161; // 'state 31' -> UNION -> reduce -> 'action 161'
+actionsTable[498] = 162; // 'state 31' -> PAREN_OPEN -> reduce -> 'action 162'
+actionsTable[499] = 163; // 'state 31' -> PAREN_CLOSE -> reduce -> 'action 163'
+actionsTable[501] = 164; // 'state 31' -> @par-gen.EOF -> reduce -> 'action 164'
+actionsTable[516] = 165; // 'state 32' -> QUANTIFIER -> reduce -> 'action 165'
+actionsTable[512] = 166; // 'state 32' -> CHARACTER -> reduce -> 'action 166'
+actionsTable[513] = 167; // 'state 32' -> UNION -> reduce -> 'action 167'
+actionsTable[514] = 168; // 'state 32' -> PAREN_OPEN -> reduce -> 'action 168'
+actionsTable[515] = 169; // 'state 32' -> PAREN_CLOSE -> reduce -> 'action 169'
+actionsTable[517] = 170; // 'state 32' -> @par-gen.EOF -> reduce -> 'action 170'
+actionsTable[532] = 171; // 'state 33' -> QUANTIFIER -> reduce -> 'action 171'
+actionsTable[528] = 172; // 'state 33' -> CHARACTER -> reduce -> 'action 172'
+actionsTable[529] = 173; // 'state 33' -> UNION -> reduce -> 'action 173'
+actionsTable[530] = 174; // 'state 33' -> PAREN_OPEN -> reduce -> 'action 174'
+actionsTable[531] = 175; // 'state 33' -> PAREN_CLOSE -> reduce -> 'action 175'
+actionsTable[533] = 176; // 'state 33' -> @par-gen.EOF -> reduce -> 'action 176'
+actionsTable[544] = 177; // 'state 34' -> CHARACTER -> reduce -> 'action 177'
+actionsTable[545] = 178; // 'state 34' -> UNION -> reduce -> 'action 178'
+actionsTable[546] = 179; // 'state 34' -> PAREN_OPEN -> reduce -> 'action 179'
+actionsTable[547] = 180; // 'state 34' -> PAREN_CLOSE -> reduce -> 'action 180'
+actionsTable[548] = 181; // 'state 34' -> QUANTIFIER -> reduce -> 'action 181'
+actionsTable[549] = 182; // 'state 34' -> @par-gen.EOF -> reduce -> 'action 182'
+actionsTable[560] = 183; // 'state 35' -> CHARACTER -> reduce -> 'action 183'
+actionsTable[561] = 184; // 'state 35' -> UNION -> reduce -> 'action 184'
+actionsTable[562] = 185; // 'state 35' -> PAREN_OPEN -> reduce -> 'action 185'
+actionsTable[563] = 186; // 'state 35' -> PAREN_CLOSE -> reduce -> 'action 186'
+actionsTable[564] = 187; // 'state 35' -> QUANTIFIER -> reduce -> 'action 187'
+actionsTable[565] = 188; // 'state 35' -> @par-gen.EOF -> reduce -> 'action 188'
+actionsTable[576] = 189; // 'state 36' -> CHARACTER -> reduce -> 'action 189'
+actionsTable[577] = 190; // 'state 36' -> UNION -> reduce -> 'action 190'
+actionsTable[578] = 191; // 'state 36' -> PAREN_OPEN -> reduce -> 'action 191'
+actionsTable[579] = 192; // 'state 36' -> PAREN_CLOSE -> reduce -> 'action 192'
+actionsTable[580] = 193; // 'state 36' -> QUANTIFIER -> reduce -> 'action 193'
+actionsTable[581] = 194; // 'state 36' -> @par-gen.EOF -> reduce -> 'action 194'
+actionsTable[592] = 195; // 'state 37' -> CHARACTER -> reduce -> 'action 195'
+actionsTable[593] = 196; // 'state 37' -> UNION -> reduce -> 'action 196'
+actionsTable[594] = 197; // 'state 37' -> PAREN_OPEN -> reduce -> 'action 197'
+actionsTable[595] = 198; // 'state 37' -> PAREN_CLOSE -> reduce -> 'action 198'
+actionsTable[596] = 199; // 'state 37' -> QUANTIFIER -> reduce -> 'action 199'
+actionsTable[597] = 200; // 'state 37' -> @par-gen.EOF -> reduce -> 'action 200'
 
-const gotoTable = new Uint16Array(464).fill(0xffff);
+const gotoTable = new Uint16Array(608).fill(0xffff);
 gotoTable[8] = 3; // 'state 3'
 gotoTable[9] = 4; // 'state 4'
 gotoTable[11] = 6; // 'state 6'
 gotoTable[10] = 5; // 'state 5'
 gotoTable[12] = 7; // 'state 7'
 gotoTable[13] = 8; // 'state 8'
-gotoTable[125] = 14; // 'state 14'
-gotoTable[122] = 13; // 'state 13'
-gotoTable[43] = 17; // 'state 17'
-gotoTable[44] = 7; // 'state 7'
-gotoTable[45] = 18; // 'state 18'
-gotoTable[42] = 16; // 'state 16'
-gotoTable[156] = 21; // 'state 21'
+gotoTable[125] = 15; // 'state 15'
+gotoTable[122] = 14; // 'state 14'
+gotoTable[43] = 18; // 'state 18'
+gotoTable[44] = 19; // 'state 19'
+gotoTable[45] = 20; // 'state 20'
+gotoTable[42] = 17; // 'state 17'
+gotoTable[156] = 23; // 'state 23'
 gotoTable[157] = 8; // 'state 8'
-gotoTable[154] = 20; // 'state 20'
-gotoTable[203] = 23; // 'state 23'
-gotoTable[204] = 7; // 'state 7'
+gotoTable[154] = 22; // 'state 22'
+gotoTable[204] = 25; // 'state 25'
 gotoTable[205] = 8; // 'state 8'
-gotoTable[202] = 13; // 'state 13'
-gotoTable[349] = 14; // 'state 14'
-gotoTable[346] = 13; // 'state 13'
+gotoTable[202] = 24; // 'state 24'
+gotoTable[219] = 27; // 'state 27'
+gotoTable[220] = 28; // 'state 28'
+gotoTable[221] = 8; // 'state 8'
+gotoTable[218] = 14; // 'state 14'
+gotoTable[317] = 15; // 'state 15'
+gotoTable[314] = 14; // 'state 14'
+gotoTable[381] = 15; // 'state 15'
+gotoTable[378] = 14; // 'state 14'
+gotoTable[413] = 15; // 'state 15'
+gotoTable[410] = 14; // 'state 14'
+gotoTable[461] = 15; // 'state 15'
+gotoTable[458] = 14; // 'state 14'
 
 const nextTokens = {
   initial: nextTokenInitial,
@@ -1358,7 +1771,7 @@ function parse(input) {
       case 1: // reduce
         let stackItemsToReduce =
           reducerStates[
-            lookahead * 29 * 16 + currentState * 16 + action.symbol
+            lookahead * 38 * 16 + currentState * 16 + action.symbol
           ];
 
         // multiply by two because our stack contains adresses and states interleaved
