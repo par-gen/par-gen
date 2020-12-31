@@ -83,6 +83,15 @@ export class JavaScriptBaseCodegen {
       isOptimizable = finals[i] / columns - finals[i - 1] / columns === 1;
     }
 
+    const pointerSize = transitions
+      .flatMap(([from, transition]) => [
+        from,
+        ...transition.flatMap(([, to]) => to),
+      ])
+      .every((state) => state <= 0xffff)
+      ? "Uint16Array"
+      : "Uint32Array";
+
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
 
@@ -94,7 +103,7 @@ export class JavaScriptBaseCodegen {
         ${tokenIds.map((id, i) => `${id}, // ${tokenNames[i]}`).join("\n")}
       ];
 
-      const table = new Uint16Array(${columns * tokenIds.length});
+      const table = new ${pointerSize}(${columns * tokenIds.length});
       table.fill(${errorState ?? -1});
       ${transitions
         .flatMap(([from, transition]) =>
@@ -110,7 +119,7 @@ export class JavaScriptBaseCodegen {
         .filter(Boolean)
         .join("\n")}
 
-      const visited = new Uint16Array(1024);
+      const visited = new ${pointerSize}(1024);
 
       // the currently matched lexeme
       const lexeme = {
