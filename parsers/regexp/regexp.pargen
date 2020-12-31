@@ -2,7 +2,7 @@
 #
 # Tokens
 #
-CHARACTER := '[^\\\|\(\)\*?+]|\\[\*\+\?\\\(\)\|]';
+CHARACTER := '[^\\\|\(\)\*?+]|\\[\.\*\+\?\\\(\)\|rnbtf]';
 UNION := '\|';
 PAREN_OPEN := '\(';
 PAREN_CLOSE := '\)';
