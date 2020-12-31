@@ -28,10 +28,13 @@ Union :=
   ;
 
 Sequence :=
+    Atom
+  | Sequence Atom
+  ;
+
+Atom :=
     CHARACTER
   | CHARACTER QUANTIFIER
-  | Sequence CHARACTER
-  | Sequence CHARACTER QUANTIFIER
   | Group
-  | Sequence Group
+  | Group QUANTIFIER
   ;
