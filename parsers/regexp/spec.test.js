@@ -44,6 +44,7 @@ describe("RegExp", () => {
   });
 
   it("should accept escape characters", () => {
+    expect(parse("\\.")).toBeTruthy();
     expect(parse("\\*")).toBeTruthy();
     expect(parse("\\+")).toBeTruthy();
     expect(parse("\\?")).toBeTruthy();
@@ -51,5 +52,10 @@ describe("RegExp", () => {
     expect(parse("\\(")).toBeTruthy();
     expect(parse("\\)")).toBeTruthy();
     expect(parse("\\|")).toBeTruthy();
+    expect(parse("\\r")).toBeTruthy();
+    expect(parse("\\n")).toBeTruthy();
+    expect(parse("\\b")).toBeTruthy();
+    expect(parse("\\t")).toBeTruthy();
+    expect(parse("\\f")).toBeTruthy();
   });
 });
