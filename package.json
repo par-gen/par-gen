@@ -73,5 +73,13 @@
         "automerge": true
       }
     ]
+  },
+  "wallaby": {
+    "env": {
+      "type": "node",
+      "params": {
+        "env": "NODE_OPTIONS=--experimental-vm-modules"
+      }
+    }
   }
 }
