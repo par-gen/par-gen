@@ -249,16 +249,16 @@ export class JavaScriptBaseCodegen {
         states.length * parserSymbols.length * parserSymbols.length
       });
       ${states
-        .reduce((table, state, i) => {
+        .reduce((table, state, stateIndex) => {
           const items = Array.from(state.values());
 
-          parserSymbols.forEach((symbol, j) => {
+          parserSymbols.forEach((symbol, symbolIndex) => {
             const matchedItems = items.filter(
               (item) =>
                 item.name === symbol && item.marker === item.tokens.length
             );
 
-            parserSymbols.forEach((lookahead, k) => {
+            parserSymbols.forEach((lookahead, lookaheadIndex) => {
               const item = matchedItems.find(
                 (item) => item.lookahead === lookahead
               );
@@ -269,12 +269,12 @@ export class JavaScriptBaseCodegen {
 
               table.push(
                 `reducerStates[${
-                  i * states.length +
-                  j * parserSymbols.length +
-                  k * parserSymbols.length
+                  lookaheadIndex * states.length * parserSymbols.length +
+                  stateIndex * parserSymbols.length +
+                  symbolIndex
                 }] = ${
                   item.tokens.length
-                }; // 'state ${i}' -> ${symbol} -> ${lookahead}`
+                }; // 'state ${stateIndex}' -> ${symbol} -> ${lookahead}`
               );
             });
           });
@@ -601,11 +601,11 @@ export class JavaScriptBaseCodegen {
               )}
               break;
             case ${actionOps.indexOf("reduce")}: // reduce
-              let stackItemsToReduce = reducerStates[(currentState * ${
+              let stackItemsToReduce = reducerStates[lookahead * ${
                 states.length
-              }) + (action.symbol * ${parserSymbols.length}) + (lookahead * ${
-      parserSymbols.length
-    })];
+              } * ${parserSymbols.length} +
+                currentState * ${parserSymbols.length} +
+                action.symbol];
 
               ${debug(
                 () =>
