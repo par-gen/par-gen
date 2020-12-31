@@ -431,9 +431,7 @@ export class JavaScriptBaseCodegen {
        * ___________________________________
        * |_dummy_|_state_|_tp_|_state_|_tp_|...
        */
-      const stack = ${
-        states.length < 256 ? `new Uint8Array(512)` : `new Uint16Array(512)`
-      };
+      const stack = new Uint16Array(32768);
 
       /**
        * This typed array contains the syntax tree from a parse.
@@ -449,7 +447,7 @@ export class JavaScriptBaseCodegen {
        * This enables efficient storage of nodes with variable number of children and
        * fast DFS traversal.
        */
-      const tree = new Uint16Array(8192);
+      const tree = new Uint16Array(32768);
 
       const createProxy = (tree, pointer) => {
         return new Proxy(
