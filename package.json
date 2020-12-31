@@ -17,7 +17,7 @@
   "scripts": {
     "check": "tsc --build .",
     "check-watch": "tsc --build . --watch",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --run-in-band"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "engines": {
     "node": ">=14",
