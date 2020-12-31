@@ -15,22 +15,28 @@ QUANTIFIER := '[\*?+]';
 
 RegExp := Expression;
 
-Expression := Union | Group | Sequence;
+Expression := Union | Group | Sequence | Atom;
 
 Group :=
     PAREN_OPEN Union PAREN_CLOSE
   | PAREN_OPEN Union PAREN_CLOSE QUANTIFIER
   | PAREN_OPEN Sequence PAREN_CLOSE
   | PAREN_OPEN Sequence PAREN_CLOSE QUANTIFIER
+  | PAREN_OPEN Atom PAREN_CLOSE
+  | PAREN_OPEN Atom PAREN_CLOSE QUANTIFIER
   ;
 
 Union :=
-    Sequence UNION Sequence
   | Union UNION Sequence
+  | Union UNION Atom
+  | Sequence UNION Sequence
+  | Sequence UNION Atom
+  | Atom UNION Sequence
+  | Atom UNION Atom
   ;
 
 Sequence :=
-    Atom
+    Atom Atom
   | Sequence Atom
   ;
 
