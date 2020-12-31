@@ -526,7 +526,12 @@ function calculateFollows(firsts, tokens, EOF, rules) {
     }
     const rhsRules = rules.filter((rule) => rule.symbols.includes(ruleName));
 
-    rhsRules.forEach((rule) => {
+    if (rhsRules.length === 0 && rules[0].name !== ruleName) {
+      // this rule is not referenced; skip
+      continue;
+    }
+
+    for (const rule of rhsRules) {
       const current = rule.symbols.indexOf(ruleName);
       const next = current + 1;
       if (next < rule.symbols.length) {
@@ -552,7 +557,7 @@ function calculateFollows(firsts, tokens, EOF, rules) {
           incomplete = true;
         }
       }
-    });
+    }
 
     if (incomplete || follows.size === 0) {
       open.push(ruleName);
