@@ -4,6 +4,10 @@ import { tmpdir } from "os";
 import { join, basename } from "path";
 import * as vm from "vm";
 
+import * as fs from "fs";
+import * as url from "url";
+import * as path from "path";
+
 import { JavaScriptModuleCodegen } from "./javascript-esm.js";
 
 describe("Lexer States", () => {
@@ -56,6 +60,7 @@ describe("Lexer States", () => {
 
     // note: this is not available in the typescript typings currently
     const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+    const SyntheticModule = /** @type {*} */ (vm).SyntheticModule;
     const context = vm.createContext({
       output,
       Buffer,
@@ -73,25 +78,72 @@ describe("Lexer States", () => {
       { context }
     );
 
+    /**
+     * @param {*} m
+     * @param {string} specifier
+     */
+    function systemModule(m, specifier) {
+      return new SyntheticModule(
+        Object.keys(m),
+        function () {
+          Object.keys(m).forEach((name) => {
+            // @ts-expect-error
+            this.setExport(name, m[name]);
+          });
+        },
+        {
+          context,
+          identifier: specifier,
+        }
+      );
+    }
+
     await module.link(
       /**
        * @param {string} specifier
        * @param {*} referencingModule
        */
       async function (specifier, referencingModule) {
+        if (specifier === "fs") {
+          return systemModule(fs, specifier);
+        }
+        if (specifier === "url") {
+          return systemModule(url, specifier);
+        }
+        if (specifier === "path") {
+          return systemModule(path, specifier);
+        }
         if (specifier === `./${basename(lexerInitialFile)}`) {
           const code = await fsp.readFile(lexerInitialFile, "utf-8");
+
           return new SourceTextModule(code, {
             context: referencingModule.context,
             identifier: lexerInitialFile,
+            /**
+             * @param {*} meta
+             */
+            initializeImportMeta(meta) {
+              meta.url = url
+                .pathToFileURL(join(directory, "index.js"))
+                .toString();
+            },
           });
         } else if (specifier === `./${basename(lexerStateFile)}`) {
           const code = await fsp.readFile(lexerStateFile, "utf-8");
+
           return new SourceTextModule(code, {
             context: referencingModule.context,
             identifier: lexerStateFile,
+            /**
+             * @param {*} meta
+             */
+            initializeImportMeta(meta) {
+              meta.url = url
+                .pathToFileURL(join(directory, "index.js"))
+                .toString();
+            },
           });
-        } else if (specifier === 'parser-file') {
+        } else if (specifier === "parser-file") {
           const code = await fsp.readFile(parserFile, "utf-8");
 
           return new SourceTextModule(code, {

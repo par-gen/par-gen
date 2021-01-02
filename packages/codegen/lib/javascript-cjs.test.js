@@ -1,8 +1,8 @@
 import { generate as genLexer } from "@par-gen/lexer";
 import { generate as genParser } from "@par-gen/parser";
-import { promises as fsp, readFileSync } from "fs";
+import fs, { promises as fsp, readFileSync } from "fs";
 import { tmpdir } from "os";
-import { join } from "path";
+import path, { join } from "path";
 import * as vm from "vm";
 
 import { JavaScriptCommonJsCodegen } from "./javascript-cjs.js";
@@ -51,7 +51,22 @@ describe("JavaScriptCommonJsCodegen", () => {
        */
       require(id) {
         if (id === "lexer-file") {
-          const context = vm.createContext({ module: {} });
+          const context = vm.createContext({
+            __dirname: directory,
+            /**
+             * @param {string} id
+             */
+            require(id) {
+              if (id === "fs") {
+                return fs;
+              } else if (id === "path") {
+                return path;
+              }
+              throw new Error(`Unable to resolve dependency: ${id}`);
+            },
+            module: {},
+            filename: lexerStateFile,
+          });
           new vm.Script(readFileSync(lexerStateFile, "utf-8")).runInContext(
             context
           );
@@ -106,7 +121,20 @@ describe("JavaScriptCommonJsCodegen", () => {
       require(id) {
         if (id === "./lexer-initial.js") {
           const innerContext = vm.createContext({
+            __dirname: directory,
+            /**
+             * @param {string} id
+             */
+            require(id) {
+              if (id === "fs") {
+                return fs;
+              } else if (id === "path") {
+                return path;
+              }
+              throw new Error(`Unable to resolve dependency: ${id}`);
+            },
             module: {},
+            filename: lexerStateFile,
           });
           new vm.Script(readFileSync(lexerStateFile, "utf-8")).runInContext(
             innerContext
@@ -117,6 +145,7 @@ describe("JavaScriptCommonJsCodegen", () => {
             module: {},
             require: context.require,
             Buffer: context.Buffer,
+            filename: parserFile,
           });
           new vm.Script(readFileSync(parserFile, "utf-8")).runInContext(
             innerContext
@@ -125,6 +154,7 @@ describe("JavaScriptCommonJsCodegen", () => {
         }
         throw new Error(`Unable to resolve dependency: ${id}`);
       },
+      filename: "test.js",
     });
 
     const script = new vm.Script(

@@ -1,4 +1,4 @@
-import { dirname, relative } from "path";
+import { basename, dirname, relative } from "path";
 
 import { JavaScriptBaseCodegen } from "./javascript.js";
 
@@ -27,6 +27,20 @@ export class JavaScriptCommonJsCodegen extends JavaScriptBaseCodegen {
 
   _lexerPreCode() {
     return `'use strict';`;
+  }
+
+  _lexerImports() {
+    return `
+      const { readFileSync } = require('fs');
+      const { join } = require('path');
+    `;
+  }
+
+  /**
+   * @param {string} name
+   */
+  _lexerBinRead(name) {
+    return `join(__dirname, '${basename(this._lexerBinFile(name))}')`;
   }
 
   _lexerExport() {
