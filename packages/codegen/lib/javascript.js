@@ -415,8 +415,13 @@ export class JavaScriptBaseCodegen {
           nextToken = nextTokens[name];
           lexer._stack.push(nextToken);
         },
-        pop() {
+        pop(done) {
           lexer._stack.pop();
+          if (done) {
+            return;
+          } else if (lexer._stack.length === 0) {
+            throw new Error("Cannot remove more lexer states than have been pushed.");
+          }
           nextToken = lexer._stack[lexer._stack.length - 1];
         }
       };
@@ -549,7 +554,7 @@ export class JavaScriptBaseCodegen {
           switch (action.op) {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
-              lexer.pop();
+              lexer.pop(true);
               return createProxy(tree, tp - 6);
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(
