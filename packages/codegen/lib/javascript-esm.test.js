@@ -29,12 +29,9 @@ describe("JavaScriptModuleCodegen", () => {
   });
 
   it("should be possible to write a lexer into a file", async () => {
-    /** @type {string[]} */
-    let tokenNames = [];
     let results;
-    /** @type {(_tokenNames: *, _results: *) => void}  */
-    const output = (_tokenNames, _results) => {
-      tokenNames = _tokenNames;
+    /** @type {(_results: *) => void}  */
+    const output = (_results) => {
       results = _results;
     };
 
@@ -57,12 +54,12 @@ describe("JavaScriptModuleCodegen", () => {
 
     const module = new SourceTextModule(
       `
-        import { tokenNames, next } from 'lexer-file';
+        import { next } from 'lexer-file';
 
         const input = Buffer.from("abc");
         const matched = next(input, 0);
 
-        output(tokenNames, matched);
+        output(matched);
       `,
       { context }
     );
@@ -73,7 +70,7 @@ describe("JavaScriptModuleCodegen", () => {
        * @param {*} referencingModule
        */
       async function (specifier, referencingModule) {
-        if (specifier === 'lexer-file') {
+        if (specifier === "lexer-file") {
           const code = await fsp.readFile(lexerStateFile, "utf-8");
           return new SourceTextModule(code, {
             context: referencingModule.context,
@@ -86,7 +83,7 @@ describe("JavaScriptModuleCodegen", () => {
     await module.evaluate();
 
     expect(results).toEqual({
-      state: tokenNames.indexOf("A"),
+      state: 0,
       start: 0,
       end: 3,
     });
@@ -137,7 +134,7 @@ describe("JavaScriptModuleCodegen", () => {
           return new SourceTextModule(code, {
             context: referencingModule.context,
           });
-        } else if (specifier === 'parser-file') {
+        } else if (specifier === "parser-file") {
           const code = await fsp.readFile(parserFile, "utf-8");
           return new SourceTextModule(code, {
             context: referencingModule.context,

@@ -89,7 +89,6 @@ export class JavaScriptBaseCodegen {
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
 
-      const tokenNames = ${JSON.stringify(tokenNames)};
       const tokenIds = [
         ${tokenIds.map((id, i) => `${id}, // ${tokenNames[i]}`).join("\n")}
       ];
