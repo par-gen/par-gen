@@ -29,12 +29,9 @@ describe("JavaScriptCommonJsCodegen", () => {
   });
 
   it("should be possible to write a lexer into a file", async () => {
-    /** @type {string[]} */
-    let tokenNames = [];
     let results;
-    /** @type {(_tokenNames: *, _results: *) => void}  */
-    const output = (_tokenNames, _results) => {
-      tokenNames = _tokenNames;
+    /** @type {(_results: *) => void}  */
+    const output = (_results) => {
       results = _results;
     };
 
@@ -53,7 +50,7 @@ describe("JavaScriptCommonJsCodegen", () => {
        * @param {string} id
        */
       require(id) {
-        if (id === 'lexer-file') {
+        if (id === "lexer-file") {
           const context = vm.createContext({ module: {} });
           new vm.Script(readFileSync(lexerStateFile, "utf-8")).runInContext(
             context
@@ -66,19 +63,19 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     const script = new vm.Script(
       `
-        const { tokenNames, next } = require('lexer-file');
+        const { next } = require('lexer-file');
 
         const input = Buffer.from("abc");
         const matched = next(input, 0);
 
-        output(tokenNames, matched);
+        output(matched);
       `
     );
 
     script.runInContext(context);
 
     expect(results).toEqual({
-      state: tokenNames.indexOf("A"),
+      state: 0,
       start: 0,
       end: 3,
     });
@@ -115,7 +112,7 @@ describe("JavaScriptCommonJsCodegen", () => {
             innerContext
           );
           return innerContext.module.exports;
-        } else if (id === 'parser-file') {
+        } else if (id === "parser-file") {
           const innerContext = vm.createContext({
             module: {},
             require: context.require,
