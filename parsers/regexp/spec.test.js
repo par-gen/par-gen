@@ -58,4 +58,49 @@ describe("RegExp", () => {
     expect(parse("\\t")).toBeTruthy();
     expect(parse("\\f")).toBeTruthy();
   });
+
+  describe("should create a valid parse tree", () => {
+    /**
+     * @param {*} tree
+     */
+    function print(tree) {
+      /** @param {*} item */
+      const item = (item) => print(item);
+      const items = () =>
+        tree.items ? `[${tree.items.map(item).join(",")}]` : "";
+      return `${tree.name}${items()}`;
+    }
+
+    /**
+     * @param {string} expr
+     * @returns {RegExp}
+     */
+    function matcher(expr) {
+      return new RegExp(expr.replace(/\[/g, "\\["));
+    }
+
+    it("from a sequence", () => {
+      expect(print(parse("ab"))).toBe(
+        "RegExp[Expression[Sequence[Atom[CHARACTER],Atom[CHARACTER]]]]"
+      );
+    });
+
+    it("from a union", () => {
+      expect(print(parse("a|b"))).toMatch(
+        matcher("RegExp[Expression[Union[.*?,UNION,.*?]]]")
+      );
+    });
+
+    it("from a group", () => {
+      expect(print(parse("(a)"))).toMatch(
+        matcher("RegExp[Expression[Atom[Group[PAREN_OPEN,.*?,PAREN_CLOSE]]]]")
+      );
+    });
+
+    it("from a quantifier", () => {
+      expect(print(parse("a*"))).toMatch(
+        matcher("RegExp[Expression[Atom[.*?,QUANTIFIER]]]")
+      );
+    });
+  });
 });
