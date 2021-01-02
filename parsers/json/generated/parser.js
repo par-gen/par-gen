@@ -3253,8 +3253,13 @@ const lexer = {
     nextToken = nextTokens[name];
     lexer._stack.push(nextToken);
   },
-  pop() {
+  pop(done) {
     lexer._stack.pop();
+    if (done) {
+      return;
+    } else if (lexer._stack.length === 0) {
+      throw new Error("Cannot remove more lexer states than have been pushed.");
+    }
     nextToken = lexer._stack[lexer._stack.length - 1];
   },
 };
@@ -3367,7 +3372,7 @@ function parse(input) {
 
     switch (action.op) {
       case 2: // done
-        lexer.pop();
+        lexer.pop(true);
         return createProxy(tree, tp - 6);
       case 0: // shift
         tree[tp] = lookahead; // name
