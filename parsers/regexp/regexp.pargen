@@ -2,11 +2,14 @@
 #
 # Tokens
 #
-CHARACTER := '[^\\\|\(\)\*?+]|\\[\.\*\+\?\\\(\)\|rnbtf]';
+CHARACTER := '[^\\\|\(\)\[\]\*?+]|\\[\.\*\+\?\\\(\)\[\]\|rnbtf]';
 UNION := '\|';
 PAREN_OPEN := '\(';
 PAREN_CLOSE := '\)';
 QUANTIFIER := '[\*?+]';
+BRACKET_OPEN := '\[';
+BRACKET_CLOSE := '\]';
+DASH := '-';
 
 #######################################
 #
@@ -32,14 +35,38 @@ Sequence :=
   ;
 
 Atom :=
-    CHARACTER
-  | CHARACTER QUANTIFIER
+    Character
+  | Character QUANTIFIER
   | Group
   | Group QUANTIFIER
+  | CharacterClass
+  | CharacterClass QUANTIFIER
   ;
 
 Group :=
     PAREN_OPEN Union PAREN_CLOSE
   | PAREN_OPEN Sequence PAREN_CLOSE
   | PAREN_OPEN Atom PAREN_CLOSE
+  ;
+
+CharacterClass :=
+    BRACKET_OPEN CharacterClassCharacters BRACKET_CLOSE
+  | BRACKET_OPEN DASH BRACKET_CLOSE
+  | BRACKET_OPEN DASH CharacterClassCharacters BRACKET_CLOSE
+  ;
+
+CharacterClassCharacters :=
+    CHARACTER
+  | CharacterClassCharacters CHARACTER
+  | CharacterClassRange
+  | CharacterClassCharacters CharacterClassRange
+  ;
+
+CharacterClassRange :=
+    CHARACTER DASH CHARACTER
+  ;
+
+Character :=
+    CHARACTER
+  | DASH
   ;
