@@ -3,6 +3,7 @@ import { parse } from "./generated/parser.js";
 describe("RegExp", () => {
   it("should accept single character", () => {
     expect(parse("a")).toBeTruthy();
+    expect(parse("-")).toBeTruthy();
   });
 
   it("should accept sequence of characters", () => {
@@ -59,6 +60,24 @@ describe("RegExp", () => {
     expect(parse("\\f")).toBeTruthy();
   });
 
+  it("should accept positive character classes", () => {
+    expect(parse("[a]")).toBeTruthy();
+    expect(parse("[ab]")).toBeTruthy();
+    expect(parse("[0-9]")).toBeTruthy();
+    expect(parse("[a-zA-Z]")).toBeTruthy();
+    expect(parse("[-a]")).toBeTruthy();
+    // expect(parse("[a-]")).toBeTruthy();
+    expect(parse("[-]")).toBeTruthy();
+    expect(parse("[\\*]")).toBeTruthy();
+    expect(parse("[\\\\]")).toBeTruthy();
+    expect(parse("[\\]]")).toBeTruthy();
+  });
+
+  it("should reject invalid positive character classes", () => {
+    expect(() => parse("[a")).toThrow();
+    expect(() => parse("[]]")).toThrow();
+  });
+
   describe("should create a valid parse tree", () => {
     /**
      * @param {*} tree
@@ -81,7 +100,7 @@ describe("RegExp", () => {
 
     it("from a sequence", () => {
       expect(print(parse("ab"))).toBe(
-        "RegExp[Expression[Sequence[Atom[CHARACTER],Atom[CHARACTER]]]]"
+        "RegExp[Expression[Sequence[Atom[Character[CHARACTER]],Atom[Character[CHARACTER]]]]]"
       );
     });
 
@@ -100,6 +119,14 @@ describe("RegExp", () => {
     it("from a quantifier", () => {
       expect(print(parse("a*"))).toMatch(
         matcher("RegExp[Expression[Atom[.*?,QUANTIFIER]]]")
+      );
+    });
+
+    it("from a character class", () => {
+      expect(print(parse("[a-c]"))).toMatch(
+        matcher(
+          "RegExp[Expression[Atom[CharacterClass[BRACKET_OPEN,CharacterClassCharacters[CharacterClassRange[CHARACTER,DASH,CHARACTER]],BRACKET_CLOSE]]]]"
+        )
       );
     });
   });
