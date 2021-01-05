@@ -2,14 +2,18 @@
 #
 # Tokens
 #
-CHARACTER := '[^\\\|\(\)\[\]\*?+]|\\[\.\*\+\?\\\(\)\[\]\|rnbtf]';
+CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\-^]';
+CONTROL_CHARACTER := '[rnbtf]';
+BACKSLASH := '\\';
+CARET := '^';
+DASH := '-';
+DOT := '\.';
 UNION := '\|';
 PAREN_OPEN := '\(';
 PAREN_CLOSE := '\)';
 QUANTIFIER := '[\*?+]';
 BRACKET_OPEN := '\[';
 BRACKET_CLOSE := '\]';
-DASH := '-';
 
 #######################################
 #
@@ -51,15 +55,28 @@ Group :=
 
 CharacterClass :=
     BRACKET_OPEN CharacterClassCharacters BRACKET_CLOSE
-  | BRACKET_OPEN DASH BRACKET_CLOSE
-  | BRACKET_OPEN DASH CharacterClassCharacters BRACKET_CLOSE
+  | BRACKET_OPEN CARET CharacterClassCharacters BRACKET_CLOSE
   ;
 
 CharacterClassCharacters :=
+    CharacterClassCharacter
+  | CharacterClassCharacters CharacterClassCharacter
+  ;
+
+CharacterClassCharacter :=
     CHARACTER
-  | CharacterClassCharacters CHARACTER
+  | CONTROL_CHARACTER
+  | BACKSLASH DASH
+  | BACKSLASH CARET
+  | QUANTIFIER
+  | PAREN_OPEN
+  | PAREN_CLOSE
+  | UNION
+  | DOT
+  | BACKSLASH BACKSLASH
+  | BACKSLASH CONTROL_CHARACTER
+  | BACKSLASH BRACKET_CLOSE
   | CharacterClassRange
-  | CharacterClassCharacters CharacterClassRange
   ;
 
 CharacterClassRange :=
@@ -68,5 +85,20 @@ CharacterClassRange :=
 
 Character :=
     CHARACTER
+  | CONTROL_CHARACTER
+  | CARET
   | DASH
+  | BACKSLASH EscapedCharacter
+  ;
+
+EscapedCharacter :=
+    CONTROL_CHARACTER
+  | BACKSLASH
+  | DOT
+  | UNION
+  | PAREN_OPEN
+  | PAREN_CLOSE
+  | BRACKET_OPEN
+  | BRACKET_CLOSE
+  | QUANTIFIER
   ;

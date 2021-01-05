@@ -62,20 +62,42 @@ describe("RegExp", () => {
 
   it("should accept positive character classes", () => {
     expect(parse("[a]")).toBeTruthy();
+    expect(parse("[a\\^]")).toBeTruthy();
     expect(parse("[ab]")).toBeTruthy();
     expect(parse("[0-9]")).toBeTruthy();
     expect(parse("[a-zA-Z]")).toBeTruthy();
-    expect(parse("[-a]")).toBeTruthy();
-    // expect(parse("[a-]")).toBeTruthy();
-    expect(parse("[-]")).toBeTruthy();
-    expect(parse("[\\*]")).toBeTruthy();
+    expect(parse("[\\-a]")).toBeTruthy();
+    expect(parse("[a\\-]")).toBeTruthy();
+    expect(parse("[\\-]")).toBeTruthy();
+    expect(parse("[*?+(|.]")).toBeTruthy();
     expect(parse("[\\\\]")).toBeTruthy();
+    expect(parse("[\\r]")).toBeTruthy();
     expect(parse("[\\]]")).toBeTruthy();
   });
 
   it("should reject invalid positive character classes", () => {
     expect(() => parse("[a")).toThrow();
     expect(() => parse("[]]")).toThrow();
+  });
+
+  it("should accept negative character classes", () => {
+    expect(parse("[^a]")).toBeTruthy();
+    expect(parse("[^\\^]")).toBeTruthy();
+    expect(parse("[^ab]")).toBeTruthy();
+    expect(parse("[^0-9]")).toBeTruthy();
+    expect(parse("[^a-zA-Z]")).toBeTruthy();
+    expect(parse("[^\\-a]")).toBeTruthy();
+    expect(parse("[^a\\-]")).toBeTruthy();
+    expect(parse("[^\\-]")).toBeTruthy();
+    expect(parse("[^\\\\]")).toBeTruthy();
+    expect(parse("[^*?+(|.]")).toBeTruthy();
+    expect(parse("[^\\r]")).toBeTruthy();
+    expect(parse("[^\\]]")).toBeTruthy();
+  });
+
+  it("should reject invalid negative character classes", () => {
+    expect(() => parse("[^a")).toThrow();
+    expect(() => parse("[^]]")).toThrow();
   });
 
   describe("should create a valid parse tree", () => {
@@ -99,8 +121,10 @@ describe("RegExp", () => {
     }
 
     it("from a sequence", () => {
-      expect(print(parse("ab"))).toBe(
-        "RegExp[Expression[Sequence[Atom[Character[CHARACTER]],Atom[Character[CHARACTER]]]]]"
+      expect(print(parse("ab"))).toMatch(
+        matcher(
+          "RegExp[Expression[Sequence[Atom[Character[.*?]],Atom[Character[.*?]]]]]"
+        )
       );
     });
 
@@ -125,7 +149,15 @@ describe("RegExp", () => {
     it("from a character class", () => {
       expect(print(parse("[a-c]"))).toMatch(
         matcher(
-          "RegExp[Expression[Atom[CharacterClass[BRACKET_OPEN,CharacterClassCharacters[CharacterClassRange[CHARACTER,DASH,CHARACTER]],BRACKET_CLOSE]]]]"
+          "RegExp[Expression[Atom[CharacterClass[BRACKET_OPEN,.*?CharacterClassRange[CHARACTER,DASH,CHARACTER].*?,BRACKET_CLOSE]]]]"
+        )
+      );
+    });
+
+    it("from a negative character class", () => {
+      expect(print(parse("[^a]"))).toMatch(
+        matcher(
+          "RegExp[Expression[Atom[CharacterClass[BRACKET_OPEN,CARET,.*?,BRACKET_CLOSE]]]]"
         )
       );
     });
