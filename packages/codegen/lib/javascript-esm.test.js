@@ -5,6 +5,10 @@ import { tmpdir } from "os";
 import { join, basename } from "path";
 import * as vm from "vm";
 
+import * as fs from "fs";
+import * as url from "url";
+import * as path from "path";
+
 import { JavaScriptModuleCodegen } from "./javascript-esm.js";
 
 describe("JavaScriptModuleCodegen", () => {
@@ -47,10 +51,31 @@ describe("JavaScriptModuleCodegen", () => {
 
     // note: this is not available in the typescript typings currently
     const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+    const SyntheticModule = /** @type {*} */ (vm).SyntheticModule;
     const context = vm.createContext({
       output,
       Buffer,
     });
+
+    /**
+     * @param {*} m
+     * @param {string} specifier
+     */
+    function systemModule(m, specifier) {
+      return new SyntheticModule(
+        Object.keys(m),
+        function () {
+          Object.keys(m).forEach((name) => {
+            // @ts-expect-error
+            this.setExport(name, m[name]);
+          });
+        },
+        {
+          context,
+          identifier: specifier,
+        }
+      );
+    }
 
     const module = new SourceTextModule(
       `
@@ -70,10 +95,28 @@ describe("JavaScriptModuleCodegen", () => {
        * @param {*} referencingModule
        */
       async function (specifier, referencingModule) {
+        if (specifier === "fs") {
+          return systemModule(fs, specifier);
+        }
+        if (specifier === "url") {
+          return systemModule(url, specifier);
+        }
+        if (specifier === "path") {
+          return systemModule(path, specifier);
+        }
         if (specifier === "lexer-file") {
           const code = await fsp.readFile(lexerStateFile, "utf-8");
+
           return new SourceTextModule(code, {
             context: referencingModule.context,
+            /**
+             * @param {*} meta
+             */
+            initializeImportMeta(meta) {
+              meta.url = url
+                .pathToFileURL(join(directory, "index.js"))
+                .toString();
+            },
           });
         }
         throw new Error(`Unable to resolve dependency: ${specifier}`);
@@ -103,6 +146,7 @@ describe("JavaScriptModuleCodegen", () => {
     `;
 
     const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    const SyntheticModule = /** @type {*} */ (vm).SyntheticModule;
     await codegen.parser(genParser(grammar));
 
     // note: this is not available in the typescript typings currently
@@ -111,6 +155,26 @@ describe("JavaScriptModuleCodegen", () => {
       output,
       Buffer,
     });
+
+    /**
+     * @param {*} m
+     * @param {string} specifier
+     */
+    function systemModule(m, specifier) {
+      return new SyntheticModule(
+        Object.keys(m),
+        function () {
+          Object.keys(m).forEach((name) => {
+            // @ts-expect-error
+            this.setExport(name, m[name]);
+          });
+        },
+        {
+          context,
+          identifier: specifier,
+        }
+      );
+    }
 
     const module = new SourceTextModule(
       `
@@ -129,10 +193,27 @@ describe("JavaScriptModuleCodegen", () => {
        * @param {*} referencingModule
        */
       async function (specifier, referencingModule) {
+        if (specifier === "fs") {
+          return systemModule(fs, specifier);
+        }
+        if (specifier === "url") {
+          return systemModule(url, specifier);
+        }
+        if (specifier === "path") {
+          return systemModule(path, specifier);
+        }
         if (specifier === `./${basename(lexerStateFile)}`) {
           const code = await fsp.readFile(lexerStateFile, "utf-8");
           return new SourceTextModule(code, {
             context: referencingModule.context,
+            /**
+             * @param {*} meta
+             */
+            initializeImportMeta(meta) {
+              meta.url = url
+                .pathToFileURL(join(directory, "index.js"))
+                .toString();
+            },
           });
         } else if (specifier === "parser-file") {
           const code = await fsp.readFile(parserFile, "utf-8");

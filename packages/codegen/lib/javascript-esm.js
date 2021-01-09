@@ -1,4 +1,4 @@
-import { dirname, relative } from "path";
+import { basename, dirname, relative } from "path";
 
 import { JavaScriptBaseCodegen } from "./javascript.js";
 
@@ -23,6 +23,23 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
    */
   constructor(options) {
     super(options);
+  }
+
+  _lexerImports() {
+    return `
+      import { readFileSync } from 'fs';
+      import { fileURLToPath } from "url";
+      import { dirname, join } from 'path';
+    `;
+  }
+
+  /**
+   * @param {string} name
+   */
+  _lexerBinRead(name) {
+    return `join(dirname(fileURLToPath(import.meta.url)), '${basename(
+      this._lexerBinFile(name)
+    )}')`;
   }
 
   _lexerExport() {

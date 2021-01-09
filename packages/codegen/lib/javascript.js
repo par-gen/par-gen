@@ -31,6 +31,7 @@ export class JavaScriptBaseCodegen {
   constructor(options) {
     /** @protected */
     this.options = options;
+    this._lexerColumns = 256;
   }
 
   /**
@@ -46,26 +47,85 @@ export class JavaScriptBaseCodegen {
   }
 
   /**
+   * @protected
+   * @param {string} name
+   * @returns {string}
+   */
+  _lexerBinFile(name) {
+    const dir = dirname(this.options.lexerFile);
+    const ext = extname(this.options.lexerFile);
+    const base = basename(this.options.lexerFile, ext);
+    return join(dir, `${base}-${name}.bin`);
+  }
+
+  /**
+   * @param {LexerData} data
+   */
+  _tableSize(data) {
+    return data.transitions
+      .flatMap(([from, transition]) => [
+        from,
+        ...transition.flatMap(([, to]) => to),
+      ])
+      .every((state) => state <= 0xffff)
+      ? 16
+      : 32;
+  }
+
+  /**
    * @public
    * @param {LexerData} data
    * @param {string} name
    * @returns {Promise<void>}
    */
   async lexer(data, name) {
-    const code = this._lexerCode(data);
+    const code = this._lexerCode(data, name);
 
     const lexerFile = this._lexerStateFile(name);
 
     await fsp.mkdir(dirname(lexerFile), { recursive: true });
     await fsp.writeFile(lexerFile, code);
+    await this._writeLexerBin(data, name);
   }
 
   /**
    * @private
    * @param {LexerData} data
+   * @param {string} name
+   */
+  async _writeLexerBin(data, name) {
+    const size = this._tableSize(data);
+    const byteSize = size / 8;
+    const arrayBuffer = new ArrayBuffer(
+      this._lexerColumns * data.tokenIds.length * byteSize
+    );
+    const view = new DataView(arrayBuffer);
+    for (let i = 0, l = this._lexerColumns * data.tokenIds.length; i < l; i++) {
+      if (size === 16) {
+        view.setUint16(i * byteSize, data.errorState, false);
+      } else {
+        view.setUint32(i * byteSize, data.errorState, false);
+      }
+    }
+    data.transitions.forEach(([from, transition]) => {
+      transition.forEach(([symbol, to]) => {
+        if (size === 16) {
+          view.setUint16((from + symbol) * byteSize, to, false);
+        } else {
+          view.setUint32((from + symbol) * byteSize, to, false);
+        }
+      });
+    });
+    await fsp.writeFile(this._lexerBinFile(name), Buffer.from(arrayBuffer));
+  }
+
+  /**
+   * @private
+   * @param {LexerData} data
+   * @param {string} name
    * @returns {string}
    */
-  _lexerCode(data) {
+  _lexerCode(data, name) {
     const {
       tokens: { EOF, ERROR },
       tokenIds,
@@ -76,24 +136,21 @@ export class JavaScriptBaseCodegen {
       finals,
     } = data;
 
-    const columns = 256;
+    const debug = this._debug.bind(this);
+
+    const columns = this._lexerColumns;
 
     let isOptimizable = finals.every((final) => final % columns === 0);
     for (let i = 1; i < finals.length && isOptimizable; i++) {
       isOptimizable = finals[i] / columns - finals[i - 1] / columns === 1;
     }
 
-    const pointerSize = transitions
-      .flatMap(([from, transition]) => [
-        from,
-        ...transition.flatMap(([, to]) => to),
-      ])
-      .every((state) => state <= 0xffff)
-      ? "Uint16Array"
-      : "Uint32Array";
+    const size = this._tableSize(data);
+    const pointerSize = size === 16 ? "Uint16Array" : "Uint32Array";
 
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
+      ${this._lexerImports()}
 
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
@@ -103,20 +160,33 @@ export class JavaScriptBaseCodegen {
       ];
 
       const table = new ${pointerSize}(${columns * tokenIds.length});
-      table.fill(${errorState ?? -1});
-      ${transitions
-        .flatMap(([from, transition]) =>
-          transition.map(([symbol, to]) => {
-            if (to === errorState) {
-              return undefined;
-            }
-            return `table[${from + symbol}] = ${to}; // ${
-              tokenNames[to / columns]
-            }`;
-          })
-        )
-        .filter(Boolean)
-        .join("\n")}
+      const file = readFileSync(${this._lexerBinRead(name)});
+      const view = new DataView(file.buffer, file.byteOffset, file.length);
+      for (let i = 0; i < table.length; i++) {
+        ${
+          size === 16
+            ? `table[i] = view.getUint16(i * ${size / 8}, false);`
+            : `table[i] = view.getUint32(i * ${size / 8}, false);`
+        }
+      }
+
+      ${debug(
+        () => `
+        ${transitions
+          .flatMap(([from, transition]) =>
+            transition.map(([symbol, to]) => {
+              if (to === errorState) {
+                return undefined;
+              }
+              return `// ${from} + ${symbol} = ${to}; // ${
+                tokenNames[from / columns]
+              } + ${String.fromCharCode(symbol)} = ${tokenNames[to / columns]}`;
+            })
+          )
+          .filter(Boolean)
+          .join("\n")}
+      `
+      )}
 
       const visited = new ${pointerSize}(1024);
 
@@ -188,6 +258,31 @@ export class JavaScriptBaseCodegen {
    */
   _lexerPreCode() {
     return "";
+  }
+
+  /**
+   * @protected
+   * @returns {string}
+   */
+  _lexerImports() {
+    throw new Error(
+      `${Object.getPrototypeOf(this).constructor.name}#${
+        this._lexerImports.name
+      }() unimplemented`
+    );
+  }
+
+  /**
+   * @protected
+   * @param {string} _name
+   * @returns {string}
+   */
+  _lexerBinRead(_name) {
+    throw new Error(
+      `${Object.getPrototypeOf(this).constructor.name}#${
+        this._lexerBinRead.name
+      }() unimplemented`
+    );
   }
 
   /**
