@@ -443,31 +443,33 @@ export class JavaScriptBaseCodegen {
        */
       const tree = new Uint16Array(32768);
 
-      const createProxy = (tree, pointer) => {
+      const createProxy = (stream, tree, pointer) => {
         return new Proxy(
           {},
           {
-            get(target, prop) {
+            get(target, prop, receiver) {
+              const nChildren = tree[pointer + 3];
+
               switch (prop) {
                 case "name":
                   return parserSymbols[tree[pointer]];
                 case "start":
-                  return tree[pointer + 1] === 0xffff ? -1 : tree[pointer + 1];
+                  return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
                 case "end":
-                  return tree[pointer + 2] === 0xffff ? -1 : tree[pointer + 2];
+                  return nChildren > 0 ? receiver.items[nChildren - 1].end : tree[pointer + 2];
+                case "value":
+                  return stream.subarray(receiver.start, receiver.end);
                 case "items":
-                  const nChildren = tree[pointer + 3];
-
                   if (nChildren === 0) {
                     return undefined;
                   }
 
                   const firstChild = tree[pointer + 4];
-                  const children = [createProxy(tree, firstChild)];
+                  const children = [createProxy(stream, tree, firstChild)];
                   let nextChild = tree[firstChild + 5];
 
                   for (let i = 1; i < nChildren; i++) {
-                    children.push(createProxy(tree, nextChild));
+                    children.push(createProxy(stream, tree, nextChild));
                     nextChild = tree[nextChild + 5];
                   }
 
@@ -479,7 +481,7 @@ export class JavaScriptBaseCodegen {
               }
             },
             ownKeys(target) {
-              return ["name", "start", "end", "items"];
+              return ["name", "start", "end", "value", "items"];
             },
             has(target, prop) {
               return this.ownKeys(target).includes(prop);
@@ -544,7 +546,7 @@ export class JavaScriptBaseCodegen {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
               lexer.pop(true);
-              return createProxy(tree, tp - 6);
+              return createProxy(stream, tree, tp - 6);
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(
                 () =>
