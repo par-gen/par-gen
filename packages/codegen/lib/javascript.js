@@ -120,6 +120,11 @@ export class JavaScriptBaseCodegen {
         end: -1,
       };
 
+      /**
+       * @param {Uint8Array} input
+       * @param {number} offset
+       * @returns {{ state: number, start: number, end: number }}
+       */
       const next = (input, offset) => {
         // ${start / columns}
         let state = ${start};
@@ -495,6 +500,19 @@ export class JavaScriptBaseCodegen {
         );
       };
 
+      /**
+       * @typedef {Object} Node
+       * @property {string} name
+       * @property {number} start
+       * @property {number} end
+       * @property {Uint8Array} value
+       * @property {Node[]} items
+       */
+
+      /**
+       * @param {Uint8Array | string} input
+       * @returns {Node}
+       */
       function parse(input) {
         ${debug(
           () => `

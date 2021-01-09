@@ -520,6 +520,11 @@ const lexeme = {
   end: -1,
 };
 
+/**
+ * @param {Uint8Array} input
+ * @param {number} offset
+ * @returns {{ state: number, start: number, end: number }}
+ */
 const next = (input, offset) => {
   // 250
   let state = 64000;

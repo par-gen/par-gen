@@ -3346,6 +3346,19 @@ const createProxy = (stream, tree, pointer) => {
   );
 };
 
+/**
+ * @typedef {Object} Node
+ * @property {string} name
+ * @property {number} start
+ * @property {number} end
+ * @property {Uint8Array} value
+ * @property {Node[]} items
+ */
+
+/**
+ * @param {Uint8Array | string} input
+ * @returns {Node}
+ */
 function parse(input) {
   lexer.push("initial");
 

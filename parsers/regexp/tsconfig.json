@@ -5,7 +5,17 @@
     "outDir": "types",
     "composite": true
   },
-  "include": ["./"],
-  "exclude": ["**/node_modules/**", "./generate-grammar.cjs"],
-  "references": []
+  "include": [
+    "./generated",
+    "./index.js"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "./generate-grammar.cjs"
+  ],
+  "references": [
+    {
+      "path": "../../packages/cli"
+    }
+  ]
 }
