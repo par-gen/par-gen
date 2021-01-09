@@ -78,6 +78,7 @@ CharacterClassCharacter :=
   | DOT
   | BACKSLASH BACKSLASH
   | BACKSLASH CONTROL_CHARACTER
+  | BACKSLASH BRACKET_OPEN
   | BACKSLASH BRACKET_CLOSE
   | CharacterClassRange
   ;
