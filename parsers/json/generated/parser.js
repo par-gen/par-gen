@@ -3356,13 +3356,11 @@ const createProxy = (stream, tree, pointer) => {
  */
 
 /**
- * @param {Uint8Array | string} input
+ * @param {Uint8Array} stream
  * @returns {Node}
  */
-function parse(input) {
+function parseBuffer(stream) {
   lexer.push("initial");
-
-  const stream = Buffer.isBuffer(input) ? input : Buffer.from(input);
 
   let result = nextToken(stream, 0);
   let lookahead = result.state;
@@ -3380,7 +3378,7 @@ function parse(input) {
 
     const actionLookup = actionsTable[currentState * 32 + lookahead];
     if (actionLookup === 0xffff) {
-      const context = input.toString().substr(result.start, 10);
+      const context = stream.toString().substr(result.start, 10);
       throw new Error(
         `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
       );
@@ -3390,7 +3388,8 @@ function parse(input) {
     switch (action.op) {
       case 2: // done
         lexer.pop(true);
-        return createProxy(stream, tree, tp - 6);
+        tree[0] = tp - 6;
+        return tree;
       case 0: // shift
         tree[tp] = lookahead; // name
         tree[tp + 1] = result.start;
@@ -3440,4 +3439,14 @@ function parse(input) {
   }
 }
 
-export { parse };
+/**
+ * @param {Uint8Array | string} input
+ * @returns {Node}
+ */
+function parse(input) {
+  const strem = Buffer.isBuffer(input) ? input : Buffer.from(input);
+  const tree = parseBuffer(strem);
+  return createProxy(stream, tree, tree[0]);
+}
+
+export { parse, parseBuffer };
