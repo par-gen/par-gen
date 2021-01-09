@@ -1,9 +1,14 @@
 import { Epsilon } from "./constants.js";
-import { parse, ops } from "./regexp.js";
+import { parse } from "@par-gen/regexp";
 import debug from "debug";
 import { performance } from "perf_hooks";
+import { inspect } from "util";
 
 const log = debug("par-gen:nfa");
+
+/**
+ * @typedef {import('@par-gen/regexp/types/generated/parser').Node} Node
+ */
 
 /**
  * @template VALUE
@@ -22,7 +27,7 @@ const log = debug("par-gen:nfa");
 
 /**
  * @template VALUE, STATE
- * @typedef {(n: number, tree: ParseTree<VALUE>) => STATE} StateFactory
+ * @typedef {(n: number, tree: Node) => STATE} StateFactory
  */
 
 /**
@@ -40,7 +45,7 @@ export function fromRegExp(regexp) {
 
 /**
  * @template STATE, VALUE, SYMBOL
- * @param {ParseTree<VALUE>} tree regular expression parse tree
+ * @param {Node} tree regular expression parse tree
  * @param {{symbolMapper: SymbolMapper<VALUE, SYMBOL>, stateFactory: StateFactory<VALUE, STATE>}} options
  * @returns {NFADescription<STATE, SYMBOL>}
  */
@@ -50,27 +55,20 @@ export function fromRegExpParseTree(tree, { symbolMapper, stateFactory }) {
   try {
     let counter = 0;
 
-    const def = ((node) => {
-      switch (node.op) {
-        case ops.sequence:
-          return sequence(counter, node, symbolMapper, stateFactory);
-        case ops.choice:
-          return choice(counter, node, symbolMapper, stateFactory);
-        case ops.optional:
-          return optional(counter, node, symbolMapper, stateFactory);
-        case ops.match:
-          return match(counter, node, symbolMapper, stateFactory);
-      }
-      throw new Error(`Unknown op code '${node.op.toString()}'`);
-    })(tree);
+    const def = parseIntermediateAST(counter, tree, symbolMapper, stateFactory);
 
-    return {
+    const result = {
       states: def.states,
       symbols: Array.from(new Set(def.symbols)),
       transitions: def.transitions,
       start: def.start,
       finals: [def.final],
     };
+    // console.log(
+    //   inspect(result, { maxArrayLength: null, depth: null, colors: true }),
+    //   JSON.stringify(tree, null, 2)
+    // );
+    return result;
   } finally {
     const traceEnd = performance.now();
     log("exit fromRegExpParseTree (took %d ms)", traceEnd - traceStart);
@@ -91,13 +89,44 @@ export function fromRegExpParseTree(tree, { symbolMapper, stateFactory }) {
 /**
  * @template STATE, VALUE, SYMBOL
  * @param {number} counter
- * @param {ParseTree<VALUE>} tree
+ * @param {Node} tree
+ * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
+ * @param {StateFactory<VALUE, STATE>} stateFactory
+ * @returns {PartialNFA<STATE, SYMBOL>}
+ */
+function parseIntermediateAST(counter, tree, symbolMapper, stateFactory) {
+  switch (tree.name) {
+    case "RegExp":
+    case "Expression":
+      return parseIntermediateAST(
+        counter,
+        tree.items[0],
+        symbolMapper,
+        stateFactory
+      );
+    case "Sequence":
+      return sequence(counter, tree, symbolMapper, stateFactory);
+    case "Union":
+      return choice(counter, tree, symbolMapper, stateFactory);
+    case "Atom":
+      if (tree.items[tree.items.length - 1].name === "QUANTIFIER") {
+        return optional(counter, tree, symbolMapper, stateFactory);
+      }
+      return match(counter, tree, symbolMapper, stateFactory);
+  }
+  throw new Error(`Unknown op code '${tree.name.toString()}'`);
+}
+
+/**
+ * @template STATE, VALUE, SYMBOL
+ * @param {number} counter
+ * @param {Node} tree
  * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
  * @param {StateFactory<VALUE, STATE>} stateFactory
  * @returns {PartialNFA<STATE, SYMBOL>}
  */
 function sequence(counter, tree, symbolMapper, stateFactory) {
-  const nodes = tree.nodes ?? [];
+  const nodes = tree.items ?? [];
   const start = stateFactory(counter, tree);
   const final = stateFactory(counter + 1, tree);
 
@@ -132,43 +161,92 @@ function sequence(counter, tree, symbolMapper, stateFactory) {
   };
 
   return nodes.reduce((partial, node) => {
-    switch (node.op) {
-      case ops.sequence:
+    switch (node.name) {
+      case "Sequence":
         return merge(
           partial,
           sequence(partial.counter, node, symbolMapper, stateFactory)
         );
-      case ops.choice:
+      case "Union":
         return merge(
           partial,
           choice(partial.counter, node, symbolMapper, stateFactory)
         );
-      case ops.optional:
-        return merge(
-          partial,
-          optional(partial.counter, node, symbolMapper, stateFactory)
-        );
-      case ops.match:
+      case "Atom":
+        if (node.items[node.items.length - 1].name === "QUANTIFIER") {
+          return merge(
+            partial,
+            optional(partial.counter, node, symbolMapper, stateFactory)
+          );
+        }
         return merge(
           partial,
           match(partial.counter, node, symbolMapper, stateFactory)
         );
     }
 
-    throw new Error(`Unknown op code '${node.op.toString()}'`);
+    throw new Error(`Unknown op code '${node.name.toString()}'`);
   }, partialStart);
 }
 
 /**
  * @template STATE, VALUE, SYMBOL
  * @param {number} counter
- * @param {ParseTree<VALUE>} tree
+ * @param {Node} tree
+ * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
+ * @param {StateFactory<VALUE, STATE>} stateFactory
+ * @returns {PartialNFA<STATE, SYMBOL>}
+ */
+function group(counter, tree, symbolMapper, stateFactory) {
+  const node = tree.items[1];
+
+  switch (node.name) {
+    case "Sequence":
+      return sequence(counter, node, symbolMapper, stateFactory);
+    case "Union":
+      return choice(counter, node, symbolMapper, stateFactory);
+    case "Atom":
+      if (node.items[node.items.length - 1].name === "QUANTIFIER") {
+        return optional(counter, node, symbolMapper, stateFactory);
+      }
+      return match(counter, node, symbolMapper, stateFactory);
+  }
+
+  throw new Error(`Unknown op code '${node.name.toString()}'`);
+}
+
+/**
+ * @template STATE, VALUE, SYMBOL
+ * @param {number} counter
+ * @param {Node} tree
  * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
  * @param {StateFactory<VALUE, STATE>} stateFactory
  * @returns {PartialNFA<STATE, SYMBOL>}
  */
 function match(counter, tree, symbolMapper, stateFactory) {
-  const value = symbolMapper(tree.value);
+  const node = tree.items[0];
+
+  switch (node.name) {
+    case "Union":
+      return choice(counter, node, symbolMapper, stateFactory);
+    case "Sequeence":
+      return sequence(counter, node, symbolMapper, stateFactory);
+    case "Atom":
+      return match(counter, node, symbolMapper, stateFactory);
+    case "Group":
+      return group(counter, node, symbolMapper, stateFactory);
+    case "Character":
+      if (node.items[node.items.length - 1].name === "EscapedCharacter") {
+        return match(counter, node.items[1], symbolMapper, stateFactory);
+      }
+      return match(counter, node, symbolMapper, stateFactory);
+  }
+  // todo: update generic types
+  const value = symbolMapper(
+    /** @type {*} */ (Buffer.isBuffer(node.value)
+      ? node.value.toString()
+      : node.value)
+  );
   if (!value) {
     throw new Error("Illegal state");
   }
@@ -188,39 +266,48 @@ function match(counter, tree, symbolMapper, stateFactory) {
 /**
  * @template STATE, VALUE, SYMBOL
  * @param {number} counter
- * @param {ParseTree<VALUE>} tree
+ * @param {Node} tree
  * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
  * @param {StateFactory<VALUE, STATE>} stateFactory
  * @returns {PartialNFA<STATE, SYMBOL>}
  */
 function choice(counter, tree, symbolMapper, stateFactory) {
-  const left = tree.left;
+  const left = tree.items[0];
   if (!left) {
     throw new Error("Illegal state");
   }
-  const right = tree.right;
+  let right = tree.items[2];
   if (!right) {
-    throw new Error("Illegal state");
+    right = {
+      name: "Sequence",
+      start: -1,
+      end: -1,
+      value: Buffer.from(""),
+      items: undefined,
+    };
   }
   const start = stateFactory(counter, tree);
   const final = stateFactory(counter + 1, tree);
 
   /**
    * @param {number} counter
-   * @param {ParseTree<VALUE>} node
+   * @param {Node} node
    */
   const cratePartial = (counter, node) => {
-    switch (node.op) {
-      case ops.sequence:
+    switch (node.name) {
+      case "Sequence":
         return sequence(counter, node, symbolMapper, stateFactory);
-      case ops.choice:
+      case "Union":
         return choice(counter, node, symbolMapper, stateFactory);
-      case ops.optional:
-        return optional(counter, node, symbolMapper, stateFactory);
-      case ops.match:
+      case "Atom":
+        if (node.items[node.items.length - 1].name === "QUANTIFIER") {
+          return optional(counter, node, symbolMapper, stateFactory);
+        }
         return match(counter, node, symbolMapper, stateFactory);
+      case "RegExp":
+        return parseIntermediateAST(counter, node, symbolMapper, stateFactory);
     }
-    throw new Error(`Unknown op code '${node.op.toString()}'`);
+    throw new Error(`Unknown op code '${node.name.toString()}'`);
   };
 
   const leftPartial = cratePartial(counter + 2, left);
@@ -246,13 +333,13 @@ function choice(counter, tree, symbolMapper, stateFactory) {
 /**
  * @template STATE, VALUE, SYMBOL
  * @param {number} counter
- * @param {ParseTree<VALUE>} tree
+ * @param {Node} tree
  * @param {SymbolMapper<VALUE, SYMBOL>} symbolMapper
  * @param {StateFactory<VALUE, STATE>} stateFactory
  * @returns {PartialNFA<STATE, SYMBOL>}
  */
 function optional(counter, tree, symbolMapper, stateFactory) {
-  const node = tree.node;
+  const node = tree.items[0];
   if (!node) {
     throw new Error("Illegal state");
   }
@@ -261,17 +348,23 @@ function optional(counter, tree, symbolMapper, stateFactory) {
   const nextCounter = counter + 2;
 
   const partial = ((node) => {
-    switch (node.op) {
-      case ops.sequence:
+    switch (node.name) {
+      case "Sequence":
         return sequence(nextCounter, node, symbolMapper, stateFactory);
-      case ops.choice:
+      case "Union":
         return choice(nextCounter, node, symbolMapper, stateFactory);
-      case ops.optional:
-        return optional(nextCounter, node, symbolMapper, stateFactory);
-      case ops.match:
+      case "Atom":
+        if (node.items[node.items.length - 1].name === "QUANTIFIER") {
+          return optional(nextCounter, node, symbolMapper, stateFactory);
+        }
+        return match(nextCounter, node, symbolMapper, stateFactory);
+      case "Group":
+        return group(nextCounter, node, symbolMapper, stateFactory);
+      case "Character":
+      case "CharacterClass":
         return match(nextCounter, node, symbolMapper, stateFactory);
     }
-    throw new Error(`Unknown op code '${node.op.toString()}'`);
+    throw new Error(`Unknown op code '${node.name.toString()}'`);
   })(node);
 
   return {
