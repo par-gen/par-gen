@@ -94,7 +94,7 @@ describe("RegExp", () => {
     expect(parse("[^\\\\]")).toBeTruthy();
     expect(parse("[^*?+(|.]")).toBeTruthy();
     expect(parse("[^\\r]")).toBeTruthy();
-    expect(parse("[^\\]]")).toBeTruthy();
+    expect(parse("[^\\]\\[]")).toBeTruthy();
   });
 
   it("should reject invalid negative character classes", () => {
