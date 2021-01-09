@@ -17,6 +17,8 @@
   "scripts": {
     "check": "tsc --build .",
     "check-watch": "tsc --build . --watch",
+    "generate:json": "cd parsers/json && npm start",
+    "generate:regexp": "cd parsers/regexp && npm start",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "engines": {
