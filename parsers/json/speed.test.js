@@ -17,7 +17,7 @@ ${Object.values(results)
   `);
 };
 
-jest.setTimeout(10_000);
+jest.setTimeout(20_000);
 
 if (process.env.RUN_SLOW_TESTS) {
   describe("JSON", () => {
