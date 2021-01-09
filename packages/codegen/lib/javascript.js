@@ -78,11 +78,6 @@ export class JavaScriptBaseCodegen {
 
     const columns = 256;
 
-    let isOptimizable = finals.every((final) => final % columns === 0);
-    for (let i = 1; i < finals.length && isOptimizable; i++) {
-      isOptimizable = finals[i] / columns - finals[i - 1] / columns === 1;
-    }
-
     const pointerSize = transitions
       .flatMap(([from, transition]) => [
         from,
@@ -118,8 +113,6 @@ export class JavaScriptBaseCodegen {
         .filter(Boolean)
         .join("\n")}
 
-      const visited = new ${pointerSize}(1024);
-
       // the currently matched lexeme
       const lexeme = {
         state: -1,
@@ -130,38 +123,26 @@ export class JavaScriptBaseCodegen {
       const next = (input, offset) => {
         // ${start / columns}
         let state = ${start};
-        visited[0] = ${start};
+        let successState = ${errorState};
+        let successPos = 0;
 
         // try to find match
         let i = offset;
-        let j = 0;
-        let l = input.length;
-        while (state !== ${errorState} && i < l) {
-          state = table[state + input[i]];
-          i++;
-          j++;
-          visited[j] = state;
+        const l = input.length;
+        while (i < l) {
+          state = table[state + input[i++]];
+          if (state <= ${finals[finals.length - 1]}) {
+            successState = state;
+            successPos = i;
+          } else if (state === ${errorState}) {
+            break;
+          }
         }
 
-        // track back to last matched final state
-        let success = false;
-        let n = j;
-        while (!success && n > 0) {
-          ${(() => {
-            return isOptimizable
-              ? `success = visited[n] <= ${finals[finals.length - 1]};`
-              : `success = ${finals
-                  .map((final) => `${final} === visited[n]`)
-                  .join(" || ")};`;
-          })()}
-          n--;
-        }
-        n = n + 1;
-
-        if (success) {
-          lexeme.state = tokenIds[(visited[n] / ${columns})];
+        if (successState !== ${errorState}) {
+          lexeme.state = tokenIds[(successState / ${columns})];
           lexeme.start = offset;
-          lexeme.end = offset + n;
+          lexeme.end = successPos;
           return lexeme;
         }
         lexeme.state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${

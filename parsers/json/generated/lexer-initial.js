@@ -1252,8 +1252,6 @@ table[25186] = 24576; // STRING
 table[25187] = 24576; // STRING
 table[25188] = 24576; // STRING
 
-const visited = new Uint16Array(1024);
-
 // the currently matched lexeme
 const lexeme = {
   state: -1,
@@ -1264,32 +1262,26 @@ const lexeme = {
 const next = (input, offset) => {
   // 78
   let state = 19968;
-  visited[0] = 19968;
+  let successState = 25344;
+  let successPos = 0;
 
   // try to find match
   let i = offset;
-  let j = 0;
-  let l = input.length;
-  while (state !== 25344 && i < l) {
-    state = table[state + input[i]];
-    i++;
-    j++;
-    visited[j] = state;
+  const l = input.length;
+  while (i < l) {
+    state = table[state + input[i++]];
+    if (state <= 19712) {
+      successState = state;
+      successPos = i;
+    } else if (state === 25344) {
+      break;
+    }
   }
 
-  // track back to last matched final state
-  let success = false;
-  let n = j;
-  while (!success && n > 0) {
-    success = visited[n] <= 19712;
-    n--;
-  }
-  n = n + 1;
-
-  if (success) {
-    lexeme.state = tokenIds[visited[n] / 256];
+  if (successState !== 25344) {
+    lexeme.state = tokenIds[successState / 256];
     lexeme.start = offset;
-    lexeme.end = offset + n;
+    lexeme.end = successPos;
     return lexeme;
   }
   lexeme.state = i === l ? 12 : 13;
