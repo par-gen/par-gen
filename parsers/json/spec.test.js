@@ -45,23 +45,23 @@ describe("JSON", () => {
     expect(parse(input)).toEqual(
       expect.objectContaining({
         name: "Json",
-        start: -1,
-        end: -1,
+        start: 0,
+        end: input.length,
         items: [
           expect.objectContaining({
             name: "Element",
-            start: -1,
-            end: -1,
+            start: expect.any(Number),
+            end: expect.any(Number),
             items: [
               expect.objectContaining({
                 name: "Value",
-                start: -1,
-                end: -1,
+                start: expect.any(Number),
+                end: expect.any(Number),
                 items: [
                   expect.objectContaining({
                     name: "Object",
-                    start: -1,
-                    end: -1,
+                    start: expect.any(Number),
+                    end: expect.any(Number),
                     items: [
                       expect.objectContaining({
                         name: "CURLY_OPEN",
@@ -70,43 +70,43 @@ describe("JSON", () => {
                       }),
                       expect.objectContaining({
                         name: "Members",
-                        start: -1,
-                        end: -1,
+                        start: expect.any(Number),
+                        end: expect.any(Number),
                         items: [
                           expect.objectContaining({
                             name: "Members",
-                            start: -1,
-                            end: -1,
+                            start: expect.any(Number),
+                            end: expect.any(Number),
                             items: [
                               expect.objectContaining({
                                 name: "Members",
-                                start: -1,
-                                end: -1,
+                                start: expect.any(Number),
+                                end: expect.any(Number),
                                 items: [
                                   expect.objectContaining({
                                     name: "Members",
-                                    start: -1,
-                                    end: -1,
+                                    start: expect.any(Number),
+                                    end: expect.any(Number),
                                     items: [
                                       expect.objectContaining({
                                         name: "Members",
-                                        start: -1,
-                                        end: -1,
+                                        start: expect.any(Number),
+                                        end: expect.any(Number),
                                         items: [
                                           expect.objectContaining({
                                             name: "Members",
-                                            start: -1,
-                                            end: -1,
+                                            start: expect.any(Number),
+                                            end: expect.any(Number),
                                             items: [
                                               expect.objectContaining({
                                                 name: "Members",
-                                                start: -1,
-                                                end: -1,
+                                                start: expect.any(Number),
+                                                end: expect.any(Number),
                                                 items: [
                                                   expect.objectContaining({
                                                     name: "Member",
-                                                    start: -1,
-                                                    end: -1,
+                                                    start: expect.any(Number),
+                                                    end: expect.any(Number),
                                                     items: [
                                                       expect.objectContaining({
                                                         name: "STRING",
@@ -120,8 +120,10 @@ describe("JSON", () => {
                                                       }),
                                                       expect.objectContaining({
                                                         name: "Element",
-                                                        start: -1,
-                                                        end: -1,
+                                                        start: expect.any(
+                                                          Number
+                                                        ),
+                                                        end: expect.any(Number),
                                                         items: [
                                                           expect.objectContaining(
                                                             {
@@ -133,8 +135,12 @@ describe("JSON", () => {
                                                           expect.objectContaining(
                                                             {
                                                               name: "Value",
-                                                              start: -1,
-                                                              end: -1,
+                                                              start: expect.any(
+                                                                Number
+                                                              ),
+                                                              end: expect.any(
+                                                                Number
+                                                              ),
                                                               items: [
                                                                 expect.objectContaining(
                                                                   {
@@ -160,8 +166,8 @@ describe("JSON", () => {
                                               }),
                                               expect.objectContaining({
                                                 name: "Member",
-                                                start: -1,
-                                                end: -1,
+                                                start: expect.any(Number),
+                                                end: expect.any(Number),
                                                 items: [
                                                   expect.objectContaining({
                                                     name: "WS",
@@ -180,8 +186,8 @@ describe("JSON", () => {
                                                   }),
                                                   expect.objectContaining({
                                                     name: "Element",
-                                                    start: -1,
-                                                    end: -1,
+                                                    start: expect.any(Number),
+                                                    end: expect.any(Number),
                                                     items: [
                                                       expect.objectContaining({
                                                         name: "WS",
@@ -190,8 +196,10 @@ describe("JSON", () => {
                                                       }),
                                                       expect.objectContaining({
                                                         name: "Value",
-                                                        start: -1,
-                                                        end: -1,
+                                                        start: expect.any(
+                                                          Number
+                                                        ),
+                                                        end: expect.any(Number),
                                                         items: [
                                                           expect.objectContaining(
                                                             {
@@ -215,8 +223,8 @@ describe("JSON", () => {
                                           }),
                                           expect.objectContaining({
                                             name: "Member",
-                                            start: -1,
-                                            end: -1,
+                                            start: expect.any(Number),
+                                            end: expect.any(Number),
                                             items: [
                                               expect.objectContaining({
                                                 name: "WS",
@@ -235,8 +243,8 @@ describe("JSON", () => {
                                               }),
                                               expect.objectContaining({
                                                 name: "Element",
-                                                start: -1,
-                                                end: -1,
+                                                start: expect.any(Number),
+                                                end: expect.any(Number),
                                                 items: [
                                                   expect.objectContaining({
                                                     name: "WS",
@@ -245,8 +253,8 @@ describe("JSON", () => {
                                                   }),
                                                   expect.objectContaining({
                                                     name: "Value",
-                                                    start: -1,
-                                                    end: -1,
+                                                    start: expect.any(Number),
+                                                    end: expect.any(Number),
                                                     items: [
                                                       expect.objectContaining({
                                                         name: "FALSE",
@@ -268,8 +276,8 @@ describe("JSON", () => {
                                       }),
                                       expect.objectContaining({
                                         name: "Member",
-                                        start: -1,
-                                        end: -1,
+                                        start: expect.any(Number),
+                                        end: expect.any(Number),
                                         items: [
                                           expect.objectContaining({
                                             name: "WS",
@@ -288,8 +296,8 @@ describe("JSON", () => {
                                           }),
                                           expect.objectContaining({
                                             name: "Element",
-                                            start: -1,
-                                            end: -1,
+                                            start: expect.any(Number),
+                                            end: expect.any(Number),
                                             items: [
                                               expect.objectContaining({
                                                 name: "WS",
@@ -298,8 +306,8 @@ describe("JSON", () => {
                                               }),
                                               expect.objectContaining({
                                                 name: "Value",
-                                                start: -1,
-                                                end: -1,
+                                                start: expect.any(Number),
+                                                end: expect.any(Number),
                                                 items: [
                                                   expect.objectContaining({
                                                     name: "NULL",
@@ -321,8 +329,8 @@ describe("JSON", () => {
                                   }),
                                   expect.objectContaining({
                                     name: "Member",
-                                    start: -1,
-                                    end: -1,
+                                    start: expect.any(Number),
+                                    end: expect.any(Number),
                                     items: [
                                       expect.objectContaining({
                                         name: "WS",
@@ -341,8 +349,8 @@ describe("JSON", () => {
                                       }),
                                       expect.objectContaining({
                                         name: "Element",
-                                        start: -1,
-                                        end: -1,
+                                        start: expect.any(Number),
+                                        end: expect.any(Number),
                                         items: [
                                           expect.objectContaining({
                                             name: "WS",
@@ -351,8 +359,8 @@ describe("JSON", () => {
                                           }),
                                           expect.objectContaining({
                                             name: "Value",
-                                            start: -1,
-                                            end: -1,
+                                            start: expect.any(Number),
+                                            end: expect.any(Number),
                                             items: [
                                               expect.objectContaining({
                                                 name: "STRING",
@@ -374,8 +382,8 @@ describe("JSON", () => {
                               }),
                               expect.objectContaining({
                                 name: "Member",
-                                start: -1,
-                                end: -1,
+                                start: expect.any(Number),
+                                end: expect.any(Number),
                                 items: [
                                   expect.objectContaining({
                                     name: "WS",
@@ -394,8 +402,8 @@ describe("JSON", () => {
                                   }),
                                   expect.objectContaining({
                                     name: "Element",
-                                    start: -1,
-                                    end: -1,
+                                    start: expect.any(Number),
+                                    end: expect.any(Number),
                                     items: [
                                       expect.objectContaining({
                                         name: "WS",
@@ -404,13 +412,13 @@ describe("JSON", () => {
                                       }),
                                       expect.objectContaining({
                                         name: "Value",
-                                        start: -1,
-                                        end: -1,
+                                        start: expect.any(Number),
+                                        end: expect.any(Number),
                                         items: [
                                           expect.objectContaining({
                                             name: "Array",
-                                            start: -1,
-                                            end: -1,
+                                            start: expect.any(Number),
+                                            end: expect.any(Number),
                                             items: [
                                               expect.objectContaining({
                                                 name: "BRACKET_OPEN",
@@ -419,59 +427,85 @@ describe("JSON", () => {
                                               }),
                                               expect.objectContaining({
                                                 name: "Elements",
-                                                start: -1,
-                                                end: -1,
+                                                start: expect.any(Number),
+                                                end: expect.any(Number),
                                                 items: [
                                                   expect.objectContaining({
                                                     name: "Elements",
-                                                    start: -1,
-                                                    end: -1,
+                                                    start: expect.any(Number),
+                                                    end: expect.any(Number),
                                                     items: [
                                                       expect.objectContaining({
                                                         name: "Elements",
-                                                        start: -1,
-                                                        end: -1,
+                                                        start: expect.any(
+                                                          Number
+                                                        ),
+                                                        end: expect.any(Number),
                                                         items: [
                                                           expect.objectContaining(
                                                             {
                                                               name: "Elements",
-                                                              start: -1,
-                                                              end: -1,
+                                                              start: expect.any(
+                                                                Number
+                                                              ),
+                                                              end: expect.any(
+                                                                Number
+                                                              ),
                                                               items: [
                                                                 expect.objectContaining(
                                                                   {
                                                                     name:
                                                                       "Elements",
-                                                                    start: -1,
-                                                                    end: -1,
+                                                                    start: expect.any(
+                                                                      Number
+                                                                    ),
+                                                                    end: expect.any(
+                                                                      Number
+                                                                    ),
                                                                     items: [
                                                                       expect.objectContaining(
                                                                         {
                                                                           name:
                                                                             "Elements",
-                                                                          start: -1,
-                                                                          end: -1,
+                                                                          start: expect.any(
+                                                                            Number
+                                                                          ),
+                                                                          end: expect.any(
+                                                                            Number
+                                                                          ),
                                                                           items: [
                                                                             expect.objectContaining(
                                                                               {
                                                                                 name:
                                                                                   "Elements",
-                                                                                start: -1,
-                                                                                end: -1,
+                                                                                start: expect.any(
+                                                                                  Number
+                                                                                ),
+                                                                                end: expect.any(
+                                                                                  Number
+                                                                                ),
                                                                                 items: [
                                                                                   expect.objectContaining(
                                                                                     {
                                                                                       name:
                                                                                         "Element",
-                                                                                      start: -1,
-                                                                                      end: -1,
+                                                                                      start: expect.any(
+                                                                                        Number
+                                                                                      ),
+                                                                                      end: expect.any(
+                                                                                        Number
+                                                                                      ),
                                                                                       items: [
                                                                                         expect.objectContaining(
                                                                                           {
                                                                                             name:
                                                                                               "Value",
-                                                                                            start: -1,
-                                                                                            end: -1,
+                                                                                            start: expect.any(
+                                                                                              Number
+                                                                                            ),
+                                                                                            end: expect.any(
+                                                                                              Number
+                                                                                            ),
                                                                                             items: [
                                                                                               expect.objectContaining(
                                                                                                 {
@@ -502,15 +536,23 @@ describe("JSON", () => {
                                                                               {
                                                                                 name:
                                                                                   "Element",
-                                                                                start: -1,
-                                                                                end: -1,
+                                                                                start: expect.any(
+                                                                                  Number
+                                                                                ),
+                                                                                end: expect.any(
+                                                                                  Number
+                                                                                ),
                                                                                 items: [
                                                                                   expect.objectContaining(
                                                                                     {
                                                                                       name:
                                                                                         "Value",
-                                                                                      start: -1,
-                                                                                      end: -1,
+                                                                                      start: expect.any(
+                                                                                        Number
+                                                                                      ),
+                                                                                      end: expect.any(
+                                                                                        Number
+                                                                                      ),
                                                                                       items: [
                                                                                         expect.objectContaining(
                                                                                           {
@@ -541,15 +583,23 @@ describe("JSON", () => {
                                                                         {
                                                                           name:
                                                                             "Element",
-                                                                          start: -1,
-                                                                          end: -1,
+                                                                          start: expect.any(
+                                                                            Number
+                                                                          ),
+                                                                          end: expect.any(
+                                                                            Number
+                                                                          ),
                                                                           items: [
                                                                             expect.objectContaining(
                                                                               {
                                                                                 name:
                                                                                   "Value",
-                                                                                start: -1,
-                                                                                end: -1,
+                                                                                start: expect.any(
+                                                                                  Number
+                                                                                ),
+                                                                                end: expect.any(
+                                                                                  Number
+                                                                                ),
                                                                                 items: [
                                                                                   expect.objectContaining(
                                                                                     {
@@ -580,15 +630,23 @@ describe("JSON", () => {
                                                                   {
                                                                     name:
                                                                       "Element",
-                                                                    start: -1,
-                                                                    end: -1,
+                                                                    start: expect.any(
+                                                                      Number
+                                                                    ),
+                                                                    end: expect.any(
+                                                                      Number
+                                                                    ),
                                                                     items: [
                                                                       expect.objectContaining(
                                                                         {
                                                                           name:
                                                                             "Value",
-                                                                          start: -1,
-                                                                          end: -1,
+                                                                          start: expect.any(
+                                                                            Number
+                                                                          ),
+                                                                          end: expect.any(
+                                                                            Number
+                                                                          ),
                                                                           items: [
                                                                             expect.objectContaining(
                                                                               {
@@ -617,15 +675,23 @@ describe("JSON", () => {
                                                           expect.objectContaining(
                                                             {
                                                               name: "Element",
-                                                              start: -1,
-                                                              end: -1,
+                                                              start: expect.any(
+                                                                Number
+                                                              ),
+                                                              end: expect.any(
+                                                                Number
+                                                              ),
                                                               items: [
                                                                 expect.objectContaining(
                                                                   {
                                                                     name:
                                                                       "Value",
-                                                                    start: -1,
-                                                                    end: -1,
+                                                                    start: expect.any(
+                                                                      Number
+                                                                    ),
+                                                                    end: expect.any(
+                                                                      Number
+                                                                    ),
                                                                     items: [
                                                                       expect.objectContaining(
                                                                         {
@@ -650,21 +716,31 @@ describe("JSON", () => {
                                                       }),
                                                       expect.objectContaining({
                                                         name: "Element",
-                                                        start: -1,
-                                                        end: -1,
+                                                        start: expect.any(
+                                                          Number
+                                                        ),
+                                                        end: expect.any(Number),
                                                         items: [
                                                           expect.objectContaining(
                                                             {
                                                               name: "Value",
-                                                              start: -1,
-                                                              end: -1,
+                                                              start: expect.any(
+                                                                Number
+                                                              ),
+                                                              end: expect.any(
+                                                                Number
+                                                              ),
                                                               items: [
                                                                 expect.objectContaining(
                                                                   {
                                                                     name:
                                                                       "Array",
-                                                                    start: -1,
-                                                                    end: -1,
+                                                                    start: expect.any(
+                                                                      Number
+                                                                    ),
+                                                                    end: expect.any(
+                                                                      Number
+                                                                    ),
                                                                     items: [
                                                                       expect.objectContaining(
                                                                         {
@@ -699,19 +775,25 @@ describe("JSON", () => {
                                                   }),
                                                   expect.objectContaining({
                                                     name: "Element",
-                                                    start: -1,
-                                                    end: -1,
+                                                    start: expect.any(Number),
+                                                    end: expect.any(Number),
                                                     items: [
                                                       expect.objectContaining({
                                                         name: "Value",
-                                                        start: -1,
-                                                        end: -1,
+                                                        start: expect.any(
+                                                          Number
+                                                        ),
+                                                        end: expect.any(Number),
                                                         items: [
                                                           expect.objectContaining(
                                                             {
                                                               name: "Object",
-                                                              start: -1,
-                                                              end: -1,
+                                                              start: expect.any(
+                                                                Number
+                                                              ),
+                                                              end: expect.any(
+                                                                Number
+                                                              ),
                                                               items: [
                                                                 expect.objectContaining(
                                                                   {
@@ -760,8 +842,8 @@ describe("JSON", () => {
                           }),
                           expect.objectContaining({
                             name: "Member",
-                            start: -1,
-                            end: -1,
+                            start: expect.any(Number),
+                            end: expect.any(Number),
                             items: [
                               expect.objectContaining({
                                 name: "WS",
@@ -780,8 +862,8 @@ describe("JSON", () => {
                               }),
                               expect.objectContaining({
                                 name: "Element",
-                                start: -1,
-                                end: -1,
+                                start: expect.any(Number),
+                                end: expect.any(Number),
                                 items: [
                                   expect.objectContaining({
                                     name: "WS",
@@ -790,13 +872,13 @@ describe("JSON", () => {
                                   }),
                                   expect.objectContaining({
                                     name: "Value",
-                                    start: -1,
-                                    end: -1,
+                                    start: expect.any(Number),
+                                    end: expect.any(Number),
                                     items: [
                                       expect.objectContaining({
                                         name: "Object",
-                                        start: -1,
-                                        end: -1,
+                                        start: expect.any(Number),
+                                        end: expect.any(Number),
                                         items: [
                                           expect.objectContaining({
                                             name: "CURLY_OPEN",

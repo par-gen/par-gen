@@ -91,7 +91,7 @@ describe("Lexer States", () => {
             context: referencingModule.context,
             identifier: lexerStateFile,
           });
-        } else if (specifier === 'parser-file') {
+        } else if (specifier === "parser-file") {
           const code = await fsp.readFile(parserFile, "utf-8");
 
           return new SourceTextModule(code, {
@@ -110,35 +110,41 @@ describe("Lexer States", () => {
 
     expect(results).toEqual({
       name: "RuleA",
-      start: -1,
-      end: -1,
+      start: expect.any(Number),
+      end: expect.any(Number),
+      value: expect.any(Object),
       items: [
         {
           name: "A",
           start: 0,
           end: 1,
+          value: expect.any(Object),
           items: undefined,
         },
         {
           name: "RuleB",
-          start: -1,
-          end: -1,
+          start: expect.any(Number),
+          end: expect.any(Number),
+          value: expect.any(Object),
           items: [
             {
               name: "B",
               start: 1,
               end: 2,
+              value: expect.any(Object),
               items: undefined,
             },
             {
               name: "RuleC",
-              start: -1,
-              end: -1,
+              start: expect.any(Number),
+              end: expect.any(Number),
+              value: expect.any(Object),
               items: [
                 {
                   name: "C",
                   start: 2,
                   end: 3,
+                  value: expect.any(Object),
                   items: undefined,
                 },
               ],
