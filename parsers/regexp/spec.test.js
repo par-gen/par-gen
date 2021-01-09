@@ -12,6 +12,7 @@ describe("RegExp", () => {
 
   it("should accept a union", () => {
     expect(parse("a|b")).toBeTruthy();
+    expect(parse("a|")).toBeTruthy();
   });
 
   it("should accept groups", () => {
@@ -130,7 +131,9 @@ describe("RegExp", () => {
 
     it("from a union", () => {
       expect(print(parse("a|b"))).toMatch(
-        matcher("RegExp[Expression[Union[.*?,UNION,.*?]]]")
+        matcher(
+          "RegExp[Expression[Union[Atom[Character[.*?]],UNION,Atom[Character[.*?]]]]]"
+        )
       );
     });
 

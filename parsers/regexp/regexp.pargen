@@ -27,10 +27,13 @@ Expression := Union | Sequence | Atom;
 Union :=
   | Union UNION Sequence
   | Union UNION Atom
+  | Union UNION
   | Sequence UNION Sequence
   | Sequence UNION Atom
+  | Sequence UNION
   | Atom UNION Sequence
   | Atom UNION Atom
+  | Atom UNION
   ;
 
 Sequence :=
