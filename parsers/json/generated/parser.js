@@ -3403,7 +3403,7 @@ function parse(input) {
         stack[sp + 1] = tp;
 
         sp += 2;
-        stack[sp] = action.state;
+        stack[sp] = action.state | 0;
 
         result = nextToken(stream, result.end);
         lookahead = result.state;
@@ -3418,7 +3418,7 @@ function parse(input) {
         // multiply by two because our stack contains adresses and states interleaved
         sp -= stackItemsToReduce * 2;
 
-        tree[tp] = action.symbol; // name
+        tree[tp] = action.symbol | 0; // name
         tree[tp + 1] = -1; // start
         tree[tp + 2] = -1; // end
         tree[tp + 3] = stackItemsToReduce; // number of children
@@ -3427,7 +3427,7 @@ function parse(input) {
 
         stack[sp + 1] = tp;
 
-        const nextState = gotoTable[stack[sp] * 32 + action.symbol];
+        const nextState = gotoTable[stack[sp] * 32 + (action.symbol | 0)];
         sp += 2;
         stack[sp] = nextState;
 
