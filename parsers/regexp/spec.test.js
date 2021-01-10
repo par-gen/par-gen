@@ -67,6 +67,7 @@ describe("RegExp", () => {
     expect(parse("[ab]")).toBeTruthy();
     expect(parse("[0-9]")).toBeTruthy();
     expect(parse("[a-zA-Z]")).toBeTruthy();
+    expect(parse("[b-f]")).toBeTruthy();
     expect(parse("[\\-a]")).toBeTruthy();
     expect(parse("[a\\-]")).toBeTruthy();
     expect(parse("[\\-]")).toBeTruthy();
