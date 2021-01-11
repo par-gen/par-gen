@@ -5,7 +5,7 @@
   "main": "./index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "start": "par-gen codegen json.pargen ./generated"
+    "start": "par-gen codegen -m exec json.pargen ./generated"
   },
   "dependencies": {
     "@par-gen/cli": "0.1.0"
