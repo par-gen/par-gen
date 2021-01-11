@@ -95,15 +95,73 @@ export class JavaScriptExecutableCodegen extends JavaScriptBaseCodegen {
             }`;
           })
           .join(",\n")}
-        };
+      };
+
+      const stack = new Uint16Array(32768);
+      const tree = new Uint16Array(32768);
+
+      const createProxy = (stream, tree, pointer) => {
+        return new Proxy(
+          {},
+          {
+            get(target, prop, receiver) {
+              const nChildren = tree[pointer + 3];
+
+              switch (prop) {
+                case "name":
+                  return parserSymbols[tree[pointer]];
+                case "start":
+                  return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
+                case "end":
+                  return nChildren > 0 ? receiver.items[nChildren - 1].end : tree[pointer + 2];
+                case "value":
+                  return stream.subarray(receiver.start, receiver.end);
+                case "items":
+                  if (nChildren === 0) {
+                    return undefined;
+                  }
+
+                  const firstChild = tree[pointer + 4];
+                  const children = [createProxy(stream, tree, firstChild)];
+                  let nextChild = tree[firstChild + 5];
+
+                  for (let i = 1; i < nChildren; i++) {
+                    children.push(createProxy(stream, tree, nextChild));
+                    nextChild = tree[nextChild + 5];
+                  }
+
+                  return children;
+                case "__tree":
+                  return tree;
+                case "__pointer":
+                  return pointer;
+              }
+            },
+            ownKeys(target) {
+              return ["name", "start", "end", "value", "items"];
+            },
+            has(target, prop) {
+              return this.ownKeys(target).includes(prop);
+            },
+            getOwnPropertyDescriptor(target, prop) {
+              return this.has(target, prop)
+                ? { enumerable: true, configurable: true }
+                : undefined;
+            },
+          }
+        );
+      };
 
       function parse(input) {
         const stream = Buffer.isBuffer(input) ? input : Buffer.from(input);
         let lexer = next(stream, 0);
-        const stack = [${states.indexOf(start)}];
+        stack[0] = 0;
+        stack[1] = ${states.indexOf(start)};
+        let sp = 1;
+        let tp = 6;
 
         do {
-          switch (stack[stack.length - 1]) {
+          switch (stack[sp]) {
             ${states
               .map((state, i) => {
                 const possibleActions = actions.get(state);
@@ -121,8 +179,21 @@ export class JavaScriptExecutableCodegen extends JavaScriptBaseCodegen {
                                 lookahead
                               )}: { // ${lookahead}
                                 // ${action.op}
-                                stack.push(${states.indexOf(action.state)});
+
+                                tree[tp] = ${parserSymbols.indexOf(
+                                  lookahead
+                                )}; // name
+                                tree[tp + 1] = lexer.start;
+                                tree[tp + 2] = lexer.end;
+                                tree[tp + 3] = 0; // leaf nodes have no children
+                                tree[tp + 4] = 0; // leaf nodes have first child
+                                tree[stack[sp -  1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                                sp += 2;
+                                stack[sp - 1] = tp;
+                                stack[sp] = ${states.indexOf(action.state)};
                                 lexer = next(stream, lexer.end);
+                                tp += 6;
                               }
                               break;
                             `;
@@ -132,14 +203,25 @@ export class JavaScriptExecutableCodegen extends JavaScriptBaseCodegen {
                                 lookahead
                               )}: { // ${lookahead}
                                 // ${action.op}
-                                let n = reduces[stack[stack.length - 1]][lexer.state];
-                                while (n > 0) {
-                                  stack.pop();
-                                  n--;
-                                }
-                                stack.push(goto[stack[stack.length - 1]][${parserSymbols.indexOf(
+                                const n = reduces[stack[sp]][lexer.state];
+                                sp -= n * 2;
+
+                                tree[tp] = ${parserSymbols.indexOf(
                                   action.symbol
-                                )}]);
+                                )}; // name
+                                tree[tp + 1] = -1;        // start
+                                tree[tp + 2] = -1;        // end
+                                tree[tp + 3] = n; // number of children
+                                tree[tp + 4] = stack[sp + 1]; // first child
+                                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                                const next = goto[stack[sp]][${parserSymbols.indexOf(
+                                  action.symbol
+                                )}];
+                                sp += 2;
+                                stack[sp - 1] = tp;
+                                stack[sp] = next;
+                                tp += 6;
                               }
                               break;
                             `;
@@ -149,7 +231,7 @@ export class JavaScriptExecutableCodegen extends JavaScriptBaseCodegen {
                                 lookahead
                               )}: { // ${lookahead}
                                 // ${action.op}
-                                return true;
+                                return createProxy(stream, tree, tp - 6);
                               }
                               break;
                               `;
