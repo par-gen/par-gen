@@ -1,6 +1,7 @@
 import {
   JavaScriptCommonJsCodegen,
   JavaScriptModuleCodegen,
+  JavaScriptExecutableCodegen,
 } from "@par-gen/codegen";
 import { generate } from "@par-gen/parser";
 import { promises as fsp } from "fs";
@@ -27,6 +28,8 @@ export function createGenerator(language, module, options) {
         case "cjs":
         case "commonjs":
           return new JavaScriptCommonJsCodegen(options);
+        case "exec":
+          return new JavaScriptExecutableCodegen(options);
         default:
           throw new Error(`Unsupported module system '${module}'`);
       }
