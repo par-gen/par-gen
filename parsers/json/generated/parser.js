@@ -465,13 +465,73 @@ const goto = {
   },
 };
 
+const stack = new Uint16Array(32768);
+const tree = new Uint16Array(32768);
+
+const createProxy = (stream, tree, pointer) => {
+  return new Proxy(
+    {},
+    {
+      get(target, prop, receiver) {
+        const nChildren = tree[pointer + 3];
+
+        switch (prop) {
+          case "name":
+            return parserSymbols[tree[pointer]];
+          case "start":
+            return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
+          case "end":
+            return nChildren > 0
+              ? receiver.items[nChildren - 1].end
+              : tree[pointer + 2];
+          case "value":
+            return stream.subarray(receiver.start, receiver.end);
+          case "items":
+            if (nChildren === 0) {
+              return undefined;
+            }
+
+            const firstChild = tree[pointer + 4];
+            const children = [createProxy(stream, tree, firstChild)];
+            let nextChild = tree[firstChild + 5];
+
+            for (let i = 1; i < nChildren; i++) {
+              children.push(createProxy(stream, tree, nextChild));
+              nextChild = tree[nextChild + 5];
+            }
+
+            return children;
+          case "__tree":
+            return tree;
+          case "__pointer":
+            return pointer;
+        }
+      },
+      ownKeys(target) {
+        return ["name", "start", "end", "value", "items"];
+      },
+      has(target, prop) {
+        return this.ownKeys(target).includes(prop);
+      },
+      getOwnPropertyDescriptor(target, prop) {
+        return this.has(target, prop)
+          ? { enumerable: true, configurable: true }
+          : undefined;
+      },
+    }
+  );
+};
+
 function parse(input) {
   const stream = Buffer.isBuffer(input) ? input : Buffer.from(input);
   let lexer = next(stream, 0);
-  const stack = [0];
+  stack[0] = 0;
+  stack[1] = 0;
+  let sp = 1;
+  let tp = 6;
 
   do {
-    switch (stack[stack.length - 1]) {
+    switch (stack[sp]) {
       case 0:
         {
           switch (lexer.state) {
@@ -479,8 +539,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -488,8 +559,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -497,8 +579,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -506,8 +599,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -515,8 +619,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -524,8 +639,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -533,8 +659,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -542,8 +679,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -551,8 +699,19 @@ function parse(input) {
               {
                 // Json
                 // shift
-                stack.push(9);
+
+                tree[tp] = 15; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 9;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -560,8 +719,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(10);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 10;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -569,8 +739,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -578,8 +759,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -587,8 +779,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -602,8 +805,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(15);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 15;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -611,8 +825,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(16);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 16;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -620,8 +845,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(17);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 17;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -629,8 +865,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(18);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 18;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -638,8 +885,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(19);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 19;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -647,8 +905,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(20);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 20;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -656,8 +925,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(21);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 21;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -665,8 +945,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(22);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 22;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -674,8 +965,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(23);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 23;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -683,8 +985,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(24);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 24;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -698,12 +1011,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -711,12 +1033,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -724,12 +1055,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -737,12 +1077,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -750,12 +1099,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -769,12 +1127,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -782,12 +1149,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -795,12 +1171,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -808,12 +1193,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -821,12 +1215,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -840,12 +1243,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -853,12 +1265,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -866,12 +1287,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -879,12 +1309,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -892,12 +1331,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -911,8 +1359,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(25);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 25;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -920,8 +1379,19 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // shift
-                stack.push(26);
+
+                tree[tp] = 5; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 26;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -929,8 +1399,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(27);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 27;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -938,8 +1419,19 @@ function parse(input) {
               {
                 // Members
                 // shift
-                stack.push(28);
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 28;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -947,8 +1439,19 @@ function parse(input) {
               {
                 // Member
                 // shift
-                stack.push(29);
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 29;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -962,12 +1465,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -975,12 +1487,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -988,12 +1509,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1001,12 +1531,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1014,12 +1553,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1033,8 +1581,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(30);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 30;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1042,8 +1601,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1051,8 +1621,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1060,8 +1641,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1069,8 +1661,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1078,8 +1681,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1087,8 +1701,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1096,8 +1721,19 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // shift
-                stack.push(31);
+
+                tree[tp] = 10; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 31;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1105,8 +1741,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1114,8 +1761,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(32);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 32;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1123,8 +1781,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1132,8 +1801,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1141,8 +1821,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1150,8 +1841,19 @@ function parse(input) {
               {
                 // Elements
                 // shift
-                stack.push(33);
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 33;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -1165,12 +1867,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1178,12 +1889,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1191,12 +1911,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1204,12 +1933,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1217,12 +1955,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1236,7 +1983,7 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // done
-                return true;
+                return createProxy(stream, tree, tp - 6);
               }
               break;
           }
@@ -1250,12 +1997,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][15]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 15; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][15];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1269,8 +2025,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(14);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 14;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1278,12 +2045,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1291,12 +2067,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1304,12 +2089,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1317,12 +2111,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1336,12 +2139,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1349,12 +2161,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1362,12 +2183,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1375,12 +2205,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1388,12 +2227,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1407,12 +2255,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1420,12 +2277,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1433,12 +2299,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1446,12 +2321,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1459,12 +2343,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1478,12 +2371,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1491,12 +2393,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1504,12 +2415,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1517,12 +2437,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1536,12 +2465,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1549,12 +2487,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1562,12 +2509,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1575,12 +2531,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1588,12 +2553,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1607,12 +2581,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1620,12 +2603,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1633,12 +2625,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1646,12 +2647,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1659,12 +2669,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1678,12 +2697,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1691,12 +2719,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1704,12 +2741,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1717,12 +2763,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1730,12 +2785,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1749,8 +2813,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(35);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 35;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1758,8 +2833,19 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // shift
-                stack.push(36);
+
+                tree[tp] = 5; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 36;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1767,8 +2853,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(37);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 37;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1776,8 +2873,19 @@ function parse(input) {
               {
                 // Members
                 // shift
-                stack.push(38);
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 38;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1785,8 +2893,19 @@ function parse(input) {
               {
                 // Member
                 // shift
-                stack.push(39);
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 39;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -1800,12 +2919,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1813,12 +2941,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1826,12 +2963,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1839,12 +2985,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -1852,12 +3007,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -1871,8 +3035,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(40);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 40;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1880,8 +3055,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1889,8 +3075,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1898,8 +3095,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1907,8 +3115,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1916,8 +3135,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1925,8 +3155,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1934,8 +3175,19 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // shift
-                stack.push(41);
+
+                tree[tp] = 10; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 41;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1943,8 +3195,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1952,8 +3215,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(42);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 42;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1961,8 +3235,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1970,8 +3255,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1979,8 +3275,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -1988,8 +3295,19 @@ function parse(input) {
               {
                 // Elements
                 // shift
-                stack.push(43);
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 43;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2003,12 +3321,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2016,12 +3343,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2029,12 +3365,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2042,12 +3387,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2055,12 +3409,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2074,8 +3437,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(34);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 34;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2083,12 +3457,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2096,12 +3479,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2109,12 +3501,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2122,12 +3523,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2141,12 +3551,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2154,12 +3573,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2167,12 +3595,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2180,12 +3617,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2193,12 +3639,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2212,12 +3667,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2225,12 +3689,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2238,12 +3711,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2251,12 +3733,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2264,12 +3755,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][17]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][17];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2283,8 +3783,19 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // shift
-                stack.push(44);
+
+                tree[tp] = 5; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 44;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2292,8 +3803,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(45);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 45;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2307,12 +3829,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2320,12 +3851,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2333,12 +3873,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2346,12 +3895,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2359,12 +3917,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2378,8 +3945,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(48);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 48;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2387,8 +3965,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(49);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 49;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2402,8 +3991,19 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // shift
-                stack.push(46);
+
+                tree[tp] = 5; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 46;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2411,8 +4011,19 @@ function parse(input) {
               {
                 // COMMA
                 // shift
-                stack.push(47);
+
+                tree[tp] = 6; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 47;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2426,12 +4037,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2439,12 +4059,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2458,8 +4087,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2467,8 +4107,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2476,8 +4127,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2485,8 +4147,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2494,8 +4167,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2503,8 +4187,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2512,8 +4207,19 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // shift
-                stack.push(50);
+
+                tree[tp] = 10; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 50;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2521,8 +4227,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2530,8 +4247,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(22);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 22;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2539,8 +4267,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2548,8 +4287,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2563,12 +4313,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2576,12 +4335,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2589,12 +4357,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2602,12 +4379,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2615,12 +4401,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2634,12 +4429,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2647,12 +4451,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2666,8 +4479,19 @@ function parse(input) {
               {
                 // COMMA
                 // shift
-                stack.push(51);
+
+                tree[tp] = 6; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 51;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2675,8 +4499,19 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // shift
-                stack.push(52);
+
+                tree[tp] = 10; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 52;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2690,12 +4525,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2703,12 +4547,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2716,12 +4569,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2729,12 +4591,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][16]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][16];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2748,8 +4619,19 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // shift
-                stack.push(53);
+
+                tree[tp] = 5; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 53;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2757,8 +4639,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(54);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 54;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2772,12 +4665,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2785,12 +4687,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2798,12 +4709,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2811,12 +4731,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2824,12 +4753,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2843,8 +4781,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(57);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 57;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2852,8 +4801,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(58);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 58;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2867,8 +4827,19 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // shift
-                stack.push(55);
+
+                tree[tp] = 5; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 55;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2876,8 +4847,19 @@ function parse(input) {
               {
                 // COMMA
                 // shift
-                stack.push(56);
+
+                tree[tp] = 6; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 56;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -2891,12 +4873,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -2904,12 +4895,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -2923,8 +4923,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2932,8 +4943,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2941,8 +4963,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2950,8 +4983,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2959,8 +5003,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2968,8 +5023,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2977,8 +5043,19 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // shift
-                stack.push(59);
+
+                tree[tp] = 10; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 59;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2986,8 +5063,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -2995,8 +5083,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(22);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 22;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3004,8 +5103,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3013,8 +5123,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3028,12 +5149,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3041,12 +5171,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3054,12 +5193,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3067,12 +5215,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3080,12 +5237,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3099,12 +5265,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3112,12 +5287,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3131,8 +5315,19 @@ function parse(input) {
               {
                 // COMMA
                 // shift
-                stack.push(60);
+
+                tree[tp] = 6; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 60;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3140,8 +5335,19 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // shift
-                stack.push(61);
+
+                tree[tp] = 10; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 61;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3155,12 +5361,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3168,12 +5383,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3181,12 +5405,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3194,12 +5427,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3207,12 +5449,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3226,8 +5477,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(62);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 62;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3235,8 +5497,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(63);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 63;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3250,12 +5523,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3263,12 +5545,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3276,12 +5567,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3289,12 +5589,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3302,12 +5611,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3321,8 +5639,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(64);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 64;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3330,8 +5659,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(27);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 27;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3339,8 +5679,19 @@ function parse(input) {
               {
                 // Member
                 // shift
-                stack.push(65);
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 65;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3354,8 +5705,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(67);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 67;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3369,8 +5731,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3378,8 +5751,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3387,8 +5771,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3396,8 +5791,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3405,8 +5811,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3414,8 +5831,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3423,8 +5851,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3432,8 +5871,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3441,8 +5891,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(66);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 66;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3450,8 +5911,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3459,8 +5931,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3468,8 +5951,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3483,12 +5977,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3496,12 +5999,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3509,12 +6021,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3522,12 +6043,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3535,12 +6065,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3554,8 +6093,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3563,8 +6113,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3572,8 +6133,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3581,8 +6153,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3590,8 +6173,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3599,8 +6193,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3608,8 +6213,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3617,8 +6233,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3626,8 +6253,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(68);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 68;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3635,8 +6273,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3644,8 +6293,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3653,8 +6313,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3668,12 +6339,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3681,12 +6361,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3694,12 +6383,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3707,12 +6405,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3720,12 +6427,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3739,12 +6455,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3752,12 +6477,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3765,12 +6499,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3778,12 +6521,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3791,12 +6543,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3810,8 +6571,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(69);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 69;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3819,8 +6591,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(70);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 70;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3834,12 +6617,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3847,12 +6639,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3860,12 +6661,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3873,12 +6683,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -3886,12 +6705,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][18]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][18];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -3905,8 +6733,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(71);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 71;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3914,8 +6753,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(27);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 27;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3923,8 +6773,19 @@ function parse(input) {
               {
                 // Member
                 // shift
-                stack.push(72);
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 72;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3938,8 +6799,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(74);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 74;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -3953,8 +6825,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3962,8 +6845,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3971,8 +6865,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3980,8 +6885,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3989,8 +6905,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -3998,8 +6925,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4007,8 +6945,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4016,8 +6965,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4025,8 +6985,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(73);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 73;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4034,8 +7005,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4043,8 +7025,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4052,8 +7045,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4067,12 +7071,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4080,12 +7093,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4093,12 +7115,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4106,12 +7137,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4119,12 +7159,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -4138,8 +7187,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4147,8 +7207,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4156,8 +7227,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4165,8 +7247,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4174,8 +7267,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4183,8 +7287,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4192,8 +7307,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4201,8 +7327,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4210,8 +7347,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(75);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 75;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4219,8 +7367,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4228,8 +7387,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4237,8 +7407,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4252,12 +7433,21 @@ function parse(input) {
               {
                 // WS
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4265,12 +7455,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4278,12 +7477,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4291,12 +7499,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4304,12 +7521,21 @@ function parse(input) {
               {
                 // @par-gen.EOF
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][21]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][21];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -4323,8 +7549,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(77);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 77;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4338,8 +7575,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4347,8 +7595,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4356,8 +7615,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4365,8 +7635,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4374,8 +7655,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4383,8 +7675,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4392,8 +7695,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4401,8 +7715,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4410,8 +7735,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(76);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 76;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4419,8 +7755,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4428,8 +7775,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4437,8 +7795,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4452,8 +7821,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(45);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 45;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4467,12 +7847,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4480,12 +7869,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -4499,12 +7897,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4512,12 +7919,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -4531,8 +7947,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4540,8 +7967,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4549,8 +7987,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4558,8 +8007,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4567,8 +8027,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4576,8 +8047,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4585,8 +8067,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4594,8 +8087,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4603,8 +8107,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(78);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 78;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4612,8 +8127,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4621,8 +8147,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4630,8 +8167,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4645,12 +8193,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4658,12 +8215,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -4677,8 +8243,19 @@ function parse(input) {
               {
                 // COLON
                 // shift
-                stack.push(80);
+
+                tree[tp] = 7; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 80;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4692,8 +8269,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4701,8 +8289,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4710,8 +8309,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4719,8 +8329,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4728,8 +8349,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4737,8 +8369,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4746,8 +8389,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4755,8 +8409,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4764,8 +8429,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(79);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 79;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4773,8 +8449,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4782,8 +8469,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4791,8 +8489,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4806,8 +8515,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(45);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 45;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4821,12 +8541,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4834,12 +8563,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][19]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 19; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][19];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -4853,12 +8591,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -4866,12 +8613,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -4885,8 +8641,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4894,8 +8661,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4903,8 +8681,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4912,8 +8701,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4921,8 +8721,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4930,8 +8741,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4939,8 +8761,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4948,8 +8781,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4957,8 +8801,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(81);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 81;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4966,8 +8821,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4975,8 +8841,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -4984,8 +8861,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -4999,12 +8887,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -5012,12 +8909,21 @@ function parse(input) {
               {
                 // BRACKET_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][22]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 22; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][22];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -5031,12 +8937,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -5044,12 +8959,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -5063,8 +8987,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5072,8 +9007,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5081,8 +9027,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5090,8 +9047,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5099,8 +9067,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5108,8 +9087,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5117,8 +9107,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5126,8 +9127,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5135,8 +9147,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(82);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 82;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5144,8 +9167,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5153,8 +9187,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5162,8 +9207,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -5177,12 +9233,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -5190,12 +9255,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -5209,12 +9283,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -5222,12 +9305,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -5241,8 +9333,19 @@ function parse(input) {
               {
                 // WS
                 // shift
-                stack.push(1);
+
+                tree[tp] = 0; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 1;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5250,8 +9353,19 @@ function parse(input) {
               {
                 // TRUE
                 // shift
-                stack.push(2);
+
+                tree[tp] = 1; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 2;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5259,8 +9373,19 @@ function parse(input) {
               {
                 // FALSE
                 // shift
-                stack.push(3);
+
+                tree[tp] = 2; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 3;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5268,8 +9393,19 @@ function parse(input) {
               {
                 // NULL
                 // shift
-                stack.push(4);
+
+                tree[tp] = 3; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 4;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5277,8 +9413,19 @@ function parse(input) {
               {
                 // CURLY_OPEN
                 // shift
-                stack.push(5);
+
+                tree[tp] = 4; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 5;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5286,8 +9433,19 @@ function parse(input) {
               {
                 // STRING
                 // shift
-                stack.push(6);
+
+                tree[tp] = 8; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 6;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5295,8 +9453,19 @@ function parse(input) {
               {
                 // BRACKET_OPEN
                 // shift
-                stack.push(7);
+
+                tree[tp] = 9; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 7;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5304,8 +9473,19 @@ function parse(input) {
               {
                 // NUMBER
                 // shift
-                stack.push(8);
+
+                tree[tp] = 11; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 8;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5313,8 +9493,19 @@ function parse(input) {
               {
                 // Element
                 // shift
-                stack.push(83);
+
+                tree[tp] = 16; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 83;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5322,8 +9513,19 @@ function parse(input) {
               {
                 // Value
                 // shift
-                stack.push(11);
+
+                tree[tp] = 17; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 11;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5331,8 +9533,19 @@ function parse(input) {
               {
                 // Object
                 // shift
-                stack.push(12);
+
+                tree[tp] = 18; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 12;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
 
@@ -5340,8 +9553,19 @@ function parse(input) {
               {
                 // Array
                 // shift
-                stack.push(13);
+
+                tree[tp] = 21; // name
+                tree[tp + 1] = lexer.start;
+                tree[tp + 2] = lexer.end;
+                tree[tp + 3] = 0; // leaf nodes have no children
+                tree[tp + 4] = 0; // leaf nodes have first child
+                tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = 13;
                 lexer = next(stream, lexer.end);
+                tp += 6;
               }
               break;
           }
@@ -5355,12 +9579,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -5368,12 +9601,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -5387,12 +9629,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -5400,12 +9651,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
@@ -5419,12 +9679,21 @@ function parse(input) {
               {
                 // CURLY_CLOSE
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
 
@@ -5432,12 +9701,21 @@ function parse(input) {
               {
                 // COMMA
                 // reduce
-                let n = reduces[stack[stack.length - 1]][lexer.state];
-                while (n > 0) {
-                  stack.pop();
-                  n--;
-                }
-                stack.push(goto[stack[stack.length - 1]][20]);
+                const n = reduces[stack[sp]][lexer.state];
+                sp -= n * 2;
+
+                tree[tp] = 20; // name
+                tree[tp + 1] = -1; // start
+                tree[tp + 2] = -1; // end
+                tree[tp + 3] = n; // number of children
+                tree[tp + 4] = stack[sp + 1]; // first child
+                tree[stack[sp - 1] + 5] = tp; // next sibling
+
+                const next = goto[stack[sp]][20];
+                sp += 2;
+                stack[sp - 1] = tp;
+                stack[sp] = next;
+                tp += 6;
               }
               break;
           }
