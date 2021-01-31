@@ -42,7 +42,7 @@ cli
      */
     async (grammarFile, targetDirectory, opts) => {
       const codegen = createGenerator(opts.language, opts.module, {
-        lexerFile: join(targetDirectory, "lexer.js"),
+        lexerFile: join(targetDirectory, `lexer.js`),
         parserFile: join(targetDirectory, "parser.js"),
         debug: opts.debug,
       });

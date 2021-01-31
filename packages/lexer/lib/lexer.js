@@ -176,7 +176,7 @@ function createAutomata(tokens) {
  * @property {(number | undefined)[]} tokenIds
  * @property {(string | undefined)[]} tokenNames
  * @property {number} errorState
- * @property {[number, [number, number][]][]} transitions
+ * @property {[from: number, transition: [symbol: number, to: number][]][]} transitions
  * @property {number} start
  * @property {number[]} finals
  */
@@ -209,9 +209,9 @@ export function generateFromTokens(tokens) {
 
     const transitions = Array.from(d.transitions.entries()).map(
       ([from, transition]) =>
-        /** @type {[number, [number, number][]]} */ ([
+        /** @type {[from: number, transition: [symbol: number, to: number][]]} */ ([
           d.states.indexOf(from) * columns,
-          /** @type {[number, number][]} */ Array.from(
+          /** @type {[symbol: number, to: number][]} */ Array.from(
             transition.entries()
           ).map(([symbol, to]) => [
             symbol.charCodeAt(0),
