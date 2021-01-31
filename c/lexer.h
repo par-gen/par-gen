@@ -11,4 +11,3 @@ extern struct lexeme lexeme;
 
 void lexer_next(const char *input, const unsigned int offset,
                 const unsigned int l);
-void init_lexer();
