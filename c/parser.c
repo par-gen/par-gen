@@ -1,5 +1,6 @@
 #include <time.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include "lexer.h"
 
@@ -2432,6 +2433,12 @@ unsigned int *parse(char *input, unsigned int l, unsigned int *stack, unsigned i
  * push.json: ~0.90% branch misses
  */
 
+int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
+{
+  return ((timeA_p->tv_sec * 1000000000) + timeA_p->tv_nsec) -
+         ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec);
+}
+
 int main()
 {
   FILE *infile;
@@ -2448,15 +2455,18 @@ int main()
   unsigned int *stack = malloc(2 + numbytes * 2 * sizeof(unsigned int));
   unsigned int *tree = malloc(6 + numbytes * 6 * sizeof(unsigned int));
 
-  // printf("%.*s", numbytes, buffer);
+  struct timespec start, end;
 
-  clock_t start = clock();
+  clock_gettime(CLOCK_MONOTONIC, &start);
+
   for (int i = 0; i < 10000; i++)
   {
     parse(buffer, numbytes, stack, tree);
   }
-  clock_t end = clock();
-  printf("Elapsed: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+
+  clock_gettime(CLOCK_MONOTONIC, &end);
+
+  printf("Elapsed: %f ms\n", (double)timespecDiff(&end, &start) / 1000 / 1000);
 
   fclose(infile);
   free(buffer);
