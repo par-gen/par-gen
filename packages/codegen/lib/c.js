@@ -1,6 +1,5 @@
 import { promises as fsp } from "fs";
 import { join, dirname, basename, extname } from "path";
-import prettier from "prettier";
 
 /**
  * @typedef {import('@par-gen/lexer/types/lexer').LexerData} LexerData
@@ -128,7 +127,7 @@ struct lexeme lexeme = {
   -1,
 };
 
-void lexer_next(const char *input, const unsigned int offset,
+void lexer_next(const char *restrict input, const unsigned int offset,
                 const unsigned int l)
 {
   unsigned int state;
@@ -185,6 +184,7 @@ void lexer_next(const char *input, const unsigned int offset,
 
     const code = this._parserCode(data);
     const headerCode = this._headerCode();
+    const mainCode = this._mainCode();
 
     const dir = dirname(this.options.parserFile);
     const ext = extname(this.options.parserFile);
@@ -193,6 +193,7 @@ void lexer_next(const char *input, const unsigned int offset,
     await fsp.mkdir(dirname(this.options.parserFile), { recursive: true });
     await fsp.writeFile(join(dir, `${base}.c`), code);
     await fsp.writeFile(join(dir, `${base}.h`), headerCode);
+    await fsp.writeFile(join(dir, `main.c`), mainCode);
   }
 
   /**
@@ -211,7 +212,7 @@ struct lexeme
 
 extern struct lexeme lexeme;
 
-void lexer_next(const char *input, const unsigned int offset,
+void lexer_next(const char *restrict input, const unsigned int offset,
                 const unsigned int l);
 `;
   }
@@ -230,10 +231,6 @@ void lexer_next(const char *input, const unsigned int offset,
     const actionOps = ["shift", "reduce", "done"];
 
     const code = `#include "parser.h"
-#include <time.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
 
 struct action
 {
@@ -331,8 +328,9 @@ const static struct action actions[] = {
     .join("\n\t")}
 };
 
-unsigned int *parse(char *input, unsigned int l, unsigned int *stack,
-                    unsigned int *tree)
+unsigned int *parse(const char *restrict input, const unsigned int l,
+                    unsigned int *restrict stack,
+                    unsigned int *restrict tree)
 {
   lexer_next(input, 0, l);
 
@@ -343,7 +341,7 @@ unsigned int *parse(char *input, unsigned int l, unsigned int *stack,
   unsigned int sp = 1;
   unsigned int tp = 6;
   unsigned int stackItemsToReduce, currentState, actionLookup, nextState;
-  const struct action *action;
+  const struct action *restrict action;
 
   while (1)
   {
@@ -401,11 +399,30 @@ unsigned int *parse(char *input, unsigned int l, unsigned int *stack,
     tp += 6;
   }
 }
+`;
+
+    return code;
+  }
+
+  /**
+   * @private
+   * @returns {string}
+   */
+  _mainCode() {
+    const code = `#include <time.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+
+unsigned int *parse(const char *restrict input, const unsigned int l,
+  unsigned int *restrict stack,
+  unsigned int *restrict tree);
 
 int64_t timespecDiff(struct timespec *timeA_p, struct timespec *timeB_p)
 {
   return ((timeA_p->tv_sec * 1000000000) + timeA_p->tv_nsec) -
-         ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec);
+          ((timeB_p->tv_sec * 1000000000) + timeB_p->tv_nsec);
 }
 
 int main()
@@ -414,7 +431,7 @@ int main()
   char *buffer;
   long numbytes;
 
-  infile = fopen("/home/zaubernerd/workspace/par-gen/pull_request.closed.json", "r");
+  infile = fopen("/home/zaubernerd/workspace/par-gen/package-lock.json", "r");
   fseek(infile, 0, SEEK_END);
   numbytes = ftell(infile);
   fseek(infile, 0, SEEK_SET);
@@ -423,6 +440,9 @@ int main()
 
   unsigned int *stack = malloc(2 + numbytes * 2 * sizeof(unsigned int));
   unsigned int *tree = malloc(6 + numbytes * 6 * sizeof(unsigned int));
+  // unsigned int *tree = mmap(NULL, 6 + numbytes * 6 * sizeof(unsigned int),
+  //               PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE,
+  //          -1, 0);
 
   struct timespec start, end;
 
@@ -439,6 +459,8 @@ int main()
 
   fclose(infile);
   free(buffer);
+  free(stack);
+  free(tree);
 
   return 0;
 }
