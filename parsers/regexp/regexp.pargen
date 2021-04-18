@@ -3,11 +3,12 @@
 # Tokens
 #
 CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\-^x0-9a-f]';
-HEX_NUMBER := '[0-9c-fa]';
-CONTROL_CHARACTER := '[rntf]';
+HEX_NUMBER := '[0-9c-ea]';
+CONTROL_CHARACTER := '[rnt]';
 BACKSLASH := '\\';
 X := 'x';
 B := 'b';
+F := 'f';
 CARET := '^';
 DASH := '-';
 DOT := '\.';
@@ -71,7 +72,7 @@ CharacterClassCharacters :=
 
 CharacterClassCharacter :=
     CharacterOrNumberOrX
-  | ControlCharacterOrB
+  | ControlCharacter
   | BACKSLASH DASH
   | BACKSLASH CARET
   | QUANTIFIER
@@ -80,7 +81,7 @@ CharacterClassCharacter :=
   | UNION
   | DOT
   | BACKSLASH BACKSLASH
-  | BACKSLASH ControlCharacterOrB
+  | BACKSLASH ControlCharacter
   | BACKSLASH BRACKET_OPEN
   | BACKSLASH BRACKET_CLOSE
   | CharacterClassRange
@@ -88,14 +89,14 @@ CharacterClassCharacter :=
 
 CharacterClassRange :=
     CharacterOrNumberOrX DASH CharacterOrNumberOrX
-  | CharacterOrNumberOrX DASH ControlCharacterOrB
-  | ControlCharacterOrB DASH CharacterOrNumberOrX
-  | ControlCharacterOrB DASH ControlCharacterOrB
+  | CharacterOrNumberOrX DASH ControlCharacter
+  | ControlCharacter DASH CharacterOrNumberOrX
+  | ControlCharacter DASH ControlCharacter
   ;
 
 Character :=
     CharacterOrNumberOrX
-  | ControlCharacterOrB
+  | ControlCharacter
   | CARET
   | DASH
   | BACKSLASH EscapedCharacter
@@ -105,6 +106,7 @@ Character :=
 HexNumber :=
     HEX_NUMBER
   | B
+  | F
   ;
 
 CharacterOrNumberOrX :=
@@ -113,13 +115,14 @@ CharacterOrNumberOrX :=
   | X
   ;
 
-ControlCharacterOrB :=
+ControlCharacter :=
     CONTROL_CHARACTER
   | B
+  | F
   ;
 
 EscapedCharacter :=
-    ControlCharacterOrB
+    ControlCharacter
   | BACKSLASH
   | DOT
   | UNION

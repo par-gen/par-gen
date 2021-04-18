@@ -40,7 +40,7 @@ const tokenIds = [
   0, // CHARACTER
   0, // CHARACTER
   0, // CHARACTER
-  7, // DASH
+  8, // DASH
   0, // CHARACTER
   0, // CHARACTER
   0, // CHARACTER
@@ -236,7 +236,6 @@ const tokenIds = [
   1, // HEX_NUMBER
   1, // HEX_NUMBER
   1, // HEX_NUMBER
-  2, // CONTROL_CHARACTER
   1, // HEX_NUMBER
   2, // CONTROL_CHARACTER
   2, // CONTROL_CHARACTER
@@ -244,20 +243,21 @@ const tokenIds = [
   3, // BACKSLASH
   4, // X
   5, // B
-  6, // CARET
-  8, // DOT
-  9, // UNION
-  10, // PAREN_OPEN
-  11, // PAREN_CLOSE
-  12, // QUANTIFIER
-  12, // QUANTIFIER
-  12, // QUANTIFIER
-  13, // BRACKET_OPEN
-  14, // BRACKET_CLOSE
+  6, // F
+  7, // CARET
+  9, // DOT
+  10, // UNION
+  11, // PAREN_OPEN
+  12, // PAREN_CLOSE
+  13, // QUANTIFIER
+  13, // QUANTIFIER
+  13, // QUANTIFIER
+  14, // BRACKET_OPEN
+  15, // BRACKET_CLOSE
   undefined, // undefined
   undefined, // undefined
-  15, // @par-gen.EOF
-  16, // @par-gen.ERROR
+  16, // @par-gen.EOF
+  17, // @par-gen.ERROR
 ];
 
 const table = new Uint16Array(65024);
@@ -494,14 +494,14 @@ table[64057] = 58368; // HEX_NUMBER
 table[64099] = 58624; // HEX_NUMBER
 table[64100] = 58880; // HEX_NUMBER
 table[64101] = 59136; // HEX_NUMBER
-table[64102] = 59392; // CONTROL_CHARACTER
-table[64097] = 59648; // HEX_NUMBER
-table[64114] = 59904; // CONTROL_CHARACTER
-table[64110] = 60160; // CONTROL_CHARACTER
-table[64116] = 60416; // CONTROL_CHARACTER
-table[64092] = 60672; // BACKSLASH
-table[64120] = 60928; // X
-table[64098] = 61184; // B
+table[64097] = 59392; // HEX_NUMBER
+table[64114] = 59648; // CONTROL_CHARACTER
+table[64110] = 59904; // CONTROL_CHARACTER
+table[64116] = 60160; // CONTROL_CHARACTER
+table[64092] = 60416; // BACKSLASH
+table[64120] = 60672; // X
+table[64098] = 60928; // B
+table[64102] = 61184; // F
 table[64094] = 61440; // CARET
 table[64046] = 61696; // DOT
 table[64124] = 61952; // UNION
@@ -550,7 +550,7 @@ const next = (input, offset) => {
     lexeme.end = successPos;
     return lexeme;
   }
-  lexeme.state = i === l ? 15 : 16;
+  lexeme.state = i === l ? 16 : 17;
   lexeme.start = -1;
   lexeme.end = -1;
   return lexeme;
