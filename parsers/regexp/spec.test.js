@@ -61,6 +61,8 @@ describe("RegExp", () => {
     expect(parse("\\f")).toBeTruthy();
     expect(parse("\\x61")).toBeTruthy();
     expect(parse("\\xab")).toBeTruthy();
+    expect(parse("\\xcd")).toBeTruthy();
+    expect(parse("\\xef")).toBeTruthy();
   });
 
   it("should accept positive character classes", () => {
