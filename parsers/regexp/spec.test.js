@@ -59,6 +59,7 @@ describe("RegExp", () => {
     expect(parse("\\b")).toBeTruthy();
     expect(parse("\\t")).toBeTruthy();
     expect(parse("\\f")).toBeTruthy();
+    expect(parse("\\x61")).toBeTruthy();
   });
 
   it("should accept positive character classes", () => {
@@ -153,7 +154,7 @@ describe("RegExp", () => {
     it("from a character class", () => {
       expect(print(parse("[a-c]"))).toMatch(
         matcher(
-          "RegExp[Expression[Atom[CharacterClass[BRACKET_OPEN,.*?CharacterClassRange[CHARACTER,DASH,CHARACTER].*?,BRACKET_CLOSE]]]]"
+          "RegExp[Expression[Atom[CharacterClass[BRACKET_OPEN,.*?CharacterClassRange[.*?CHARACTER.*?,DASH,.*?CHARACTER.*?].*?,BRACKET_CLOSE]]]]"
         )
       );
     });

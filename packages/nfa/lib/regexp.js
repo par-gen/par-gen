@@ -184,7 +184,7 @@ function next(stack, input) {
   }
   switch (input[0]) {
     case ".": {
-      const node = parse('[\x00-\xff]');
+      const node = parse("[\x00-\xff]");
       stack.push(node);
       return 1;
     }
