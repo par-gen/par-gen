@@ -2,7 +2,7 @@
 #
 # Tokens
 #
-CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\-^x0-9a-f]';
+CHARACTER := '[^()\[\]|.*?+\r\n\b\t\frnbtf\-\^x0-9a-f]';
 HEX_NUMBER := '[0-9c-ea]';
 CONTROL_CHARACTER := '[rnt]';
 BACKSLASH := '\\';
@@ -15,7 +15,7 @@ DOT := '\.';
 UNION := '\|';
 PAREN_OPEN := '\(';
 PAREN_CLOSE := '\)';
-QUANTIFIER := '[\*?+]';
+QUANTIFIER := '[*?+]';
 BRACKET_OPEN := '\[';
 BRACKET_CLOSE := '\]';
 
