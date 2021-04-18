@@ -2,9 +2,11 @@
 #
 # Tokens
 #
-CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\-^]';
+CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\-^x0-9]';
+NUMBER := '[0-9]';
 CONTROL_CHARACTER := '[rnbtf]';
 BACKSLASH := '\\';
+X := 'x';
 CARET := '^';
 DASH := '-';
 DOT := '\.';
@@ -67,7 +69,7 @@ CharacterClassCharacters :=
   ;
 
 CharacterClassCharacter :=
-    CHARACTER
+    CharacterOrNumberOrX
   | CONTROL_CHARACTER
   | BACKSLASH DASH
   | BACKSLASH CARET
@@ -84,18 +86,25 @@ CharacterClassCharacter :=
   ;
 
 CharacterClassRange :=
-    CHARACTER DASH CHARACTER
-  | CHARACTER DASH CONTROL_CHARACTER
-  | CONTROL_CHARACTER DASH CHARACTER
+    CharacterOrNumberOrX DASH CharacterOrNumberOrX
+  | CharacterOrNumberOrX DASH CONTROL_CHARACTER
+  | CONTROL_CHARACTER DASH CharacterOrNumberOrX
   | CONTROL_CHARACTER DASH CONTROL_CHARACTER
   ;
 
 Character :=
-    CHARACTER
+    CharacterOrNumberOrX
   | CONTROL_CHARACTER
   | CARET
   | DASH
   | BACKSLASH EscapedCharacter
+  | BACKSLASH X NUMBER NUMBER
+  ;
+
+CharacterOrNumberOrX :=
+    CHARACTER
+  | NUMBER
+  | X
   ;
 
 EscapedCharacter :=
