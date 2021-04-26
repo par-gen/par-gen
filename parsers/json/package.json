@@ -22,7 +22,7 @@
     "@babel/parser": "7.13.16",
     "@jest/globals": "26.6.2",
     "@types/json5": "0.0.30",
-    "@types/node": "14.14.41",
+    "@types/node": "14.14.42",
     "acorn": "8.1.1",
     "esbuild": "0.11.12",
     "json5": "2.2.0",
