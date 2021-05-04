@@ -19,7 +19,7 @@
     "globalSetup": "<rootDir>/generate-grammar.cjs"
   },
   "devDependencies": {
-    "@babel/parser": "7.14.0",
+    "@babel/parser": "7.14.1",
     "@jest/globals": "26.6.2",
     "@types/json5": "0.0.30",
     "@types/node": "14.14.43",
