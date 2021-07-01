@@ -564,7 +564,7 @@ export class JavaScriptBaseCodegen {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
               lexer.pop(true);
-              return createProxy(stream, tree, tp - 6);
+              return createProxy(stream, tree.slice(0, tp), tp - 6);
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(
                 () =>
