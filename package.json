@@ -30,7 +30,7 @@
     "parsers/*"
   ],
   "devDependencies": {
-    "@types/jest": "26.0.24",
+    "@types/jest": "27.0.0",
     "@types/node": "14.17.9",
     "cross-env": "7.0.3",
     "eslint": "7.32.0",
