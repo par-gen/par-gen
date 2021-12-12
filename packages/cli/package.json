@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@jest/globals": "26.6.2",
-    "@types/sade": "1.7.3"
+    "@types/sade": "1.7.4"
   },
   "jest": {
     "displayName": "cli",
