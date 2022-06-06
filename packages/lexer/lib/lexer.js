@@ -10,6 +10,8 @@ import {
 import debug from "debug";
 import { performance } from "perf_hooks";
 
+import { inspect } from "util";
+
 export { EOF, ERROR };
 
 const log = debug("par-gen:lexer");
@@ -202,21 +204,16 @@ export function generateFromTokens(tokens) {
 
     const d = dfa.description;
 
-    const columns = 256;
-
-    const start = d.states.indexOf(d.start) * columns;
-    const finals = d.finals.map((final) => d.states.indexOf(final) * columns);
+    const start = d.states.indexOf(d.start);
+    const finals = d.finals.map((final) => d.states.indexOf(final));
 
     const transitions = Array.from(d.transitions.entries()).map(
       ([from, transition]) =>
         /** @type {[number, [number, number][]]} */ ([
-          d.states.indexOf(from) * columns,
+          d.states.indexOf(from),
           /** @type {[number, number][]} */ Array.from(
             transition.entries()
-          ).map(([symbol, to]) => [
-            symbol.charCodeAt(0),
-            d.states.indexOf(to) * columns,
-          ]),
+          ).map(([symbol, to]) => [symbol.charCodeAt(0), d.states.indexOf(to)]),
         ])
     );
 

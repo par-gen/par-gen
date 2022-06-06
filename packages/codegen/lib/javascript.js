@@ -1,6 +1,7 @@
 import { promises as fsp } from "fs";
 import { join, dirname, basename, extname } from "path";
 import prettier from "prettier";
+import { inspect } from "util";
 
 /**
  * @typedef {import('@par-gen/lexer/types/lexer').LexerData} LexerData
@@ -76,16 +77,87 @@ export class JavaScriptBaseCodegen {
       finals,
     } = data;
 
-    const columns = 256;
+    /**
+     * @type {number[][]}
+     */
+    const table = [];
+    for (const [state, transition] of transitions) {
+      if (!Array.isArray(table[state])) {
+        table[state] = [];
 
-    const pointerSize = transitions
-      .flatMap(([from, transition]) => [
-        from,
-        ...transition.flatMap(([, to]) => to),
-      ])
-      .every((state) => state <= 0xffff)
-      ? "Uint16Array"
-      : "Uint32Array";
+        for (let i = 0; i < 256; i++) {
+          table[state][i] = errorState;
+        }
+      }
+
+      for (const [symbol, to] of transition) {
+        table[state][symbol] = to;
+      }
+    }
+
+    /** @type {number[]} */
+    const defaults = [];
+    for (let i = 0; i < table.length; i++) {
+      const counts = [];
+      for (let j = 0; j < 256; j++) {
+        if (typeof counts[table[i][j]] === "undefined") {
+          counts[table[i][j]] = 0;
+        }
+
+        counts[table[i][j]]++;
+      }
+
+      let maxCount = 0;
+
+      for (let k = 0; k < counts.length; k++) {
+        if (counts[k] > maxCount) {
+          maxCount = counts[k];
+          defaults[i] = k;
+        }
+      }
+    }
+
+    /** @type {[source: number, target: number][]} */
+    const packed = [];
+    /** @type {boolean[]} */
+    const used = [];
+    /** @type {number[]} */
+    const offsets = [];
+    for (let i = 0; i < table.length; i++) {
+      let candidateOff = 0;
+      for (candidateOff = 0; candidateOff < packed.length; candidateOff++) {
+        let j = 0;
+        for (j = 0; j < 256; j++) {
+          if (table[i][j] !== defaults[i] && used[candidateOff + j]) {
+            break;
+          }
+        }
+
+        if (j === 256) {
+          break;
+        }
+      }
+
+      // we've reached the end of possible candidate offsets,
+      // allocate the next set of offsets
+      for (let k = packed.length; k < candidateOff + 256; k++) {
+        packed[k] = [-1, -1];
+      }
+
+      for (let j = 0; j < 256; j++) {
+        if (table[i][j] === defaults[i]) {
+          continue;
+        }
+
+        packed[candidateOff + j][0] = i;
+        packed[candidateOff + j][1] = table[i][j];
+        used[candidateOff + j] = true;
+
+        offsets[i] = candidateOff;
+      }
+    }
+
+    const packedflat = packed.flat();
 
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
@@ -97,21 +169,15 @@ export class JavaScriptBaseCodegen {
         ${tokenIds.map((id, i) => `${id}, // ${tokenNames[i]}`).join("\n")}
       ];
 
-      const table = new ${pointerSize}(${columns * tokenIds.length});
-      table.fill(${errorState ?? -1});
-      ${transitions
-        .flatMap(([from, transition]) =>
-          transition.map(([symbol, to]) => {
-            if (to === errorState) {
-              return undefined;
-            }
-            return `table[${from + symbol}] = ${to}; // ${
-              tokenNames[to / columns]
-            }`;
-          })
-        )
-        .filter(Boolean)
-        .join("\n")}
+      const defaults = new Uint16Array(${defaults.length});
+      ${defaults.map((d, i) => `defaults[${i}] = ${d};`).join("\n")}
+
+      const offsets = new Uint16Array(${offsets.length});
+      ${offsets.map((o, i) => `offsets[${i}] = ${o};`).join("\n")}
+
+      const packed = new Uint16Array(${packedflat.length});
+      ${packedflat.map((p, i) => `packed[${i}] = ${p};`).join("\n")}
+
 
       // the currently matched lexeme
       const lexeme = {
@@ -126,7 +192,7 @@ export class JavaScriptBaseCodegen {
        * @returns {{ state: number, start: number, end: number }}
        */
       const next = (input, offset) => {
-        // ${start / columns}
+        // ${start}
         let state = ${start};
         let successState = ${errorState};
         let successPos = 0;
@@ -135,7 +201,14 @@ export class JavaScriptBaseCodegen {
         let i = offset;
         const l = input.length;
         while (i < l) {
-          state = table[state + input[i++]];
+          let index = offsets[state] + input[i];
+          if (packed[index][0] === state) {
+            state = packed[index][1];
+          }
+          else {
+            state = defaults[i];
+          }
+
           if (state <= ${finals[finals.length - 1]}) {
             successState = state;
             successPos = i;
@@ -145,7 +218,7 @@ export class JavaScriptBaseCodegen {
         }
 
         if (successState !== ${errorState}) {
-          lexeme.state = tokenIds[(successState / ${columns})];
+          lexeme.state = tokenIds[successState];
           lexeme.start = offset;
           lexeme.end = successPos;
           return lexeme;
