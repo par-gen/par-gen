@@ -23,11 +23,13 @@ if (process.env.RUN_SLOW_TESTS) {
         return [name, end - start];
       };
 
-      const compiled = DFA.fromNFA(
+      const dfa = DFA.fromNFA(
         NFA.fromRegExp("ab(c|d)(e|f)*((gh|ij)(kl|mn))*")
-      )
-        .minimal()
-        .compile((symbol) => symbol.charCodeAt(0));
+      ).minimal();
+
+      console.log(dfa.toString());
+
+      const compiled = dfa.compile((symbol) => symbol.charCodeAt(0));
 
       const string = "abcffghmnijmn";
       const input = Buffer.from(string);
