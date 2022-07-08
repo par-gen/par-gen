@@ -169,9 +169,14 @@ export class DFA {
     const used = [];
     /** @type {number[]} */
     const offsets = [];
+    /** @type {boolean[]} */
+    const usedOffsets = [];
     for (let from = 0; from < table.length; from++) {
       let candidateOff = 0;
       for (candidateOff = 0; candidateOff < packed.length; candidateOff++) {
+        if (usedOffsets[candidateOff]) {
+          continue;
+        }
         if (used[candidateOff]) {
           continue;
         }
@@ -192,10 +197,11 @@ export class DFA {
       }
 
       console.log(candidateOff);
+      usedOffsets[candidateOff] = true;
 
       // We need to fill excess slots beyond packed[]
       for (let k = packed.length; k < candidateOff + 1 + 256; k++) {
-        packed[k] = [-1, -1];
+        packed[k] = [0, -1];
       }
 
       packed[candidateOff][1] = defaults[from];
@@ -207,7 +213,7 @@ export class DFA {
           continue;
         }
 
-        packed[candidateOff + symbol + 1][0] = from;
+        packed[candidateOff + symbol + 1][0] = symbol;
         packed[candidateOff + symbol + 1][1] = table[from][symbol];
         used[candidateOff + symbol + 1] = true;
       }
@@ -231,10 +237,11 @@ export class DFA {
       function test(input) {
         let state = ${start};
         for (let i = 0, l = input.length; i < l; i++) {
+          let symbol = input[i];
           let offset = offsets[state];
-          let index = (offset + input[i] + 1) * 2;
+          let index = (offset + symbol + 1) * 2;
           let defIndex = (offset) * 2;
-          state = table[index] === state ? table[index + 1] : table[defIndex + 1];
+          state = table[index] === symbol ? table[index + 1] : table[defIndex + 1];
         }
         return ${finals.map((final) => `${final} === state`).join(" || ")};
       };
