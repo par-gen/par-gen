@@ -171,9 +171,12 @@ export class DFA {
     const offsets = [];
     /** @type {boolean[]} */
     const usedOffsets = [];
+    /** @type {number[]} */
+    const state2offset = [];
+    let maxOff = 0;
     for (let from = 0; from < table.length; from++) {
       let candidateOff = 0;
-      for (candidateOff = 0; candidateOff < packed.length; candidateOff++) {
+      for (candidateOff = 0; candidateOff < maxOff; candidateOff++) {
         if (usedOffsets[candidateOff]) {
           continue;
         }
@@ -196,15 +199,8 @@ export class DFA {
         }
       }
 
-      console.log(candidateOff);
-      usedOffsets[candidateOff] = true;
+      maxOff = Math.max(maxOff, candidateOff + 256);
 
-      // We need to fill excess slots beyond packed[]
-      for (let k = packed.length; k < candidateOff + 1 + 256; k++) {
-        packed[k] = [0, -1];
-      }
-
-      packed[candidateOff][1] = defaults[from];
       used[candidateOff] = true;
 
       for (let symbol = 0; symbol < 256; symbol++) {
@@ -212,10 +208,32 @@ export class DFA {
         if (table[from][symbol] === defaults[from]) {
           continue;
         }
-
-        packed[candidateOff + symbol + 1][0] = symbol;
-        packed[candidateOff + symbol + 1][1] = table[from][symbol];
         used[candidateOff + symbol + 1] = true;
+      }
+
+      console.log(candidateOff);
+      usedOffsets[candidateOff] = true;
+      state2offset[from] = candidateOff;
+    }
+
+    for (let from = 0; from < table.length; from++) {
+      const offset = state2offset[from];
+
+      // We need to fill excess slots beyond packed[]
+      for (let k = packed.length; k < offset + 1 + 256; k++) {
+        packed[k] = [0, -1];
+      }
+
+      packed[offset][1] = state2offset[defaults[from]];
+
+      for (let symbol = 0; symbol < 256; symbol++) {
+        offsets[from] = offset;
+        if (table[from][symbol] === defaults[from]) {
+          continue;
+        }
+
+        packed[offset + symbol + 1][0] = symbol;
+        packed[offset + symbol + 1][1] = state2offset[table[from][symbol]];
       }
     }
 
@@ -224,26 +242,22 @@ export class DFA {
     const packedflat = packed.flat();
 
     const code = `'use strict';
-      const offsets = new Uint${table.length < 256 ? "8" : "16"}Array(${
-      offsets.length
-    });
-      ${offsets.map((o, i) => `offsets[${i}] = ${o};`).join("\n")}
-
       const table = new Uint${table.length < 256 ? "8" : "16"}Array(${
       packedflat.length
     });
       ${packedflat.map((p, i) => `table[${i}] = ${p};`).join("\n")}
 
       function test(input) {
-        let state = ${start};
+        let state = ${state2offset[start]};
         for (let i = 0, l = input.length; i < l; i++) {
           let symbol = input[i];
-          let offset = offsets[state];
-          let index = (offset + symbol + 1) * 2;
-          let defIndex = (offset) * 2;
+          let index = (state + symbol + 1) * 2;
+          let defIndex = (state) * 2;
           state = table[index] === symbol ? table[index + 1] : table[defIndex + 1];
         }
-        return ${finals.map((final) => `${final} === state`).join(" || ")};
+        return ${finals
+          .map((final) => `${state2offset[final]} === state`)
+          .join(" || ")};
       };
     `;
 
