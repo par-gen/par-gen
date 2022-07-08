@@ -1,4 +1,5 @@
 import { ok } from "assert";
+import { inspect } from "util";
 
 import { minimize } from "./hopcroft.js";
 import { fromNFA } from "./powerset.js";
@@ -171,11 +172,15 @@ export class DFA {
     for (let from = 0; from < table.length; from++) {
       let candidateOff = 0;
       for (candidateOff = 0; candidateOff < packed.length; candidateOff++) {
+        if (used[candidateOff]) {
+          continue;
+        }
+
         let symbol = 0;
         for (symbol = 0; symbol < 256; symbol++) {
           if (
             table[from][symbol] !== defaults[from] &&
-            used[candidateOff + symbol]
+            used[candidateOff + symbol + 1]
           ) {
             break;
           }
@@ -186,10 +191,15 @@ export class DFA {
         }
       }
 
+      console.log(candidateOff);
+
       // We need to fill excess slots beyond packed[]
-      for (let k = packed.length; k < candidateOff + 256; k++) {
+      for (let k = packed.length; k < candidateOff + 1 + 256; k++) {
         packed[k] = [-1, -1];
       }
+
+      packed[candidateOff][1] = defaults[from];
+      used[candidateOff] = true;
 
       for (let symbol = 0; symbol < 256; symbol++) {
         offsets[from] = candidateOff;
@@ -197,20 +207,17 @@ export class DFA {
           continue;
         }
 
-        packed[candidateOff + symbol][0] = from;
-        packed[candidateOff + symbol][1] = table[from][symbol];
-        used[candidateOff + symbol] = true;
+        packed[candidateOff + symbol + 1][0] = from;
+        packed[candidateOff + symbol + 1][1] = table[from][symbol];
+        used[candidateOff + symbol + 1] = true;
       }
     }
+
+    console.log(inspect(packed, { maxArrayLength: null, colors: true }));
 
     const packedflat = packed.flat();
 
     const code = `'use strict';
-      const defaults = new Uint${table.length < 256 ? "8" : "16"}Array(${
-      defaults.length
-    });
-      ${defaults.map((d, i) => `defaults[${i}] = ${d};`).join("\n")}
-
       const offsets = new Uint${table.length < 256 ? "8" : "16"}Array(${
       offsets.length
     });
@@ -223,10 +230,11 @@ export class DFA {
 
       function test(input) {
         let state = ${start};
-        let index = 0;
         for (let i = 0, l = input.length; i < l; i++) {
-          index = (offsets[state] + input[i]) * 2;
-          state = table[index] === state ? table[index + 1] : defaults[state];
+          let offset = offsets[state];
+          let index = (offset + input[i] + 1) * 2;
+          let defIndex = (offset) * 2;
+          state = table[index] === state ? table[index + 1] : table[defIndex + 1];
         }
         return ${finals.map((final) => `${final} === state`).join(" || ")};
       };
