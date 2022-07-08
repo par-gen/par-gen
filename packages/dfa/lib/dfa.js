@@ -163,7 +163,7 @@ export class DFA {
       }
     }
 
-    /** @type {[from: number, to: number][]} */
+    /** @type {number[]} */
     const packed = [];
     /** @type {boolean[]} */
     const used = [];
@@ -216,15 +216,18 @@ export class DFA {
       state2offset[from] = candidateOff;
     }
 
+    // reduce maxOff to maximum offset actually used
+    maxOff -= 256;
+
     for (let from = 0; from < table.length; from++) {
       const offset = state2offset[from];
 
       // We need to fill excess slots beyond packed[]
       for (let k = packed.length; k < offset + 1 + 256; k++) {
-        packed[k] = [0, -1];
+        packed[k] = 0;
       }
 
-      packed[offset][1] = state2offset[defaults[from]];
+      packed[offset] = state2offset[defaults[from]] << 8;
 
       for (let symbol = 0; symbol < 256; symbol++) {
         offsets[from] = offset;
@@ -232,28 +235,27 @@ export class DFA {
           continue;
         }
 
-        packed[offset + symbol + 1][0] = symbol;
-        packed[offset + symbol + 1][1] = state2offset[table[from][symbol]];
+        packed[offset + symbol + 1] =
+          symbol | (state2offset[table[from][symbol]] << 8);
       }
     }
 
     console.log(inspect(packed, { maxArrayLength: null, colors: true }));
-
-    const packedflat = packed.flat();
+    console.log(maxOff);
 
     const code = `'use strict';
-      const table = new Uint${table.length < 256 ? "8" : "16"}Array(${
-      packedflat.length
+      const table = new Uint${maxOff < 256 ? "16" : "32"}Array(${
+      packed.length
     });
-      ${packedflat.map((p, i) => `table[${i}] = ${p};`).join("\n")}
+      ${packed.map((p, i) => `table[${i}] = ${p};`).join("\n")}
 
       function test(input) {
         let state = ${state2offset[start]};
         for (let i = 0, l = input.length; i < l; i++) {
-          let symbol = input[i];
-          let index = (state + symbol + 1) * 2;
-          let defIndex = (state) * 2;
-          state = table[index] === symbol ? table[index + 1] : table[defIndex + 1];
+          const symbol = input[i];
+          const def = table[state];
+          const next = table[state + symbol + 1];
+          state = ((next & 0xff) === symbol ? next : def) >> 8;
         }
         return ${finals
           .map((final) => `${state2offset[final]} === state`)
