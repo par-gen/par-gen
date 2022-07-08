@@ -104,6 +104,7 @@ export class DFA {
 
     const finals = d.finals.map((final) => d.states.indexOf(final));
 
+    /** @type {[from: number, transition: [symbol: number, to: number][]][]} */
     const transitions = Array.from(d.transitions.entries()).map(
       ([from, transition]) =>
         /** @type {[number, [number, number][]]} */ ([
@@ -121,82 +122,84 @@ export class DFA {
 
     const error = errorState ?? -1;
 
-    // transition table compression
-
     /** @type {number[][]} */
     const table = [];
-    for (const [state, transition] of transitions) {
-      if (!Array.isArray(table[state])) {
-        table[state] = [];
+    for (const [from, transition] of transitions) {
+      if (!Array.isArray(table[from])) {
+        table[from] = [];
       }
 
       for (let i = 0; i < 256; i++) {
-        table[state][i] = error;
+        table[from][i] = error;
       }
 
       for (const [symbol, to] of transition) {
-        table[state][symbol] = to;
+        table[from][symbol] = to;
       }
     }
+
+    // transition table compression
 
     /** @type {number[]} */
     const defaults = [];
-    for (let i = 0; i < table.length; i++) {
+    for (let from = 0; from < table.length; from++) {
       /** @type {number[]} */
       const counts = [];
-      for (let j = 0; j < table[i].length; j++) {
-        if (typeof counts[table[i][j]] === "undefined") {
-          counts[table[i][j]] = 0;
+      for (let symbol = 0; symbol < table[from].length; symbol++) {
+        if (typeof counts[table[from][symbol]] === "undefined") {
+          counts[table[from][symbol]] = 0;
         }
 
-        counts[table[i][j]]++;
+        counts[table[from][symbol]]++;
       }
 
       let maxCount = 0;
-      for (let k = 0; k < counts.length; k++) {
-        if (counts[k] > maxCount) {
-          maxCount = counts[k];
-          defaults[i] = k;
+      for (let to = 0; to < counts.length; to++) {
+        if (counts[to] > maxCount) {
+          maxCount = counts[to];
+          defaults[from] = to;
         }
       }
     }
 
-    /** @type {[source: number, target: number][]} */
+    /** @type {[from: number, to: number][]} */
     const packed = [];
     /** @type {boolean[]} */
     const used = [];
     /** @type {number[]} */
     const offsets = [];
-    for (let i = 0; i < table.length; i++) {
+    for (let from = 0; from < table.length; from++) {
       let candidateOff = 0;
       for (candidateOff = 0; candidateOff < packed.length; candidateOff++) {
-        let j = 0;
-        for (j = 0; j < 256; j++) {
-          if (table[i][j] !== defaults[i] && used[candidateOff + j]) {
+        let symbol = 0;
+        for (symbol = 0; symbol < 256; symbol++) {
+          if (
+            table[from][symbol] !== defaults[from] &&
+            used[candidateOff + symbol]
+          ) {
             break;
           }
         }
 
-        if (j === 256) {
+        if (symbol === 256) {
           break;
         }
       }
 
-      // we've reached the end of possible candidate offsets,
-      // allocate the next set of offsets
+      // We need to fill excess slots beyond packed[]
       for (let k = packed.length; k < candidateOff + 256; k++) {
         packed[k] = [-1, -1];
       }
 
-      for (let j = 0; j < 256; j++) {
-        offsets[i] = candidateOff;
-        if (table[i][j] === defaults[i]) {
+      for (let symbol = 0; symbol < 256; symbol++) {
+        offsets[from] = candidateOff;
+        if (table[from][symbol] === defaults[from]) {
           continue;
         }
 
-        packed[candidateOff + j][0] = i;
-        packed[candidateOff + j][1] = table[i][j];
-        used[candidateOff + j] = true;
+        packed[candidateOff + symbol][0] = from;
+        packed[candidateOff + symbol][1] = table[from][symbol];
+        used[candidateOff + symbol] = true;
       }
     }
 
