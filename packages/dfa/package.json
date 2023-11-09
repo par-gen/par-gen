@@ -9,7 +9,7 @@
     "debug": "^4.3.1"
   },
   "devDependencies": {
-    "@types/debug": "4.1.7"
+    "@types/debug": "4.1.12"
   },
   "jest": {
     "displayName": "dfa",
