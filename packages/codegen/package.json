@@ -10,7 +10,7 @@
     "prettier": "2.2.1"
   },
   "devDependencies": {
-    "@jest/globals": "26.6.2"
+    "@jest/globals": "29.7.0"
   },
   "jest": {
     "displayName": "codegen",
