@@ -11,7 +11,7 @@
     "sade": "1.7.4"
   },
   "devDependencies": {
-    "@jest/globals": "26.6.2",
+    "@jest/globals": "29.7.0",
     "@types/sade": "1.7.4"
   },
   "jest": {

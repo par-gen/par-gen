@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/parser": "7.17.3",
-    "@jest/globals": "26.6.2",
+    "@jest/globals": "29.7.0",
     "@types/json5": "0.0.30",
     "@types/node": "14.18.12",
     "acorn": "8.2.4",
