@@ -7,7 +7,7 @@
   "dependencies": {
     "@par-gen/lexer": "0.1.0",
     "@par-gen/parser": "0.1.0",
-    "prettier": "2.2.1"
+    "prettier": "2.8.8"
   },
   "devDependencies": {
     "@jest/globals": "26.6.2"
