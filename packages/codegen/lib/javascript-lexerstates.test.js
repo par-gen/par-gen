@@ -31,6 +31,7 @@ describe("Lexer States", () => {
   });
 
   it("should create a multi-state lexer", async () => {
+    /** @type {*} */
     let results;
     /** @type {(_results: *) => void}  */
     const output = (_results) => {
@@ -108,7 +109,7 @@ describe("Lexer States", () => {
 
     await module.evaluate();
 
-    expect(results).toEqual({
+    const expected = {
       name: "RuleA",
       start: expect.any(Number),
       end: expect.any(Number),
@@ -152,6 +153,9 @@ describe("Lexer States", () => {
           ],
         },
       ],
-    });
+    };
+
+    expect(results).toMatchObject(expected);
+    expect(results.toJSON()).toEqual(expected);
   });
 });

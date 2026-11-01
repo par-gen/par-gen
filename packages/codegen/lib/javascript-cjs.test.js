@@ -3,6 +3,7 @@ import { generate as genParser } from "@par-gen/parser";
 import { promises as fsp, readFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
+import * as util from "util";
 import * as vm from "vm";
 
 import { JavaScriptCommonJsCodegen } from "./javascript-cjs.js";
@@ -29,6 +30,7 @@ describe("JavaScriptCommonJsCodegen", () => {
   });
 
   it("should be possible to write a lexer into a file", async () => {
+    /** @type {*} */
     let results;
     /** @type {(_results: *) => void}  */
     const output = (_results) => {
@@ -82,6 +84,7 @@ describe("JavaScriptCommonJsCodegen", () => {
   });
 
   it("should be possible to write a parser into a file", async () => {
+    /** @type {*} */
     let results;
     /** @type {(_results: *) => void}  */
     const output = (_results) => {
@@ -139,7 +142,7 @@ describe("JavaScriptCommonJsCodegen", () => {
 
     script.runInContext(context);
 
-    expect(results).toEqual({
+    const expected = {
       name: "Rule",
       start: expect.any(Number),
       end: expect.any(Number),
@@ -153,6 +156,10 @@ describe("JavaScriptCommonJsCodegen", () => {
           items: undefined,
         },
       ],
-    });
+    };
+
+    expect(results).toMatchObject(expected);
+    expect(results.toJSON()).toEqual(expected);
+    expect(util.inspect(results)).toBe(util.inspect(results.toJSON()));
   });
 });

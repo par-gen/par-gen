@@ -638,74 +638,92 @@ export class JavaScriptBaseCodegen {
        */
       const tree = new Uint32Array(524288);
 
-      const proxyHandler = {
-        get(target, prop, receiver) {
-          const { stream, pointer } = target;
-          const word0 = tree[pointer];
-          const nChildren = word0 >>> 8;
+      class CstNode {
+        #stream;
+        #tree;
+        #pointer;
 
-          switch (prop) {
-            case "name":
-              return parserSymbols[word0 & 0xff];
-            case "start": {
-              let p = pointer;
-              while ((tree[p] >>> 8) > 0) {
-                p = tree[p + 1] & 0xfffff;
-              }
-              const span = tree[p + 1];
-              return (span & 0x3fffff) - (span >>> 22);
-            }
-            case "end": {
-              let p = pointer;
-              let n = nChildren;
-              while (n > 0) {
-                p = tree[p + 1] & 0xfffff;
-                for (let i = 1; i < n; i++) {
-                  p = tree[p + 2];
-                }
-                n = tree[p] >>> 8;
-              }
-              return tree[p + 1] & 0x3fffff;
-            }
-            case "value":
-              return stream.subarray(receiver.start, receiver.end);
-            case "items": {
-              if (nChildren === 0) {
-                return undefined;
-              }
+        constructor(stream, tree, pointer) {
+          this.#stream = stream;
+          this.#tree = tree;
+          this.#pointer = pointer;
+        }
 
-              const children = new Array(nChildren);
-              let child = tree[pointer + 1] & 0xfffff;
-              children[0] = createProxy(stream, child);
+        get name() {
+          return parserSymbols[this.#tree[this.#pointer] & 0xff];
+        }
 
-              for (let i = 1; i < nChildren; i++) {
-                child = tree[child + 2];
-                children[i] = createProxy(stream, child);
-              }
-
-              return children;
-            }
-            case "__tree":
-              return tree;
-            case "__pointer":
-              return pointer;
+        get start() {
+          const t = this.#tree;
+          let p = this.#pointer;
+          while ((t[p] >>> 8) > 0) {
+            p = t[p + 1] & 0xfffff;
           }
-        },
-        ownKeys() {
-          return ["name", "start", "end", "value", "items"];
-        },
-        has(target, prop) {
-          return this.ownKeys(target).includes(prop);
-        },
-        getOwnPropertyDescriptor(target, prop) {
-          return this.has(target, prop)
-            ? { enumerable: true, configurable: true }
-            : undefined;
-        },
-      };
+          const span = t[p + 1];
+          return (span & 0x3fffff) - (span >>> 22);
+        }
 
-      const createProxy = (stream, pointer) =>
-        new Proxy({ stream, pointer }, proxyHandler);
+        get end() {
+          const t = this.#tree;
+          let p = this.#pointer;
+          let n = t[p] >>> 8;
+          while (n > 0) {
+            p = t[p + 1] & 0xfffff;
+            for (let i = 1; i < n; i++) {
+              p = t[p + 2];
+            }
+            n = t[p] >>> 8;
+          }
+          return t[p + 1] & 0x3fffff;
+        }
+
+        get value() {
+          return this.#stream.subarray(this.start, this.end);
+        }
+
+        get items() {
+          const t = this.#tree;
+          const pointer = this.#pointer;
+          const nChildren = t[pointer] >>> 8;
+          if (nChildren === 0) {
+            return undefined;
+          }
+
+          const stream = this.#stream;
+          const children = new Array(nChildren);
+          let child = t[pointer + 1] & 0xfffff;
+          children[0] = new CstNode(stream, t, child);
+
+          for (let i = 1; i < nChildren; i++) {
+            child = t[child + 2];
+            children[i] = new CstNode(stream, t, child);
+          }
+
+          return children;
+        }
+
+        get __tree() {
+          return this.#tree;
+        }
+
+        get __pointer() {
+          return this.#pointer;
+        }
+
+        toJSON() {
+          return {
+            name: this.name,
+            start: this.start,
+            end: this.end,
+            value: this.value,
+            items: this.items?.map((item) => item.toJSON()),
+          };
+        }
+
+        [Symbol.for("nodejs.util.inspect.custom")]() {
+          return this.toJSON();
+        }
+      }
 
       /**
        * @typedef {Object} Node
@@ -769,7 +787,7 @@ export class JavaScriptBaseCodegen {
             if (actionLookup === 0xfffe) {
               ${debug(() => `console.log('steps', steps);`)}
               ${hasSingleLexerMode ? "" : "lexer.pop(true);"}
-              return createProxy(stream, tp - 3);
+              return new CstNode(stream, tree, tp - 3);
             }
             const context = input.toString().substr(result.start, 10);
             throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
