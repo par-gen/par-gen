@@ -91,30 +91,52 @@ export class JavaScriptBaseCodegen {
       ? "Uint8Array"
       : "Uint16Array";
 
+    const finalSet = new Set(finals);
+    /** @type {Map<number, [number, number][]>} */
+    const transMap = new Map(transitions);
+    const totalStates = tokenIds.length;
+    /** @type {number[]} */
+    const allOrigStates = [];
+    for (let i = 0; i < totalStates; i++) {
+      allOrigStates.push(i * columns);
+    }
+
+    const deadEndFinals = finals.filter((s) => {
+      const tr = transMap.get(s) || [];
+      return tr.every(([, to]) => to === errorState);
+    });
+    const continuableFinals = finals.filter((s) => {
+      const tr = transMap.get(s) || [];
+      return !tr.every(([, to]) => to === errorState);
+    });
+    const nonFinals = allOrigStates.filter(
+      (s) => s !== errorState && !finalSet.has(s)
+    );
+
+    const newOrder = [
+      errorState,
+      ...deadEndFinals,
+      ...continuableFinals,
+      ...nonFinals,
+    ];
+    /** @type {Map<number, number>} */
+    const stateRemap = new Map();
+    newOrder.forEach((origState, newIdx) => {
+      stateRemap.set(origState, newIdx * columns);
+    });
+
     /**
      * @param {number} s
      * @returns {number}
      */
-    const remapState = (s) => {
-      if (s === errorState) {
-        return 0;
-      }
-      return s < errorState ? s + columns : s;
-    };
+    const remapState = (s) => stateRemap.get(s) ?? 0;
 
-    const errorIndex = errorState / columns;
-    const remappedTokenIds = [
-      tokenIds[errorIndex],
-      ...tokenIds.slice(0, errorIndex),
-      ...tokenIds.slice(errorIndex + 1),
-    ];
-    const remappedTokenNames = [
-      tokenNames[errorIndex],
-      ...tokenNames.slice(0, errorIndex),
-      ...tokenNames.slice(errorIndex + 1),
-    ];
+    const remappedTokenIds = newOrder.map((s) => tokenIds[s / columns]);
+    const remappedTokenNames = newOrder.map((s) => tokenNames[s / columns]);
     const remappedStart = remapState(start);
-    const remappedLastFinal = remapState(finals[finals.length - 1]);
+    const remappedLastFinal = finals.length * columns;
+    const remappedLastDeadEndFinal = deadEndFinals.length * columns;
+    const paddedTokenIdsLength = Math.max(128, remappedTokenIds.length);
 
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
@@ -122,11 +144,14 @@ export class JavaScriptBaseCodegen {
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
 
-      const tokenIds = new ${tokenIdSize}([
-        ${remappedTokenIds
-          .map((id, i) => `${id ?? 0}, // ${remappedTokenNames[i]}`)
-          .join("\n")}
-      ]);
+      const tokenIds = new ${tokenIdSize}(${paddedTokenIdsLength});
+      ${remappedTokenIds
+        .map((id, i) =>
+          id !== undefined && id !== 0
+            ? `tokenIds[${i}] = ${id}; // ${remappedTokenNames[i]}`
+            : `// tokenIds[${i}] = 0; // ${remappedTokenNames[i]}`
+        )
+        .join("\n")}
 
       const table = new ${pointerSize}(${columns * remappedTokenIds.length});
       ${transitions
@@ -162,11 +187,29 @@ export class JavaScriptBaseCodegen {
         while (i < l) {
           state = table[state + input[i++]];
           if (state <= ${remappedLastFinal}) {
-            if (state === 0) {
+            ${
+              deadEndFinals.length === finals.length
+                ? `if (state !== 0) {
+              successState = state;
+              successPos = i;
+            }
+            break;`
+                : deadEndFinals.length > 0
+                ? `if (state <= ${remappedLastDeadEndFinal}) {
+              if (state !== 0) {
+                successState = state;
+                successPos = i;
+              }
               break;
             }
             successState = state;
-            successPos = i;
+            successPos = i;`
+                : `if (state === 0) {
+              break;
+            }
+            successState = state;
+            successPos = i;`
+            }
           }
         }
 
@@ -252,14 +295,15 @@ export class JavaScriptBaseCodegen {
 
     const debug = this._debug.bind(this);
 
-    const actionOps = ["shift", "reduce", "done"];
     const requiresSemanticActions = states.some((state) =>
       Array.from(state.values()).some((item) => item.semanticAction)
     );
     const lexerModes = Object.keys(lexerData);
     const hasSingleLexerMode = lexerModes.length === 1;
-    const canPreMultiplyState = states.length * parserSymbols.length < 16384;
+    const canPreMultiplyState = states.length * parserSymbols.length < 32767;
     const stateMultiplier = canPreMultiplyState ? parserSymbols.length : 1;
+    const ruleNamesSet = new Set(["S", ...rules.map((r) => r.name)]);
+    const paddedTableSize = Math.max(64, states.length * parserSymbols.length);
 
     const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
@@ -333,44 +377,45 @@ export class JavaScriptBaseCodegen {
           .join("\n")}
       ];
 
-      const actionsTable = new Uint16Array(${
-        states.length * parserSymbols.length
-      }).fill(0xffff);
+      const actionsTable = new Uint16Array(${paddedTableSize}).fill(0xffff);
       ${Array.from(actions.entries())
         .flatMap(([from, action]) => {
           const stateIndex = states.indexOf(from);
           const items = Array.from(from.values());
-          return Array.from(action.entries()).map(([symbol, to]) => {
-            const lookaheadIndex = parserSymbols.indexOf(symbol);
-            const opIndex = actionOps.indexOf(to.op);
-            let target = 0;
-            let reduceLen = 0;
-            if (to.op === "shift" && to.state) {
-              target = states.indexOf(to.state) * stateMultiplier;
-            } else if (to.op === "reduce" && to.symbol) {
-              target = parserSymbols.indexOf(to.symbol);
-              const matchedItem = items.find(
-                (item) =>
-                  item.name === to.symbol &&
-                  item.marker === item.tokens.length &&
-                  item.lookahead === symbol
-              );
-              reduceLen = matchedItem ? matchedItem.tokens.length : 0;
-            }
-            const packedAction = (reduceLen << 10) | (target << 2) | opIndex;
-            const actionIdx = actionsTableIndex++;
-            return `actionsTable[${
-              stateIndex * parserSymbols.length + lookaheadIndex
-            }] = ${packedAction}; // 'state ${stateIndex}' -> ${symbol} -> ${
-              to.op
-            } (target=${target}, len=${reduceLen}) -> 'action ${actionIdx}'`;
-          });
+          return Array.from(action.entries())
+            .filter(([symbol]) => !ruleNamesSet.has(symbol))
+            .map(([symbol, to]) => {
+              const lookaheadIndex = parserSymbols.indexOf(symbol);
+              let packedAction = 0xffff;
+              let target = 0;
+              let reduceLen = 0;
+              if (to.op === "shift" && to.state) {
+                target = states.indexOf(to.state) * stateMultiplier;
+                packedAction = target << 1;
+              } else if (to.op === "reduce" && to.symbol) {
+                target = parserSymbols.indexOf(to.symbol);
+                const matchedItem = items.find(
+                  (item) =>
+                    item.name === to.symbol &&
+                    item.marker === item.tokens.length &&
+                    item.lookahead === symbol
+                );
+                reduceLen = matchedItem ? matchedItem.tokens.length : 0;
+                packedAction = (reduceLen << 9) | (target << 1) | 1;
+              } else if (to.op === "done") {
+                packedAction = 0xfffe;
+              }
+              const actionIdx = actionsTableIndex++;
+              return `actionsTable[${
+                stateIndex * parserSymbols.length + lookaheadIndex
+              }] = ${packedAction}; // 'state ${stateIndex}' -> ${symbol} -> ${
+                to.op
+              } (target=${target}, len=${reduceLen}) -> 'action ${actionIdx}'`;
+            });
         })
         .join("\n")}
 
-      const gotoTable = new Uint16Array(${
-        states.length * parserSymbols.length
-      }).fill(0xffff);
+      const gotoTable = new Uint32Array(${paddedTableSize});
       ${Array.from(goto.entries())
         .flatMap(([from, target]) => {
           return Array.from(target.entries()).map(([symbol, to]) => {
@@ -378,7 +423,7 @@ export class JavaScriptBaseCodegen {
               states.indexOf(from) * parserSymbols.length +
               parserSymbols.indexOf(symbol)
             }] = ${
-              states.indexOf(to) * stateMultiplier
+              states.indexOf(to) * stateMultiplier * 65536
             }; // 'state ${states.indexOf(to)}'`;
           });
         })
@@ -427,7 +472,7 @@ export class JavaScriptBaseCodegen {
       /**
        * This typed array contains the syntax tree from a parse.
        * Each CST node occupies 3 uint32 words:
-       * - word 0 (tp + 0): name | (numChildren << 16)
+       * - word 0 (tp + 0): name | (numChildren << 8)
        * - word 1 (tp + 1): start | (end << 16) (leaf) or firstChild (internal)
        * - word 2 (tp + 2): nextSibling
        * This enables 32-bit coalesced stores and fast DFS traversal.
@@ -438,11 +483,11 @@ export class JavaScriptBaseCodegen {
         get(target, prop, receiver) {
           const { stream, pointer } = target;
           const word0 = tree[pointer];
-          const nChildren = word0 >>> 16;
+          const nChildren = word0 >>> 8;
 
           switch (prop) {
             case "name":
-              return parserSymbols[word0 & 0xffff];
+              return parserSymbols[word0 & 0xff];
             case "start":
               return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1] & 0xffff;
             case "end":
@@ -454,7 +499,7 @@ export class JavaScriptBaseCodegen {
                 return undefined;
               }
 
-              const firstChild = tree[pointer + 1];
+              const firstChild = tree[pointer + 1] & 0xffff;
               const children = [createProxy(stream, firstChild)];
               let nextChild = tree[firstChild + 2];
 
@@ -514,15 +559,14 @@ export class JavaScriptBaseCodegen {
 
         let result = nextToken(stream, 0);
         let lookahead = result.state;
-        let lookaheadStart = result.start;
-        let lookaheadEnd = result.end;
+        let lookaheadSpan = (result.start & 0xffff) | (result.end << 16);
 
         ${debug(
           () => `
-          console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + lookaheadStart + ',' + lookaheadEnd + ')');
-          console.log("    '" + input.toString().substring(Math.max(0, lookaheadStart - 10), Math.min(lookaheadStart + 10, input.length)) + "'");
-          if (lookaheadStart !== -1) {
-            console.log("     " + Array(lookaheadStart - Math.max(0, lookaheadStart - 10)).fill(' ').join('') + "^");
+          console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
+          console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
+          if (result.start !== -1) {
+            console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
           }
           `
         )}
@@ -546,121 +590,120 @@ export class JavaScriptBaseCodegen {
               ? "currentState"
               : `currentState * ${parserSymbols.length}`
           } + lookahead];
-          if (actionLookup === 0xffff) {
+          if (actionLookup >= 0xfffe) {
+            if (actionLookup === 0xfffe) {
+              ${debug(() => `console.log('steps', steps);`)}
+              ${hasSingleLexerMode ? "" : "lexer.pop(true);"}
+              return createProxy(stream, tp - 3);
+            }
+            const lookaheadStart = (lookaheadSpan << 16) >> 16;
             const context = input.toString().substr(lookaheadStart, 10);
             throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
           }
 
-          switch (actionLookup & 3) {
-            case ${actionOps.indexOf("done")}: // done
-              ${debug(() => `console.log('steps', steps);`)}
-              ${hasSingleLexerMode ? "" : "lexer.pop(true);"}
-              return createProxy(stream, tp - 3);
-            case ${actionOps.indexOf("shift")}: // shift
-              ${debug(
-                () =>
-                  `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
-              )}
-              ${
-                requiresSemanticActions
-                  ? `
-                  for (const item of states[${
+          if ((actionLookup & 1) === 0) {
+            // shift
+            ${debug(
+              () =>
+                `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
+            )}
+            ${
+              requiresSemanticActions
+                ? `
+                for (const item of states[${
+                  canPreMultiplyState
+                    ? `currentState / ${parserSymbols.length}`
+                    : "currentState"
+                }].values()) {
+                  if (item.tokens[item.marker] === parserSymbols[lookahead]) {
+                    item.semanticAction?.(stack, sp);
+                  }
+                }
+                `
+                : ""
+            }
+
+            tree[tp] = lookahead; // name (and nChildren = 0)
+            tree[tp + 1] = lookaheadSpan;
+            tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
+
+            sp += 1;
+            stack[sp] = tp | (actionLookup << 15);
+
+            result = nextToken(stream, lookaheadSpan >>> 16);
+            lookahead = result.state;
+            lookaheadSpan = (result.start & 0xffff) | (result.end << 16);
+            ${debug(
+              () => `
+              console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
+              console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
+              if (result.start !== -1) {
+                console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
+              }
+              `
+            )}
+
+            ${debug(
+              () => `
+              console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
+              console.log('');
+              `
+            )}
+          } else {
+            // reduce
+            const word0 = actionLookup >>> 1;
+            const actionSymbol = word0 & 0xff;
+            const stackItemsToReduce = word0 >>> 8;
+
+            ${debug(
+              () =>
+                `console.log('action: reduce', actionSymbol,
+                  parserSymbols[actionSymbol],
+                  Array.from({ length: stackItemsToReduce })
+                    .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xffff] & 0xff])
+                    .reverse()
+                );`
+            )}
+            ${debug(
+              () => `
+              console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
+              console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
+              if (result.start !== -1) {
+                console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
+              }
+              `
+            )}
+            ${
+              requiresSemanticActions
+                ? `semanticReducerActions[${
                     canPreMultiplyState
                       ? `currentState / ${parserSymbols.length}`
                       : "currentState"
-                  }].values()) {
-                    if (item.tokens[item.marker] === parserSymbols[lookahead]) {
-                      item.semanticAction?.(stack, sp);
-                    }
-                  }
-                  `
-                  : ""
-              }
+                  }]?.[actionSymbol][lookahead](stack, sp);`
+                : ""
+            }
 
-              tree[tp] = lookahead; // name (and nChildren = 0)
-              tree[tp + 1] = lookaheadStart | (lookaheadEnd << 16);
-              tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
+            sp -= stackItemsToReduce;
+            tree[tp] = word0; // name and number of children
 
-              sp += 1;
-              stack[sp] = tp | ((actionLookup >> 2) << 16);
+            const rtop = stack[sp];
+            const nextState = gotoTable[${
+              canPreMultiplyState
+                ? "(rtop >>> 16)"
+                : `(rtop >>> 16) * ${parserSymbols.length}`
+            } + actionSymbol];
+            tree[(rtop & 0xffff) + 2] = tp; // next sibling
 
-              result = nextToken(stream, lookaheadEnd);
-              lookahead = result.state;
-              lookaheadStart = result.start;
-              lookaheadEnd = result.end;
-              ${debug(
-                () => `
-                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + lookaheadStart + ',' + lookaheadEnd + ')');
-                console.log("    '" + input.toString().substring(Math.max(0, lookaheadStart - 10), Math.min(lookaheadStart + 10, input.length)) + "'");
-                if (lookaheadStart !== -1) {
-                  console.log("     " + Array(lookaheadStart - Math.max(0, lookaheadStart - 10)).fill(' ').join('') + "^");
-                }
-                `
-              )}
+            sp += 1;
+            tree[tp + 1] = stack[sp]; // first child
+            stack[sp] = tp | nextState;
 
-              ${debug(
-                () => `
-                console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
-                console.log('');
-                `
-              )}
-              break;
-            case ${actionOps.indexOf("reduce")}: // reduce
-              const actionSymbol = (actionLookup >> 2) & 0xff;
-              const stackItemsToReduce = actionLookup >> 10;
-
-              ${debug(
-                () =>
-                  `console.log('action: reduce', actionSymbol,
-                    parserSymbols[actionSymbol],
-                    Array.from({ length: stackItemsToReduce })
-                      .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xffff] & 0xffff])
-                      .reverse()
-                  );`
-              )}
-              ${debug(
-                () => `
-                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
-                console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
-                if (result.start !== -1) {
-                  console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
-                }
-                `
-              )}
-              ${
-                requiresSemanticActions
-                  ? `semanticReducerActions[${
-                      canPreMultiplyState
-                        ? `currentState / ${parserSymbols.length}`
-                        : "currentState"
-                    }]?.[actionSymbol][lookahead](stack, sp);`
-                  : ""
-              }
-
-              sp -= stackItemsToReduce;
-              tree[tp] = actionSymbol | (stackItemsToReduce << 16); // name and number of children
-
-              const rtop = stack[sp];
-              const nextState = gotoTable[${
-                canPreMultiplyState
-                  ? "(rtop >>> 16)"
-                  : `(rtop >>> 16) * ${parserSymbols.length}`
-              } + actionSymbol];
-              tree[(rtop & 0xffff) + 2] = tp; // next sibling
-
-              sp += 1;
-              tree[tp + 1] = stack[sp] & 0xffff; // first child
-              stack[sp] = tp | (nextState << 16);
-
-              ${debug(
-                () => `
-                console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
-                console.log('');
-                `
-              )}
-              break;
-            default:
-              throw new Error("Parser Error");
+            ${debug(
+              () => `
+              console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
+              console.log('');
+              `
+            )}
           }
 
           tp += 3;

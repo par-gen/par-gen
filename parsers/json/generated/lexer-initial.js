@@ -3,159 +3,158 @@
 const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 
-const tokenIds = new Uint8Array([
-  0, // undefined
-  0, // WS
-  4, // CURLY_OPEN
-  5, // CURLY_CLOSE
-  6, // COMMA
-  7, // COLON
-  11, // NUMBER
-  11, // NUMBER
-  11, // NUMBER
-  11, // NUMBER
-  11, // NUMBER
-  9, // BRACKET_OPEN
-  10, // BRACKET_CLOSE
-  8, // STRING
-  1, // TRUE
-  3, // NULL
-  2, // FALSE
-  0, // undefined
-  11, // NUMBER
-  11, // NUMBER
-  11, // NUMBER
-  11, // NUMBER
-  8, // STRING
-  1, // TRUE
-  3, // NULL
-  2, // FALSE
-  8, // STRING
-  8, // STRING
-  1, // TRUE
-  3, // NULL
-  2, // FALSE
-  8, // STRING
-  1, // TRUE
-  3, // NULL
-  2, // FALSE
-  8, // STRING
-  2, // FALSE
-  8, // STRING
-  12, // @par-gen.EOF
-  13, // @par-gen.ERROR
-]);
+const tokenIds = new Uint8Array(128);
+// tokenIds[0] = 0; // undefined
+tokenIds[1] = 4; // CURLY_OPEN
+tokenIds[2] = 5; // CURLY_CLOSE
+tokenIds[3] = 6; // COMMA
+tokenIds[4] = 7; // COLON
+tokenIds[5] = 11; // NUMBER
+tokenIds[6] = 9; // BRACKET_OPEN
+tokenIds[7] = 10; // BRACKET_CLOSE
+tokenIds[8] = 8; // STRING
+tokenIds[9] = 1; // TRUE
+tokenIds[10] = 3; // NULL
+tokenIds[11] = 2; // FALSE
+// tokenIds[12] = 0; // WS
+tokenIds[13] = 11; // NUMBER
+tokenIds[14] = 11; // NUMBER
+tokenIds[15] = 11; // NUMBER
+tokenIds[16] = 11; // NUMBER
+// tokenIds[17] = 0; // undefined
+tokenIds[18] = 11; // NUMBER
+tokenIds[19] = 11; // NUMBER
+tokenIds[20] = 11; // NUMBER
+tokenIds[21] = 11; // NUMBER
+tokenIds[22] = 8; // STRING
+tokenIds[23] = 1; // TRUE
+tokenIds[24] = 3; // NULL
+tokenIds[25] = 2; // FALSE
+tokenIds[26] = 8; // STRING
+tokenIds[27] = 8; // STRING
+tokenIds[28] = 1; // TRUE
+tokenIds[29] = 3; // NULL
+tokenIds[30] = 2; // FALSE
+tokenIds[31] = 8; // STRING
+tokenIds[32] = 1; // TRUE
+tokenIds[33] = 3; // NULL
+tokenIds[34] = 2; // FALSE
+tokenIds[35] = 8; // STRING
+tokenIds[36] = 2; // FALSE
+tokenIds[37] = 8; // STRING
+tokenIds[38] = 12; // @par-gen.EOF
+tokenIds[39] = 13; // @par-gen.ERROR
 
 const table = new Uint16Array(10240);
-table[288] = 256; // WS
-table[266] = 256; // WS
-table[269] = 256; // WS
-table[265] = 256; // WS
-table[1637] = 4608; // NUMBER
-table[1582] = 5376; // NUMBER
-table[1584] = 1536; // NUMBER
-table[1585] = 1536; // NUMBER
-table[1586] = 1536; // NUMBER
-table[1587] = 1536; // NUMBER
-table[1588] = 1536; // NUMBER
-table[1589] = 1536; // NUMBER
-table[1590] = 1536; // NUMBER
-table[1591] = 1536; // NUMBER
-table[1592] = 1536; // NUMBER
-table[1593] = 1536; // NUMBER
-table[1605] = 4608; // NUMBER
-table[1893] = 4608; // NUMBER
-table[1840] = 1792; // NUMBER
-table[1841] = 1792; // NUMBER
-table[1842] = 1792; // NUMBER
-table[1843] = 1792; // NUMBER
-table[1844] = 1792; // NUMBER
-table[1845] = 1792; // NUMBER
-table[1846] = 1792; // NUMBER
-table[1847] = 1792; // NUMBER
-table[1848] = 1792; // NUMBER
-table[1849] = 1792; // NUMBER
-table[1861] = 4608; // NUMBER
-table[2096] = 2048; // NUMBER
-table[2097] = 2048; // NUMBER
-table[2098] = 2048; // NUMBER
-table[2099] = 2048; // NUMBER
-table[2100] = 2048; // NUMBER
-table[2101] = 2048; // NUMBER
-table[2102] = 2048; // NUMBER
-table[2103] = 2048; // NUMBER
-table[2104] = 2048; // NUMBER
-table[2105] = 2048; // NUMBER
-table[2405] = 4608; // NUMBER
-table[2350] = 5376; // NUMBER
-table[2373] = 4608; // NUMBER
-table[4384] = 256; // WS
-table[4362] = 256; // WS
-table[4365] = 256; // WS
-table[4361] = 256; // WS
+table[3104] = 3072; // WS
+table[3082] = 3072; // WS
+table[3085] = 3072; // WS
+table[3081] = 3072; // WS
+table[3429] = 4608; // NUMBER
+table[3374] = 5376; // NUMBER
+table[3376] = 3328; // NUMBER
+table[3377] = 3328; // NUMBER
+table[3378] = 3328; // NUMBER
+table[3379] = 3328; // NUMBER
+table[3380] = 3328; // NUMBER
+table[3381] = 3328; // NUMBER
+table[3382] = 3328; // NUMBER
+table[3383] = 3328; // NUMBER
+table[3384] = 3328; // NUMBER
+table[3385] = 3328; // NUMBER
+table[3397] = 4608; // NUMBER
+table[3685] = 4608; // NUMBER
+table[3632] = 3584; // NUMBER
+table[3633] = 3584; // NUMBER
+table[3634] = 3584; // NUMBER
+table[3635] = 3584; // NUMBER
+table[3636] = 3584; // NUMBER
+table[3637] = 3584; // NUMBER
+table[3638] = 3584; // NUMBER
+table[3639] = 3584; // NUMBER
+table[3640] = 3584; // NUMBER
+table[3641] = 3584; // NUMBER
+table[3653] = 4608; // NUMBER
+table[3888] = 3840; // NUMBER
+table[3889] = 3840; // NUMBER
+table[3890] = 3840; // NUMBER
+table[3891] = 3840; // NUMBER
+table[3892] = 3840; // NUMBER
+table[3893] = 3840; // NUMBER
+table[3894] = 3840; // NUMBER
+table[3895] = 3840; // NUMBER
+table[3896] = 3840; // NUMBER
+table[3897] = 3840; // NUMBER
+table[4197] = 4608; // NUMBER
+table[4142] = 5376; // NUMBER
+table[4165] = 4608; // NUMBER
+table[4384] = 3072; // WS
+table[4362] = 3072; // WS
+table[4365] = 3072; // WS
+table[4361] = 3072; // WS
 table[4468] = 8192; // TRUE
 table[4454] = 9216; // FALSE
 table[4462] = 8448; // NULL
-table[4475] = 512; // CURLY_OPEN
-table[4477] = 768; // CURLY_CLOSE
-table[4396] = 1024; // COMMA
-table[4410] = 1280; // COLON
+table[4475] = 256; // CURLY_OPEN
+table[4477] = 512; // CURLY_CLOSE
+table[4396] = 768; // COMMA
+table[4410] = 1024; // COLON
 table[4386] = 5632; // STRING
 table[4397] = 4864; // NUMBER
-table[4400] = 2304; // NUMBER
-table[4401] = 1536; // NUMBER
-table[4402] = 1536; // NUMBER
-table[4403] = 1536; // NUMBER
-table[4404] = 1536; // NUMBER
-table[4405] = 1536; // NUMBER
-table[4406] = 1536; // NUMBER
-table[4407] = 1536; // NUMBER
-table[4408] = 1536; // NUMBER
-table[4409] = 1536; // NUMBER
-table[4443] = 2816; // BRACKET_OPEN
-table[4445] = 3072; // BRACKET_CLOSE
+table[4400] = 4096; // NUMBER
+table[4401] = 3328; // NUMBER
+table[4402] = 3328; // NUMBER
+table[4403] = 3328; // NUMBER
+table[4404] = 3328; // NUMBER
+table[4405] = 3328; // NUMBER
+table[4406] = 3328; // NUMBER
+table[4407] = 3328; // NUMBER
+table[4408] = 3328; // NUMBER
+table[4409] = 3328; // NUMBER
+table[4443] = 1536; // BRACKET_OPEN
+table[4445] = 1792; // BRACKET_CLOSE
 table[4651] = 5120; // NUMBER
 table[4653] = 5120; // NUMBER
-table[4656] = 2560; // NUMBER
-table[4657] = 2048; // NUMBER
-table[4658] = 2048; // NUMBER
-table[4659] = 2048; // NUMBER
-table[4660] = 2048; // NUMBER
-table[4661] = 2048; // NUMBER
-table[4662] = 2048; // NUMBER
-table[4663] = 2048; // NUMBER
-table[4664] = 2048; // NUMBER
-table[4665] = 2048; // NUMBER
-table[4912] = 2304; // NUMBER
-table[4913] = 1536; // NUMBER
-table[4914] = 1536; // NUMBER
-table[4915] = 1536; // NUMBER
-table[4916] = 1536; // NUMBER
-table[4917] = 1536; // NUMBER
-table[4918] = 1536; // NUMBER
-table[4919] = 1536; // NUMBER
-table[4920] = 1536; // NUMBER
-table[4921] = 1536; // NUMBER
-table[5168] = 2560; // NUMBER
-table[5169] = 2048; // NUMBER
-table[5170] = 2048; // NUMBER
-table[5171] = 2048; // NUMBER
-table[5172] = 2048; // NUMBER
-table[5173] = 2048; // NUMBER
-table[5174] = 2048; // NUMBER
-table[5175] = 2048; // NUMBER
-table[5176] = 2048; // NUMBER
-table[5177] = 2048; // NUMBER
-table[5424] = 1792; // NUMBER
-table[5425] = 1792; // NUMBER
-table[5426] = 1792; // NUMBER
-table[5427] = 1792; // NUMBER
-table[5428] = 1792; // NUMBER
-table[5429] = 1792; // NUMBER
-table[5430] = 1792; // NUMBER
-table[5431] = 1792; // NUMBER
-table[5432] = 1792; // NUMBER
-table[5433] = 1792; // NUMBER
+table[4656] = 1280; // NUMBER
+table[4657] = 3840; // NUMBER
+table[4658] = 3840; // NUMBER
+table[4659] = 3840; // NUMBER
+table[4660] = 3840; // NUMBER
+table[4661] = 3840; // NUMBER
+table[4662] = 3840; // NUMBER
+table[4663] = 3840; // NUMBER
+table[4664] = 3840; // NUMBER
+table[4665] = 3840; // NUMBER
+table[4912] = 4096; // NUMBER
+table[4913] = 3328; // NUMBER
+table[4914] = 3328; // NUMBER
+table[4915] = 3328; // NUMBER
+table[4916] = 3328; // NUMBER
+table[4917] = 3328; // NUMBER
+table[4918] = 3328; // NUMBER
+table[4919] = 3328; // NUMBER
+table[4920] = 3328; // NUMBER
+table[4921] = 3328; // NUMBER
+table[5168] = 1280; // NUMBER
+table[5169] = 3840; // NUMBER
+table[5170] = 3840; // NUMBER
+table[5171] = 3840; // NUMBER
+table[5172] = 3840; // NUMBER
+table[5173] = 3840; // NUMBER
+table[5174] = 3840; // NUMBER
+table[5175] = 3840; // NUMBER
+table[5176] = 3840; // NUMBER
+table[5177] = 3840; // NUMBER
+table[5424] = 3584; // NUMBER
+table[5425] = 3584; // NUMBER
+table[5426] = 3584; // NUMBER
+table[5427] = 3584; // NUMBER
+table[5428] = 3584; // NUMBER
+table[5429] = 3584; // NUMBER
+table[5430] = 3584; // NUMBER
+table[5431] = 3584; // NUMBER
+table[5432] = 3584; // NUMBER
+table[5433] = 3584; // NUMBER
 table[5664] = 5632; // STRING
 table[5748] = 5632; // STRING
 table[5746] = 5632; // STRING
@@ -170,7 +169,7 @@ table[5755] = 5632; // STRING
 table[5757] = 5632; // STRING
 table[5676] = 5632; // STRING
 table[5690] = 5632; // STRING
-table[5666] = 3328; // STRING
+table[5666] = 2048; // STRING
 table[5632] = 5632; // STRING
 table[5633] = 5632; // STRING
 table[5634] = 5632; // STRING
@@ -406,9 +405,9 @@ table[5883] = 5632; // STRING
 table[5884] = 5632; // STRING
 table[5885] = 5632; // STRING
 table[5886] = 5632; // STRING
-table[5989] = 3584; // TRUE
-table[6252] = 3840; // NULL
-table[6501] = 4096; // FALSE
+table[5989] = 2304; // TRUE
+table[6252] = 2560; // NULL
+table[6501] = 2816; // FALSE
 table[6666] = 5632; // STRING
 table[6669] = 5632; // STRING
 table[6665] = 5632; // STRING
@@ -536,7 +535,11 @@ const next = (input, offset) => {
   while (i < l) {
     state = table[state + input[i++]];
     if (state <= 4096) {
-      if (state === 0) {
+      if (state <= 2816) {
+        if (state !== 0) {
+          successState = state;
+          successPos = i;
+        }
         break;
       }
       successState = state;

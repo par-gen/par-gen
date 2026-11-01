@@ -3,28 +3,27 @@
 const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 
-const tokenIds = new Uint8Array([
-  0, // undefined
-  0, // CHARACTER
-  8, // DASH
-  1, // HEX_NUMBER
-  2, // CONTROL_CHARACTER
-  3, // BACKSLASH
-  4, // X
-  5, // B
-  6, // F
-  7, // CARET
-  9, // DOT
-  10, // UNION
-  11, // PAREN_OPEN
-  12, // PAREN_CLOSE
-  13, // QUANTIFIER
-  14, // BRACKET_OPEN
-  15, // BRACKET_CLOSE
-  0, // undefined
-  16, // @par-gen.EOF
-  17, // @par-gen.ERROR
-]);
+const tokenIds = new Uint8Array(128);
+// tokenIds[0] = 0; // undefined
+// tokenIds[1] = 0; // CHARACTER
+tokenIds[2] = 8; // DASH
+tokenIds[3] = 1; // HEX_NUMBER
+tokenIds[4] = 2; // CONTROL_CHARACTER
+tokenIds[5] = 3; // BACKSLASH
+tokenIds[6] = 4; // X
+tokenIds[7] = 5; // B
+tokenIds[8] = 6; // F
+tokenIds[9] = 7; // CARET
+tokenIds[10] = 9; // DOT
+tokenIds[11] = 10; // UNION
+tokenIds[12] = 11; // PAREN_OPEN
+tokenIds[13] = 12; // PAREN_CLOSE
+tokenIds[14] = 13; // QUANTIFIER
+tokenIds[15] = 14; // BRACKET_OPEN
+tokenIds[16] = 15; // BRACKET_CLOSE
+// tokenIds[17] = 0; // undefined
+tokenIds[18] = 16; // @par-gen.EOF
+tokenIds[19] = 17; // @par-gen.ERROR
 
 const table = new Uint16Array(5120);
 table[4352] = 256; // CHARACTER
@@ -295,11 +294,11 @@ const next = (input, offset) => {
   while (i < l) {
     state = table[state + input[i++]];
     if (state <= 4096) {
-      if (state === 0) {
-        break;
+      if (state !== 0) {
+        successState = state;
+        successPos = i;
       }
-      successState = state;
-      successPos = i;
+      break;
     }
   }
 
