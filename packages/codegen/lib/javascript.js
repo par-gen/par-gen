@@ -258,6 +258,8 @@ export class JavaScriptBaseCodegen {
     );
     const lexerModes = Object.keys(lexerData);
     const hasSingleLexerMode = lexerModes.length === 1;
+    const canPreMultiplyState = states.length * parserSymbols.length < 16384;
+    const stateMultiplier = canPreMultiplyState ? parserSymbols.length : 1;
 
     const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
@@ -344,7 +346,7 @@ export class JavaScriptBaseCodegen {
             let target = 0;
             let reduceLen = 0;
             if (to.op === "shift" && to.state) {
-              target = states.indexOf(to.state);
+              target = states.indexOf(to.state) * stateMultiplier;
             } else if (to.op === "reduce" && to.symbol) {
               target = parserSymbols.indexOf(to.symbol);
               const matchedItem = items.find(
@@ -375,7 +377,9 @@ export class JavaScriptBaseCodegen {
             return `gotoTable[${
               states.indexOf(from) * parserSymbols.length +
               parserSymbols.indexOf(symbol)
-            }] = ${states.indexOf(to)}; // 'state ${states.indexOf(to)}'`;
+            }] = ${
+              states.indexOf(to) * stateMultiplier
+            }; // 'state ${states.indexOf(to)}'`;
           });
         })
         .join("\n")}
@@ -523,7 +527,9 @@ export class JavaScriptBaseCodegen {
           `
         )}
 
-        stack[0] = ${states.indexOf(start) * 65536}; // starting state
+        stack[0] = ${
+          states.indexOf(start) * stateMultiplier * 65536
+        }; // starting state
         let sp = 0;
         // let the tree stack start from offset 3
         // offset 0 means an error occurred and should be used by the parser
@@ -535,8 +541,10 @@ export class JavaScriptBaseCodegen {
           const top = stack[sp];
           const currentState = top >>> 16;
 
-          const actionLookup = actionsTable[currentState * ${
-            parserSymbols.length
+          const actionLookup = actionsTable[${
+            canPreMultiplyState
+              ? "currentState"
+              : `currentState * ${parserSymbols.length}`
           } + lookahead];
           if (actionLookup === 0xffff) {
             const context = input.toString().substr(lookaheadStart, 10);
@@ -556,7 +564,11 @@ export class JavaScriptBaseCodegen {
               ${
                 requiresSemanticActions
                   ? `
-                  for (const item of states[currentState].values()) {
+                  for (const item of states[${
+                    canPreMultiplyState
+                      ? `currentState / ${parserSymbols.length}`
+                      : "currentState"
+                  }].values()) {
                     if (item.tokens[item.marker] === parserSymbols[lookahead]) {
                       item.semanticAction?.(stack, sp);
                     }
@@ -588,7 +600,7 @@ export class JavaScriptBaseCodegen {
 
               ${debug(
                 () => `
-                console.log('  next state', stack[sp] >>> 16);
+                console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
                 console.log('');
                 `
               )}
@@ -617,7 +629,11 @@ export class JavaScriptBaseCodegen {
               )}
               ${
                 requiresSemanticActions
-                  ? "semanticReducerActions[currentState]?.[actionSymbol][lookahead](stack, sp);"
+                  ? `semanticReducerActions[${
+                      canPreMultiplyState
+                        ? `currentState / ${parserSymbols.length}`
+                        : "currentState"
+                    }]?.[actionSymbol][lookahead](stack, sp);`
                   : ""
               }
 
@@ -625,8 +641,10 @@ export class JavaScriptBaseCodegen {
               tree[tp] = actionSymbol | (stackItemsToReduce << 16); // name and number of children
 
               const rtop = stack[sp];
-              const nextState = gotoTable[(rtop >>> 16) * ${
-                parserSymbols.length
+              const nextState = gotoTable[${
+                canPreMultiplyState
+                  ? "(rtop >>> 16)"
+                  : `(rtop >>> 16) * ${parserSymbols.length}`
               } + actionSymbol];
               tree[(rtop & 0xffff) + 2] = tp; // next sibling
 
@@ -636,7 +654,7 @@ export class JavaScriptBaseCodegen {
 
               ${debug(
                 () => `
-                console.log('  next state', stack[sp] >>> 16);
+                console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
                 console.log('');
                 `
               )}
