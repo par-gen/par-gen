@@ -440,57 +440,57 @@ export class JavaScriptBaseCodegen {
        */
       const tree = new Uint16Array(32768);
 
-      const createProxy = (stream, tree, pointer) => {
-        return new Proxy(
-          {},
-          {
-            get(target, prop, receiver) {
-              const nChildren = tree[pointer + 3];
+      const proxyHandler = {
+        get(target, prop, receiver) {
+          const { stream, tree, pointer } = target;
+          const nChildren = tree[pointer + 3];
 
-              switch (prop) {
-                case "name":
-                  return parserSymbols[tree[pointer]];
-                case "start":
-                  return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
-                case "end":
-                  return nChildren > 0 ? receiver.items[nChildren - 1].end : tree[pointer + 2];
-                case "value":
-                  return stream.subarray(receiver.start, receiver.end);
-                case "items":
-                  if (nChildren === 0) {
-                    return undefined;
-                  }
-
-                  const firstChild = tree[pointer + 4];
-                  const children = [createProxy(stream, tree, firstChild)];
-                  let nextChild = tree[firstChild + 5];
-
-                  for (let i = 1; i < nChildren; i++) {
-                    children.push(createProxy(stream, tree, nextChild));
-                    nextChild = tree[nextChild + 5];
-                  }
-
-                  return children;
-                case "__tree":
-                  return tree;
-                case "__pointer":
-                  return pointer;
+          switch (prop) {
+            case "name":
+              return parserSymbols[tree[pointer]];
+            case "start":
+              return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
+            case "end":
+              return nChildren > 0 ? receiver.items[nChildren - 1].end : tree[pointer + 2];
+            case "value":
+              return stream.subarray(receiver.start, receiver.end);
+            case "items": {
+              if (nChildren === 0) {
+                return undefined;
               }
-            },
-            ownKeys(target) {
-              return ["name", "start", "end", "value", "items"];
-            },
-            has(target, prop) {
-              return this.ownKeys(target).includes(prop);
-            },
-            getOwnPropertyDescriptor(target, prop) {
-              return this.has(target, prop)
-                ? { enumerable: true, configurable: true }
-                : undefined;
-            },
+
+              const firstChild = tree[pointer + 4];
+              const children = [createProxy(stream, tree, firstChild)];
+              let nextChild = tree[firstChild + 5];
+
+              for (let i = 1; i < nChildren; i++) {
+                children.push(createProxy(stream, tree, nextChild));
+                nextChild = tree[nextChild + 5];
+              }
+
+              return children;
+            }
+            case "__tree":
+              return tree;
+            case "__pointer":
+              return pointer;
           }
-        );
+        },
+        ownKeys() {
+          return ["name", "start", "end", "value", "items"];
+        },
+        has(target, prop) {
+          return this.ownKeys(target).includes(prop);
+        },
+        getOwnPropertyDescriptor(target, prop) {
+          return this.has(target, prop)
+            ? { enumerable: true, configurable: true }
+            : undefined;
+        },
       };
+
+      const createProxy = (stream, tree, pointer) =>
+        new Proxy({ stream, tree, pointer }, proxyHandler);
 
       /**
        * @typedef {Object} Node
