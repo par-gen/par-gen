@@ -11,6 +11,7 @@ Statement := Assignment Expr Semi;
 Statement := Assignment Expr StateClause Semi;
 Statement := Assignment Alternatives Semi;
 Statement := Assignment Pipe Alternatives Semi;
+Statement := StateList Semi;
 Assignment := IDENTIFIER ASSIGN;
 Assignment := IDENTIFIER ASSIGN WS;
 Assignment := IDENTIFIER WS ASSIGN;
@@ -72,122 +73,139 @@ const parserSymbols = [
   "undefined", // 31
 ];
 
-const actionsTable = new Uint16Array(1344).fill(0xffff);
+const actionsTable = new Uint16Array(1408).fill(0xffff);
 actionsTable[0] = 64; // 'state 0' -> WS -> shift (target=32, len=0)
 actionsTable[7] = 128; // 'state 0' -> IDENTIFIER -> shift (target=64, len=0)
 actionsTable[39] = 128; // 'state 1' -> IDENTIFIER -> shift (target=64, len=0)
-actionsTable[64] = 1088; // 'state 2' -> WS -> shift (target=544, len=0)
-actionsTable[65] = 1152; // 'state 2' -> ASSIGN -> shift (target=576, len=0)
+actionsTable[64] = 1472; // 'state 2' -> WS -> shift (target=736, len=0)
+actionsTable[65] = 1536; // 'state 2' -> ASSIGN -> shift (target=768, len=0)
+actionsTable[66] = 553; // 'state 2' -> SEMICOLON -> reduce (target=20, len=1)
+actionsTable[71] = 553; // 'state 2' -> IDENTIFIER -> reduce (target=20, len=1)
 actionsTable[104] = 65534; // 'state 3' -> @par-gen.EOF -> done (target=0, len=0)
 actionsTable[135] = 128; // 'state 4' -> IDENTIFIER -> shift (target=64, len=0)
 actionsTable[136] = 535; // 'state 4' -> @par-gen.EOF -> reduce (target=11, len=1)
 actionsTable.fill(537, 167, 169); // 'state 5' -> IDENTIFIER..@par-gen.EOF -> reduce (target=12, len=1)
-actionsTable[195] = 576; // 'state 6' -> PIPE -> shift (target=288, len=0)
-actionsTable[197] = 640; // 'state 6' -> EXPR -> shift (target=320, len=0)
-actionsTable.fill(704, 198, 200); // 'state 6' -> ACTION..IDENTIFIER -> shift (target=352, len=0)
-actionsTable.fill(1049, 231, 233); // 'state 7' -> IDENTIFIER..@par-gen.EOF -> reduce (target=12, len=2)
-actionsTable[263] = 128; // 'state 8' -> IDENTIFIER -> shift (target=64, len=0)
-actionsTable[264] = 1047; // 'state 8' -> @par-gen.EOF -> reduce (target=11, len=2)
-actionsTable[288] = 1792; // 'state 9' -> WS -> shift (target=896, len=0)
-actionsTable.fill(547, 294, 296); // 'state 9' -> ACTION..IDENTIFIER -> reduce (target=17, len=1)
-actionsTable[320] = 1472; // 'state 10' -> WS -> shift (target=736, len=0)
-actionsTable[322] = 543; // 'state 10' -> SEMICOLON -> reduce (target=15, len=1)
-actionsTable[324] = 543; // 'state 10' -> AT -> reduce (target=15, len=1)
-actionsTable[352] = 1664; // 'state 11' -> WS -> shift (target=832, len=0)
-actionsTable.fill(559, 354, 356); // 'state 11' -> SEMICOLON..PIPE -> reduce (target=23, len=1)
-actionsTable.fill(559, 358, 360); // 'state 11' -> ACTION..IDENTIFIER -> reduce (target=23, len=1)
-actionsTable[386] = 1216; // 'state 12' -> SEMICOLON -> shift (target=608, len=0)
-actionsTable[388] = 1280; // 'state 12' -> AT -> shift (target=640, len=0)
-actionsTable.fill(704, 422, 424); // 'state 13' -> ACTION..IDENTIFIER -> shift (target=352, len=0)
+actionsTable[195] = 704; // 'state 6' -> PIPE -> shift (target=352, len=0)
+actionsTable[197] = 768; // 'state 6' -> EXPR -> shift (target=384, len=0)
+actionsTable.fill(832, 198, 200); // 'state 6' -> ACTION..IDENTIFIER -> shift (target=416, len=0)
+actionsTable[226] = 1216; // 'state 7' -> SEMICOLON -> shift (target=608, len=0)
+actionsTable[231] = 1280; // 'state 7' -> IDENTIFIER -> shift (target=640, len=0)
+actionsTable[258] = 551; // 'state 8' -> SEMICOLON -> reduce (target=19, len=1)
+actionsTable[263] = 551; // 'state 8' -> IDENTIFIER -> reduce (target=19, len=1)
+actionsTable.fill(1049, 295, 297); // 'state 9' -> IDENTIFIER..@par-gen.EOF -> reduce (target=12, len=2)
+actionsTable[327] = 128; // 'state 10' -> IDENTIFIER -> shift (target=64, len=0)
+actionsTable[328] = 1047; // 'state 10' -> @par-gen.EOF -> reduce (target=11, len=2)
+actionsTable[352] = 2112; // 'state 11' -> WS -> shift (target=1056, len=0)
+actionsTable.fill(547, 358, 360); // 'state 11' -> ACTION..IDENTIFIER -> reduce (target=17, len=1)
+actionsTable[384] = 1792; // 'state 12' -> WS -> shift (target=896, len=0)
+actionsTable[386] = 543; // 'state 12' -> SEMICOLON -> reduce (target=15, len=1)
+actionsTable[388] = 543; // 'state 12' -> AT -> reduce (target=15, len=1)
+actionsTable[416] = 1984; // 'state 13' -> WS -> shift (target=992, len=0)
+actionsTable.fill(559, 418, 420); // 'state 13' -> SEMICOLON..PIPE -> reduce (target=23, len=1)
+actionsTable.fill(559, 422, 424); // 'state 13' -> ACTION..IDENTIFIER -> reduce (target=23, len=1)
 actionsTable[450] = 1216; // 'state 14' -> SEMICOLON -> shift (target=608, len=0)
-actionsTable[451] = 576; // 'state 14' -> PIPE -> shift (target=288, len=0)
-actionsTable.fill(555, 482, 484); // 'state 15' -> SEMICOLON..PIPE -> reduce (target=21, len=1)
-actionsTable.fill(704, 486, 488); // 'state 15' -> ACTION..IDENTIFIER -> shift (target=352, len=0)
-actionsTable.fill(557, 514, 516); // 'state 16' -> SEMICOLON..PIPE -> reduce (target=22, len=1)
-actionsTable.fill(557, 518, 520); // 'state 16' -> ACTION..IDENTIFIER -> reduce (target=22, len=1)
-actionsTable[545] = 1920; // 'state 17' -> ASSIGN -> shift (target=960, len=0)
-actionsTable[576] = 1856; // 'state 18' -> WS -> shift (target=928, len=0)
-actionsTable[579] = 1053; // 'state 18' -> PIPE -> reduce (target=14, len=2)
-actionsTable.fill(1053, 581, 584); // 'state 18' -> EXPR..IDENTIFIER -> reduce (target=14, len=2)
-actionsTable[608] = 1984; // 'state 19' -> WS -> shift (target=992, len=0)
+actionsTable[452] = 1600; // 'state 14' -> AT -> shift (target=800, len=0)
+actionsTable.fill(832, 486, 488); // 'state 15' -> ACTION..IDENTIFIER -> shift (target=416, len=0)
+actionsTable[514] = 1216; // 'state 16' -> SEMICOLON -> shift (target=608, len=0)
+actionsTable[515] = 704; // 'state 16' -> PIPE -> shift (target=352, len=0)
+actionsTable.fill(555, 546, 548); // 'state 17' -> SEMICOLON..PIPE -> reduce (target=21, len=1)
+actionsTable.fill(832, 550, 552); // 'state 17' -> ACTION..IDENTIFIER -> shift (target=416, len=0)
+actionsTable.fill(557, 578, 580); // 'state 18' -> SEMICOLON..PIPE -> reduce (target=22, len=1)
+actionsTable.fill(557, 582, 584); // 'state 18' -> ACTION..IDENTIFIER -> reduce (target=22, len=1)
+actionsTable[608] = 2176; // 'state 19' -> WS -> shift (target=1088, len=0)
 actionsTable.fill(545, 615, 617); // 'state 19' -> IDENTIFIER..@par-gen.EOF -> reduce (target=16, len=1)
-actionsTable[640] = 2112; // 'state 20' -> WS -> shift (target=1056, len=0)
-actionsTable[647] = 2176; // 'state 20' -> IDENTIFIER -> shift (target=1088, len=0)
-actionsTable.fill(1563, 679, 681); // 'state 21' -> IDENTIFIER..@par-gen.EOF -> reduce (target=13, len=3)
-actionsTable[706] = 1216; // 'state 22' -> SEMICOLON -> shift (target=608, len=0)
-actionsTable[738] = 1055; // 'state 23' -> SEMICOLON -> reduce (target=15, len=2)
-actionsTable[740] = 1055; // 'state 23' -> AT -> reduce (target=15, len=2)
-actionsTable.fill(704, 774, 776); // 'state 24' -> ACTION..IDENTIFIER -> shift (target=352, len=0)
-actionsTable.fill(1069, 802, 804); // 'state 25' -> SEMICOLON..PIPE -> reduce (target=22, len=2)
-actionsTable.fill(1069, 806, 808); // 'state 25' -> ACTION..IDENTIFIER -> reduce (target=22, len=2)
-actionsTable.fill(1071, 834, 836); // 'state 26' -> SEMICOLON..PIPE -> reduce (target=23, len=2)
-actionsTable.fill(1071, 838, 840); // 'state 26' -> ACTION..IDENTIFIER -> reduce (target=23, len=2)
+actionsTable[640] = 2240; // 'state 20' -> WS -> shift (target=1120, len=0)
+actionsTable[642] = 553; // 'state 20' -> SEMICOLON -> reduce (target=20, len=1)
+actionsTable[647] = 553; // 'state 20' -> IDENTIFIER -> reduce (target=20, len=1)
+actionsTable.fill(1051, 679, 681); // 'state 21' -> IDENTIFIER..@par-gen.EOF -> reduce (target=13, len=2)
+actionsTable[706] = 1063; // 'state 22' -> SEMICOLON -> reduce (target=19, len=2)
+actionsTable[711] = 1063; // 'state 22' -> IDENTIFIER -> reduce (target=19, len=2)
+actionsTable[737] = 2368; // 'state 23' -> ASSIGN -> shift (target=1184, len=0)
+actionsTable[738] = 1065; // 'state 23' -> SEMICOLON -> reduce (target=20, len=2)
+actionsTable[743] = 1065; // 'state 23' -> IDENTIFIER -> reduce (target=20, len=2)
+actionsTable[768] = 2304; // 'state 24' -> WS -> shift (target=1152, len=0)
+actionsTable[771] = 1053; // 'state 24' -> PIPE -> reduce (target=14, len=2)
+actionsTable.fill(1053, 773, 776); // 'state 24' -> EXPR..IDENTIFIER -> reduce (target=14, len=2)
+actionsTable[800] = 2496; // 'state 25' -> WS -> shift (target=1248, len=0)
+actionsTable[807] = 1280; // 'state 25' -> IDENTIFIER -> shift (target=640, len=0)
+actionsTable.fill(1563, 839, 841); // 'state 26' -> IDENTIFIER..@par-gen.EOF -> reduce (target=13, len=3)
 actionsTable[866] = 1216; // 'state 27' -> SEMICOLON -> shift (target=608, len=0)
-actionsTable[867] = 576; // 'state 27' -> PIPE -> shift (target=288, len=0)
-actionsTable.fill(1059, 902, 904); // 'state 28' -> ACTION..IDENTIFIER -> reduce (target=17, len=2)
-actionsTable[931] = 1565; // 'state 29' -> PIPE -> reduce (target=14, len=3)
-actionsTable.fill(1565, 933, 936); // 'state 29' -> EXPR..IDENTIFIER -> reduce (target=14, len=3)
-actionsTable[960] = 2432; // 'state 30' -> WS -> shift (target=1216, len=0)
-actionsTable[963] = 1565; // 'state 30' -> PIPE -> reduce (target=14, len=3)
-actionsTable.fill(1565, 965, 968); // 'state 30' -> EXPR..IDENTIFIER -> reduce (target=14, len=3)
-actionsTable.fill(1057, 999, 1001); // 'state 31' -> IDENTIFIER..@par-gen.EOF -> reduce (target=16, len=2)
-actionsTable.fill(2075, 1031, 1033); // 'state 32' -> IDENTIFIER..@par-gen.EOF -> reduce (target=13, len=4)
-actionsTable[1063] = 2176; // 'state 33' -> IDENTIFIER -> shift (target=1088, len=0)
-actionsTable[1088] = 2560; // 'state 34' -> WS -> shift (target=1280, len=0)
-actionsTable[1090] = 553; // 'state 34' -> SEMICOLON -> reduce (target=20, len=1)
-actionsTable[1095] = 553; // 'state 34' -> IDENTIFIER -> reduce (target=20, len=1)
-actionsTable[1122] = 1061; // 'state 35' -> SEMICOLON -> reduce (target=18, len=2)
-actionsTable[1127] = 2176; // 'state 35' -> IDENTIFIER -> shift (target=1088, len=0)
-actionsTable[1154] = 551; // 'state 36' -> SEMICOLON -> reduce (target=19, len=1)
-actionsTable[1159] = 551; // 'state 36' -> IDENTIFIER -> reduce (target=19, len=1)
-actionsTable.fill(1579, 1186, 1188); // 'state 37' -> SEMICOLON..PIPE -> reduce (target=21, len=3)
-actionsTable.fill(704, 1190, 1192); // 'state 37' -> ACTION..IDENTIFIER -> shift (target=352, len=0)
-actionsTable[1219] = 2077; // 'state 38' -> PIPE -> reduce (target=14, len=4)
-actionsTable.fill(2077, 1221, 1224); // 'state 38' -> EXPR..IDENTIFIER -> reduce (target=14, len=4)
-actionsTable[1250] = 1063; // 'state 39' -> SEMICOLON -> reduce (target=19, len=2)
-actionsTable[1255] = 1063; // 'state 39' -> IDENTIFIER -> reduce (target=19, len=2)
-actionsTable[1282] = 1065; // 'state 40' -> SEMICOLON -> reduce (target=20, len=2)
-actionsTable[1287] = 1065; // 'state 40' -> IDENTIFIER -> reduce (target=20, len=2)
-actionsTable[1314] = 1573; // 'state 41' -> SEMICOLON -> reduce (target=18, len=3)
-actionsTable[1319] = 2176; // 'state 41' -> IDENTIFIER -> shift (target=1088, len=0)
+actionsTable[898] = 1055; // 'state 28' -> SEMICOLON -> reduce (target=15, len=2)
+actionsTable[900] = 1055; // 'state 28' -> AT -> reduce (target=15, len=2)
+actionsTable.fill(832, 934, 936); // 'state 29' -> ACTION..IDENTIFIER -> shift (target=416, len=0)
+actionsTable.fill(1069, 962, 964); // 'state 30' -> SEMICOLON..PIPE -> reduce (target=22, len=2)
+actionsTable.fill(1069, 966, 968); // 'state 30' -> ACTION..IDENTIFIER -> reduce (target=22, len=2)
+actionsTable.fill(1071, 994, 996); // 'state 31' -> SEMICOLON..PIPE -> reduce (target=23, len=2)
+actionsTable.fill(1071, 998, 1000); // 'state 31' -> ACTION..IDENTIFIER -> reduce (target=23, len=2)
+actionsTable[1026] = 1216; // 'state 32' -> SEMICOLON -> shift (target=608, len=0)
+actionsTable[1027] = 704; // 'state 32' -> PIPE -> shift (target=352, len=0)
+actionsTable.fill(1059, 1062, 1064); // 'state 33' -> ACTION..IDENTIFIER -> reduce (target=17, len=2)
+actionsTable.fill(1057, 1095, 1097); // 'state 34' -> IDENTIFIER..@par-gen.EOF -> reduce (target=16, len=2)
+actionsTable[1122] = 1065; // 'state 35' -> SEMICOLON -> reduce (target=20, len=2)
+actionsTable[1127] = 1065; // 'state 35' -> IDENTIFIER -> reduce (target=20, len=2)
+actionsTable[1155] = 1565; // 'state 36' -> PIPE -> reduce (target=14, len=3)
+actionsTable.fill(1565, 1157, 1160); // 'state 36' -> EXPR..IDENTIFIER -> reduce (target=14, len=3)
+actionsTable[1184] = 2688; // 'state 37' -> WS -> shift (target=1344, len=0)
+actionsTable[1187] = 1565; // 'state 37' -> PIPE -> reduce (target=14, len=3)
+actionsTable.fill(1565, 1189, 1192); // 'state 37' -> EXPR..IDENTIFIER -> reduce (target=14, len=3)
+actionsTable.fill(2075, 1223, 1225); // 'state 38' -> IDENTIFIER..@par-gen.EOF -> reduce (target=13, len=4)
+actionsTable[1255] = 1280; // 'state 39' -> IDENTIFIER -> shift (target=640, len=0)
+actionsTable[1282] = 1061; // 'state 40' -> SEMICOLON -> reduce (target=18, len=2)
+actionsTable[1287] = 1280; // 'state 40' -> IDENTIFIER -> shift (target=640, len=0)
+actionsTable.fill(1579, 1314, 1316); // 'state 41' -> SEMICOLON..PIPE -> reduce (target=21, len=3)
+actionsTable.fill(832, 1318, 1320); // 'state 41' -> ACTION..IDENTIFIER -> shift (target=416, len=0)
+actionsTable[1347] = 2077; // 'state 42' -> PIPE -> reduce (target=14, len=4)
+actionsTable.fill(2077, 1349, 1352); // 'state 42' -> EXPR..IDENTIFIER -> reduce (target=14, len=4)
+actionsTable[1378] = 1573; // 'state 43' -> SEMICOLON -> reduce (target=18, len=3)
+actionsTable[1383] = 1280; // 'state 43' -> IDENTIFIER -> shift (target=640, len=0)
 
-const gotoTable = new Uint32Array(1344);
+const gotoTable = new Uint32Array(1408);
 gotoTable[11] = 100663296; // 'state 3'
 gotoTable[12] = 134217728; // 'state 4'
 gotoTable[13] = 167772160; // 'state 5'
 gotoTable[14] = 201326592; // 'state 6'
-gotoTable[44] = 268435456; // 'state 8'
+gotoTable[19] = 234881024; // 'state 7'
+gotoTable[20] = 268435456; // 'state 8'
+gotoTable[44] = 335544320; // 'state 10'
 gotoTable[45] = 167772160; // 'state 5'
 gotoTable[46] = 201326592; // 'state 6'
-gotoTable[141] = 234881024; // 'state 7'
+gotoTable[51] = 234881024; // 'state 7'
+gotoTable[52] = 268435456; // 'state 8'
+gotoTable[141] = 301989888; // 'state 9'
 gotoTable[142] = 201326592; // 'state 6'
-gotoTable[207] = 402653184; // 'state 12'
-gotoTable[209] = 436207616; // 'state 13'
-gotoTable[213] = 469762048; // 'state 14'
-gotoTable[214] = 503316480; // 'state 15'
-gotoTable[215] = 536870912; // 'state 16'
-gotoTable[269] = 234881024; // 'state 7'
-gotoTable[270] = 201326592; // 'state 6'
-gotoTable[400] = 704643072; // 'state 21'
-gotoTable[402] = 738197504; // 'state 22'
-gotoTable[437] = 905969664; // 'state 27'
-gotoTable[438] = 503316480; // 'state 15'
-gotoTable[439] = 536870912; // 'state 16'
-gotoTable[464] = 704643072; // 'state 21'
-gotoTable[465] = 805306368; // 'state 24'
-gotoTable[503] = 838860800; // 'state 25'
-gotoTable[659] = 1174405120; // 'state 35'
-gotoTable[660] = 1207959552; // 'state 36'
-gotoTable[720] = 1073741824; // 'state 32'
-gotoTable[790] = 1241513984; // 'state 37'
-gotoTable[791] = 536870912; // 'state 16'
-gotoTable[880] = 1073741824; // 'state 32'
-gotoTable[881] = 805306368; // 'state 24'
-gotoTable[1075] = 1375731712; // 'state 41'
-gotoTable[1076] = 1207959552; // 'state 36'
-gotoTable[1140] = 1308622848; // 'state 39'
-gotoTable[1207] = 838860800; // 'state 25'
-gotoTable[1332] = 1308622848; // 'state 39'
+gotoTable[147] = 234881024; // 'state 7'
+gotoTable[148] = 268435456; // 'state 8'
+gotoTable[207] = 469762048; // 'state 14'
+gotoTable[209] = 503316480; // 'state 15'
+gotoTable[213] = 536870912; // 'state 16'
+gotoTable[214] = 570425344; // 'state 17'
+gotoTable[215] = 603979776; // 'state 18'
+gotoTable[240] = 704643072; // 'state 21'
+gotoTable[244] = 738197504; // 'state 22'
+gotoTable[333] = 301989888; // 'state 9'
+gotoTable[334] = 201326592; // 'state 6'
+gotoTable[339] = 234881024; // 'state 7'
+gotoTable[340] = 268435456; // 'state 8'
+gotoTable[464] = 872415232; // 'state 26'
+gotoTable[466] = 905969664; // 'state 27'
+gotoTable[501] = 1073741824; // 'state 32'
+gotoTable[502] = 570425344; // 'state 17'
+gotoTable[503] = 603979776; // 'state 18'
+gotoTable[528] = 872415232; // 'state 26'
+gotoTable[529] = 973078528; // 'state 29'
+gotoTable[567] = 1006632960; // 'state 30'
+gotoTable[819] = 1342177280; // 'state 40'
+gotoTable[820] = 268435456; // 'state 8'
+gotoTable[880] = 1275068416; // 'state 38'
+gotoTable[950] = 1375731712; // 'state 41'
+gotoTable[951] = 603979776; // 'state 18'
+gotoTable[1040] = 1275068416; // 'state 38'
+gotoTable[1041] = 973078528; // 'state 29'
+gotoTable[1267] = 1442840576; // 'state 43'
+gotoTable[1268] = 268435456; // 'state 8'
+gotoTable[1300] = 738197504; // 'state 22'
+gotoTable[1335] = 1006632960; // 'state 30'
+gotoTable[1396] = 738197504; // 'state 22'
 
 const nextToken = nextTokenInitial;
 

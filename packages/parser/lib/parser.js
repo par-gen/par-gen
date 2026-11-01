@@ -70,8 +70,18 @@ export function generate(grammar, options) {
   const traceStart = performance.now();
   log("enter generate");
   try {
-    const { tokens, rules } = parse(grammar, options);
+    const parsedGrammar = parse(grammar, options);
+    const { tokens, rules } = parsedGrammar;
     const skipTokenSet = new Set(options?.skipTokens ?? []);
+    for (const token of tokens) {
+      if (token.skip) {
+        skipTokenSet.add(token.name);
+      }
+    }
+    const effectiveOptions =
+      !options?.precedence && parsedGrammar.precedence
+        ? { ...options, precedence: parsedGrammar.precedence }
+        : options;
 
     const tokenGroups = tokens.reduce((groups, token) => {
       token.state.forEach((state) => {
@@ -187,7 +197,7 @@ export function generate(grammar, options) {
       EOF,
       augmentedRules,
       parserTokens,
-      options
+      effectiveOptions
     );
     const goto = createGotoTable(dfa, augmentedRules);
 
@@ -1328,7 +1338,8 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
       options.precedence.forEach((entry, idx) => {
         const assoc = entry.assoc ?? "left";
         const level = idx + 1;
-        for (const tokName of entry.tokens) {
+        const tokList = entry.symbols ?? entry.tokens ?? [];
+        for (const tokName of tokList) {
           symbolPrecedence.set(tokName, { level, assoc });
         }
       });

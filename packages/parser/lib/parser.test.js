@@ -327,4 +327,262 @@ describe("generate", () => {
       });
     }
   });
+
+  /**
+   * Helper to run a generated ParserData end-to-end on an input string.
+   * @param {import('./parser').ParserData} data
+   * @param {string} input
+   */
+  function runParser(data, input) {
+    const buf = Buffer.from(input, "utf-8");
+    const lexer = data.lexerData.initial;
+    const transMap = new Map(lexer.transitions);
+    const finalSet = new Set(lexer.finals);
+    const skipByteSet = new Set(lexer.skipBytes ?? []);
+    const skipNameSet = new Set(lexer.skipTokenNames ?? []);
+
+    /**
+     * @param {number} offset
+     */
+    const nextToken = (offset) => {
+      let pos = offset;
+      while (true) {
+        while (pos < buf.length && skipByteSet.has(buf[pos])) {
+          pos++;
+        }
+        const start = pos;
+        let state = lexer.start;
+        let lastFinal = -1;
+        let lastFinalPos = pos;
+        let i = pos;
+        while (i < buf.length) {
+          const tr = transMap.get(state);
+          const next = tr?.find(([sym]) => sym === buf[i])?.[1];
+          if (next === undefined || next === lexer.errorState) {
+            break;
+          }
+          state = next;
+          i++;
+          if (finalSet.has(state)) {
+            lastFinal = state;
+            lastFinalPos = i;
+          }
+        }
+        if (lastFinal !== -1) {
+          const tokName = lexer.tokenNames[lastFinal / 256];
+          if (tokName && skipNameSet.has(tokName)) {
+            pos = lastFinalPos;
+            continue;
+          }
+          return {
+            name: tokName ?? lexer.tokens.ERROR,
+            value: buf.toString("utf-8", start, lastFinalPos),
+            start,
+            end: lastFinalPos,
+          };
+        }
+        return {
+          name: pos === buf.length ? lexer.tokens.EOF : lexer.tokens.ERROR,
+          value: "",
+          start: pos,
+          end: pos,
+        };
+      }
+    };
+
+    /** @type {import('./parser').ItemState[]} */
+    const stateStack = [data.start];
+    /** @type {any[]} */
+    const nodeStack = [];
+    let lookahead = nextToken(0);
+
+    while (true) {
+      const currentState = stateStack[stateStack.length - 1];
+      const act = data.actions.get(currentState)?.get(lookahead.name);
+      if (!act) {
+        throw new Error(`Unexpected token ${lookahead.name}`);
+      }
+      if (act.op === "shift" && act.state) {
+        stateStack.push(act.state);
+        nodeStack.push({ name: lookahead.name, value: lookahead.value });
+        lookahead = nextToken(lookahead.end);
+      } else if (act.op === "reduce" && act.symbol) {
+        const matched = Array.from(currentState).find(
+          (it) =>
+            it.name === act.symbol &&
+            it.marker === it.tokens.length &&
+            it.lookahead === lookahead.name
+        );
+        const len = matched ? matched.tokens.length : 0;
+        const children = len > 0 ? nodeStack.splice(nodeStack.length - len, len) : [];
+        if (len > 0) {
+          stateStack.splice(stateStack.length - len, len);
+        }
+        const topState = stateStack[stateStack.length - 1];
+        const gotoState = data.goto.get(topState)?.get(act.symbol);
+        if (!gotoState) {
+          throw new Error(`Missing goto for ${act.symbol}`);
+        }
+        stateStack.push(gotoState);
+        nodeStack.push({ name: act.symbol, items: children });
+      } else if (act.op === "done") {
+        return nodeStack[0];
+      }
+    }
+  }
+
+  it("should automatically skip tokens declared with @ skip end-to-end without options.skipTokens", () => {
+    const data = generate(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      IDENT := '[a-z]+';
+      EQ := '=';
+      NUM := '[0-9]+';
+
+      Assign := IDENT EQ NUM;
+    `);
+
+    expect(data.lexerData.initial.skipBytes).toEqual([9, 10, 13, 32]);
+    expect(data.parserSymbols).not.toContain("WS");
+
+    const tree = runParser(data, "  foo  =   42 \n ");
+    expect(tree).toEqual({
+      name: "Assign",
+      items: [
+        { name: "IDENT", value: "foo" },
+        { name: "EQ", value: "=" },
+        { name: "NUM", value: "42" },
+      ],
+    });
+  });
+
+  it("should compile %left, %right, and %nonassoc declarations in .pargen for ambiguous arithmetic expressions", () => {
+    const data = generate(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      %nonassoc EQ;
+      %left PLUS MINUS;
+      %left STAR SLASH;
+      %right POW;
+
+      PLUS := '\\+';
+      MINUS := '-';
+      STAR := '\\*';
+      SLASH := '/';
+      POW := '\\^';
+      EQ := '==';
+      NUM := '[0-9]+';
+
+      E := E PLUS E | E MINUS E | E STAR E | E SLASH E | E POW E | E EQ E | NUM;
+    `);
+
+    /**
+     * @param {any} node
+     * @returns {string}
+     */
+    const formatExpr = (node) => {
+      if (node.items.length === 1) {
+        return node.items[0].value;
+      }
+      return `(${formatExpr(node.items[0])} ${node.items[1].value} ${formatExpr(
+        node.items[2]
+      )})`;
+    };
+
+    expect(formatExpr(runParser(data, "1 + 2 + 3"))).toBe("((1 + 2) + 3)");
+    expect(formatExpr(runParser(data, "1 + 2 * 3"))).toBe("(1 + (2 * 3))");
+    expect(formatExpr(runParser(data, "2 * 3 + 4"))).toBe("((2 * 3) + 4)");
+    expect(formatExpr(runParser(data, "2 * 3 * 4"))).toBe("((2 * 3) * 4)");
+    expect(formatExpr(runParser(data, "2 ^ 3 ^ 4"))).toBe("(2 ^ (3 ^ 4))");
+    expect(formatExpr(runParser(data, "1 + 2 == 3 * 4"))).toBe(
+      "((1 + 2) == (3 * 4))"
+    );
+    expect(() => runParser(data, "1 == 2 == 3")).toThrow(/Unexpected token EQ/);
+  });
+
+  it("should compile EBNF SYM+ and SYM* quantifiers in .pargen rules end-to-end", () => {
+    const data = generate(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      OPEN := '\\[';
+      CLOSE := '\\]';
+      SEMI := ';';
+      NUM := '[0-9]+';
+
+      Program := Stmt+;
+      Stmt := OPEN NUM* CLOSE SEMI;
+    `);
+
+    const tree = runParser(data, "[] ; [ 1 2 3 ] ;");
+    expect(tree).toEqual({
+      name: "Program",
+      items: [
+        {
+          name: "Stmt__plus",
+          items: [
+            {
+              name: "Stmt__plus",
+              items: [
+                {
+                  name: "Stmt",
+                  items: [
+                    { name: "OPEN", value: "[" },
+                    { name: "CLOSE", value: "]" },
+                    { name: "SEMI", value: ";" },
+                  ],
+                },
+              ],
+            },
+            {
+              name: "Stmt",
+              items: [
+                { name: "OPEN", value: "[" },
+                {
+                  name: "NUM__plus",
+                  items: [
+                    {
+                      name: "NUM__plus",
+                      items: [
+                        {
+                          name: "NUM__plus",
+                          items: [{ name: "NUM", value: "1" }],
+                        },
+                        { name: "NUM", value: "2" },
+                      ],
+                    },
+                    { name: "NUM", value: "3" },
+                  ],
+                },
+                { name: "CLOSE", value: "]" },
+                { name: "SEMI", value: ";" },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const starRootData = generate(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      ITEM := '[a-z]+';
+
+      Root := ITEM*;
+    `);
+    expect(runParser(starRootData, "")).toEqual({
+      name: "Root",
+      items: [],
+    });
+    expect(runParser(starRootData, "a b")).toEqual({
+      name: "Root",
+      items: [
+        {
+          name: "ITEM__plus",
+          items: [
+            {
+              name: "ITEM__plus",
+              items: [{ name: "ITEM", value: "a" }],
+            },
+            { name: "ITEM", value: "b" },
+          ],
+        },
+      ],
+    });
+  });
 });

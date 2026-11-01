@@ -9,7 +9,7 @@ PIPE := '\|';
 AT := '@';
 EXPR := '\x27[^\x27]*\x27';
 ACTION := '\x7b[^\x7d]*\x7d';
-IDENTIFIER := '[A-Za-z0-9_\-]+[\?,]?';
+IDENTIFIER := '%?[A-Za-z0-9_\->]+[\?\*\+,]?';
 
 #######################################
 #
@@ -28,6 +28,7 @@ Statement :=
   | Assignment Expr StateClause Semi
   | Assignment Alternatives Semi
   | Assignment Pipe Alternatives Semi
+  | StateList Semi
   ;
 
 Assignment := IDENTIFIER WS? ASSIGN WS?;

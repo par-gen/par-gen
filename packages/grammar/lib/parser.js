@@ -11,7 +11,8 @@ export const ERROR = "@par-gen.ERROR";
 /**
  * @typedef {Object} PrecedenceRule
  * @property {Associativity=} assoc
- * @property {string[]} tokens
+ * @property {string[]=} tokens
+ * @property {string[]=} symbols
  */
 
 /**
@@ -27,6 +28,7 @@ export const ERROR = "@par-gen.ERROR";
  * @property {string} name
  * @property {string} expr
  * @property {string[]} state
+ * @property {boolean=} skip
  * @property {number=} precedence
  * @property {Associativity=} assoc
  */
@@ -81,18 +83,57 @@ function getLeafStart(tree, p) {
 }
 
 /**
+ * @param {Uint32Array} tree
+ * @param {number} sl
+ * @param {Buffer} stream
+ * @param {string} grammar
+ * @param {boolean} isAscii
+ * @returns {string[]}
+ */
+function extractStateList(tree, sl, stream, grammar, isAscii) {
+  /** @type {string[]} */
+  const list = [];
+  while (tree[sl] >>> 8 === 2) {
+    const first = tree[sl + 1] & 0xfffff;
+    const stateItem = tree[first + 2];
+    const stLeaf = tree[stateItem + 1] & 0xfffff;
+    const stSpan = tree[stLeaf + 1];
+    let stEnd = stSpan & 0x3fffff;
+    const stStart = getLeafStart(tree, stLeaf);
+    if (stream[stEnd - 1] === 44) {
+      stEnd--;
+    }
+    list.push(
+      isAscii
+        ? grammar.slice(stStart, stEnd)
+        : stream.toString("utf-8", stStart, stEnd)
+    );
+    sl = first;
+  }
+  const firstStateItem = tree[sl + 1] & 0xfffff;
+  const stLeaf = tree[firstStateItem + 1] & 0xfffff;
+  const stSpan = tree[stLeaf + 1];
+  let stEnd = stSpan & 0x3fffff;
+  const stStart = getLeafStart(tree, stLeaf);
+  if (stream[stEnd - 1] === 44) {
+    stEnd--;
+  }
+  list.push(
+    isAscii
+      ? grammar.slice(stStart, stEnd)
+      : stream.toString("utf-8", stStart, stEnd)
+  );
+  list.reverse();
+  return list;
+}
+
+/**
  * @param {string} grammar
  * @param {ParseOptions=} options
- * @returns {{tokens: Token[], rules: Rule[]}}
+ * @returns {{tokens: Token[], rules: Rule[], precedence?: {assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[]}}
  */
 export function parse(grammar, options) {
   let uid = 0;
-  const skipList = options?.skipTokens;
-  const hasSkip = Boolean(skipList && skipList.length > 0);
-  const skipSymbols =
-    hasSkip && skipList
-      ? new Set(skipList.flatMap((name) => [name, `${name}?`]))
-      : null;
 
   /** @type {Buffer} */
   let stream;
@@ -124,6 +165,10 @@ export function parse(grammar, options) {
 
   /** @type {Token[]} */
   const tokens = [];
+  /** @type {string[]} */
+  const grammarSkipTokens = [];
+  /** @type {{assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[]} */
+  const precedence = [];
   /** @type {Set<string>} */
   const knownSymbols = new Set();
   let hasCustomState = false;
@@ -132,6 +177,32 @@ export function parse(grammar, options) {
   for (let s = stmtCount - 1; s >= 0; s--) {
     const stmtPtr = stmtScratch[s];
     const nChildren = tree[stmtPtr] >>> 8;
+    if (nChildren === 2) {
+      const items = extractStateList(
+        tree,
+        tree[stmtPtr + 1] & 0xfffff,
+        stream,
+        grammar,
+        isAscii
+      );
+      const directive = items[0];
+      if (
+        directive !== "%left" &&
+        directive !== "%right" &&
+        directive !== "%nonassoc"
+      ) {
+        throw new Error(`Unknown directive '${directive}'`);
+      }
+      const assoc = /** @type {'left' | 'right' | 'nonassoc'} */ (
+        directive.slice(1)
+      );
+      precedence.push({
+        assoc,
+        symbols: items.slice(1),
+      });
+      continue;
+    }
+
     const assignPtr = tree[stmtPtr + 1] & 0xfffff;
     const nameIdPtr = tree[assignPtr + 1] & 0xfffff;
     const c1 = tree[assignPtr + 2];
@@ -140,44 +211,40 @@ export function parse(grammar, options) {
       const exprLeafPtr = tree[c1 + 1] & 0xfffff;
       /** @type {string[]} */
       let state = ["initial"];
+      let isSkip = false;
       if (nChildren === 4) {
-        hasCustomState = true;
         const scPtr = tree[c1 + 2];
         const scFirst = tree[scPtr + 1] & 0xfffff;
         const scSecond = tree[scFirst + 2];
-        let sl = tree[scPtr] >>> 8 === 2 ? scSecond : tree[scSecond + 2];
+        const sl = tree[scPtr] >>> 8 === 2 ? scSecond : tree[scSecond + 2];
+        const rawStates = extractStateList(tree, sl, stream, grammar, isAscii);
         state = [];
-        while (tree[sl] >>> 8 === 2) {
-          const first = tree[sl + 1] & 0xfffff;
-          const stateItem = tree[first + 2];
-          const stLeaf = tree[stateItem + 1] & 0xfffff;
-          const stSpan = tree[stLeaf + 1];
-          let stEnd = stSpan & 0x3fffff;
-          const stStart = getLeafStart(tree, stLeaf);
-          if (stream[stEnd - 1] === 44) {
-            stEnd--;
+        for (let i = 0; i < rawStates.length; i++) {
+          const item = rawStates[i];
+          if (item === "->") {
+            continue;
           }
-          state.push(
-            isAscii
-              ? grammar.slice(stStart, stEnd)
-              : stream.toString("utf-8", stStart, stEnd)
-          );
-          sl = first;
+          if (item.includes("->")) {
+            const parts = item.split("->").filter(Boolean);
+            for (const part of parts) {
+              if (part === "skip") {
+                isSkip = true;
+              } else {
+                state.push(part);
+              }
+            }
+          } else if (item === "skip") {
+            isSkip = true;
+          } else {
+            state.push(item);
+          }
         }
-        const firstStateItem = tree[sl + 1] & 0xfffff;
-        const stLeaf = tree[firstStateItem + 1] & 0xfffff;
-        const stSpan = tree[stLeaf + 1];
-        let stEnd = stSpan & 0x3fffff;
-        const stStart = getLeafStart(tree, stLeaf);
-        if (stream[stEnd - 1] === 44) {
-          stEnd--;
+        if (state.length === 0) {
+          state = ["initial"];
         }
-        state.push(
-          isAscii
-            ? grammar.slice(stStart, stEnd)
-            : stream.toString("utf-8", stStart, stEnd)
-        );
-        state.reverse();
+        if (state.some((st) => st !== "initial")) {
+          hasCustomState = true;
+        }
       }
       const nameSpan = tree[nameIdPtr + 1];
       const nameEnd = nameSpan & 0x3fffff;
@@ -194,16 +261,46 @@ export function parse(grammar, options) {
         : stream.toString("utf-8", exprStart, exprEnd);
 
       knownSymbols.add(tokenName);
-      tokens.push({
-        uid: uid++,
-        name: tokenName,
-        expr: tokenExpr,
-        state,
-      });
+      if (isSkip) {
+        if (!grammarSkipTokens.includes(tokenName)) {
+          grammarSkipTokens.push(tokenName);
+        }
+        tokens.push({
+          uid: uid++,
+          name: tokenName,
+          expr: tokenExpr,
+          state,
+          skip: true,
+        });
+      } else {
+        tokens.push({
+          uid: uid++,
+          name: tokenName,
+          expr: tokenExpr,
+          state,
+        });
+      }
     } else {
       ruleStmtScratch[ruleStmtCount++] = stmtPtr;
     }
   }
+
+  const effectiveSkipList =
+    grammarSkipTokens.length > 0
+      ? [...(options?.skipTokens ?? []), ...grammarSkipTokens]
+      : options?.skipTokens;
+  const hasSkip = Boolean(effectiveSkipList && effectiveSkipList.length > 0);
+  const skipSymbols =
+    hasSkip && effectiveSkipList
+      ? new Set(
+          effectiveSkipList.flatMap((name) => [
+            name,
+            `${name}?`,
+            `${name}*`,
+            `${name}+`,
+          ])
+        )
+      : null;
 
   /** @type {Token} */
   const eofToken = {
@@ -235,6 +332,10 @@ export function parse(grammar, options) {
   const rules = [];
   /** @type {Set<string> | null} */
   const dedupSet = hasSkip ? new Set() : null;
+  /** @type {string[]} */
+  const plusBaseSymbols = [];
+  /** @type {Set<string>} */
+  const plusBaseSymbolSet = new Set();
 
   for (let s = 0; s < ruleStmtCount; s++) {
     const stmtPtr = ruleStmtScratch[s];
@@ -280,7 +381,6 @@ export function parse(grammar, options) {
       let symbols = [];
       /** @type {RuleAction[]} */
       const actions = [];
-      let hasOptional = false;
 
       for (let it = itemCount - 1; it >= 0; it--) {
         const ruleItem = itemScratch[it];
@@ -294,9 +394,6 @@ export function parse(grammar, options) {
             ? grammar.slice(leafStart, leafEnd)
             : stream.toString("utf-8", leafStart, leafEnd);
           symbols.push(sym);
-          if (!hasSkip && sym.charCodeAt(sym.length - 1) === 63) {
-            hasOptional = true;
-          }
         } else if (leafSym === SYM_ACTION) {
           const actStr = isAscii
             ? grammar.slice(leafStart + 1, leafEnd - 1)
@@ -311,18 +408,34 @@ export function parse(grammar, options) {
       const ruleUid = uid++;
       if (hasSkip && skipSymbols) {
         symbols = symbols.filter((sym) => !skipSymbols.has(sym));
-        hasOptional = false;
-        for (let i = 0; i < symbols.length; i++) {
-          const sym = symbols[i];
-          if (sym.charCodeAt(sym.length - 1) === 63) {
-            hasOptional = true;
-            break;
-          }
-        }
       }
 
       if (symbols.length === 0) {
         continue;
+      }
+
+      let hasOptional = false;
+      for (let i = 0; i < symbols.length; i++) {
+        const sym = symbols[i];
+        const lastChar = sym.charCodeAt(sym.length - 1);
+        if (lastChar === 63) {
+          hasOptional = true;
+        } else if (lastChar === 43) {
+          const baseSym = sym.slice(0, -1);
+          if (!plusBaseSymbolSet.has(baseSym)) {
+            plusBaseSymbolSet.add(baseSym);
+            plusBaseSymbols.push(baseSym);
+          }
+          symbols[i] = `${baseSym}__plus`;
+        } else if (lastChar === 42) {
+          const baseSym = sym.slice(0, -1);
+          if (!plusBaseSymbolSet.has(baseSym)) {
+            plusBaseSymbolSet.add(baseSym);
+            plusBaseSymbols.push(baseSym);
+          }
+          symbols[i] = `${baseSym}__plus?`;
+          hasOptional = true;
+        }
       }
 
       if (!hasOptional) {
@@ -361,6 +474,25 @@ export function parse(grammar, options) {
     }
   }
 
+  for (let i = 0; i < plusBaseSymbols.length; i++) {
+    const baseSym = plusBaseSymbols[i];
+    const plusName = `${baseSym}__plus`;
+    rules.push(
+      {
+        uid: uid++,
+        name: plusName,
+        symbols: [baseSym],
+        actions: [],
+      },
+      {
+        uid: uid++,
+        name: plusName,
+        symbols: [plusName, baseSym],
+        actions: [],
+      }
+    );
+  }
+
   for (let i = 0; i < rules.length; i++) {
     knownSymbols.add(rules[i].name);
   }
@@ -375,8 +507,13 @@ export function parse(grammar, options) {
     }
   }
 
-  return {
+  /** @type {{tokens: Token[], rules: Rule[], precedence?: {assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[]}} */
+  const result = {
     tokens,
     rules,
   };
+  if (precedence.length > 0) {
+    result.precedence = precedence;
+  }
+  return result;
 }

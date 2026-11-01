@@ -438,4 +438,134 @@ describe("parse", () => {
     expect(parsed.rules[0].name).toBe("Grammar");
     expect(parsed.rules.length).toBeGreaterThan(20);
   });
+
+  it("should support @ skip, @ <state>, skip, and @ <state> -> skip on token declarations", () => {
+    const grammar = parse(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      LINE_COMMENT := '//[^\\n]*' @ initial, skip;
+      BLOCK_COMMENT := '#[^\\n]*' @ custom -> skip;
+      A := 'a';
+      B := 'b';
+      Rule := WS? A B;
+    `);
+
+    expect(grammar.tokens).toEqual(
+      expect.arrayContaining([
+        {
+          uid: expect.any(Number),
+          name: "WS",
+          expr: "[ \\t\\r\\n]+",
+          state: ["initial"],
+          skip: true,
+        },
+        {
+          uid: expect.any(Number),
+          name: "LINE_COMMENT",
+          expr: "//[^\\n]*",
+          state: ["initial"],
+          skip: true,
+        },
+        {
+          uid: expect.any(Number),
+          name: "BLOCK_COMMENT",
+          expr: "#[^\\n]*",
+          state: ["custom"],
+          skip: true,
+        },
+      ])
+    );
+
+    expect(grammar.rules).toEqual([
+      {
+        uid: expect.any(Number),
+        name: "Rule",
+        symbols: ["A", "B"],
+        actions: [],
+      },
+    ]);
+  });
+
+  it("should extract %left, %right, and %nonassoc precedence declarations in order", () => {
+    const grammar = parse(`
+      %left PLUS MINUS;
+      %left STAR SLASH;
+      %right POW;
+      %nonassoc EQ NEQ;
+
+      PLUS := '\\+';
+      MINUS := '-';
+      STAR := '\\*';
+      SLASH := '/';
+      POW := '\\^';
+      EQ := '==';
+      NEQ := '!=';
+      NUM := '[0-9]+';
+
+      Expr := Expr PLUS Expr | NUM;
+    `);
+
+    expect(grammar.precedence).toEqual([
+      { assoc: "left", symbols: ["PLUS", "MINUS"] },
+      { assoc: "left", symbols: ["STAR", "SLASH"] },
+      { assoc: "right", symbols: ["POW"] },
+      { assoc: "nonassoc", symbols: ["EQ", "NEQ"] },
+    ]);
+  });
+
+  it("should expand EBNF + and * quantifiers into left-recursive __plus helper rules", () => {
+    const grammar = parse(`
+      OPEN := '\\[';
+      CLOSE := '\\]';
+      ITEM := '[a-z]+';
+
+      List := OPEN ITEM* CLOSE;
+      NonEmpty := ITEM+;
+      WholeStar := ITEM*;
+    `);
+
+    expect(grammar.rules).toEqual([
+      {
+        uid: expect.any(Number),
+        name: "List",
+        symbols: ["OPEN", "CLOSE"],
+        actions: [],
+      },
+      {
+        uid: expect.any(Number),
+        name: "List",
+        symbols: ["OPEN", "ITEM__plus", "CLOSE"],
+        actions: [],
+      },
+      {
+        uid: expect.any(Number),
+        name: "NonEmpty",
+        symbols: ["ITEM__plus"],
+        actions: [],
+      },
+      {
+        uid: expect.any(Number),
+        name: "WholeStar",
+        symbols: [],
+        actions: [],
+      },
+      {
+        uid: expect.any(Number),
+        name: "WholeStar",
+        symbols: ["ITEM__plus"],
+        actions: [],
+      },
+      {
+        uid: expect.any(Number),
+        name: "ITEM__plus",
+        symbols: ["ITEM"],
+        actions: [],
+      },
+      {
+        uid: expect.any(Number),
+        name: "ITEM__plus",
+        symbols: ["ITEM__plus", "ITEM"],
+        actions: [],
+      },
+    ]);
+  });
 });

@@ -96,7 +96,8 @@ export interface RuleChildrenMap {
         CstNode<"Pipe">,
         CstNode<"Alternatives">,
         CstNode<"Semi">
-      ];
+      ]
+    | [CstNode<"StateList">, CstNode<"Semi">];
   Assignment:
     | [CstNode<"IDENTIFIER">, CstNode<"ASSIGN">]
     | [CstNode<"IDENTIFIER">, CstNode<"ASSIGN">, CstNode<"WS">]
