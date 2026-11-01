@@ -5,11 +5,30 @@ export const EOF = "@par-gen.EOF";
 export const ERROR = "@par-gen.ERROR";
 
 /**
+ * @typedef {'left' | 'right' | 'nonassoc' | 'none'} Associativity
+ */
+
+/**
+ * @typedef {Object} PrecedenceRule
+ * @property {Associativity=} assoc
+ * @property {string[]} tokens
+ */
+
+/**
+ * @typedef {Object} PrecedenceSpec
+ * @property {number=} level
+ * @property {number=} precedence
+ * @property {Associativity=} assoc
+ */
+
+/**
  * @typedef {Object} Token
  * @property {number} uid
  * @property {string} name
  * @property {string} expr
  * @property {string[]} state
+ * @property {number=} precedence
+ * @property {Associativity=} assoc
  */
 
 /**
@@ -24,11 +43,14 @@ export const ERROR = "@par-gen.ERROR";
  * @property {string} name
  * @property {string[]} symbols
  * @property {RuleAction[]} actions
+ * @property {number=} precedence
+ * @property {Associativity=} assoc
  */
 
 /**
  * @typedef {Object} ParseOptions
  * @property {string[]=} skipTokens
+ * @property {(PrecedenceRule[] | {[tokenName: string]: PrecedenceSpec})=} precedence
  */
 
 const SYM_WS = 0;
