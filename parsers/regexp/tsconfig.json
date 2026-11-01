@@ -12,10 +12,5 @@
   "exclude": [
     "**/node_modules/**",
     "./generate-grammar.cjs"
-  ],
-  "references": [
-    {
-      "path": "../../packages/cli"
-    }
   ]
 }

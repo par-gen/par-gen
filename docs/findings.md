@@ -66,12 +66,32 @@
 | `acorn` (`v8.2.4`) | Hand-written JS | AST (No `WS` Trivia Nodes) | 240.70 ms | 2,081.57 ms *(min 2,040.37 ms)* | **8.57x slower** |
 | `json5` (`v2.2.0`) | Hand-written JS | Lossy (JS Value Only) | 952.29 ms | 4,604.20 ms *(460.42 ms / 20 iter)* | **18.95x slower** |
 
-### 2.4 `parsers/regexp` (Generated LR(1) Parser) vs. `@par-gen/nfa` (Hand-Rolled Recursive Parser)
+### 2.4 `@par-gen/regexp` (Self-Bootstrapped Generated LR(1) Parser) vs. V8 Native C++ `new RegExp` & JS Competitors
 
-| Parser | Implementation | 80,000 RegExp Parses (`10k` x `8` regexes from `json.pargen` & test suite) | Throughput | Relative Speed |
-| :--- | :--- | ---: | ---: | :--- |
-| **`parsers/regexp` (`HEAD`)** | **Generated LR(1) (`38` states, `2`-row compact lexer)** | **34.51 ms** *(min **34.39 ms**)* | **`431 ns` / regex (`2.32M` regexes/sec)** | **1.00x (`25.8x faster` than hand-rolled!)** |
-| `@par-gen/nfa` (`lib/regexp.js`) | Hand-rolled recursive `seq()` / `next()` | 888.89 ms *(min 831.43 ms)* | `11.11 µs` / regex (`90k` regexes/sec) | **25.76x slower** |
+Measured on isolated EC2 `c7a.large` CPU 1 across `8,000` regex parses per trial (`1,000` iterations × `8` regex patterns from `json.pargen`, `regexp.pargen`, and the test suite):
+
+| Parser | Implementation | 8,000 RegExp Parses (Median / Min) | Per-Regex Latency | `perf stat` Instructions (`80k` Parses) | Relative Speed |
+| :--- | :--- | ---: | ---: | ---: | :--- |
+| **`@par-gen/regexp` (`Buffer`, `HEAD`)** | **Self-bootstrapped LR(1) (`49` states, compact 2-mode lexer)** | **`4.61 ms`** *(min **`4.52 ms`**)* | **`576 ns` / regex (`1.74M`/sec)** | **`4,803.3M` (`60,042` insn/regex)** | **`1.00x` (Baseline Fastest Parser)** |
+| **`@par-gen/regexp` (`string`, `HEAD`)** | **Self-bootstrapped LR(1) (`Buffer.from` included)** | **`5.28 ms`** *(min **`5.15 ms`**)* | **`660 ns` / regex (`1.52M`/sec)** | — | **`1.15x`** |
+| **`@par-gen/regexp` (`Unseen Buffer`s)** | **Self-bootstrapped LR(1) (`80k` distinct buffers)** | **`5.96 ms`** *(min **`5.95 ms`**)* | **`745 ns` / regex (`1.34M`/sec)** | — | **`1.29x`** |
+| **`V8 Native new RegExp` (Uncached C++)** | **V8 C++ `RegExpParser::VerifyRegExpSyntax` (`80k` unseen strings)** | **`7.42 ms`–`8.15 ms`** *(min **`7.06 ms`**)* | **`928`–`1,019 ns` / regex** | **`4,843.3M` (`60,542` insn/regex)** | **`1.61x`–`1.77x` slower than `@par-gen/regexp`!** |
+| `@babel/parser` (`/regex/`) | Hand-written JS AST parser | `13.89 ms` *(min `13.62 ms`)* | `1.74 µs` / regex | — | **3.01x slower** |
+| `typescript` (`ts.createSourceFile`) | Hand-written JS CST parser | `22.86 ms` *(min `22.83 ms`)* | `2.86 µs` / regex | — | **4.96x slower** |
+| `acorn` (`v8.2.4`, `/regex/`) | Hand-written JS + `RegExpValidationState` | `61.88 ms` *(min `61.77 ms`)* | `7.74 µs` / regex | — | **13.42x slower** |
+| `V8 Native new RegExp + .test("")` (Uncached) | V8 C++ `ParseRegExp` + Irregexp Bytecode/JIT | `115.97 ms`–`136.56 ms` *(min `110.42 ms`)* | `14.50`–`17.07 µs` / regex | — | **25.16x–29.62x slower** |
+| Legacy `@par-gen/nfa` (Hand-rolled `origin/main`) | Hand-rolled recursive `seq()` / `next()` | `240.51 ms`–`1,209.82 ms` | `30.06`–`151.23 µs` / regex | — | **52.17x–262.43x slower** |
+
+> [!NOTE]
+> When `new RegExp(pattern)` is called repeatedly with the **exact same string pointer**, V8's per-isolate `CompilationCacheRegExp` hash table returns the cached `FixedArray` Boilerplate in `0.55`–`0.71 ms` (`69`–`89 ns`/lookup) without invoking `v8::internal::RegExpParser` at all. When given unseen patterns so V8 actually executes its C++ syntax parser (`RegExpParser::VerifyRegExpSyntax`), `@par-gen/regexp` in pure JavaScript (`4.61 ms` on `Buffer`, `5.28 ms` on `string`, `5.96 ms` on unseen `Buffer`s) beats V8's C++ `new RegExp` (`7.42`–`8.15 ms`) by **`1.25x`–`1.77x`** while producing a full lossless CST.
+
+### 2.5 Self-Bootstrapping Compile-Time Progression (`regexp.pargen` & `json.pargen`, Isolated EC2 `c7a.large` CPU 1)
+
+| Stage | RegExp Engine Used by `@par-gen/nfa` | `regexp.pargen` Lexer (`generateFromTokens`) | `regexp.pargen` Full (`generateParser`) | `json.pargen` Full (`generateParser`) | Speedup on `regexp.pargen` |
+| :--- | :--- | ---: | ---: | ---: | ---: |
+| **`origin/main` (Initial Baseline)** | Hand-rolled recursive (`1,020`-state `[...]` expansion) | ~1,800 ms | ~90,000 ms (`297` states) | ~420 ms (`84` states) | `1.0x` |
+| **Round 4 (`085df29`, Bisimilar Merge)** | Hand-rolled recursive + $O(\|\text{items}\|)$ linear `getItem` | 790 ms | 18,539 ms (`38` states) | 155 ms (`36` states) | `4.9x` |
+| **Round 5 (`HEAD`, Self-Bootstrapped)** | **Generated `@par-gen/regexp` + 2-State `[...]` NFA + $O(1)$ `itemLookupCache`** | **`36.93`–`50.30 ms`** | **`252.40`–`381.12 ms` (`49` states)** | **`98.98`–`146.43 ms` (`36` states)** | **`236x`–`356x` faster!** |
 
 ---
 
@@ -122,6 +142,18 @@
 15. **Iterative `tree` Pointer Span Walk + Pre-Sized `new Array(nChildren)` in `proxyHandler` (`2.14x` Faster CST Walks):**
     - **Root Cause:** Previously, reading `node.start` or `node.end` on an internal CST node executed `receiver.items[0].start` / `receiver.items[nChildren - 1].end`, which recursively allocated `Array` and `Proxy` instances for **every child at every level** down the spine of the CST!
     - **Fix:** Walking `tree` pointers directly in an integer loop (`while ((tree[p] >>> 8) > 0) p = tree[p + 1] & 0xfffff;`) inside `proxyHandler.get` computes `.start`, `.end`, and `.value` on any internal node in **O(depth) integer loads with zero heap allocations**, cutting 2,000 full CST walks of `package.json` from **`305.50 ms` to `143.01 ms` (`2.14x` faster, `-53.2%`)** while preserving 100% compatibility with `Object.keys(node)` and Jest `.toEqual()`. (When `Proxy` is replaced by a monomorphic `CstNode` class in `v5-cstclass`, `Walk2k` drops further to **`33.31 ms` — `9.17x` faster**.)
+
+### 3.10 Round 5: Full Self-Bootstrapping (`@par-gen/nfa` Powered by `@par-gen/regexp`), Direct 2-State Character-Class NFAs & $O(1)$ LR(1) Item Lookup
+16. **Replacing the Hand-Rolled RegExp Parser with `@par-gen/regexp` + Direct 2-State Multi-Symbol Character-Class NFAs (`packages/nfa/lib/thompson.js`):**
+    - **Pitfalls Avoided from `origin/replace-regexp-parser`:**
+      The earlier experimental branch `origin/replace-regexp-parser` attempted to bootstrap `@par-gen/nfa` by (a) copying `tree.slice()` on every parse in `javascript.js`, and (b) expanding every `CharacterClass` (`[...]`) and `DOT` (`.`) in `thompson.js` into a synthetic `a|b|c|...` regex string and recursively calling `parse()` on it! For a single negated character class (`[^...]`), that created ~255 alternation branches and **~1,020 Thompson $\varepsilon$-states**, blowing up `generateFromTokens` on `regexp.pargen` (`790 ms`).
+    - **Fix:**
+      1. Extended [`parsers/regexp/regexp.pargen`](file:///workspaces/par-gen/parsers/regexp/regexp.pargen) to support unescaped `.` (`DOT` / `DOT QUANTIFIER`), hex escapes (`\x00`–`\xff`), and escaped characters inside `[...]`.
+      2. Updated [`packages/nfa/lib/thompson.js`](file:///workspaces/par-gen/packages/nfa/lib/thompson.js) to walk the `@par-gen/regexp` CST directly (zero `tree.slice()` copies) and construct a **2-state `[start, final]` PartialNFA with a single multi-symbol transition `[start, symbols, final]`** for `CharacterClass` and `DOT`, plus direct Thompson NFA rules for `*` (`0+`), `+` (`1+`), and `?` (`0..1`).
+      3. Result: `generateFromTokens(regexp.pargen)` dropped from **`790 ms` to `36.93 ms` (`21.4x` faster)**, and regenerating [`parsers/regexp/generated/parser.js`](file:///workspaces/par-gen/parsers/regexp/generated/parser.js) and [`parsers/json/generated/parser.js`](file:///workspaces/par-gen/parsers/json/generated/parser.js) reaches a **100% byte-for-byte fixed point**.
+17. **$O(1)$ Indexed LR(1) Item Lookup (`itemLookupCache` in `packages/parser/lib/parser.js`):**
+    - **Root Cause:** During LR(1) closure/goto table construction (`createDFA` in [`packages/parser/lib/parser.js`](file:///workspaces/par-gen/packages/parser/lib/parser.js)), `getItem(items, rule, dotPosition, lookahead)` previously ran an $O(|items|)$ linear `.find()` scan across all existing LR(1) items (`~20,000+` items for `regexp.pargen`), taking **`17,748 ms`** (`96%` of `regexp.pargen` compile time).
+    - **Fix:** Indexed `items` by `${rule.name}\0${dotPosition}\0${lookahead}` in a `WeakMap<Item[], Map<string, Item>>` (`itemLookupCache`), cutting `createDFA` on `regexp.pargen` from **`17,748 ms` to `215 ms` (`82.5x` faster)** and bringing full `regexp.pargen` parser generation down from `~90,000 ms` (`origin/main`) / `18,539 ms` (Round 4) to **`252.40 ms` (`356x` faster than `origin/main`)**!
 
 ---
 

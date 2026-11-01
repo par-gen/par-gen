@@ -26,7 +26,7 @@ describe("generate", () => {
   it("should extract skipBytes and exclude pure byte-class skipped tokens from lexer and parser DFA when skipTokens is passed", () => {
     const data = generate(
       `
-      WS := '( |\\n|\\r|\\t)( |\\n|\\r|\\t)*';
+      WS := '[ \\n\\r\\t]+';
       A := 'a';
       B := 'b';
 

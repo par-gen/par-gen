@@ -5,5 +5,10 @@
     "outDir": "types",
     "composite": true
   },
-  "include": ["lib/"]
+  "include": ["lib/"],
+  "references": [
+    {
+      "path": "../../parsers/regexp"
+    }
+  ]
 }

@@ -437,6 +437,19 @@ function createItems(tokens, EOF, rules) {
   ];
 }
 
+/** @type {WeakMap<Item[], Map<string, Item>>} */
+const itemLookupCache = new WeakMap();
+
+/**
+ * @param {Partial<Item>} needle
+ * @returns {string}
+ */
+function getItemKey(needle) {
+  return `${needle.name}\0${needle.marker}\0${needle.lookahead}\0${
+    needle.tokens ? needle.tokens.join("\0") : ""
+  }`;
+}
+
 /**
  *
  * @param {Partial<Item>} needle
@@ -444,23 +457,19 @@ function createItems(tokens, EOF, rules) {
  * @returns {Item}
  */
 function getItem(needle, items) {
-  const item = items.find((item) => {
-    const tokensEqual = () => {
-      let equal = needle.tokens?.length === item.tokens.length;
-      for (let i = 0; equal && i < item.tokens.length; i++) {
-        equal = needle.tokens?.[i] === item.tokens[i];
+  let index = itemLookupCache.get(items);
+  if (!index) {
+    index = new Map();
+    for (const it of items) {
+      const key = getItemKey(it);
+      if (!index.has(key)) {
+        index.set(key, it);
       }
-      return equal;
-    };
+    }
+    itemLookupCache.set(items, index);
+  }
 
-    return (
-      item.name === needle.name &&
-      item.marker === needle.marker &&
-      item.tokens.length === needle.tokens?.length &&
-      tokensEqual() &&
-      item.lookahead === needle.lookahead
-    );
-  });
+  const item = index.get(getItemKey(needle));
 
   if (!item) {
     throw new Error(`Unable to find item [${printItem(needle)}]`);

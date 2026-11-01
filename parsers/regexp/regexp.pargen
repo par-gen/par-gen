@@ -2,7 +2,7 @@
 #
 # Tokens
 #
-CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\-^x0-9a-f]';
+CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\\-\^x0-9a-f]';
 HEX_NUMBER := '[0-9c-ea]';
 CONTROL_CHARACTER := '[rnt]';
 BACKSLASH := '\\';
@@ -48,6 +48,8 @@ Sequence :=
 Atom :=
     Character
   | Character QUANTIFIER
+  | DOT
+  | DOT QUANTIFIER
   | Group
   | Group QUANTIFIER
   | CharacterClass
@@ -73,6 +75,7 @@ CharacterClassCharacters :=
 CharacterClassCharacter :=
     CharacterOrNumberOrX
   | ControlCharacter
+  | HexEscape
   | BACKSLASH DASH
   | BACKSLASH CARET
   | QUANTIFIER
@@ -80,10 +83,7 @@ CharacterClassCharacter :=
   | PAREN_CLOSE
   | UNION
   | DOT
-  | BACKSLASH BACKSLASH
-  | BACKSLASH ControlCharacter
-  | BACKSLASH BRACKET_OPEN
-  | BACKSLASH BRACKET_CLOSE
+  | BACKSLASH EscapedCharacter
   | CharacterClassRange
   ;
 
@@ -92,6 +92,11 @@ CharacterClassRange :=
   | CharacterOrNumberOrX DASH ControlCharacter
   | ControlCharacter DASH CharacterOrNumberOrX
   | ControlCharacter DASH ControlCharacter
+  | HexEscape DASH HexEscape
+  | HexEscape DASH CharacterOrNumberOrX
+  | CharacterOrNumberOrX DASH HexEscape
+  | HexEscape DASH ControlCharacter
+  | ControlCharacter DASH HexEscape
   ;
 
 Character :=
@@ -100,7 +105,11 @@ Character :=
   | CARET
   | DASH
   | BACKSLASH EscapedCharacter
-  | BACKSLASH X HexNumber HexNumber
+  | HexEscape
+  ;
+
+HexEscape :=
+    BACKSLASH X HexNumber HexNumber
   ;
 
 HexNumber :=
