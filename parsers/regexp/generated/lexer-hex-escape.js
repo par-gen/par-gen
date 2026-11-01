@@ -41,9 +41,8 @@ const next = (input, offset) => {
     }
   }
 
-  if (state !== 0 && state <= 3) {
-    state -= 1;
-  } else {
+  state -= 1;
+  if (state >>> 0 >= 3) {
     state = i === l ? 13 : 14;
     offset = -1;
     i = -1;

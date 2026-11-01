@@ -208,4 +208,48 @@ describe("JavaScriptModuleCodegen", () => {
       "export function parse(input: Uint8Array | string): CstNode<StartRuleName>;"
     );
   });
+
+  it("should emit direct dead-end token IDs and zero or compact tokenIds tables across 1, 2, and 3 continuable tokens", async () => {
+    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+
+    // 1 continuable token (NUM) + dead-end token (PLUS): no tokenIds table, no successState variable
+    await codegen.parser(
+      genParser(`
+        NUM := '[0-9]+';
+        PLUS := '\\+';
+        Expr := NUM | Expr PLUS NUM;
+      `)
+    );
+    const code1 = await fsp.readFile(lexerStateFile, "utf-8");
+    expect(code1).not.toContain("const tokenIds =");
+    expect(code1).not.toContain("let successState =");
+    expect(code1).toContain("if (successPos !== 0)");
+
+    // 2 continuable tokens (WS, NUM) + dead-end token (PLUS): no tokenIds table, ternary continuable lookup
+    await codegen.parser(
+      genParser(`
+        WS := '[ ]+';
+        NUM := '[0-9]+';
+        PLUS := '\\+';
+        Expr := WS? NUM | Expr PLUS WS? NUM;
+      `)
+    );
+    const code2 = await fsp.readFile(lexerStateFile, "utf-8");
+    expect(code2).not.toContain("const tokenIds =");
+    expect(code2).toContain("if (successState !== 0)");
+
+    // 3 continuable tokens (WS, NUM, IDENT) + dead-end token (PLUS): compact tokenIds[successState >> 8]
+    await codegen.parser(
+      genParser(`
+        WS := '[ ]+';
+        NUM := '[0-9]+';
+        IDENT := '[a-z]+';
+        PLUS := '\\+';
+        Expr := WS? NUM | WS? IDENT | Expr PLUS Expr;
+      `)
+    );
+    const code3 = await fsp.readFile(lexerStateFile, "utf-8");
+    expect(code3).toContain("const tokenIds = new Uint8Array(4);");
+    expect(code3).toContain("tokenIds[successState >> 8]");
+  });
 });

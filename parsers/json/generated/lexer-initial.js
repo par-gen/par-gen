@@ -3,24 +3,6 @@
 const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 
-const tokenIds = new Uint8Array(1536);
-tokenIds[1] = 4; // CURLY_OPEN
-tokenIds[2] = 5; // CURLY_CLOSE
-tokenIds[3] = 6; // COMMA
-tokenIds[4] = 7; // COLON
-tokenIds[5] = 11; // NUMBER
-tokenIds[6] = 9; // BRACKET_OPEN
-tokenIds[7] = 10; // BRACKET_CLOSE
-tokenIds[8] = 8; // STRING
-tokenIds[9] = 1; // TRUE
-tokenIds[10] = 3; // NULL
-tokenIds[11] = 2; // FALSE
-// tokenIds[256] = 0; // WS
-tokenIds[512] = 11; // NUMBER
-tokenIds[768] = 11; // NUMBER
-tokenIds[1024] = 11; // NUMBER
-tokenIds[1280] = 11; // NUMBER
-
 const table = new Uint16Array(7424);
 table[288] = 256; // WS
 table[266] = 256; // WS
@@ -71,10 +53,10 @@ table[1545] = 256; // WS
 table[1652] = 5376; // TRUE
 table[1638] = 6400; // FALSE
 table[1646] = 5632; // NULL
-table[1659] = 1; // CURLY_OPEN
-table[1661] = 2; // CURLY_CLOSE
-table[1580] = 3; // COMMA
-table[1594] = 4; // COLON
+table[1659] = 5; // CURLY_OPEN
+table[1661] = 6; // CURLY_CLOSE
+table[1580] = 7; // COMMA
+table[1594] = 8; // COLON
 table[1570] = 2816; // STRING
 table[1581] = 2048; // NUMBER
 table[1584] = 1280; // NUMBER
@@ -87,11 +69,11 @@ table[1590] = 512; // NUMBER
 table[1591] = 512; // NUMBER
 table[1592] = 512; // NUMBER
 table[1593] = 512; // NUMBER
-table[1627] = 6; // BRACKET_OPEN
-table[1629] = 7; // BRACKET_CLOSE
+table[1627] = 10; // BRACKET_OPEN
+table[1629] = 11; // BRACKET_CLOSE
 table[1835] = 2304; // NUMBER
 table[1837] = 2304; // NUMBER
-table[1840] = 5; // NUMBER
+table[1840] = 12; // NUMBER
 table[1841] = 1024; // NUMBER
 table[1842] = 1024; // NUMBER
 table[1843] = 1024; // NUMBER
@@ -111,7 +93,7 @@ table[2102] = 512; // NUMBER
 table[2103] = 512; // NUMBER
 table[2104] = 512; // NUMBER
 table[2105] = 512; // NUMBER
-table[2352] = 5; // NUMBER
+table[2352] = 12; // NUMBER
 table[2353] = 1024; // NUMBER
 table[2354] = 1024; // NUMBER
 table[2355] = 1024; // NUMBER
@@ -148,7 +130,7 @@ table[2939] = 2816; // STRING
 table[2941] = 2816; // STRING
 table[2860] = 2816; // STRING
 table[2874] = 2816; // STRING
-table[2850] = 8; // STRING
+table[2850] = 9; // STRING
 table[2816] = 2816; // STRING
 table[2817] = 2816; // STRING
 table[2818] = 2816; // STRING
@@ -387,9 +369,9 @@ table[3069] = 2816; // STRING
 table[3070] = 2816; // STRING
 table[3071] = 2816; // STRING
 table[2908] = 3840; // STRING
-table[3173] = 9; // TRUE
-table[3436] = 10; // NULL
-table[3685] = 11; // FALSE
+table[3173] = 2; // TRUE
+table[3436] = 4; // NULL
+table[3685] = 3; // FALSE
 table[3956] = 2816; // STRING
 table[3954] = 2816; // STRING
 table[3957] = 6656; // STRING
@@ -513,11 +495,7 @@ const next = (input, offset) => {
   while (i < l) {
     state = table[state + input[i++]];
     if (state <= 1280) {
-      if (state <= 11) {
-        if (state !== 0) {
-          successState = state;
-          successPos = i;
-        }
+      if (state <= 12) {
         break;
       }
       successState = state;
@@ -525,17 +503,21 @@ const next = (input, offset) => {
     }
   }
 
-  if (successState !== 0) {
-    state = tokenIds[successState];
-  } else {
-    state = i === l ? 12 : 13;
-    offset = -1;
-    successPos = -1;
+  state -= 1;
+  if (state >>> 0 >= 12) {
+    if (successState !== 0) {
+      state = successState === 256 ? 0 : 11;
+      i = successPos;
+    } else {
+      state = i === l ? 12 : 13;
+      offset = -1;
+      i = -1;
+    }
   }
   return {
     state,
     start: offset,
-    end: successPos,
+    end: i,
   };
 };
 

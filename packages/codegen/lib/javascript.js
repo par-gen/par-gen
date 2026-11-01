@@ -126,9 +126,18 @@ export class JavaScriptBaseCodegen {
 
     const directDeadEndTokenIds =
       compactDeadEndFinals &&
-      continuableFinals.length === 0 &&
       skipTokenNames.size === 0 &&
-      maxDeadEndTokenId + 1 < columns;
+      deadEndFinals.every((origState) => {
+        const id = tokenIds[origState / columns];
+        return id !== undefined && id + 1 < columns;
+      });
+
+    if (directDeadEndTokenIds && continuableFinals.length > 1) {
+      continuableFinals.sort(
+        (a, b) =>
+          (tokenIds[a / columns] ?? 0) - (tokenIds[b / columns] ?? 0)
+      );
+    }
 
     const rowStates = compactDeadEndFinals
       ? [errorState, ...continuableFinals, ...nonFinals]
@@ -142,8 +151,14 @@ export class JavaScriptBaseCodegen {
         const id = tokenIds[origState / columns] ?? 0;
         stateRemap.set(origState, id + 1);
       });
+      continuableFinals.forEach((origState, idx) => {
+        stateRemap.set(origState, (idx + 1) * columns);
+      });
       nonFinals.forEach((origState, idx) => {
-        stateRemap.set(origState, (1 + idx) * columns);
+        stateRemap.set(
+          origState,
+          (continuableFinals.length + 1 + idx) * columns
+        );
       });
     } else if (compactDeadEndFinals) {
       stateRemap.set(errorState, 0);
@@ -175,20 +190,67 @@ export class JavaScriptBaseCodegen {
       ? deadEndFinals.length
       : deadEndFinals.length * columns;
     const remappedLastFinal = directDeadEndTokenIds
-      ? maxDeadEndTokenId + 1
+      ? continuableFinals.length > 0
+        ? continuableFinals.length * columns
+        : maxDeadEndTokenId + 1
       : compactDeadEndFinals
       ? continuableFinals.length > 0
         ? continuableFinals.length * columns
         : deadEndFinals.length
       : finals.length * columns;
 
-    const paddedTokenIdsLength = compactDeadEndFinals
+    const continuableTokenIds = continuableFinals.map(
+      (origState) => tokenIds[origState / columns] ?? 0
+    );
+    const distinctContinuableTokenIds = Array.from(
+      new Set(continuableTokenIds)
+    );
+    const needsContinuableTokenIdsTable =
+      directDeadEndTokenIds && distinctContinuableTokenIds.length >= 3;
+
+    let continuableTokenIdExpr = "tokenIds[successState >> 8]";
+    if (directDeadEndTokenIds && continuableFinals.length > 0) {
+      if (distinctContinuableTokenIds.length === 1) {
+        continuableTokenIdExpr = `${distinctContinuableTokenIds[0]}`;
+      } else if (distinctContinuableTokenIds.length === 2) {
+        const id0 = distinctContinuableTokenIds[0];
+        const id1 = distinctContinuableTokenIds[1];
+        const count0 = continuableTokenIds.filter((id) => id === id0).length;
+        const count1 = continuableFinals.length - count0;
+        if (count0 === 1) {
+          continuableTokenIdExpr = `successState === ${columns} ? ${id0} : ${id1}`;
+        } else if (count1 === 1) {
+          continuableTokenIdExpr = `successState === ${
+            continuableFinals.length * columns
+          } ? ${id1} : ${id0}`;
+        } else {
+          continuableTokenIdExpr = `successState <= ${
+            count0 * columns
+          } ? ${id0} : ${id1}`;
+        }
+      }
+    }
+
+    const paddedTokenIdsLength = needsContinuableTokenIdsTable
+      ? continuableFinals.length + 1
+      : compactDeadEndFinals
       ? Math.max(128, (continuableFinals.length + 1) * columns)
       : Math.max(128, rowStates.length);
 
     /** @type {string[]} */
     const tokenIdsAssignments = [];
-    if (!directDeadEndTokenIds) {
+    if (needsContinuableTokenIdsTable) {
+      continuableFinals.forEach((origState, idx) => {
+        const origIdx = origState / columns;
+        const id = tokenIds[origIdx];
+        const name = tokenNames[origIdx];
+        if (id !== undefined && id !== 0) {
+          tokenIdsAssignments.push(`tokenIds[${idx + 1}] = ${id}; // ${name}`);
+        } else {
+          tokenIdsAssignments.push(`// tokenIds[${idx + 1}] = 0; // ${name}`);
+        }
+      });
+    } else if (!directDeadEndTokenIds) {
       if (compactDeadEndFinals) {
         deadEndFinals.forEach((origState, idx) => {
           const origIdx = origState / columns;
@@ -259,7 +321,7 @@ export class JavaScriptBaseCodegen {
       }
 
       ${
-        directDeadEndTokenIds
+        directDeadEndTokenIds && !needsContinuableTokenIdsTable
           ? ""
           : `const tokenIds = new ${tokenIdSize}(${paddedTokenIdsLength});
       ${tokenIdsAssignments.join("\n")}`
@@ -292,7 +354,7 @@ export class JavaScriptBaseCodegen {
        */
       const next = (input, offset) => {
         ${
-          directDeadEndTokenIds
+          directDeadEndTokenIds && continuableFinals.length === 0
             ? `// ${remappedStart / columns}
         let state = ${remappedStart};
 
@@ -314,14 +376,71 @@ export class JavaScriptBaseCodegen {
           }
         }
 
-        if (state !== 0 && state <= ${remappedLastFinal}) {
-          state -= 1;
-        } else {
+        state -= 1;
+        if (state >>> 0 >= ${remappedLastFinal}) {
           state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
                 tokenIds[tokenNames.indexOf(ERROR)]
               };
           offset = -1;
           i = -1;
+        }
+        return {
+          state,
+          start: offset,
+          end: i,
+        };`
+            : directDeadEndTokenIds
+            ? `// ${remappedStart / columns}
+        let state = ${remappedStart};
+        ${
+          distinctContinuableTokenIds.length === 1
+            ? ""
+            : "let successState = 0;"
+        }
+        let successPos = 0;
+
+        // try to find match
+        let i = offset & 0x7fffffff;
+        const l = input.length;
+        ${
+          skipBytes.length > 0
+            ? `while (i < l && skipTable[input[i]] !== 0) {
+          i++;
+        }
+        offset = i;`
+            : ""
+        }
+        while (i < l) {
+          state = table[state + input[i++]];
+          if (state <= ${remappedLastFinal}) {
+            if (state <= ${remappedLastDeadEndFinal}) {
+              break;
+            }
+            ${
+              distinctContinuableTokenIds.length === 1
+                ? ""
+                : "successState = state;"
+            }
+            successPos = i;
+          }
+        }
+
+        state -= 1;
+        if (state >>> 0 >= ${remappedLastDeadEndFinal}) {
+          if (${
+            distinctContinuableTokenIds.length === 1
+              ? "successPos !== 0"
+              : "successState !== 0"
+          }) {
+            state = ${continuableTokenIdExpr};
+            i = successPos;
+          } else {
+            state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                tokenIds[tokenNames.indexOf(ERROR)]
+              };
+            offset = -1;
+            i = -1;
+          }
         }
         return {
           state,

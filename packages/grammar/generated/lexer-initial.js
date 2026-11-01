@@ -3,18 +3,6 @@
 const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 
-const tokenIds = new Uint8Array(1024);
-tokenIds[1] = 7; // IDENTIFIER
-tokenIds[2] = 2; // SEMICOLON
-tokenIds[3] = 4; // AT
-tokenIds[4] = 3; // PIPE
-tokenIds[5] = 5; // EXPR
-tokenIds[6] = 1; // ASSIGN
-tokenIds[7] = 6; // ACTION
-// tokenIds[256] = 0; // WS
-// tokenIds[512] = 0; // WS
-tokenIds[768] = 7; // IDENTIFIER
-
 const table = new Uint16Array(2560);
 table[288] = 256; // WS
 table[265] = 256; // WS
@@ -277,7 +265,7 @@ table[521] = 512; // WS
 table[525] = 512; // WS
 table[522] = 512; // WS
 table[547] = 256; // WS
-table[812] = 1; // IDENTIFIER
+table[812] = 8; // IDENTIFIER
 table[813] = 768; // IDENTIFIER
 table[816] = 768; // IDENTIFIER
 table[817] = 768; // IDENTIFIER
@@ -289,7 +277,7 @@ table[822] = 768; // IDENTIFIER
 table[823] = 768; // IDENTIFIER
 table[824] = 768; // IDENTIFIER
 table[825] = 768; // IDENTIFIER
-table[831] = 1; // IDENTIFIER
+table[831] = 8; // IDENTIFIER
 table[833] = 768; // IDENTIFIER
 table[834] = 768; // IDENTIFIER
 table[835] = 768; // IDENTIFIER
@@ -361,8 +349,8 @@ table[1079] = 768; // IDENTIFIER
 table[1080] = 768; // IDENTIFIER
 table[1081] = 768; // IDENTIFIER
 table[1082] = 1536; // ASSIGN
-table[1083] = 2; // SEMICOLON
-table[1088] = 3; // AT
+table[1083] = 3; // SEMICOLON
+table[1088] = 5; // AT
 table[1089] = 768; // IDENTIFIER
 table[1090] = 768; // IDENTIFIER
 table[1091] = 768; // IDENTIFIER
@@ -457,7 +445,7 @@ table[1314] = 1280; // EXPR
 table[1316] = 1280; // EXPR
 table[1317] = 1280; // EXPR
 table[1318] = 1280; // EXPR
-table[1319] = 5; // EXPR
+table[1319] = 6; // EXPR
 table[1320] = 1280; // EXPR
 table[1321] = 1280; // EXPR
 table[1322] = 1280; // EXPR
@@ -674,7 +662,7 @@ table[1532] = 1280; // EXPR
 table[1533] = 1280; // EXPR
 table[1534] = 1280; // EXPR
 table[1535] = 1280; // EXPR
-table[1597] = 6; // ASSIGN
+table[1597] = 2; // ASSIGN
 table[1824] = 1792; // ACTION
 table[1801] = 1792; // ACTION
 table[1805] = 1792; // ACTION
@@ -950,11 +938,7 @@ const next = (input, offset) => {
   while (i < l) {
     state = table[state + input[i++]];
     if (state <= 768) {
-      if (state <= 7) {
-        if (state !== 0) {
-          successState = state;
-          successPos = i;
-        }
+      if (state <= 8) {
         break;
       }
       successState = state;
@@ -962,17 +946,21 @@ const next = (input, offset) => {
     }
   }
 
-  if (successState !== 0) {
-    state = tokenIds[successState];
-  } else {
-    state = i === l ? 8 : 9;
-    offset = -1;
-    successPos = -1;
+  state -= 1;
+  if (state >>> 0 >= 8) {
+    if (successState !== 0) {
+      state = successState === 768 ? 7 : 0;
+      i = successPos;
+    } else {
+      state = i === l ? 8 : 9;
+      offset = -1;
+      i = -1;
+    }
   }
   return {
     state,
     start: offset,
-    end: successPos,
+    end: i,
   };
 };
 
