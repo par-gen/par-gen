@@ -39,12 +39,15 @@ done
   echo 1 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
 # echo 0 | sudo tee /sys/devices/system/cpu/cpu3/online
 
-# 5. Pin all maskable IRQs and kernel workqueues to CPU 0 (mask=1) so CPU 1 is undisturbed
+# 5. Pin all maskable IRQs, kernel workqueues, and existing OS processes to CPU 0 (mask=1)
 for irq in /proc/irq/*/smp_affinity; do
   echo 1 | sudo tee "$irq" >/dev/null 2>&1 || true
 done
 [ -f /sys/devices/virtual/workqueue/cpumask ] && \
   echo 1 | sudo tee /sys/devices/virtual/workqueue/cpumask >/dev/null 2>&1 || true
+for p in $(ps -eo pid=); do
+  sudo taskset -pc 0 "$p" >/dev/null 2>&1 || true
+done
 ```
 
 ### 1.3 Running Node.js on an Isolated Single Core
@@ -52,6 +55,7 @@ done
 > **Critical V8 + Single-Core Pinning Pitfalls:**
 > 1. **Never use `chrt -f 99` (`SCHED_FIFO`) with `taskset -c 1` on Node.js:** When the main V8 thread spins at `SCHED_FIFO` priority 99 on a single core and reaches a safepoint or waits on a V8 background worker thread pinned to the same core, the worker thread can never pre-empt the main thread, causing a deadlock.
 > 2. **Always pass `--single-threaded-gc --v8-pool-size=1` when pinning to 1 core (`taskset -c 1`) for GC-heavy comparison parsers (`acorn`, `babel`, `typescript`):** By default, V8 spawns parallel Scavenger/Marking worker threads that synchronize via spin-wait barriers assuming multiple CPU cores are available. Pinning all threads to a single core causes parallel GC barrier contention.
+> 3. **Avoid ESM `import` of large CommonJS bundles (`acorn`, `@babel/parser`, `typescript`) in the same V8 Isolate when benchmarking `TypedArray` code on Node.js v20:** When Node.js loads a large CJS file (>100 KiB) via ESM `import`, its internal `cjs-module-lexer` calls `WebAssembly.Memory.prototype.grow()`. In V8 11.x (Node 20), `memory.grow()` detaches the old backing `JSArrayBuffer` and invalidates the Isolate-wide `ArrayBufferDetachingProtector`, forcing TurboFan to emit `CheckArrayBufferNotDetached` (`testb [ArrayBuffer + 0x3f], 0x4; jnz deopt`) before every `TypedArray` access (+704 bytes of machine code and ~18% slowdown). Always load CJS comparison libraries via `createRequire(import.meta.url)` or benchmark each parser in its own process.
 
 Run benchmarks pinned to CPU 1 with highest CFS priority (`nice -n -20`):
 
