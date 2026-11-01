@@ -515,7 +515,7 @@ export class JavaScriptBaseCodegen {
         )}
         ${hasSingleLexerMode ? "" : "lexer.push('initial');"}
 
-        const stream = Buffer.isBuffer(input) ? input : Buffer.from(input);
+        const stream = typeof input === "string" ? Buffer.from(input) : input;
 
         let result = nextToken(stream, 0);
         let lookahead = result.state;
@@ -579,7 +579,6 @@ export class JavaScriptBaseCodegen {
               tree[tp + 1] = lookaheadStart;
               tree[tp + 2] = lookaheadEnd;
               tree[tp + 3] = 0; // leaf nodes have no children
-              tree[tp + 4] = 0; // leaf nodes have first child
               tree[stack[sp -  1] + 5] = tp; // write the current address to the previous item as next sibling
 
               // shift current address on top of "address stack"
