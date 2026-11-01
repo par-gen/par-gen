@@ -201,91 +201,93 @@ export function generate(grammar, options) {
 
     let start = dfa.description.start;
 
-    const hasSemanticActions = Array.from(states).some((state) =>
-      Array.from(state.values()).some((item) => item.semanticAction)
-    );
-    if (!hasSemanticActions) {
-      let changed = true;
-      while (changed) {
-        changed = false;
-        const stateList = Array.from(states);
-        /** @type {Map<string, ItemState>} */
-        const sigMap = new Map();
-        /** @type {Map<ItemState, ItemState>} */
-        const replacement = new Map();
+    let changed = true;
+    while (changed) {
+      changed = false;
+      const stateList = Array.from(states);
+      /** @type {Map<string, ItemState>} */
+      const sigMap = new Map();
+      /** @type {Map<ItemState, ItemState>} */
+      const replacement = new Map();
 
-        for (const st of stateList) {
-          const actMap = actions.get(st);
-          const items = Array.from(st.values());
-          const actEntries = actMap
-            ? Array.from(actMap.entries())
-                .map(([sym, act]) => {
-                  if (act.op === "shift") {
-                    return `${sym}:S:${stateList.indexOf(act.state)}`;
-                  }
-                  if (act.op === "reduce") {
-                    const matched = items.find(
-                      (it) =>
-                        it.name === act.symbol &&
-                        it.marker === it.tokens.length &&
-                        it.lookahead === sym
-                    );
-                    const len = matched ? matched.tokens.length : 0;
-                    return `${sym}:R:${act.symbol}:${len}`;
-                  }
-                  return `${sym}:D`;
-                })
-                .sort()
-                .join("|")
-            : "";
+      for (const st of stateList) {
+        const actMap = actions.get(st);
+        const items = Array.from(st.values());
+        const actEntries = actMap
+          ? Array.from(actMap.entries())
+              .map(([sym, act]) => {
+                if (act.op === "shift") {
+                  const semActs = items
+                    .filter(
+                      (it) => it.tokens[it.marker] === sym && it.semanticAction
+                    )
+                    .map((it) => it.semanticAction)
+                    .join(",");
+                  return `${sym}:S:${stateList.indexOf(act.state)}:${semActs}`;
+                }
+                if (act.op === "reduce") {
+                  const matched = items.find(
+                    (it) =>
+                      it.name === act.symbol &&
+                      it.marker === it.tokens.length &&
+                      it.lookahead === sym
+                  );
+                  const len = matched ? matched.tokens.length : 0;
+                  const semAct = matched?.semanticAction ?? "";
+                  return `${sym}:R:${act.symbol}:${len}:${semAct}`;
+                }
+                return `${sym}:D`;
+              })
+              .sort()
+              .join("|")
+          : "";
 
-          const gotoMap = goto.get(st);
-          const gotoEntries = gotoMap
-            ? Array.from(gotoMap.entries())
-                .map(([sym, target]) => `${sym}:G:${stateList.indexOf(target)}`)
-                .sort()
-                .join("|")
-            : "";
+        const gotoMap = goto.get(st);
+        const gotoEntries = gotoMap
+          ? Array.from(gotoMap.entries())
+              .map(([sym, target]) => `${sym}:G:${stateList.indexOf(target)}`)
+              .sort()
+              .join("|")
+          : "";
 
-          const sig = `${actEntries}#${gotoEntries}`;
-          const canonical = sigMap.get(sig);
-          if (canonical) {
-            replacement.set(st, canonical);
-            changed = true;
-          } else {
-            sigMap.set(sig, st);
+        const sig = `${actEntries}#${gotoEntries}`;
+        const canonical = sigMap.get(sig);
+        if (canonical) {
+          replacement.set(st, canonical);
+          changed = true;
+        } else {
+          sigMap.set(sig, st);
+        }
+      }
+
+      if (changed) {
+        for (const [dup, canonical] of replacement.entries()) {
+          states.delete(dup);
+          actions.delete(dup);
+          goto.delete(dup);
+          if (start === dup) {
+            start = canonical;
           }
         }
-
-        if (changed) {
-          for (const [dup, canonical] of replacement.entries()) {
-            states.delete(dup);
-            actions.delete(dup);
-            goto.delete(dup);
-            if (start === dup) {
-              start = canonical;
-            }
-          }
-          for (const [, actMap] of actions.entries()) {
-            for (const [sym, act] of actMap.entries()) {
-              if (act.op === "shift") {
-                const redirected = replacement.get(act.state);
-                if (redirected) {
-                  actMap.set(sym, {
-                    op: "shift",
-                    state: redirected,
-                    symbol: undefined,
-                  });
-                }
-              }
-            }
-          }
-          for (const [, gotoMap] of goto.entries()) {
-            for (const [sym, target] of gotoMap.entries()) {
-              const redirected = replacement.get(target);
+        for (const [, actMap] of actions.entries()) {
+          for (const [sym, act] of actMap.entries()) {
+            if (act.op === "shift") {
+              const redirected = replacement.get(act.state);
               if (redirected) {
-                gotoMap.set(sym, redirected);
+                actMap.set(sym, {
+                  op: "shift",
+                  state: redirected,
+                  symbol: undefined,
+                });
               }
+            }
+          }
+        }
+        for (const [, gotoMap] of goto.entries()) {
+          for (const [sym, target] of gotoMap.entries()) {
+            const redirected = replacement.get(target);
+            if (redirected) {
+              gotoMap.set(sym, redirected);
             }
           }
         }
@@ -723,29 +725,33 @@ function calculateFollows(firsts, tokens, EOF, rules) {
     }
 
     for (const rule of rhsRules) {
-      const current = rule.symbols.indexOf(ruleName);
-      const next = current + 1;
-      if (next < rule.symbols.length) {
-        const symbol = rule.symbols[next];
-        const isNonTerminal = rulesNames.has(symbol);
-        if (isNonTerminal) {
-          firsts.get(symbol)?.forEach((name) => {
-            follows.add(name);
-          });
-        } else {
-          const token = tokenCache.get(symbol);
-          if (!token) {
-            throw new Error(`Illegal state: No token for '${symbol}'`);
-          }
-          follows.add(token);
+      for (let current = 0; current < rule.symbols.length; current++) {
+        if (rule.symbols[current] !== ruleName) {
+          continue;
         }
-      } else if (rule.name !== ruleName) {
-        if (computed.has(rule.name)) {
-          for (const name of computed.get(rule.name) ?? new Set()) {
-            follows.add(name);
+        const next = current + 1;
+        if (next < rule.symbols.length) {
+          const symbol = rule.symbols[next];
+          const isNonTerminal = rulesNames.has(symbol);
+          if (isNonTerminal) {
+            firsts.get(symbol)?.forEach((name) => {
+              follows.add(name);
+            });
+          } else {
+            const token = tokenCache.get(symbol);
+            if (!token) {
+              throw new Error(`Illegal state: No token for '${symbol}'`);
+            }
+            follows.add(token);
           }
-        } else {
-          incomplete = true;
+        } else if (rule.name !== ruleName) {
+          if (computed.has(rule.name)) {
+            for (const name of computed.get(rule.name) ?? new Set()) {
+              follows.add(name);
+            }
+          } else {
+            incomplete = true;
+          }
         }
       }
     }
@@ -797,13 +803,12 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
           Array.from(toItemSet.values()).every((item) => exiting.has(item))
         );
       });
-      transitions.set(
-        fromItemSet,
-        new Map([
-          ...Array.from(transitions.get(fromItemSet)?.entries() ?? []),
-          [token, existing ?? toItemSet],
-        ])
-      );
+      let stateTransitions = transitions.get(fromItemSet);
+      if (!stateTransitions) {
+        stateTransitions = new Map();
+        transitions.set(fromItemSet, stateTransitions);
+      }
+      stateTransitions.set(token, existing ?? toItemSet);
       if (!existing) {
         newItemSets.push(toItemSet);
       }
@@ -864,32 +869,32 @@ function createActionTable(dfa, EOF) {
 
   dfa.description.states.forEach((currentState) => {
     const transition = dfa.description.transitions.get(currentState);
+    let stateActions = actions.get(currentState);
     dfa.description.symbols.forEach((symbol) => {
       const ns = transition?.get(symbol);
       if (ns) {
-        actions.set(
-          currentState,
-          new Map([
-            ...Array.from(actions.get(currentState)?.entries() ?? []),
-            [symbol, { op: "shift", state: ns, symbol: undefined }],
-          ])
-        );
+        if (!stateActions) {
+          stateActions = new Map();
+          actions.set(currentState, stateActions);
+        }
+        stateActions.set(symbol, { op: "shift", state: ns, symbol: undefined });
       }
     });
+    const ends = Array.from(currentState.values()).filter(
+      (item) => item.marker >= item.tokens.length
+    );
     dfa.description.symbols.forEach((symbol) => {
-      const ends = Array.from(currentState.values()).filter(
-        (item) => item.marker >= item.tokens.length
-      );
-
       ends.forEach((end) => {
         if (end.lookahead === symbol) {
-          actions.set(
-            currentState,
-            new Map([
-              ...Array.from(actions.get(currentState)?.entries() ?? []),
-              [symbol, { op: "reduce", state: undefined, symbol: end.name }],
-            ])
-          );
+          if (!stateActions) {
+            stateActions = new Map();
+            actions.set(currentState, stateActions);
+          }
+          stateActions.set(symbol, {
+            op: "reduce",
+            state: undefined,
+            symbol: end.name,
+          });
         }
       });
     });
@@ -918,16 +923,15 @@ function createGotoTable(dfa, rules) {
 
   dfa.description.states.forEach((currentState) => {
     const transition = dfa.description.transitions.get(currentState);
+    let stateGoto = goto.get(currentState);
     Array.from(transition?.entries() ?? [])
       .filter(([from]) => ruleNames.includes(from))
       .forEach(([ruleName, to]) => {
-        goto.set(
-          currentState,
-          new Map([
-            ...Array.from(goto.get(currentState)?.entries() ?? []),
-            [ruleName, to],
-          ])
-        );
+        if (!stateGoto) {
+          stateGoto = new Map();
+          goto.set(currentState, stateGoto);
+        }
+        stateGoto.set(ruleName, to);
       });
   });
 
