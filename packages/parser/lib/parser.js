@@ -62,7 +62,7 @@ const log = debug("par-gen:parser");
  */
 
 /**
- * @param {string} grammar
+ * @param {string | { tokens: Token[], rules: Rule[], precedence?: ParseOptions['precedence'] }} grammar
  * @param {ParseOptions=} options
  * @returns {ParserData}
  */
@@ -70,7 +70,8 @@ export function generate(grammar, options) {
   const traceStart = performance.now();
   log("enter generate");
   try {
-    const parsedGrammar = parse(grammar, options);
+    const parsedGrammar =
+      typeof grammar === "string" ? parse(grammar, options) : grammar;
     const { tokens, rules } = parsedGrammar;
     const skipTokenSet = new Set(options?.skipTokens ?? []);
     for (const token of tokens) {
@@ -1353,6 +1354,7 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
     }
   }
 
+  let hasExplicitRulePrecedence = false;
   /** @type {Map<string, { order: number, precedence: ResolvedPrecedence | undefined }>} */
   const ruleMetaByKey = new Map();
   rules.forEach((rule, idx) => {
@@ -1366,10 +1368,18 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
     /** @type {ResolvedPrecedence | undefined} */
     let prec;
     if (rule.precedence !== undefined) {
-      prec = {
-        level: rule.precedence,
-        assoc: rule.assoc ?? "left",
-      };
+      hasExplicitRulePrecedence = true;
+      if (typeof rule.precedence === "object" && rule.precedence !== null) {
+        prec = {
+          level: rule.precedence.level,
+          assoc: rule.precedence.assoc ?? rule.assoc ?? "left",
+        };
+      } else {
+        prec = {
+          level: rule.precedence,
+          assoc: rule.assoc ?? "left",
+        };
+      }
     } else {
       for (let i = rule.symbols.length - 1; i >= 0; i--) {
         const sym = rule.symbols[i];
@@ -1384,6 +1394,14 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
     }
     ruleMetaByKey.set(key, { order: idx, precedence: prec });
   });
+
+  const nullable = hasExplicitRulePrecedence
+    ? calculateNullable(rules)
+    : undefined;
+  const firsts =
+    hasExplicitRulePrecedence && nullable
+      ? calculateFirsts(tokens, rules, nullable)
+      : undefined;
 
   /**
    * @param {Item} item
@@ -1424,11 +1442,10 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
         const candPrec = candMeta?.precedence?.level;
 
         if (
-          winPrec !== undefined &&
-          candPrec !== undefined &&
-          winPrec !== candPrec
+          (winPrec !== undefined || candPrec !== undefined) &&
+          (winPrec ?? 0) !== (candPrec ?? 0)
         ) {
-          if (candPrec > winPrec) {
+          if ((candPrec ?? 0) > (winPrec ?? 0)) {
             winningEnd = candidate;
           }
         } else if (
@@ -1449,25 +1466,81 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
 
       const existingShift = stateActions?.get(symbol);
       if (existingShift && existingShift.op === "shift") {
-        const shiftPrec = symbolPrecedence.get(symbol);
+        let shiftPrec = symbolPrecedence.get(symbol);
+        if (shiftPrec === undefined && hasExplicitRulePrecedence) {
+          for (const item of currentState.values()) {
+            if (
+              item.marker < item.tokens.length &&
+              item.tokens[item.marker] === symbol
+            ) {
+              const itemPrec = getItemMeta(item)?.precedence;
+              if (
+                itemPrec !== undefined &&
+                (shiftPrec === undefined || itemPrec.level > shiftPrec.level)
+              ) {
+                shiftPrec = itemPrec;
+              }
+            }
+          }
+          if (shiftPrec === undefined && firsts && nullable) {
+            for (const item of currentState.values()) {
+              if (item.marker > 0 && item.marker < item.tokens.length) {
+                const itemPrec = getItemMeta(item)?.precedence;
+                if (itemPrec !== undefined) {
+                  const seqFirsts = computeSequenceFirsts(
+                    item.tokens,
+                    item.marker,
+                    "",
+                    firsts,
+                    nullable,
+                    ruleNamesSet
+                  );
+                  if (
+                    seqFirsts.includes(symbol) &&
+                    (shiftPrec === undefined ||
+                      itemPrec.level > shiftPrec.level)
+                  ) {
+                    shiftPrec = itemPrec;
+                  }
+                }
+              }
+            }
+          }
+        }
         const reducePrec = getItemMeta(winningEnd)?.precedence;
+        const effShiftPrec =
+          shiftPrec ??
+          (hasExplicitRulePrecedence && reducePrec !== undefined
+            ? { level: 0, assoc: /** @type {Associativity} */ ("none") }
+            : undefined);
+        const effReducePrec =
+          reducePrec ??
+          (hasExplicitRulePrecedence && shiftPrec !== undefined
+            ? { level: 0, assoc: /** @type {Associativity} */ ("none") }
+            : undefined);
 
         /** @type {'shift' | 'reduce' | 'error'} */
         let resolution = "shift";
-        if (shiftPrec !== undefined && reducePrec !== undefined) {
-          if (reducePrec.level > shiftPrec.level) {
+        if (effShiftPrec !== undefined && effReducePrec !== undefined) {
+          if (effReducePrec.level > effShiftPrec.level) {
             resolution = "reduce";
-          } else if (shiftPrec.level > reducePrec.level) {
+          } else if (effShiftPrec.level > effReducePrec.level) {
             resolution = "shift";
-          } else if (shiftPrec.assoc === "left") {
-            resolution = "reduce";
-          } else if (shiftPrec.assoc === "right") {
-            resolution = "shift";
-          } else if (
-            shiftPrec.assoc === "nonassoc" ||
-            shiftPrec.assoc === "none"
-          ) {
-            resolution = "error";
+          } else {
+            const assoc =
+              effShiftPrec.assoc !== "none"
+                ? effShiftPrec.assoc
+                : effReducePrec.assoc;
+            if (assoc === "left") {
+              resolution = "reduce";
+            } else if (assoc === "right") {
+              resolution = "shift";
+            } else if (
+              assoc === "nonassoc" ||
+              (!hasExplicitRulePrecedence && assoc === "none")
+            ) {
+              resolution = "error";
+            }
           }
         }
 

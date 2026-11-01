@@ -337,6 +337,8 @@ export class JavaScriptFunctionCodegen {
       const st = stateList[sIdx];
       const items = Array.from(st.values());
 
+      /** @type {Set<string>} */
+      const seenShiftActions = new Set();
       for (const item of items) {
         if (item.semanticAction) {
           if (item.marker === item.tokens.length) {
@@ -345,6 +347,12 @@ export class JavaScriptFunctionCodegen {
           const tokName = item.tokens[item.marker];
           const tokId = symbolToIndex.get(tokName);
           if (tokId !== undefined) {
+            const trimmedCode = item.semanticAction.trim();
+            const dedupKey = `${tokId}\0${trimmedCode}`;
+            if (seenShiftActions.has(dedupKey)) {
+              continue;
+            }
+            seenShiftActions.add(dedupKey);
             hasSemanticActions = true;
             let map = shiftSemanticActions[sIdx];
             if (!map) {
@@ -352,7 +360,7 @@ export class JavaScriptFunctionCodegen {
               shiftSemanticActions[sIdx] = map;
             }
             const fn = /** @type {(lexer: *, stack: *, sp: number) => void} */ (
-              new Function("lexer", "stack", "sp", item.semanticAction)
+              new Function("lexer", "stack", "sp", trimmedCode)
             );
             const prev = map.get(tokId);
             if (prev) {

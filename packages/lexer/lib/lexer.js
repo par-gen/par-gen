@@ -1,6 +1,7 @@
 import { DFA, fromNFA, minimize } from "@par-gen/dfa";
 import { EOF, ERROR, parse } from "@par-gen/grammar";
 import {
+  Epsilon,
   NFA,
   parseRegExp,
   fromRegExpParseTree,
@@ -85,12 +86,34 @@ function createOptimalDFA(nfa) {
   const traceStart = performance.now();
   log("enter createOptimalDFA");
   try {
+    const acceptingNfaStates = new Set(nfa.description.finals);
+    let epsChanged = true;
+    while (epsChanged) {
+      epsChanged = false;
+      for (const [from, trans] of nfa.description.transitions.entries()) {
+        if (acceptingNfaStates.has(from)) {
+          continue;
+        }
+        const epsTargets = trans.get(Epsilon);
+        if (epsTargets && epsTargets.some((t) => acceptingNfaStates.has(t))) {
+          acceptingNfaStates.add(from);
+          epsChanged = true;
+        }
+      }
+    }
+
     const dfa = new DFA(
-      fromNFA(nfa, (n, states) => ({
-        n,
-        uids: states.map((state) => state.uid).filter(nonFalsyValues),
-        names: states.map((state) => state.name).filter(nonFalsyValues),
-      }))
+      fromNFA(nfa, (n, states) => {
+        const accepting = states
+          .filter((s) => acceptingNfaStates.has(s) && s.uid !== undefined)
+          .sort((a, b) => (a.uid ?? 0) - (b.uid ?? 0));
+        const ordered = accepting.length > 0 ? accepting : states;
+        return {
+          n,
+          uids: ordered.map((state) => state.uid).filter(nonFalsyValues),
+          names: ordered.map((state) => state.name).filter(nonFalsyValues),
+        };
+      })
     );
 
     /** @type {Map<number | undefined, { n: number; uids: number[]; names: string[]; }[]>} */

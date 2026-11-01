@@ -2,7 +2,7 @@ import {
   JavaScriptCommonJsCodegen,
   JavaScriptModuleCodegen,
 } from "@par-gen/codegen";
-import { generate } from "@par-gen/parser";
+import { generate, generateFromTreesitter } from "@par-gen/parser";
 import { promises as fsp } from "fs";
 
 /**
@@ -46,6 +46,9 @@ export function createGenerator(language, module, options) {
  * @param {ParseOptions=} options
  */
 export async function execute(grammarFile, codegen, options) {
-  const data = generate(await fsp.readFile(grammarFile, "utf-8"), options);
+  const source = await fsp.readFile(grammarFile, "utf-8");
+  const data = grammarFile.endsWith(".json")
+    ? generateFromTreesitter(source, options)
+    : generate(source, options);
   await codegen.parser(data);
 }

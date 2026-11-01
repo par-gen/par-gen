@@ -45,7 +45,7 @@ export const ERROR = "@par-gen.ERROR";
  * @property {string} name
  * @property {string[]} symbols
  * @property {RuleAction[]} actions
- * @property {number=} precedence
+ * @property {(number | { level: number, assoc?: Associativity })=} precedence
  * @property {Associativity=} assoc
  */
 
