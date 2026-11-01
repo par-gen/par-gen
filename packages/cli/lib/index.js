@@ -30,6 +30,11 @@ cli
     "esm"
   )
   .option("--debug, -d", "Creates parser with debug output", false)
+  .option(
+    "--skip, -s",
+    "Comma-separated list of token names to skip (e.g. WS)",
+    ""
+  )
   .example("codegen ./json.pargen ./generated")
   .action(
     /**
@@ -39,6 +44,7 @@ cli
      * @param {string} opts.language
      * @param {string} opts.module
      * @param {boolean} opts.debug
+     * @param {string=} opts.skip
      */
     async (grammarFile, targetDirectory, opts) => {
       const codegen = createGenerator(opts.language, opts.module, {
@@ -47,7 +53,16 @@ cli
         debug: opts.debug,
       });
 
-      await execute(grammarFile, codegen);
+      const skipTokens = (opts.skip ?? "")
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      if (skipTokens.length > 0) {
+        await execute(grammarFile, codegen, { skipTokens });
+      } else {
+        await execute(grammarFile, codegen);
+      }
     }
   );
 

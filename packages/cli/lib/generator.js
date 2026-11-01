@@ -10,6 +10,10 @@ import { promises as fsp } from "fs";
  */
 
 /**
+ * @typedef {import('@par-gen/grammar/types/parser').ParseOptions} ParseOptions
+ */
+
+/**
  * @param {string} language
  * @param {string} module
  * @param {Object} options
@@ -39,8 +43,9 @@ export function createGenerator(language, module, options) {
 /**
  * @param {string} grammarFile
  * @param {Codegen} codegen
+ * @param {ParseOptions=} options
  */
-export async function execute(grammarFile, codegen) {
-  const data = generate(await fsp.readFile(grammarFile, "utf-8"));
+export async function execute(grammarFile, codegen, options) {
+  const data = generate(await fsp.readFile(grammarFile, "utf-8"), options);
   await codegen.parser(data);
 }

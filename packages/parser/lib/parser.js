@@ -58,14 +58,20 @@ const log = debug("par-gen:parser");
  */
 
 /**
+ * @typedef {import('@par-gen/grammar/types/parser').ParseOptions} ParseOptions
+ */
+
+/**
  * @param {string} grammar
+ * @param {ParseOptions=} options
  * @returns {ParserData}
  */
-export function generate(grammar) {
+export function generate(grammar, options) {
   const traceStart = performance.now();
   log("enter generate");
   try {
-    const { tokens, rules } = parse(grammar);
+    const { tokens, rules } = parse(grammar, options);
+    const skipTokenSet = new Set(options?.skipTokens ?? []);
 
     const tokenGroups = tokens.reduce((groups, token) => {
       token.state.forEach((state) => {
@@ -81,11 +87,84 @@ export function generate(grammar) {
 
     /** @type {Lexers} */
     const lexers = {};
-    for (const [name, tokens] of tokenGroups.entries()) {
-      const lexerData = generateFromTokens(tokens);
-      lexers[name] = lexerData;
+    /** @type {Set<string>} */
+    const byteTableSkippedTokens = new Set();
+
+    for (const [name, stateTokens] of tokenGroups.entries()) {
+      const skippedInState = stateTokens.filter((t) =>
+        skipTokenSet.has(t.name)
+      );
+      if (skippedInState.length === 0) {
+        lexers[name] = generateFromTokens(stateTokens);
+        continue;
+      }
+
+      const keptInState = stateTokens.filter((t) => !skipTokenSet.has(t.name));
+      const specialTokens = stateTokens.filter((t) => t.expr === "");
+      const skipDfa = generateFromTokens([...skippedInState, ...specialTokens]);
+      const keptDfa = generateFromTokens(keptInState);
+
+      const skipTransMap = new Map(skipDfa.transitions);
+      const keptTransMap = new Map(keptDfa.transitions);
+      const finalState = skipDfa.finals[0];
+      const nonErrorStates = skipDfa.transitions
+        .map(([from]) => from)
+        .filter((s) => s !== skipDfa.errorState);
+
+      const startTr = skipTransMap.get(skipDfa.start) ?? [];
+      const finalTr =
+        finalState !== undefined ? skipTransMap.get(finalState) ?? [] : [];
+
+      const startBytes = startTr
+        .filter(([, to]) => to === finalState)
+        .map(([sym]) => sym)
+        .sort((a, b) => a - b);
+      const loopBytes = finalTr
+        .filter(([, to]) => to === finalState)
+        .map(([sym]) => sym)
+        .sort((a, b) => a - b);
+
+      const isPureBytePlus =
+        skipDfa.finals.length === 1 &&
+        finalState !== skipDfa.start &&
+        nonErrorStates.every(
+          (s) => s === skipDfa.start || s === finalState
+        ) &&
+        startTr.every(
+          ([, to]) => to === finalState || to === skipDfa.errorState
+        ) &&
+        finalTr.every(
+          ([, to]) => to === finalState || to === skipDfa.errorState
+        ) &&
+        startBytes.length > 0 &&
+        startBytes.length === loopBytes.length &&
+        startBytes.every((b, idx) => b === loopBytes[idx]);
+
+      const keptStartTr = keptTransMap.get(keptDfa.start) ?? [];
+      const keptStartByteSet = new Set(
+        keptStartTr
+          .filter(([, to]) => to !== keptDfa.errorState)
+          .map(([sym]) => sym)
+      );
+      const disjointFromKept = startBytes.every(
+        (b) => !keptStartByteSet.has(b)
+      );
+
+      if (isPureBytePlus && disjointFromKept) {
+        keptDfa.skipBytes = startBytes;
+        lexers[name] = keptDfa;
+        skippedInState.forEach((t) => byteTableSkippedTokens.add(t.name));
+      } else {
+        const fullDfa = generateFromTokens(stateTokens);
+        fullDfa.skipTokenNames = skippedInState.map((t) => t.name);
+        lexers[name] = fullDfa;
+      }
     }
     const EOF = lexers.initial.tokens.EOF;
+    const parserTokens =
+      byteTableSkippedTokens.size > 0
+        ? tokens.filter((t) => !byteTableSkippedTokens.has(t.name))
+        : tokens;
 
     const augmentedRules = [
       /** @type {Rule} */
@@ -98,7 +177,7 @@ export function generate(grammar) {
       ...rules,
     ];
 
-    const dfa = createDFA(tokens, EOF, augmentedRules);
+    const dfa = createDFA(parserTokens, EOF, augmentedRules);
 
     const actions = createActionTable(dfa, EOF);
     const goto = createGotoTable(dfa, augmentedRules);

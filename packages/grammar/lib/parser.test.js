@@ -390,4 +390,25 @@ describe("parse", () => {
       })
     );
   });
+
+  it("should strip skipped tokens and deduplicate expanded rules when skipTokens is passed", () => {
+    const grammar = parse(
+      `
+      WS := '[ \\n\\r\\t]+';
+      A := 'a';
+      B := 'b';
+      Rule := WS? A WS B WS?;
+    `,
+      { skipTokens: ["WS"] }
+    );
+
+    expect(grammar.rules).toEqual([
+      {
+        uid: expect.any(Number),
+        name: "Rule",
+        symbols: ["A", "B"],
+        actions: [],
+      },
+    ]);
+  });
 });

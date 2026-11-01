@@ -113,17 +113,31 @@ export class JavaScriptBaseCodegen {
       (s) => s !== errorState && !finalSet.has(s)
     );
 
-    const newOrder = [
-      errorState,
-      ...deadEndFinals,
-      ...continuableFinals,
-      ...nonFinals,
-    ];
+    const compactDeadEndFinals =
+      deadEndFinals.length > 0 && deadEndFinals.length < columns;
+
+    const rowStates = compactDeadEndFinals
+      ? [errorState, ...continuableFinals, ...nonFinals]
+      : [errorState, ...deadEndFinals, ...continuableFinals, ...nonFinals];
+
     /** @type {Map<number, number>} */
     const stateRemap = new Map();
-    newOrder.forEach((origState, newIdx) => {
-      stateRemap.set(origState, newIdx * columns);
-    });
+    if (compactDeadEndFinals) {
+      stateRemap.set(errorState, 0);
+      deadEndFinals.forEach((origState, idx) => {
+        stateRemap.set(origState, idx + 1);
+      });
+      continuableFinals.forEach((origState, idx) => {
+        stateRemap.set(origState, (idx + 1) * columns);
+      });
+      nonFinals.forEach((origState, idx) => {
+        stateRemap.set(origState, (continuableFinals.length + 1 + idx) * columns);
+      });
+    } else {
+      rowStates.forEach((origState, newIdx) => {
+        stateRemap.set(origState, newIdx * columns);
+      });
+    }
 
     /**
      * @param {number} s
@@ -131,12 +145,78 @@ export class JavaScriptBaseCodegen {
      */
     const remapState = (s) => stateRemap.get(s) ?? 0;
 
-    const remappedTokenIds = newOrder.map((s) => tokenIds[s / columns]);
-    const remappedTokenNames = newOrder.map((s) => tokenNames[s / columns]);
     const remappedStart = remapState(start);
-    const remappedLastFinal = finals.length * columns;
-    const remappedLastDeadEndFinal = deadEndFinals.length * columns;
-    const paddedTokenIdsLength = Math.max(128, remappedTokenIds.length);
+    const remappedLastDeadEndFinal = compactDeadEndFinals
+      ? deadEndFinals.length
+      : deadEndFinals.length * columns;
+    const remappedLastFinal = compactDeadEndFinals
+      ? continuableFinals.length > 0
+        ? continuableFinals.length * columns
+        : deadEndFinals.length
+      : finals.length * columns;
+
+    const paddedTokenIdsLength = compactDeadEndFinals
+      ? Math.max(128, (continuableFinals.length + 1) * columns)
+      : Math.max(128, rowStates.length);
+
+    /** @type {string[]} */
+    const tokenIdsAssignments = [];
+    if (compactDeadEndFinals) {
+      deadEndFinals.forEach((origState, idx) => {
+        const origIdx = origState / columns;
+        const id = tokenIds[origIdx];
+        const name = tokenNames[origIdx];
+        if (id !== undefined && id !== 0) {
+          tokenIdsAssignments.push(`tokenIds[${idx + 1}] = ${id}; // ${name}`);
+        } else {
+          tokenIdsAssignments.push(`// tokenIds[${idx + 1}] = 0; // ${name}`);
+        }
+      });
+      continuableFinals.forEach((origState, idx) => {
+        const origIdx = origState / columns;
+        const id = tokenIds[origIdx];
+        const name = tokenNames[origIdx];
+        const mappedState = (idx + 1) * columns;
+        if (id !== undefined && id !== 0) {
+          tokenIdsAssignments.push(
+            `tokenIds[${mappedState}] = ${id}; // ${name}`
+          );
+        } else {
+          tokenIdsAssignments.push(
+            `// tokenIds[${mappedState}] = 0; // ${name}`
+          );
+        }
+      });
+    } else {
+      rowStates.forEach((origState, i) => {
+        const origIdx = origState / columns;
+        const id = tokenIds[origIdx];
+        const name = tokenNames[origIdx];
+        if (id !== undefined && id !== 0) {
+          tokenIdsAssignments.push(`tokenIds[${i}] = ${id}; // ${name}`);
+        } else {
+          tokenIdsAssignments.push(`// tokenIds[${i}] = 0; // ${name}`);
+        }
+      });
+    }
+
+    /** @type {Map<number, string | undefined>} */
+    const mappedStateNames = new Map();
+    allOrigStates.forEach((origState) => {
+      mappedStateNames.set(
+        remapState(origState),
+        tokenNames[origState / columns]
+      );
+    });
+
+    const skipBytes = data.skipBytes ?? [];
+    const skipTokenNames = new Set(data.skipTokenNames ?? []);
+    const skipMappedStates = finals
+      .filter((origState) => {
+        const name = tokenNames[origState / columns];
+        return Boolean(name && skipTokenNames.has(name));
+      })
+      .map((origState) => remapState(origState));
 
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
@@ -144,29 +224,33 @@ export class JavaScriptBaseCodegen {
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
 
-      const tokenIds = new ${tokenIdSize}(${paddedTokenIdsLength});
-      ${remappedTokenIds
-        .map((id, i) =>
-          id !== undefined && id !== 0
-            ? `tokenIds[${i}] = ${id}; // ${remappedTokenNames[i]}`
-            : `// tokenIds[${i}] = 0; // ${remappedTokenNames[i]}`
-        )
-        .join("\n")}
+      ${
+        skipBytes.length > 0
+          ? `const skipTable = new Uint8Array(256);
+      ${skipBytes.map((b) => `skipTable[${b}] = 1;`).join("\n")}`
+          : ""
+      }
 
-      const table = new ${pointerSize}(${columns * remappedTokenIds.length});
+      const tokenIds = new ${tokenIdSize}(${paddedTokenIdsLength});
+      ${tokenIdsAssignments.join("\n")}
+
+      const table = new ${pointerSize}(${columns * rowStates.length});
       ${transitions
-        .flatMap(([from, transition]) =>
-          transition.map(([symbol, to]) => {
+        .flatMap(([from, transition]) => {
+          if (compactDeadEndFinals && deadEndFinals.includes(from)) {
+            return [];
+          }
+          return transition.map(([symbol, to]) => {
             if (to === errorState) {
               return undefined;
             }
             const mappedFrom = remapState(from);
             const mappedTo = remapState(to);
             return `table[${mappedFrom + symbol}] = ${mappedTo}; // ${
-              remappedTokenNames[mappedTo / columns]
+              mappedStateNames.get(mappedTo)
             }`;
-          })
-        )
+          });
+        })
         .filter(Boolean)
         .join("\n")}
 
@@ -176,7 +260,69 @@ export class JavaScriptBaseCodegen {
        * @returns {{ state: number, start: number, end: number }}
        */
       const next = (input, offset) => {
-        // ${remappedStart / columns}
+        ${
+          skipMappedStates.length > 0
+            ? `let i = offset & 0x7fffffff;
+        const l = input.length;
+        while (true) {
+          let state = ${remappedStart};
+          let successState = 0;
+          let successPos = 0;
+          while (i < l) {
+            state = table[state + input[i++]];
+            if (state <= ${remappedLastFinal}) {
+              ${
+                deadEndFinals.length === finals.length
+                  ? `if (state !== 0) {
+                successState = state;
+                successPos = i;
+              }
+              break;`
+                  : deadEndFinals.length > 0
+                  ? `if (state <= ${remappedLastDeadEndFinal}) {
+                if (state !== 0) {
+                  successState = state;
+                  successPos = i;
+                }
+                break;
+              }
+              successState = state;
+              successPos = i;`
+                  : `if (state === 0) {
+                break;
+              }
+              successState = state;
+              successPos = i;`
+              }
+            }
+          }
+          if (successState !== 0) {
+            if (${skipMappedStates
+              .map((s) => `successState === ${s}`)
+              .join(" || ")}) {
+              offset = successPos;
+              i = successPos;
+              continue;
+            }
+            state = ${
+              compactDeadEndFinals
+                ? "tokenIds[successState]"
+                : "tokenIds[successState >> 8]"
+            };
+          } else {
+            state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                tokenIds[tokenNames.indexOf(ERROR)]
+              };
+            offset = -1;
+            successPos = -1;
+          }
+          return {
+            state,
+            start: offset,
+            end: successPos,
+          };
+        }`
+            : `// ${remappedStart / columns}
         let state = ${remappedStart};
         let successState = 0;
         let successPos = 0;
@@ -184,6 +330,14 @@ export class JavaScriptBaseCodegen {
         // try to find match
         let i = offset & 0x7fffffff;
         const l = input.length;
+        ${
+          skipBytes.length > 0
+            ? `while (i < l && skipTable[input[i]] !== 0) {
+          i++;
+        }
+        offset = i;`
+            : ""
+        }
         while (i < l) {
           state = table[state + input[i++]];
           if (state <= ${remappedLastFinal}) {
@@ -214,11 +368,15 @@ export class JavaScriptBaseCodegen {
         }
 
         if (successState !== 0) {
-          state = tokenIds[successState >> 8];
+          state = ${
+            compactDeadEndFinals
+              ? "tokenIds[successState]"
+              : "tokenIds[successState >> 8]"
+          };
         } else {
           state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-      tokenIds[tokenNames.indexOf(ERROR)]
-    };
+                tokenIds[tokenNames.indexOf(ERROR)]
+              };
           offset = -1;
           successPos = -1;
         }
@@ -226,7 +384,8 @@ export class JavaScriptBaseCodegen {
           state,
           start: offset,
           end: successPos,
-        };
+        };`
+        }
       };
 
       ${this._lexerExport()}
@@ -559,7 +718,7 @@ export class JavaScriptBaseCodegen {
 
         let result = nextToken(stream, 0);
         let lookahead = result.state;
-        let lookaheadSpan = (result.start & 0xffff) | (result.end << 16);
+        let lookaheadSpan = result.start | (result.end << 16);
 
         ${debug(
           () => `
@@ -632,7 +791,7 @@ export class JavaScriptBaseCodegen {
 
             result = nextToken(stream, lookaheadSpan >>> 16);
             lookahead = result.state;
-            lookaheadSpan = (result.start & 0xffff) | (result.end << 16);
+            lookaheadSpan = result.start | (result.end << 16);
             ${debug(
               () => `
               console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');

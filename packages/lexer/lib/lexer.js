@@ -191,6 +191,8 @@ function createAutomata(tokens) {
  * @property {[number, [number, number][]][]} transitions
  * @property {number} start
  * @property {number[]} finals
+ * @property {number[]=} skipBytes
+ * @property {string[]=} skipTokenNames
  */
 
 /**

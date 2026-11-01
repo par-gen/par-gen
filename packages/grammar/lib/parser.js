@@ -100,11 +100,20 @@ function parseRule(uid, match) {
 }
 
 /**
+ * @typedef {Object} ParseOptions
+ * @property {string[]=} skipTokens
+ */
+
+/**
  * @param {string} grammar
+ * @param {ParseOptions=} options
  * @returns {{tokens: Token[], rules: Rule[]}}
  */
-export function parse(grammar) {
+export function parse(grammar, options) {
   let uid = 0;
+  const skipSymbols = new Set(
+    (options?.skipTokens ?? []).flatMap((name) => [name, `${name}?`])
+  );
 
   const lines = grammar
     .split("\n")
@@ -181,11 +190,33 @@ export function parse(grammar) {
       (match) => Boolean(match.rule && !tokenNames.includes(match.rule))
     )
     .map((match) => parseRule(uid++, match))
+    .map((rule) =>
+      skipSymbols.size > 0
+        ? {
+            ...rule,
+            symbols: rule.symbols.filter((sym) => !skipSymbols.has(sym)),
+          }
+        : rule
+    )
+    .filter((rule) => rule.symbols.length > 0)
     .flatMap((rule) => {
       return optionals(rule.symbols).map((symbols) => ({
         ...rule,
         symbols,
       }));
+    })
+    .filter((rule, idx, allRules) => {
+      if (skipSymbols.size === 0 || rule.actions.length > 0) {
+        return true;
+      }
+      const key = `${rule.name}::${rule.symbols.join(" ")}`;
+      return (
+        allRules.findIndex(
+          (r) =>
+            r.actions.length === 0 &&
+            `${r.name}::${r.symbols.join(" ")}` === key
+        ) === idx
+      );
     });
   const ruleNames = rules.map((rule) => rule.name);
 

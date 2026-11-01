@@ -762,7 +762,7 @@ function parse(input) {
 
   let result = nextToken(stream, 0);
   let lookahead = result.state;
-  let lookaheadSpan = (result.start & 0xffff) | (result.end << 16);
+  let lookaheadSpan = result.start | (result.end << 16);
 
   stack[0] = 0; // starting state
   let sp = 0;
@@ -798,7 +798,7 @@ function parse(input) {
 
       result = nextToken(stream, lookaheadSpan >>> 16);
       lookahead = result.state;
-      lookaheadSpan = (result.start & 0xffff) | (result.end << 16);
+      lookaheadSpan = result.start | (result.end << 16);
     } else {
       // reduce
       const word0 = actionLookup >>> 1;
