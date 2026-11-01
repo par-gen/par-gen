@@ -608,6 +608,55 @@ export class JavaScriptBaseCodegen {
     }
     const hasShiftSemanticActions = shiftActionEntries.length > 0;
 
+    const nextTokenExpr = hasSingleLexerMode
+      ? "nextToken(stream, lookaheadSpan & 0x3fffff)"
+      : lexerModes
+          .slice(0, -1)
+          .map(
+            (name) =>
+              `lexerMode === LexerMode.${this._lexerModeEnumKey(
+                name
+              )} ? nextToken${this._lexerModePascalCase(
+                name
+              )}(stream, lookaheadSpan & 0x3fffff) : `
+          )
+          .join("") +
+        `nextToken${this._lexerModePascalCase(
+          lexerModes[lexerModes.length - 1]
+        )}(stream, lookaheadSpan & 0x3fffff)`;
+
+    const shiftActionDispatchCode = hasShiftSemanticActions
+      ? shiftActionBodies.length === 1
+        ? `if (shiftActionsTable[actionIndex] !== 0) {
+              ${shiftActionBodies[0]};
+            }`
+        : `const shiftAction = shiftActionsTable[actionIndex];
+            if (shiftAction !== 0) {
+              switch (shiftAction) {
+                ${shiftActionBodies
+                  .map(
+                    (body, idx) => `case ${idx + 1}:
+                  ${body};
+                  break;`
+                  )
+                  .join("\n")}
+              }
+            }`
+      : "";
+
+    const actionLookupCode = hasShiftSemanticActions
+      ? `const actionIndex = ${
+          canPreMultiplyState
+            ? "currentState"
+            : `currentState * ${parserSymbols.length}`
+        } + lookahead;
+          const actionLookup = actionsTable[actionIndex];`
+      : `const actionLookup = actionsTable[${
+          canPreMultiplyState
+            ? "currentState"
+            : `currentState * ${parserSymbols.length}`
+        } + lookahead];`;
+
     const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
 
@@ -726,21 +775,30 @@ export class JavaScriptBaseCodegen {
       }
 
       /**
+       * Auto-growing stack and CST arenas starting at 16,384 words (64 KiB each),
+       * which glibc malloc places in the low 32-bit brk heap ([reg*4 + disp32]).
+       *
        * Each 32-bit stack entry packs:
        * - low 20 bits: tree pointer (tp) of the shifted/reduced CST node (up to 1,048,575 words)
        * - high 12 bits: parser state
-       */
-      const stack = new Uint32Array(16384);
-
-      /**
-       * This typed array contains the syntax tree from a parse.
-       * Each CST node occupies 3 uint32 words:
+       *
+       * Each CST node in tree occupies 3 uint32 words:
        * - word 0 (tp + 0): name | (numChildren << 8)
        * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or firstChild (internal)
        * - word 2 (tp + 2): nextSibling
-       * This enables 32-bit coalesced stores and fast DFS traversal on documents up to 4 MiB.
        */
-      const tree = new Uint32Array(524288);
+      const arena = {
+        stack: new Uint32Array(16384),
+        tree: new Uint32Array(16384),
+      };
+
+      function growBuffer(buf, usedLen) {
+        const next = new Uint32Array(buf.length << 1);
+        if (usedLen > 0) {
+          next.set(buf.subarray(0, usedLen));
+        }
+        return next;
+      }
 
       class CstNode {
         #stream;
@@ -829,6 +887,87 @@ export class JavaScriptBaseCodegen {
         }
       }
 
+      function parseCold(
+        stream,
+        input,
+        sp,
+        tp,
+        lookahead,
+        lookaheadSpan,
+        result
+      ) {
+        let s = arena.stack;
+        let t = tp === 3 ? new Uint32Array(arena.tree.length) : arena.tree;
+        if (tp === 3) {
+          s[0] = ${
+            states.indexOf(start) * stateMultiplier * 1048576
+          }; // starting state
+        }
+
+        while (true) {
+          if (tp >= t.length - 2) {
+            t = growBuffer(t, tp);
+          }
+          if (sp >= s.length - 1) {
+            s = growBuffer(s, sp + 1);
+          }
+          const top = s[sp];
+          const currentState = top >>> 20;
+
+          ${actionLookupCode}
+          if (actionLookup >= 0xfffe) {
+            if (actionLookup === 0xfffe) {
+              if (s !== arena.stack || t !== arena.tree) {
+                delete arena.stack;
+                delete arena.tree;
+                arena.stack = s;
+                arena.tree = t;
+                Object.create(arena);
+              }
+              return new CstNode(stream, t, tp - 3);
+            }
+            const context = input.toString().substr(result.start, 10);
+            throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
+          }
+
+          if ((actionLookup & 1) === 0) {
+            ${shiftActionDispatchCode}
+
+            t[tp] = lookahead;
+            t[tp + 1] = lookaheadSpan;
+            t[(top & 0xfffff) + 2] = tp;
+
+            sp += 1;
+            s[sp] = tp | (actionLookup << 19);
+
+            result = ${nextTokenExpr};
+            lookahead = result.state;
+            lookaheadSpan = result.end | ((result.end - result.start) << 22);
+          } else {
+            const word0 = actionLookup >>> 1;
+            const actionSymbol = word0 & 0xff;
+            const stackItemsToReduce = word0 >>> 8;
+
+            sp -= stackItemsToReduce;
+            t[tp] = word0;
+
+            const rtop = s[sp];
+            const nextState = gotoTable[${
+              canPreMultiplyState
+                ? "(rtop >>> 20)"
+                : `(rtop >>> 20) * ${parserSymbols.length}`
+            } + actionSymbol];
+            t[(rtop & 0xfffff) + 2] = tp;
+
+            sp += 1;
+            t[tp + 1] = s[sp];
+            s[sp] = tp | nextState;
+          }
+
+          tp += 3;
+        }
+      }
+
       /**
        * @typedef {Object} Node
        * @property {string} name
@@ -878,6 +1017,20 @@ export class JavaScriptBaseCodegen {
           `
         )}
 
+        const stack = arena.stack;
+        const tree = arena.tree;
+        if (stream.length >>> 1 > tree.length) {
+          return parseCold(
+            stream,
+            input,
+            0,
+            3,
+            lookahead,
+            lookaheadSpan,
+            result
+          );
+        }
+
         stack[0] = ${
           states.indexOf(start) * stateMultiplier * 1048576
         }; // starting state
@@ -892,20 +1045,7 @@ export class JavaScriptBaseCodegen {
           const top = stack[sp];
           const currentState = top >>> 20;
 
-          ${
-            hasShiftSemanticActions
-              ? `const actionIndex = ${
-                  canPreMultiplyState
-                    ? "currentState"
-                    : `currentState * ${parserSymbols.length}`
-                } + lookahead;
-          const actionLookup = actionsTable[actionIndex];`
-              : `const actionLookup = actionsTable[${
-                  canPreMultiplyState
-                    ? "currentState"
-                    : `currentState * ${parserSymbols.length}`
-                } + lookahead];`
-          }
+          ${actionLookupCode}
           if (actionLookup >= 0xfffe) {
             if (actionLookup === 0xfffe) {
               ${debug(() => `console.log('steps', steps);`)}
@@ -921,26 +1061,7 @@ export class JavaScriptBaseCodegen {
               () =>
                 `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
             )}
-            ${
-              hasShiftSemanticActions
-                ? shiftActionBodies.length === 1
-                  ? `if (shiftActionsTable[actionIndex] !== 0) {
-              ${shiftActionBodies[0]};
-            }`
-                  : `const shiftAction = shiftActionsTable[actionIndex];
-            if (shiftAction !== 0) {
-              switch (shiftAction) {
-                ${shiftActionBodies
-                  .map(
-                    (body, idx) => `case ${idx + 1}:
-                  ${body};
-                  break;`
-                  )
-                  .join("\n")}
-              }
-            }`
-                : ""
-            }
+            ${shiftActionDispatchCode}
 
             tree[tp] = lookahead; // name (and nChildren = 0)
             tree[tp + 1] = lookaheadSpan;
@@ -949,24 +1070,7 @@ export class JavaScriptBaseCodegen {
             sp += 1;
             stack[sp] = tp | (actionLookup << 19);
 
-            result = ${
-              hasSingleLexerMode
-                ? "nextToken(stream, lookaheadSpan & 0x3fffff)"
-                : lexerModes
-                    .slice(0, -1)
-                    .map(
-                      (name) =>
-                        `lexerMode === LexerMode.${this._lexerModeEnumKey(
-                          name
-                        )} ? nextToken${this._lexerModePascalCase(
-                          name
-                        )}(stream, lookaheadSpan & 0x3fffff) : `
-                    )
-                    .join("") +
-                  `nextToken${this._lexerModePascalCase(
-                    lexerModes[lexerModes.length - 1]
-                  )}(stream, lookaheadSpan & 0x3fffff)`
-            };
+            result = ${nextTokenExpr};
             lookahead = result.state;
             lookaheadSpan = result.end | ((result.end - result.start) << 22);
             ${debug(
@@ -1034,6 +1138,17 @@ export class JavaScriptBaseCodegen {
           }
 
           tp += 3;
+          if (tp >= tree.length - 2) {
+            return parseCold(
+              stream,
+              input,
+              sp,
+              tp,
+              lookahead,
+              lookaheadSpan,
+              result
+            );
+          }
         }
       }
 

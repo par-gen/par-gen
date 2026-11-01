@@ -38,12 +38,93 @@ describe("JSON", () => {
     expect(parse(await fsp.readFile("package.json"))).toBeTruthy();
   });
 
-  it("should accept large documents > 64 KiB (e.g. package-lock.json) with exact spans", async () => {
+  it("should auto-grow tree arena from 16384 to 524288 and 1048576 words with 100% lossless re-emission while preserving prior CST roots", async () => {
+    /**
+     * @param {*} cst
+     * @param {Uint8Array} stream
+     */
+    const reemitLossless = (cst, stream) => {
+      const tree = cst.__tree;
+      const out = Buffer.allocUnsafe(stream.length);
+      let offset = 0;
+      const dfsStack = [cst.__pointer];
+
+      while (dfsStack.length > 0) {
+        const p = /** @type {number} */ (dfsStack.pop());
+        const word0 = tree[p];
+        const nChildren = word0 >>> 8;
+        if (nChildren === 0) {
+          const span = tree[p + 1];
+          const end = span & 0x3fffff;
+          const len = span >>> 22;
+          const start = end - len;
+          out.set(stream.subarray(start, end), offset);
+          offset += len;
+        } else {
+          const children = new Array(nChildren);
+          let child = tree[p + 1] & 0xfffff;
+          children[0] = child;
+          for (let i = 1; i < nChildren; i++) {
+            child = tree[child + 2];
+            children[i] = child;
+          }
+          for (let i = nChildren - 1; i >= 0; i--) {
+            dfsStack.push(children[i]);
+          }
+        }
+      }
+
+      return out.subarray(0, offset);
+    };
+
+    // 1. Small document fitting in initial 16,384-word (64 KiB) low-heap arena
+    const pkgBuf = await fsp.readFile("package.json");
+    const cstPkg = /** @type {*} */ (parse(pkgBuf));
+    expect(cstPkg.name).toBe("Json");
+    expect(cstPkg.start).toBe(0);
+    expect(cstPkg.end).toBe(pkgBuf.length);
+    expect(cstPkg.__tree.length).toBe(16384);
+
+    // 2. package-lock.json (495 KiB, 112,667 CST nodes = 338,001 words)
+    // Triggers 5 dynamic doublings: 16384 -> 32768 -> 65536 -> 131072 -> 262144 -> 524288
     const lockBuf = await fsp.readFile("package-lock.json");
-    const cst = parse(lockBuf);
-    expect(cst.name).toBe("Json");
-    expect(cst.start).toBe(0);
-    expect(cst.end).toBe(lockBuf.length);
+    const cstLock = /** @type {*} */ (parse(lockBuf));
+    expect(cstLock.name).toBe("Json");
+    expect(cstLock.start).toBe(0);
+    expect(cstLock.end).toBe(lockBuf.length);
+    expect(cstLock.__tree.length).toBe(524288);
+    expect(Buffer.compare(reemitLossless(cstLock, lockBuf), lockBuf)).toBe(0);
+
+    // 3. Synthetic ~1.5 MB JSON document (~265,000 CST nodes = ~795,000 words)
+    // Triggers dynamic growth to 1,048,576 words (4 MiB)
+    const entries = new Array(5300);
+    for (let i = 0; i < 5300; i++) {
+      entries[i] =
+        `{"id":${i},"name":"@par-gen/synthetic-pkg-${i}",` +
+        `"version":"1.${i % 20}.${i % 100}",` +
+        `"resolved":"https://registry.npmjs.org/@par-gen/synthetic-pkg-${i}/-/synthetic-pkg-${i}-1.0.0.tgz",` +
+        `"integrity":"sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",` +
+        `"dev":true}`;
+    }
+    const hugeBuf = Buffer.from(`[\n${entries.join(",\n")}\n]\n`);
+    expect(hugeBuf.length).toBeGreaterThan(1500000);
+    const cstHuge = /** @type {*} */ (parse(hugeBuf));
+    expect(cstHuge.name).toBe("Json");
+    expect(cstHuge.start).toBe(0);
+    expect(cstHuge.end).toBe(hugeBuf.length);
+    expect(cstHuge.__tree.length).toBe(1048576);
+    expect(Buffer.compare(reemitLossless(cstHuge, hugeBuf), hugeBuf)).toBe(0);
+
+    // 4. Verify earlier CST roots still reference their uncorrupted tree arenas after subsequent doublings
+    expect(cstPkg.__tree.length).toBe(16384);
+    expect(cstPkg.start).toBe(0);
+    expect(cstPkg.end).toBe(pkgBuf.length);
+    expect(Buffer.compare(reemitLossless(cstPkg, pkgBuf), pkgBuf)).toBe(0);
+
+    expect(cstLock.__tree.length).toBe(524288);
+    expect(cstLock.start).toBe(0);
+    expect(cstLock.end).toBe(lockBuf.length);
+    expect(Buffer.compare(reemitLossless(cstLock, lockBuf), lockBuf)).toBe(0);
   });
 
   it("should produce correct tree for complex structures", () => {
