@@ -4734,46 +4734,39 @@ gotoTable[16928] = 296; // 'state 296'
 const nextToken = nextTokenInitial;
 
 /**
- * We use the stack to store shifted/reduced states in [sp] and we also use
- * [sp + 1] to store the tree pointer references to shifted/reduced nodes.
- * This allows us to use a single typed array to store two kinds of data.
- * * [sp] always points to the current state on top of the stack and
- * * [sp + 1] always points to the tree item currently on top of the stack
- * ___________________________________
- * |_dummy_|_state_|_tp_|_state_|_tp_|...
+ * Each 32-bit stack entry packs:
+ * - low 16 bits: tree pointer (tp) of the shifted/reduced CST node
+ * - high 16 bits: parser state
  */
-const stack = new Uint16Array(32768);
+const stack = new Uint32Array(16384);
 
 /**
  * This typed array contains the syntax tree from a parse.
- * A node is stored in the following layout:
- * struct Node {
- *  name: uint16,
- *  start: uint16,
- *  end: uint16,
- *  numChildren: uint16,
- *  firstChild: uint16,
- *  nextSibling: uint16,
- * }
- * This enables efficient storage of nodes with variable number of children and
- * fast DFS traversal.
+ * Each CST node occupies 3 uint32 words:
+ * - word 0 (tp + 0): name | (numChildren << 16)
+ * - word 1 (tp + 1): start | (end << 16) (leaf) or firstChild (internal)
+ * - word 2 (tp + 2): nextSibling
+ * This enables 32-bit coalesced stores and fast DFS traversal.
  */
-const tree = new Uint16Array(32768);
+const tree = new Uint32Array(16384);
 
 const proxyHandler = {
   get(target, prop, receiver) {
-    const { stream, tree, pointer } = target;
-    const nChildren = tree[pointer + 3];
+    const { stream, pointer } = target;
+    const word0 = tree[pointer];
+    const nChildren = word0 >>> 16;
 
     switch (prop) {
       case "name":
-        return parserSymbols[tree[pointer]];
+        return parserSymbols[word0 & 0xffff];
       case "start":
-        return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
+        return nChildren > 0
+          ? receiver.items[0].start
+          : tree[pointer + 1] & 0xffff;
       case "end":
         return nChildren > 0
           ? receiver.items[nChildren - 1].end
-          : tree[pointer + 2];
+          : tree[pointer + 1] >>> 16;
       case "value":
         return stream.subarray(receiver.start, receiver.end);
       case "items": {
@@ -4781,13 +4774,13 @@ const proxyHandler = {
           return undefined;
         }
 
-        const firstChild = tree[pointer + 4];
-        const children = [createProxy(stream, tree, firstChild)];
-        let nextChild = tree[firstChild + 5];
+        const firstChild = tree[pointer + 1];
+        const children = [createProxy(stream, firstChild)];
+        let nextChild = tree[firstChild + 2];
 
         for (let i = 1; i < nChildren; i++) {
-          children.push(createProxy(stream, tree, nextChild));
-          nextChild = tree[nextChild + 5];
+          children.push(createProxy(stream, nextChild));
+          nextChild = tree[nextChild + 2];
         }
 
         return children;
@@ -4811,8 +4804,8 @@ const proxyHandler = {
   },
 };
 
-const createProxy = (stream, tree, pointer) =>
-  new Proxy({ stream, tree, pointer }, proxyHandler);
+const createProxy = (stream, pointer) =>
+  new Proxy({ stream, pointer }, proxyHandler);
 
 /**
  * @typedef {Object} Node
@@ -4835,16 +4828,15 @@ function parse(input) {
   let lookaheadStart = result.start;
   let lookaheadEnd = result.end;
 
-  // add a dummy entry to ensure no out-of-bounds reads for [sp - 1]
-  stack[0] = 0;
-  stack[1] = 0; // starting state
-  let sp = 1;
-  // let the tree stack start from offset 6
+  stack[0] = 0; // starting state
+  let sp = 0;
+  // let the tree stack start from offset 3
   // offset 0 means an error occurred and should be used by the parser
-  let tp = 6;
+  let tp = 3;
 
   while (true) {
-    const currentState = stack[sp];
+    const top = stack[sp];
+    const currentState = top >>> 16;
 
     const actionLookup = actionsTable[currentState * 64 + lookahead];
     if (actionLookup === 0xffff) {
@@ -4856,19 +4848,14 @@ function parse(input) {
 
     switch (actionLookup & 3) {
       case 2: // done
-        return createProxy(stream, tree, tp - 6);
+        return createProxy(stream, tp - 3);
       case 0: // shift
-        tree[tp] = lookahead; // name
-        tree[tp + 1] = lookaheadStart;
-        tree[tp + 2] = lookaheadEnd;
-        tree[tp + 3] = 0; // leaf nodes have no children
-        tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+        tree[tp] = lookahead; // name (and nChildren = 0)
+        tree[tp + 1] = lookaheadStart | (lookaheadEnd << 16);
+        tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
 
-        // shift current address on top of "address stack"
-        stack[sp + 1] = tp;
-
-        sp += 2;
-        stack[sp] = actionLookup >> 2;
+        sp += 1;
+        stack[sp] = tp | ((actionLookup >> 2) << 16);
 
         result = nextToken(stream, lookaheadEnd);
         lookahead = result.state;
@@ -4880,26 +4867,23 @@ function parse(input) {
         const actionSymbol = (actionLookup >> 2) & 0xff;
         const stackItemsToReduce = actionLookup >> 10;
 
-        // multiply by two because our stack contains adresses and states interleaved
-        sp -= stackItemsToReduce * 2;
+        sp -= stackItemsToReduce;
+        tree[tp] = actionSymbol | (stackItemsToReduce << 16); // name and number of children
 
-        tree[tp] = actionSymbol; // name
-        tree[tp + 3] = stackItemsToReduce; // number of children
-        tree[tp + 4] = stack[sp + 1]; // first child
-        tree[stack[sp - 1] + 5] = tp; // next sibling
+        const rtop = stack[sp];
+        const nextState = gotoTable[(rtop >>> 16) * 64 + actionSymbol];
+        tree[(rtop & 0xffff) + 2] = tp; // next sibling
 
-        stack[sp + 1] = tp;
-
-        const nextState = gotoTable[stack[sp] * 64 + actionSymbol];
-        sp += 2;
-        stack[sp] = nextState;
+        sp += 1;
+        tree[tp + 1] = stack[sp] & 0xffff; // first child
+        stack[sp] = tp | (nextState << 16);
 
         break;
       default:
         throw new Error("Parser Error");
     }
 
-    tp += 6;
+    tp += 3;
   }
 }
 

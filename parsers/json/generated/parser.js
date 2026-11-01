@@ -67,36 +67,36 @@ const parserSymbols = [
 ];
 
 const actionsTable = new Uint16Array(2688).fill(0xffff);
-actionsTable[0] = 4; // 'state 0' -> WS -> shift (target=1, len=0) -> 'action 0'
-actionsTable[1] = 8; // 'state 0' -> TRUE -> shift (target=2, len=0) -> 'action 1'
-actionsTable[2] = 12; // 'state 0' -> FALSE -> shift (target=3, len=0) -> 'action 2'
-actionsTable[3] = 16; // 'state 0' -> NULL -> shift (target=4, len=0) -> 'action 3'
-actionsTable[4] = 20; // 'state 0' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 4'
-actionsTable[8] = 24; // 'state 0' -> STRING -> shift (target=6, len=0) -> 'action 5'
-actionsTable[9] = 28; // 'state 0' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 6'
-actionsTable[11] = 32; // 'state 0' -> NUMBER -> shift (target=8, len=0) -> 'action 7'
-actionsTable[15] = 36; // 'state 0' -> Json -> shift (target=9, len=0) -> 'action 8'
-actionsTable[16] = 40; // 'state 0' -> Element -> shift (target=10, len=0) -> 'action 9'
-actionsTable[17] = 44; // 'state 0' -> Value -> shift (target=11, len=0) -> 'action 10'
-actionsTable[18] = 48; // 'state 0' -> Object -> shift (target=12, len=0) -> 'action 11'
-actionsTable[21] = 52; // 'state 0' -> Array -> shift (target=13, len=0) -> 'action 12'
+actionsTable[0] = 128; // 'state 0' -> WS -> shift (target=32, len=0) -> 'action 0'
+actionsTable[1] = 256; // 'state 0' -> TRUE -> shift (target=64, len=0) -> 'action 1'
+actionsTable[2] = 384; // 'state 0' -> FALSE -> shift (target=96, len=0) -> 'action 2'
+actionsTable[3] = 512; // 'state 0' -> NULL -> shift (target=128, len=0) -> 'action 3'
+actionsTable[4] = 640; // 'state 0' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 4'
+actionsTable[8] = 768; // 'state 0' -> STRING -> shift (target=192, len=0) -> 'action 5'
+actionsTable[9] = 896; // 'state 0' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 6'
+actionsTable[11] = 1024; // 'state 0' -> NUMBER -> shift (target=256, len=0) -> 'action 7'
+actionsTable[15] = 1152; // 'state 0' -> Json -> shift (target=288, len=0) -> 'action 8'
+actionsTable[16] = 1280; // 'state 0' -> Element -> shift (target=320, len=0) -> 'action 9'
+actionsTable[17] = 1408; // 'state 0' -> Value -> shift (target=352, len=0) -> 'action 10'
+actionsTable[18] = 1536; // 'state 0' -> Object -> shift (target=384, len=0) -> 'action 11'
+actionsTable[21] = 1664; // 'state 0' -> Array -> shift (target=416, len=0) -> 'action 12'
 actionsTable[300] = 2; // 'state 9' -> @par-gen.EOF -> done (target=0, len=0) -> 'action 13'
 actionsTable[332] = 1085; // 'state 10' -> @par-gen.EOF -> reduce (target=15, len=1) -> 'action 14'
-actionsTable[352] = 56; // 'state 11' -> WS -> shift (target=14, len=0) -> 'action 15'
+actionsTable[352] = 1792; // 'state 11' -> WS -> shift (target=448, len=0) -> 'action 15'
 actionsTable[357] = 1089; // 'state 11' -> CURLY_CLOSE -> reduce (target=16, len=1) -> 'action 16'
 actionsTable[358] = 1089; // 'state 11' -> COMMA -> reduce (target=16, len=1) -> 'action 17'
 actionsTable[362] = 1089; // 'state 11' -> BRACKET_CLOSE -> reduce (target=16, len=1) -> 'action 18'
 actionsTable[364] = 1089; // 'state 11' -> @par-gen.EOF -> reduce (target=16, len=1) -> 'action 19'
-actionsTable[33] = 60; // 'state 1' -> TRUE -> shift (target=15, len=0) -> 'action 20'
-actionsTable[34] = 64; // 'state 1' -> FALSE -> shift (target=16, len=0) -> 'action 21'
-actionsTable[35] = 68; // 'state 1' -> NULL -> shift (target=17, len=0) -> 'action 22'
-actionsTable[36] = 72; // 'state 1' -> CURLY_OPEN -> shift (target=18, len=0) -> 'action 23'
-actionsTable[40] = 76; // 'state 1' -> STRING -> shift (target=19, len=0) -> 'action 24'
-actionsTable[41] = 80; // 'state 1' -> BRACKET_OPEN -> shift (target=20, len=0) -> 'action 25'
-actionsTable[43] = 84; // 'state 1' -> NUMBER -> shift (target=21, len=0) -> 'action 26'
-actionsTable[49] = 88; // 'state 1' -> Value -> shift (target=22, len=0) -> 'action 27'
-actionsTable[50] = 92; // 'state 1' -> Object -> shift (target=23, len=0) -> 'action 28'
-actionsTable[53] = 96; // 'state 1' -> Array -> shift (target=24, len=0) -> 'action 29'
+actionsTable[33] = 1920; // 'state 1' -> TRUE -> shift (target=480, len=0) -> 'action 20'
+actionsTable[34] = 2048; // 'state 1' -> FALSE -> shift (target=512, len=0) -> 'action 21'
+actionsTable[35] = 2176; // 'state 1' -> NULL -> shift (target=544, len=0) -> 'action 22'
+actionsTable[36] = 2304; // 'state 1' -> CURLY_OPEN -> shift (target=576, len=0) -> 'action 23'
+actionsTable[40] = 2432; // 'state 1' -> STRING -> shift (target=608, len=0) -> 'action 24'
+actionsTable[41] = 2560; // 'state 1' -> BRACKET_OPEN -> shift (target=640, len=0) -> 'action 25'
+actionsTable[43] = 2688; // 'state 1' -> NUMBER -> shift (target=672, len=0) -> 'action 26'
+actionsTable[49] = 2816; // 'state 1' -> Value -> shift (target=704, len=0) -> 'action 27'
+actionsTable[50] = 2944; // 'state 1' -> Object -> shift (target=736, len=0) -> 'action 28'
+actionsTable[53] = 3072; // 'state 1' -> Array -> shift (target=768, len=0) -> 'action 29'
 actionsTable[384] = 1093; // 'state 12' -> WS -> reduce (target=17, len=1) -> 'action 30'
 actionsTable[389] = 1093; // 'state 12' -> CURLY_CLOSE -> reduce (target=17, len=1) -> 'action 31'
 actionsTable[390] = 1093; // 'state 12' -> COMMA -> reduce (target=17, len=1) -> 'action 32'
@@ -132,30 +132,30 @@ actionsTable[133] = 1093; // 'state 4' -> CURLY_CLOSE -> reduce (target=17, len=
 actionsTable[134] = 1093; // 'state 4' -> COMMA -> reduce (target=17, len=1) -> 'action 62'
 actionsTable[138] = 1093; // 'state 4' -> BRACKET_CLOSE -> reduce (target=17, len=1) -> 'action 63'
 actionsTable[140] = 1093; // 'state 4' -> @par-gen.EOF -> reduce (target=17, len=1) -> 'action 64'
-actionsTable[160] = 100; // 'state 5' -> WS -> shift (target=25, len=0) -> 'action 65'
-actionsTable[165] = 104; // 'state 5' -> CURLY_CLOSE -> shift (target=26, len=0) -> 'action 66'
-actionsTable[168] = 108; // 'state 5' -> STRING -> shift (target=27, len=0) -> 'action 67'
-actionsTable[179] = 112; // 'state 5' -> Members -> shift (target=28, len=0) -> 'action 68'
-actionsTable[180] = 116; // 'state 5' -> Member -> shift (target=29, len=0) -> 'action 69'
-actionsTable[224] = 120; // 'state 7' -> WS -> shift (target=30, len=0) -> 'action 70'
-actionsTable[225] = 8; // 'state 7' -> TRUE -> shift (target=2, len=0) -> 'action 71'
-actionsTable[226] = 12; // 'state 7' -> FALSE -> shift (target=3, len=0) -> 'action 72'
-actionsTable[227] = 16; // 'state 7' -> NULL -> shift (target=4, len=0) -> 'action 73'
-actionsTable[228] = 20; // 'state 7' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 74'
-actionsTable[232] = 24; // 'state 7' -> STRING -> shift (target=6, len=0) -> 'action 75'
-actionsTable[233] = 28; // 'state 7' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 76'
-actionsTable[234] = 124; // 'state 7' -> BRACKET_CLOSE -> shift (target=31, len=0) -> 'action 77'
-actionsTable[235] = 32; // 'state 7' -> NUMBER -> shift (target=8, len=0) -> 'action 78'
-actionsTable[240] = 128; // 'state 7' -> Element -> shift (target=32, len=0) -> 'action 79'
-actionsTable[241] = 44; // 'state 7' -> Value -> shift (target=11, len=0) -> 'action 80'
-actionsTable[242] = 48; // 'state 7' -> Object -> shift (target=12, len=0) -> 'action 81'
-actionsTable[245] = 52; // 'state 7' -> Array -> shift (target=13, len=0) -> 'action 82'
-actionsTable[246] = 132; // 'state 7' -> Elements -> shift (target=33, len=0) -> 'action 83'
+actionsTable[160] = 3200; // 'state 5' -> WS -> shift (target=800, len=0) -> 'action 65'
+actionsTable[165] = 3328; // 'state 5' -> CURLY_CLOSE -> shift (target=832, len=0) -> 'action 66'
+actionsTable[168] = 3456; // 'state 5' -> STRING -> shift (target=864, len=0) -> 'action 67'
+actionsTable[179] = 3584; // 'state 5' -> Members -> shift (target=896, len=0) -> 'action 68'
+actionsTable[180] = 3712; // 'state 5' -> Member -> shift (target=928, len=0) -> 'action 69'
+actionsTable[224] = 3840; // 'state 7' -> WS -> shift (target=960, len=0) -> 'action 70'
+actionsTable[225] = 256; // 'state 7' -> TRUE -> shift (target=64, len=0) -> 'action 71'
+actionsTable[226] = 384; // 'state 7' -> FALSE -> shift (target=96, len=0) -> 'action 72'
+actionsTable[227] = 512; // 'state 7' -> NULL -> shift (target=128, len=0) -> 'action 73'
+actionsTable[228] = 640; // 'state 7' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 74'
+actionsTable[232] = 768; // 'state 7' -> STRING -> shift (target=192, len=0) -> 'action 75'
+actionsTable[233] = 896; // 'state 7' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 76'
+actionsTable[234] = 3968; // 'state 7' -> BRACKET_CLOSE -> shift (target=992, len=0) -> 'action 77'
+actionsTable[235] = 1024; // 'state 7' -> NUMBER -> shift (target=256, len=0) -> 'action 78'
+actionsTable[240] = 4096; // 'state 7' -> Element -> shift (target=1024, len=0) -> 'action 79'
+actionsTable[241] = 1408; // 'state 7' -> Value -> shift (target=352, len=0) -> 'action 80'
+actionsTable[242] = 1536; // 'state 7' -> Object -> shift (target=384, len=0) -> 'action 81'
+actionsTable[245] = 1664; // 'state 7' -> Array -> shift (target=416, len=0) -> 'action 82'
+actionsTable[246] = 4224; // 'state 7' -> Elements -> shift (target=1056, len=0) -> 'action 83'
 actionsTable[453] = 2113; // 'state 14' -> CURLY_CLOSE -> reduce (target=16, len=2) -> 'action 84'
 actionsTable[454] = 2113; // 'state 14' -> COMMA -> reduce (target=16, len=2) -> 'action 85'
 actionsTable[458] = 2113; // 'state 14' -> BRACKET_CLOSE -> reduce (target=16, len=2) -> 'action 86'
 actionsTable[460] = 2113; // 'state 14' -> @par-gen.EOF -> reduce (target=16, len=2) -> 'action 87'
-actionsTable[704] = 136; // 'state 22' -> WS -> shift (target=34, len=0) -> 'action 88'
+actionsTable[704] = 4352; // 'state 22' -> WS -> shift (target=1088, len=0) -> 'action 88'
 actionsTable[709] = 2113; // 'state 22' -> CURLY_CLOSE -> reduce (target=16, len=2) -> 'action 89'
 actionsTable[710] = 2113; // 'state 22' -> COMMA -> reduce (target=16, len=2) -> 'action 90'
 actionsTable[714] = 2113; // 'state 22' -> BRACKET_CLOSE -> reduce (target=16, len=2) -> 'action 91'
@@ -195,56 +195,56 @@ actionsTable[549] = 1093; // 'state 17' -> CURLY_CLOSE -> reduce (target=17, len
 actionsTable[550] = 1093; // 'state 17' -> COMMA -> reduce (target=17, len=1) -> 'action 125'
 actionsTable[554] = 1093; // 'state 17' -> BRACKET_CLOSE -> reduce (target=17, len=1) -> 'action 126'
 actionsTable[556] = 1093; // 'state 17' -> @par-gen.EOF -> reduce (target=17, len=1) -> 'action 127'
-actionsTable[576] = 140; // 'state 18' -> WS -> shift (target=35, len=0) -> 'action 128'
-actionsTable[581] = 144; // 'state 18' -> CURLY_CLOSE -> shift (target=36, len=0) -> 'action 129'
-actionsTable[584] = 148; // 'state 18' -> STRING -> shift (target=37, len=0) -> 'action 130'
-actionsTable[595] = 152; // 'state 18' -> Members -> shift (target=38, len=0) -> 'action 131'
-actionsTable[596] = 156; // 'state 18' -> Member -> shift (target=39, len=0) -> 'action 132'
-actionsTable[640] = 160; // 'state 20' -> WS -> shift (target=40, len=0) -> 'action 133'
-actionsTable[641] = 8; // 'state 20' -> TRUE -> shift (target=2, len=0) -> 'action 134'
-actionsTable[642] = 12; // 'state 20' -> FALSE -> shift (target=3, len=0) -> 'action 135'
-actionsTable[643] = 16; // 'state 20' -> NULL -> shift (target=4, len=0) -> 'action 136'
-actionsTable[644] = 20; // 'state 20' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 137'
-actionsTable[648] = 24; // 'state 20' -> STRING -> shift (target=6, len=0) -> 'action 138'
-actionsTable[649] = 28; // 'state 20' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 139'
-actionsTable[650] = 164; // 'state 20' -> BRACKET_CLOSE -> shift (target=41, len=0) -> 'action 140'
-actionsTable[651] = 32; // 'state 20' -> NUMBER -> shift (target=8, len=0) -> 'action 141'
-actionsTable[656] = 168; // 'state 20' -> Element -> shift (target=42, len=0) -> 'action 142'
-actionsTable[657] = 44; // 'state 20' -> Value -> shift (target=11, len=0) -> 'action 143'
-actionsTable[658] = 48; // 'state 20' -> Object -> shift (target=12, len=0) -> 'action 144'
-actionsTable[661] = 52; // 'state 20' -> Array -> shift (target=13, len=0) -> 'action 145'
-actionsTable[662] = 172; // 'state 20' -> Elements -> shift (target=43, len=0) -> 'action 146'
+actionsTable[576] = 4480; // 'state 18' -> WS -> shift (target=1120, len=0) -> 'action 128'
+actionsTable[581] = 4608; // 'state 18' -> CURLY_CLOSE -> shift (target=1152, len=0) -> 'action 129'
+actionsTable[584] = 4736; // 'state 18' -> STRING -> shift (target=1184, len=0) -> 'action 130'
+actionsTable[595] = 4864; // 'state 18' -> Members -> shift (target=1216, len=0) -> 'action 131'
+actionsTable[596] = 4992; // 'state 18' -> Member -> shift (target=1248, len=0) -> 'action 132'
+actionsTable[640] = 5120; // 'state 20' -> WS -> shift (target=1280, len=0) -> 'action 133'
+actionsTable[641] = 256; // 'state 20' -> TRUE -> shift (target=64, len=0) -> 'action 134'
+actionsTable[642] = 384; // 'state 20' -> FALSE -> shift (target=96, len=0) -> 'action 135'
+actionsTable[643] = 512; // 'state 20' -> NULL -> shift (target=128, len=0) -> 'action 136'
+actionsTable[644] = 640; // 'state 20' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 137'
+actionsTable[648] = 768; // 'state 20' -> STRING -> shift (target=192, len=0) -> 'action 138'
+actionsTable[649] = 896; // 'state 20' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 139'
+actionsTable[650] = 5248; // 'state 20' -> BRACKET_CLOSE -> shift (target=1312, len=0) -> 'action 140'
+actionsTable[651] = 1024; // 'state 20' -> NUMBER -> shift (target=256, len=0) -> 'action 141'
+actionsTable[656] = 5376; // 'state 20' -> Element -> shift (target=1344, len=0) -> 'action 142'
+actionsTable[657] = 1408; // 'state 20' -> Value -> shift (target=352, len=0) -> 'action 143'
+actionsTable[658] = 1536; // 'state 20' -> Object -> shift (target=384, len=0) -> 'action 144'
+actionsTable[661] = 1664; // 'state 20' -> Array -> shift (target=416, len=0) -> 'action 145'
+actionsTable[662] = 5504; // 'state 20' -> Elements -> shift (target=1376, len=0) -> 'action 146'
 actionsTable[832] = 2121; // 'state 26' -> WS -> reduce (target=18, len=2) -> 'action 147'
 actionsTable[837] = 2121; // 'state 26' -> CURLY_CLOSE -> reduce (target=18, len=2) -> 'action 148'
 actionsTable[838] = 2121; // 'state 26' -> COMMA -> reduce (target=18, len=2) -> 'action 149'
 actionsTable[842] = 2121; // 'state 26' -> BRACKET_CLOSE -> reduce (target=18, len=2) -> 'action 150'
 actionsTable[844] = 2121; // 'state 26' -> @par-gen.EOF -> reduce (target=18, len=2) -> 'action 151'
-actionsTable[805] = 176; // 'state 25' -> CURLY_CLOSE -> shift (target=44, len=0) -> 'action 152'
-actionsTable[808] = 180; // 'state 25' -> STRING -> shift (target=45, len=0) -> 'action 153'
-actionsTable[901] = 184; // 'state 28' -> CURLY_CLOSE -> shift (target=46, len=0) -> 'action 154'
-actionsTable[902] = 188; // 'state 28' -> COMMA -> shift (target=47, len=0) -> 'action 155'
+actionsTable[805] = 5632; // 'state 25' -> CURLY_CLOSE -> shift (target=1408, len=0) -> 'action 152'
+actionsTable[808] = 5760; // 'state 25' -> STRING -> shift (target=1440, len=0) -> 'action 153'
+actionsTable[901] = 5888; // 'state 28' -> CURLY_CLOSE -> shift (target=1472, len=0) -> 'action 154'
+actionsTable[902] = 6016; // 'state 28' -> COMMA -> shift (target=1504, len=0) -> 'action 155'
 actionsTable[933] = 1101; // 'state 29' -> CURLY_CLOSE -> reduce (target=19, len=1) -> 'action 156'
 actionsTable[934] = 1101; // 'state 29' -> COMMA -> reduce (target=19, len=1) -> 'action 157'
-actionsTable[864] = 192; // 'state 27' -> WS -> shift (target=48, len=0) -> 'action 158'
-actionsTable[871] = 196; // 'state 27' -> COLON -> shift (target=49, len=0) -> 'action 159'
+actionsTable[864] = 6144; // 'state 27' -> WS -> shift (target=1536, len=0) -> 'action 158'
+actionsTable[871] = 6272; // 'state 27' -> COLON -> shift (target=1568, len=0) -> 'action 159'
 actionsTable[992] = 2133; // 'state 31' -> WS -> reduce (target=21, len=2) -> 'action 160'
 actionsTable[997] = 2133; // 'state 31' -> CURLY_CLOSE -> reduce (target=21, len=2) -> 'action 161'
 actionsTable[998] = 2133; // 'state 31' -> COMMA -> reduce (target=21, len=2) -> 'action 162'
 actionsTable[1002] = 2133; // 'state 31' -> BRACKET_CLOSE -> reduce (target=21, len=2) -> 'action 163'
 actionsTable[1004] = 2133; // 'state 31' -> @par-gen.EOF -> reduce (target=21, len=2) -> 'action 164'
-actionsTable[961] = 8; // 'state 30' -> TRUE -> shift (target=2, len=0) -> 'action 165'
-actionsTable[962] = 12; // 'state 30' -> FALSE -> shift (target=3, len=0) -> 'action 166'
-actionsTable[963] = 16; // 'state 30' -> NULL -> shift (target=4, len=0) -> 'action 167'
-actionsTable[964] = 20; // 'state 30' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 168'
-actionsTable[968] = 24; // 'state 30' -> STRING -> shift (target=6, len=0) -> 'action 169'
-actionsTable[969] = 28; // 'state 30' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 170'
-actionsTable[970] = 200; // 'state 30' -> BRACKET_CLOSE -> shift (target=50, len=0) -> 'action 171'
-actionsTable[971] = 32; // 'state 30' -> NUMBER -> shift (target=8, len=0) -> 'action 172'
-actionsTable[977] = 88; // 'state 30' -> Value -> shift (target=22, len=0) -> 'action 173'
-actionsTable[978] = 48; // 'state 30' -> Object -> shift (target=12, len=0) -> 'action 174'
-actionsTable[981] = 52; // 'state 30' -> Array -> shift (target=13, len=0) -> 'action 175'
-actionsTable[1062] = 204; // 'state 33' -> COMMA -> shift (target=51, len=0) -> 'action 176'
-actionsTable[1066] = 208; // 'state 33' -> BRACKET_CLOSE -> shift (target=52, len=0) -> 'action 177'
+actionsTable[961] = 256; // 'state 30' -> TRUE -> shift (target=64, len=0) -> 'action 165'
+actionsTable[962] = 384; // 'state 30' -> FALSE -> shift (target=96, len=0) -> 'action 166'
+actionsTable[963] = 512; // 'state 30' -> NULL -> shift (target=128, len=0) -> 'action 167'
+actionsTable[964] = 640; // 'state 30' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 168'
+actionsTable[968] = 768; // 'state 30' -> STRING -> shift (target=192, len=0) -> 'action 169'
+actionsTable[969] = 896; // 'state 30' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 170'
+actionsTable[970] = 6400; // 'state 30' -> BRACKET_CLOSE -> shift (target=1600, len=0) -> 'action 171'
+actionsTable[971] = 1024; // 'state 30' -> NUMBER -> shift (target=256, len=0) -> 'action 172'
+actionsTable[977] = 2816; // 'state 30' -> Value -> shift (target=704, len=0) -> 'action 173'
+actionsTable[978] = 1536; // 'state 30' -> Object -> shift (target=384, len=0) -> 'action 174'
+actionsTable[981] = 1664; // 'state 30' -> Array -> shift (target=416, len=0) -> 'action 175'
+actionsTable[1062] = 6528; // 'state 33' -> COMMA -> shift (target=1632, len=0) -> 'action 176'
+actionsTable[1066] = 6656; // 'state 33' -> BRACKET_CLOSE -> shift (target=1664, len=0) -> 'action 177'
 actionsTable[1030] = 1113; // 'state 32' -> COMMA -> reduce (target=22, len=1) -> 'action 178'
 actionsTable[1034] = 1113; // 'state 32' -> BRACKET_CLOSE -> reduce (target=22, len=1) -> 'action 179'
 actionsTable[1093] = 3137; // 'state 34' -> CURLY_CLOSE -> reduce (target=16, len=3) -> 'action 180'
@@ -256,32 +256,32 @@ actionsTable[1157] = 2121; // 'state 36' -> CURLY_CLOSE -> reduce (target=18, le
 actionsTable[1158] = 2121; // 'state 36' -> COMMA -> reduce (target=18, len=2) -> 'action 186'
 actionsTable[1162] = 2121; // 'state 36' -> BRACKET_CLOSE -> reduce (target=18, len=2) -> 'action 187'
 actionsTable[1164] = 2121; // 'state 36' -> @par-gen.EOF -> reduce (target=18, len=2) -> 'action 188'
-actionsTable[1125] = 212; // 'state 35' -> CURLY_CLOSE -> shift (target=53, len=0) -> 'action 189'
-actionsTable[1128] = 216; // 'state 35' -> STRING -> shift (target=54, len=0) -> 'action 190'
-actionsTable[1221] = 220; // 'state 38' -> CURLY_CLOSE -> shift (target=55, len=0) -> 'action 191'
-actionsTable[1222] = 224; // 'state 38' -> COMMA -> shift (target=56, len=0) -> 'action 192'
+actionsTable[1125] = 6784; // 'state 35' -> CURLY_CLOSE -> shift (target=1696, len=0) -> 'action 189'
+actionsTable[1128] = 6912; // 'state 35' -> STRING -> shift (target=1728, len=0) -> 'action 190'
+actionsTable[1221] = 7040; // 'state 38' -> CURLY_CLOSE -> shift (target=1760, len=0) -> 'action 191'
+actionsTable[1222] = 7168; // 'state 38' -> COMMA -> shift (target=1792, len=0) -> 'action 192'
 actionsTable[1253] = 1101; // 'state 39' -> CURLY_CLOSE -> reduce (target=19, len=1) -> 'action 193'
 actionsTable[1254] = 1101; // 'state 39' -> COMMA -> reduce (target=19, len=1) -> 'action 194'
-actionsTable[1184] = 228; // 'state 37' -> WS -> shift (target=57, len=0) -> 'action 195'
-actionsTable[1191] = 232; // 'state 37' -> COLON -> shift (target=58, len=0) -> 'action 196'
+actionsTable[1184] = 7296; // 'state 37' -> WS -> shift (target=1824, len=0) -> 'action 195'
+actionsTable[1191] = 7424; // 'state 37' -> COLON -> shift (target=1856, len=0) -> 'action 196'
 actionsTable[1312] = 2133; // 'state 41' -> WS -> reduce (target=21, len=2) -> 'action 197'
 actionsTable[1317] = 2133; // 'state 41' -> CURLY_CLOSE -> reduce (target=21, len=2) -> 'action 198'
 actionsTable[1318] = 2133; // 'state 41' -> COMMA -> reduce (target=21, len=2) -> 'action 199'
 actionsTable[1322] = 2133; // 'state 41' -> BRACKET_CLOSE -> reduce (target=21, len=2) -> 'action 200'
 actionsTable[1324] = 2133; // 'state 41' -> @par-gen.EOF -> reduce (target=21, len=2) -> 'action 201'
-actionsTable[1281] = 8; // 'state 40' -> TRUE -> shift (target=2, len=0) -> 'action 202'
-actionsTable[1282] = 12; // 'state 40' -> FALSE -> shift (target=3, len=0) -> 'action 203'
-actionsTable[1283] = 16; // 'state 40' -> NULL -> shift (target=4, len=0) -> 'action 204'
-actionsTable[1284] = 20; // 'state 40' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 205'
-actionsTable[1288] = 24; // 'state 40' -> STRING -> shift (target=6, len=0) -> 'action 206'
-actionsTable[1289] = 28; // 'state 40' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 207'
-actionsTable[1290] = 236; // 'state 40' -> BRACKET_CLOSE -> shift (target=59, len=0) -> 'action 208'
-actionsTable[1291] = 32; // 'state 40' -> NUMBER -> shift (target=8, len=0) -> 'action 209'
-actionsTable[1297] = 88; // 'state 40' -> Value -> shift (target=22, len=0) -> 'action 210'
-actionsTable[1298] = 48; // 'state 40' -> Object -> shift (target=12, len=0) -> 'action 211'
-actionsTable[1301] = 52; // 'state 40' -> Array -> shift (target=13, len=0) -> 'action 212'
-actionsTable[1382] = 240; // 'state 43' -> COMMA -> shift (target=60, len=0) -> 'action 213'
-actionsTable[1386] = 244; // 'state 43' -> BRACKET_CLOSE -> shift (target=61, len=0) -> 'action 214'
+actionsTable[1281] = 256; // 'state 40' -> TRUE -> shift (target=64, len=0) -> 'action 202'
+actionsTable[1282] = 384; // 'state 40' -> FALSE -> shift (target=96, len=0) -> 'action 203'
+actionsTable[1283] = 512; // 'state 40' -> NULL -> shift (target=128, len=0) -> 'action 204'
+actionsTable[1284] = 640; // 'state 40' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 205'
+actionsTable[1288] = 768; // 'state 40' -> STRING -> shift (target=192, len=0) -> 'action 206'
+actionsTable[1289] = 896; // 'state 40' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 207'
+actionsTable[1290] = 7552; // 'state 40' -> BRACKET_CLOSE -> shift (target=1888, len=0) -> 'action 208'
+actionsTable[1291] = 1024; // 'state 40' -> NUMBER -> shift (target=256, len=0) -> 'action 209'
+actionsTable[1297] = 2816; // 'state 40' -> Value -> shift (target=704, len=0) -> 'action 210'
+actionsTable[1298] = 1536; // 'state 40' -> Object -> shift (target=384, len=0) -> 'action 211'
+actionsTable[1301] = 1664; // 'state 40' -> Array -> shift (target=416, len=0) -> 'action 212'
+actionsTable[1382] = 7680; // 'state 43' -> COMMA -> shift (target=1920, len=0) -> 'action 213'
+actionsTable[1386] = 7808; // 'state 43' -> BRACKET_CLOSE -> shift (target=1952, len=0) -> 'action 214'
 actionsTable[1350] = 1113; // 'state 42' -> COMMA -> reduce (target=22, len=1) -> 'action 215'
 actionsTable[1354] = 1113; // 'state 42' -> BRACKET_CLOSE -> reduce (target=22, len=1) -> 'action 216'
 actionsTable[1408] = 3145; // 'state 44' -> WS -> reduce (target=18, len=3) -> 'action 217'
@@ -289,29 +289,29 @@ actionsTable[1413] = 3145; // 'state 44' -> CURLY_CLOSE -> reduce (target=18, le
 actionsTable[1414] = 3145; // 'state 44' -> COMMA -> reduce (target=18, len=3) -> 'action 219'
 actionsTable[1418] = 3145; // 'state 44' -> BRACKET_CLOSE -> reduce (target=18, len=3) -> 'action 220'
 actionsTable[1420] = 3145; // 'state 44' -> @par-gen.EOF -> reduce (target=18, len=3) -> 'action 221'
-actionsTable[1440] = 248; // 'state 45' -> WS -> shift (target=62, len=0) -> 'action 222'
-actionsTable[1447] = 252; // 'state 45' -> COLON -> shift (target=63, len=0) -> 'action 223'
+actionsTable[1440] = 7936; // 'state 45' -> WS -> shift (target=1984, len=0) -> 'action 222'
+actionsTable[1447] = 8064; // 'state 45' -> COLON -> shift (target=2016, len=0) -> 'action 223'
 actionsTable[1472] = 3145; // 'state 46' -> WS -> reduce (target=18, len=3) -> 'action 224'
 actionsTable[1477] = 3145; // 'state 46' -> CURLY_CLOSE -> reduce (target=18, len=3) -> 'action 225'
 actionsTable[1478] = 3145; // 'state 46' -> COMMA -> reduce (target=18, len=3) -> 'action 226'
 actionsTable[1482] = 3145; // 'state 46' -> BRACKET_CLOSE -> reduce (target=18, len=3) -> 'action 227'
 actionsTable[1484] = 3145; // 'state 46' -> @par-gen.EOF -> reduce (target=18, len=3) -> 'action 228'
-actionsTable[1504] = 256; // 'state 47' -> WS -> shift (target=64, len=0) -> 'action 229'
-actionsTable[1512] = 108; // 'state 47' -> STRING -> shift (target=27, len=0) -> 'action 230'
-actionsTable[1524] = 260; // 'state 47' -> Member -> shift (target=65, len=0) -> 'action 231'
-actionsTable[1568] = 4; // 'state 49' -> WS -> shift (target=1, len=0) -> 'action 232'
-actionsTable[1569] = 8; // 'state 49' -> TRUE -> shift (target=2, len=0) -> 'action 233'
-actionsTable[1570] = 12; // 'state 49' -> FALSE -> shift (target=3, len=0) -> 'action 234'
-actionsTable[1571] = 16; // 'state 49' -> NULL -> shift (target=4, len=0) -> 'action 235'
-actionsTable[1572] = 20; // 'state 49' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 236'
-actionsTable[1576] = 24; // 'state 49' -> STRING -> shift (target=6, len=0) -> 'action 237'
-actionsTable[1577] = 28; // 'state 49' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 238'
-actionsTable[1579] = 32; // 'state 49' -> NUMBER -> shift (target=8, len=0) -> 'action 239'
-actionsTable[1584] = 264; // 'state 49' -> Element -> shift (target=66, len=0) -> 'action 240'
-actionsTable[1585] = 44; // 'state 49' -> Value -> shift (target=11, len=0) -> 'action 241'
-actionsTable[1586] = 48; // 'state 49' -> Object -> shift (target=12, len=0) -> 'action 242'
-actionsTable[1589] = 52; // 'state 49' -> Array -> shift (target=13, len=0) -> 'action 243'
-actionsTable[1543] = 268; // 'state 48' -> COLON -> shift (target=67, len=0) -> 'action 244'
+actionsTable[1504] = 8192; // 'state 47' -> WS -> shift (target=2048, len=0) -> 'action 229'
+actionsTable[1512] = 3456; // 'state 47' -> STRING -> shift (target=864, len=0) -> 'action 230'
+actionsTable[1524] = 8320; // 'state 47' -> Member -> shift (target=2080, len=0) -> 'action 231'
+actionsTable[1568] = 128; // 'state 49' -> WS -> shift (target=32, len=0) -> 'action 232'
+actionsTable[1569] = 256; // 'state 49' -> TRUE -> shift (target=64, len=0) -> 'action 233'
+actionsTable[1570] = 384; // 'state 49' -> FALSE -> shift (target=96, len=0) -> 'action 234'
+actionsTable[1571] = 512; // 'state 49' -> NULL -> shift (target=128, len=0) -> 'action 235'
+actionsTable[1572] = 640; // 'state 49' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 236'
+actionsTable[1576] = 768; // 'state 49' -> STRING -> shift (target=192, len=0) -> 'action 237'
+actionsTable[1577] = 896; // 'state 49' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 238'
+actionsTable[1579] = 1024; // 'state 49' -> NUMBER -> shift (target=256, len=0) -> 'action 239'
+actionsTable[1584] = 8448; // 'state 49' -> Element -> shift (target=2112, len=0) -> 'action 240'
+actionsTable[1585] = 1408; // 'state 49' -> Value -> shift (target=352, len=0) -> 'action 241'
+actionsTable[1586] = 1536; // 'state 49' -> Object -> shift (target=384, len=0) -> 'action 242'
+actionsTable[1589] = 1664; // 'state 49' -> Array -> shift (target=416, len=0) -> 'action 243'
+actionsTable[1543] = 8576; // 'state 48' -> COLON -> shift (target=2144, len=0) -> 'action 244'
 actionsTable[1600] = 3157; // 'state 50' -> WS -> reduce (target=21, len=3) -> 'action 245'
 actionsTable[1605] = 3157; // 'state 50' -> CURLY_CLOSE -> reduce (target=21, len=3) -> 'action 246'
 actionsTable[1606] = 3157; // 'state 50' -> COMMA -> reduce (target=21, len=3) -> 'action 247'
@@ -322,46 +322,46 @@ actionsTable[1669] = 3157; // 'state 52' -> CURLY_CLOSE -> reduce (target=21, le
 actionsTable[1670] = 3157; // 'state 52' -> COMMA -> reduce (target=21, len=3) -> 'action 252'
 actionsTable[1674] = 3157; // 'state 52' -> BRACKET_CLOSE -> reduce (target=21, len=3) -> 'action 253'
 actionsTable[1676] = 3157; // 'state 52' -> @par-gen.EOF -> reduce (target=21, len=3) -> 'action 254'
-actionsTable[1632] = 4; // 'state 51' -> WS -> shift (target=1, len=0) -> 'action 255'
-actionsTable[1633] = 8; // 'state 51' -> TRUE -> shift (target=2, len=0) -> 'action 256'
-actionsTable[1634] = 12; // 'state 51' -> FALSE -> shift (target=3, len=0) -> 'action 257'
-actionsTable[1635] = 16; // 'state 51' -> NULL -> shift (target=4, len=0) -> 'action 258'
-actionsTable[1636] = 20; // 'state 51' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 259'
-actionsTable[1640] = 24; // 'state 51' -> STRING -> shift (target=6, len=0) -> 'action 260'
-actionsTable[1641] = 28; // 'state 51' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 261'
-actionsTable[1643] = 32; // 'state 51' -> NUMBER -> shift (target=8, len=0) -> 'action 262'
-actionsTable[1648] = 272; // 'state 51' -> Element -> shift (target=68, len=0) -> 'action 263'
-actionsTable[1649] = 44; // 'state 51' -> Value -> shift (target=11, len=0) -> 'action 264'
-actionsTable[1650] = 48; // 'state 51' -> Object -> shift (target=12, len=0) -> 'action 265'
-actionsTable[1653] = 52; // 'state 51' -> Array -> shift (target=13, len=0) -> 'action 266'
+actionsTable[1632] = 128; // 'state 51' -> WS -> shift (target=32, len=0) -> 'action 255'
+actionsTable[1633] = 256; // 'state 51' -> TRUE -> shift (target=64, len=0) -> 'action 256'
+actionsTable[1634] = 384; // 'state 51' -> FALSE -> shift (target=96, len=0) -> 'action 257'
+actionsTable[1635] = 512; // 'state 51' -> NULL -> shift (target=128, len=0) -> 'action 258'
+actionsTable[1636] = 640; // 'state 51' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 259'
+actionsTable[1640] = 768; // 'state 51' -> STRING -> shift (target=192, len=0) -> 'action 260'
+actionsTable[1641] = 896; // 'state 51' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 261'
+actionsTable[1643] = 1024; // 'state 51' -> NUMBER -> shift (target=256, len=0) -> 'action 262'
+actionsTable[1648] = 8704; // 'state 51' -> Element -> shift (target=2176, len=0) -> 'action 263'
+actionsTable[1649] = 1408; // 'state 51' -> Value -> shift (target=352, len=0) -> 'action 264'
+actionsTable[1650] = 1536; // 'state 51' -> Object -> shift (target=384, len=0) -> 'action 265'
+actionsTable[1653] = 1664; // 'state 51' -> Array -> shift (target=416, len=0) -> 'action 266'
 actionsTable[1696] = 3145; // 'state 53' -> WS -> reduce (target=18, len=3) -> 'action 267'
 actionsTable[1701] = 3145; // 'state 53' -> CURLY_CLOSE -> reduce (target=18, len=3) -> 'action 268'
 actionsTable[1702] = 3145; // 'state 53' -> COMMA -> reduce (target=18, len=3) -> 'action 269'
 actionsTable[1706] = 3145; // 'state 53' -> BRACKET_CLOSE -> reduce (target=18, len=3) -> 'action 270'
 actionsTable[1708] = 3145; // 'state 53' -> @par-gen.EOF -> reduce (target=18, len=3) -> 'action 271'
-actionsTable[1728] = 276; // 'state 54' -> WS -> shift (target=69, len=0) -> 'action 272'
-actionsTable[1735] = 280; // 'state 54' -> COLON -> shift (target=70, len=0) -> 'action 273'
+actionsTable[1728] = 8832; // 'state 54' -> WS -> shift (target=2208, len=0) -> 'action 272'
+actionsTable[1735] = 8960; // 'state 54' -> COLON -> shift (target=2240, len=0) -> 'action 273'
 actionsTable[1760] = 3145; // 'state 55' -> WS -> reduce (target=18, len=3) -> 'action 274'
 actionsTable[1765] = 3145; // 'state 55' -> CURLY_CLOSE -> reduce (target=18, len=3) -> 'action 275'
 actionsTable[1766] = 3145; // 'state 55' -> COMMA -> reduce (target=18, len=3) -> 'action 276'
 actionsTable[1770] = 3145; // 'state 55' -> BRACKET_CLOSE -> reduce (target=18, len=3) -> 'action 277'
 actionsTable[1772] = 3145; // 'state 55' -> @par-gen.EOF -> reduce (target=18, len=3) -> 'action 278'
-actionsTable[1792] = 284; // 'state 56' -> WS -> shift (target=71, len=0) -> 'action 279'
-actionsTable[1800] = 108; // 'state 56' -> STRING -> shift (target=27, len=0) -> 'action 280'
-actionsTable[1812] = 288; // 'state 56' -> Member -> shift (target=72, len=0) -> 'action 281'
-actionsTable[1856] = 4; // 'state 58' -> WS -> shift (target=1, len=0) -> 'action 282'
-actionsTable[1857] = 8; // 'state 58' -> TRUE -> shift (target=2, len=0) -> 'action 283'
-actionsTable[1858] = 12; // 'state 58' -> FALSE -> shift (target=3, len=0) -> 'action 284'
-actionsTable[1859] = 16; // 'state 58' -> NULL -> shift (target=4, len=0) -> 'action 285'
-actionsTable[1860] = 20; // 'state 58' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 286'
-actionsTable[1864] = 24; // 'state 58' -> STRING -> shift (target=6, len=0) -> 'action 287'
-actionsTable[1865] = 28; // 'state 58' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 288'
-actionsTable[1867] = 32; // 'state 58' -> NUMBER -> shift (target=8, len=0) -> 'action 289'
-actionsTable[1872] = 292; // 'state 58' -> Element -> shift (target=73, len=0) -> 'action 290'
-actionsTable[1873] = 44; // 'state 58' -> Value -> shift (target=11, len=0) -> 'action 291'
-actionsTable[1874] = 48; // 'state 58' -> Object -> shift (target=12, len=0) -> 'action 292'
-actionsTable[1877] = 52; // 'state 58' -> Array -> shift (target=13, len=0) -> 'action 293'
-actionsTable[1831] = 296; // 'state 57' -> COLON -> shift (target=74, len=0) -> 'action 294'
+actionsTable[1792] = 9088; // 'state 56' -> WS -> shift (target=2272, len=0) -> 'action 279'
+actionsTable[1800] = 3456; // 'state 56' -> STRING -> shift (target=864, len=0) -> 'action 280'
+actionsTable[1812] = 9216; // 'state 56' -> Member -> shift (target=2304, len=0) -> 'action 281'
+actionsTable[1856] = 128; // 'state 58' -> WS -> shift (target=32, len=0) -> 'action 282'
+actionsTable[1857] = 256; // 'state 58' -> TRUE -> shift (target=64, len=0) -> 'action 283'
+actionsTable[1858] = 384; // 'state 58' -> FALSE -> shift (target=96, len=0) -> 'action 284'
+actionsTable[1859] = 512; // 'state 58' -> NULL -> shift (target=128, len=0) -> 'action 285'
+actionsTable[1860] = 640; // 'state 58' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 286'
+actionsTable[1864] = 768; // 'state 58' -> STRING -> shift (target=192, len=0) -> 'action 287'
+actionsTable[1865] = 896; // 'state 58' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 288'
+actionsTable[1867] = 1024; // 'state 58' -> NUMBER -> shift (target=256, len=0) -> 'action 289'
+actionsTable[1872] = 9344; // 'state 58' -> Element -> shift (target=2336, len=0) -> 'action 290'
+actionsTable[1873] = 1408; // 'state 58' -> Value -> shift (target=352, len=0) -> 'action 291'
+actionsTable[1874] = 1536; // 'state 58' -> Object -> shift (target=384, len=0) -> 'action 292'
+actionsTable[1877] = 1664; // 'state 58' -> Array -> shift (target=416, len=0) -> 'action 293'
+actionsTable[1831] = 9472; // 'state 57' -> COLON -> shift (target=2368, len=0) -> 'action 294'
 actionsTable[1888] = 3157; // 'state 59' -> WS -> reduce (target=21, len=3) -> 'action 295'
 actionsTable[1893] = 3157; // 'state 59' -> CURLY_CLOSE -> reduce (target=21, len=3) -> 'action 296'
 actionsTable[1894] = 3157; // 'state 59' -> COMMA -> reduce (target=21, len=3) -> 'action 297'
@@ -372,112 +372,112 @@ actionsTable[1957] = 3157; // 'state 61' -> CURLY_CLOSE -> reduce (target=21, le
 actionsTable[1958] = 3157; // 'state 61' -> COMMA -> reduce (target=21, len=3) -> 'action 302'
 actionsTable[1962] = 3157; // 'state 61' -> BRACKET_CLOSE -> reduce (target=21, len=3) -> 'action 303'
 actionsTable[1964] = 3157; // 'state 61' -> @par-gen.EOF -> reduce (target=21, len=3) -> 'action 304'
-actionsTable[1920] = 4; // 'state 60' -> WS -> shift (target=1, len=0) -> 'action 305'
-actionsTable[1921] = 8; // 'state 60' -> TRUE -> shift (target=2, len=0) -> 'action 306'
-actionsTable[1922] = 12; // 'state 60' -> FALSE -> shift (target=3, len=0) -> 'action 307'
-actionsTable[1923] = 16; // 'state 60' -> NULL -> shift (target=4, len=0) -> 'action 308'
-actionsTable[1924] = 20; // 'state 60' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 309'
-actionsTable[1928] = 24; // 'state 60' -> STRING -> shift (target=6, len=0) -> 'action 310'
-actionsTable[1929] = 28; // 'state 60' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 311'
-actionsTable[1931] = 32; // 'state 60' -> NUMBER -> shift (target=8, len=0) -> 'action 312'
-actionsTable[1936] = 300; // 'state 60' -> Element -> shift (target=75, len=0) -> 'action 313'
-actionsTable[1937] = 44; // 'state 60' -> Value -> shift (target=11, len=0) -> 'action 314'
-actionsTable[1938] = 48; // 'state 60' -> Object -> shift (target=12, len=0) -> 'action 315'
-actionsTable[1941] = 52; // 'state 60' -> Array -> shift (target=13, len=0) -> 'action 316'
-actionsTable[2016] = 4; // 'state 63' -> WS -> shift (target=1, len=0) -> 'action 317'
-actionsTable[2017] = 8; // 'state 63' -> TRUE -> shift (target=2, len=0) -> 'action 318'
-actionsTable[2018] = 12; // 'state 63' -> FALSE -> shift (target=3, len=0) -> 'action 319'
-actionsTable[2019] = 16; // 'state 63' -> NULL -> shift (target=4, len=0) -> 'action 320'
-actionsTable[2020] = 20; // 'state 63' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 321'
-actionsTable[2024] = 24; // 'state 63' -> STRING -> shift (target=6, len=0) -> 'action 322'
-actionsTable[2025] = 28; // 'state 63' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 323'
-actionsTable[2027] = 32; // 'state 63' -> NUMBER -> shift (target=8, len=0) -> 'action 324'
-actionsTable[2032] = 304; // 'state 63' -> Element -> shift (target=76, len=0) -> 'action 325'
-actionsTable[2033] = 44; // 'state 63' -> Value -> shift (target=11, len=0) -> 'action 326'
-actionsTable[2034] = 48; // 'state 63' -> Object -> shift (target=12, len=0) -> 'action 327'
-actionsTable[2037] = 52; // 'state 63' -> Array -> shift (target=13, len=0) -> 'action 328'
-actionsTable[1991] = 308; // 'state 62' -> COLON -> shift (target=77, len=0) -> 'action 329'
+actionsTable[1920] = 128; // 'state 60' -> WS -> shift (target=32, len=0) -> 'action 305'
+actionsTable[1921] = 256; // 'state 60' -> TRUE -> shift (target=64, len=0) -> 'action 306'
+actionsTable[1922] = 384; // 'state 60' -> FALSE -> shift (target=96, len=0) -> 'action 307'
+actionsTable[1923] = 512; // 'state 60' -> NULL -> shift (target=128, len=0) -> 'action 308'
+actionsTable[1924] = 640; // 'state 60' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 309'
+actionsTable[1928] = 768; // 'state 60' -> STRING -> shift (target=192, len=0) -> 'action 310'
+actionsTable[1929] = 896; // 'state 60' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 311'
+actionsTable[1931] = 1024; // 'state 60' -> NUMBER -> shift (target=256, len=0) -> 'action 312'
+actionsTable[1936] = 9600; // 'state 60' -> Element -> shift (target=2400, len=0) -> 'action 313'
+actionsTable[1937] = 1408; // 'state 60' -> Value -> shift (target=352, len=0) -> 'action 314'
+actionsTable[1938] = 1536; // 'state 60' -> Object -> shift (target=384, len=0) -> 'action 315'
+actionsTable[1941] = 1664; // 'state 60' -> Array -> shift (target=416, len=0) -> 'action 316'
+actionsTable[2016] = 128; // 'state 63' -> WS -> shift (target=32, len=0) -> 'action 317'
+actionsTable[2017] = 256; // 'state 63' -> TRUE -> shift (target=64, len=0) -> 'action 318'
+actionsTable[2018] = 384; // 'state 63' -> FALSE -> shift (target=96, len=0) -> 'action 319'
+actionsTable[2019] = 512; // 'state 63' -> NULL -> shift (target=128, len=0) -> 'action 320'
+actionsTable[2020] = 640; // 'state 63' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 321'
+actionsTable[2024] = 768; // 'state 63' -> STRING -> shift (target=192, len=0) -> 'action 322'
+actionsTable[2025] = 896; // 'state 63' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 323'
+actionsTable[2027] = 1024; // 'state 63' -> NUMBER -> shift (target=256, len=0) -> 'action 324'
+actionsTable[2032] = 9728; // 'state 63' -> Element -> shift (target=2432, len=0) -> 'action 325'
+actionsTable[2033] = 1408; // 'state 63' -> Value -> shift (target=352, len=0) -> 'action 326'
+actionsTable[2034] = 1536; // 'state 63' -> Object -> shift (target=384, len=0) -> 'action 327'
+actionsTable[2037] = 1664; // 'state 63' -> Array -> shift (target=416, len=0) -> 'action 328'
+actionsTable[1991] = 9856; // 'state 62' -> COLON -> shift (target=2464, len=0) -> 'action 329'
 actionsTable[2085] = 3149; // 'state 65' -> CURLY_CLOSE -> reduce (target=19, len=3) -> 'action 330'
 actionsTable[2086] = 3149; // 'state 65' -> COMMA -> reduce (target=19, len=3) -> 'action 331'
-actionsTable[2056] = 180; // 'state 64' -> STRING -> shift (target=45, len=0) -> 'action 332'
+actionsTable[2056] = 5760; // 'state 64' -> STRING -> shift (target=1440, len=0) -> 'action 332'
 actionsTable[2117] = 3153; // 'state 66' -> CURLY_CLOSE -> reduce (target=20, len=3) -> 'action 333'
 actionsTable[2118] = 3153; // 'state 66' -> COMMA -> reduce (target=20, len=3) -> 'action 334'
-actionsTable[2144] = 4; // 'state 67' -> WS -> shift (target=1, len=0) -> 'action 335'
-actionsTable[2145] = 8; // 'state 67' -> TRUE -> shift (target=2, len=0) -> 'action 336'
-actionsTable[2146] = 12; // 'state 67' -> FALSE -> shift (target=3, len=0) -> 'action 337'
-actionsTable[2147] = 16; // 'state 67' -> NULL -> shift (target=4, len=0) -> 'action 338'
-actionsTable[2148] = 20; // 'state 67' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 339'
-actionsTable[2152] = 24; // 'state 67' -> STRING -> shift (target=6, len=0) -> 'action 340'
-actionsTable[2153] = 28; // 'state 67' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 341'
-actionsTable[2155] = 32; // 'state 67' -> NUMBER -> shift (target=8, len=0) -> 'action 342'
-actionsTable[2160] = 312; // 'state 67' -> Element -> shift (target=78, len=0) -> 'action 343'
-actionsTable[2161] = 44; // 'state 67' -> Value -> shift (target=11, len=0) -> 'action 344'
-actionsTable[2162] = 48; // 'state 67' -> Object -> shift (target=12, len=0) -> 'action 345'
-actionsTable[2165] = 52; // 'state 67' -> Array -> shift (target=13, len=0) -> 'action 346'
+actionsTable[2144] = 128; // 'state 67' -> WS -> shift (target=32, len=0) -> 'action 335'
+actionsTable[2145] = 256; // 'state 67' -> TRUE -> shift (target=64, len=0) -> 'action 336'
+actionsTable[2146] = 384; // 'state 67' -> FALSE -> shift (target=96, len=0) -> 'action 337'
+actionsTable[2147] = 512; // 'state 67' -> NULL -> shift (target=128, len=0) -> 'action 338'
+actionsTable[2148] = 640; // 'state 67' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 339'
+actionsTable[2152] = 768; // 'state 67' -> STRING -> shift (target=192, len=0) -> 'action 340'
+actionsTable[2153] = 896; // 'state 67' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 341'
+actionsTable[2155] = 1024; // 'state 67' -> NUMBER -> shift (target=256, len=0) -> 'action 342'
+actionsTable[2160] = 9984; // 'state 67' -> Element -> shift (target=2496, len=0) -> 'action 343'
+actionsTable[2161] = 1408; // 'state 67' -> Value -> shift (target=352, len=0) -> 'action 344'
+actionsTable[2162] = 1536; // 'state 67' -> Object -> shift (target=384, len=0) -> 'action 345'
+actionsTable[2165] = 1664; // 'state 67' -> Array -> shift (target=416, len=0) -> 'action 346'
 actionsTable[2182] = 3161; // 'state 68' -> COMMA -> reduce (target=22, len=3) -> 'action 347'
 actionsTable[2186] = 3161; // 'state 68' -> BRACKET_CLOSE -> reduce (target=22, len=3) -> 'action 348'
-actionsTable[2240] = 4; // 'state 70' -> WS -> shift (target=1, len=0) -> 'action 349'
-actionsTable[2241] = 8; // 'state 70' -> TRUE -> shift (target=2, len=0) -> 'action 350'
-actionsTable[2242] = 12; // 'state 70' -> FALSE -> shift (target=3, len=0) -> 'action 351'
-actionsTable[2243] = 16; // 'state 70' -> NULL -> shift (target=4, len=0) -> 'action 352'
-actionsTable[2244] = 20; // 'state 70' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 353'
-actionsTable[2248] = 24; // 'state 70' -> STRING -> shift (target=6, len=0) -> 'action 354'
-actionsTable[2249] = 28; // 'state 70' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 355'
-actionsTable[2251] = 32; // 'state 70' -> NUMBER -> shift (target=8, len=0) -> 'action 356'
-actionsTable[2256] = 316; // 'state 70' -> Element -> shift (target=79, len=0) -> 'action 357'
-actionsTable[2257] = 44; // 'state 70' -> Value -> shift (target=11, len=0) -> 'action 358'
-actionsTable[2258] = 48; // 'state 70' -> Object -> shift (target=12, len=0) -> 'action 359'
-actionsTable[2261] = 52; // 'state 70' -> Array -> shift (target=13, len=0) -> 'action 360'
-actionsTable[2215] = 320; // 'state 69' -> COLON -> shift (target=80, len=0) -> 'action 361'
+actionsTable[2240] = 128; // 'state 70' -> WS -> shift (target=32, len=0) -> 'action 349'
+actionsTable[2241] = 256; // 'state 70' -> TRUE -> shift (target=64, len=0) -> 'action 350'
+actionsTable[2242] = 384; // 'state 70' -> FALSE -> shift (target=96, len=0) -> 'action 351'
+actionsTable[2243] = 512; // 'state 70' -> NULL -> shift (target=128, len=0) -> 'action 352'
+actionsTable[2244] = 640; // 'state 70' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 353'
+actionsTable[2248] = 768; // 'state 70' -> STRING -> shift (target=192, len=0) -> 'action 354'
+actionsTable[2249] = 896; // 'state 70' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 355'
+actionsTable[2251] = 1024; // 'state 70' -> NUMBER -> shift (target=256, len=0) -> 'action 356'
+actionsTable[2256] = 10112; // 'state 70' -> Element -> shift (target=2528, len=0) -> 'action 357'
+actionsTable[2257] = 1408; // 'state 70' -> Value -> shift (target=352, len=0) -> 'action 358'
+actionsTable[2258] = 1536; // 'state 70' -> Object -> shift (target=384, len=0) -> 'action 359'
+actionsTable[2261] = 1664; // 'state 70' -> Array -> shift (target=416, len=0) -> 'action 360'
+actionsTable[2215] = 10240; // 'state 69' -> COLON -> shift (target=2560, len=0) -> 'action 361'
 actionsTable[2309] = 3149; // 'state 72' -> CURLY_CLOSE -> reduce (target=19, len=3) -> 'action 362'
 actionsTable[2310] = 3149; // 'state 72' -> COMMA -> reduce (target=19, len=3) -> 'action 363'
-actionsTable[2280] = 180; // 'state 71' -> STRING -> shift (target=45, len=0) -> 'action 364'
+actionsTable[2280] = 5760; // 'state 71' -> STRING -> shift (target=1440, len=0) -> 'action 364'
 actionsTable[2341] = 3153; // 'state 73' -> CURLY_CLOSE -> reduce (target=20, len=3) -> 'action 365'
 actionsTable[2342] = 3153; // 'state 73' -> COMMA -> reduce (target=20, len=3) -> 'action 366'
-actionsTable[2368] = 4; // 'state 74' -> WS -> shift (target=1, len=0) -> 'action 367'
-actionsTable[2369] = 8; // 'state 74' -> TRUE -> shift (target=2, len=0) -> 'action 368'
-actionsTable[2370] = 12; // 'state 74' -> FALSE -> shift (target=3, len=0) -> 'action 369'
-actionsTable[2371] = 16; // 'state 74' -> NULL -> shift (target=4, len=0) -> 'action 370'
-actionsTable[2372] = 20; // 'state 74' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 371'
-actionsTable[2376] = 24; // 'state 74' -> STRING -> shift (target=6, len=0) -> 'action 372'
-actionsTable[2377] = 28; // 'state 74' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 373'
-actionsTable[2379] = 32; // 'state 74' -> NUMBER -> shift (target=8, len=0) -> 'action 374'
-actionsTable[2384] = 324; // 'state 74' -> Element -> shift (target=81, len=0) -> 'action 375'
-actionsTable[2385] = 44; // 'state 74' -> Value -> shift (target=11, len=0) -> 'action 376'
-actionsTable[2386] = 48; // 'state 74' -> Object -> shift (target=12, len=0) -> 'action 377'
-actionsTable[2389] = 52; // 'state 74' -> Array -> shift (target=13, len=0) -> 'action 378'
+actionsTable[2368] = 128; // 'state 74' -> WS -> shift (target=32, len=0) -> 'action 367'
+actionsTable[2369] = 256; // 'state 74' -> TRUE -> shift (target=64, len=0) -> 'action 368'
+actionsTable[2370] = 384; // 'state 74' -> FALSE -> shift (target=96, len=0) -> 'action 369'
+actionsTable[2371] = 512; // 'state 74' -> NULL -> shift (target=128, len=0) -> 'action 370'
+actionsTable[2372] = 640; // 'state 74' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 371'
+actionsTable[2376] = 768; // 'state 74' -> STRING -> shift (target=192, len=0) -> 'action 372'
+actionsTable[2377] = 896; // 'state 74' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 373'
+actionsTable[2379] = 1024; // 'state 74' -> NUMBER -> shift (target=256, len=0) -> 'action 374'
+actionsTable[2384] = 10368; // 'state 74' -> Element -> shift (target=2592, len=0) -> 'action 375'
+actionsTable[2385] = 1408; // 'state 74' -> Value -> shift (target=352, len=0) -> 'action 376'
+actionsTable[2386] = 1536; // 'state 74' -> Object -> shift (target=384, len=0) -> 'action 377'
+actionsTable[2389] = 1664; // 'state 74' -> Array -> shift (target=416, len=0) -> 'action 378'
 actionsTable[2406] = 3161; // 'state 75' -> COMMA -> reduce (target=22, len=3) -> 'action 379'
 actionsTable[2410] = 3161; // 'state 75' -> BRACKET_CLOSE -> reduce (target=22, len=3) -> 'action 380'
 actionsTable[2437] = 4177; // 'state 76' -> CURLY_CLOSE -> reduce (target=20, len=4) -> 'action 381'
 actionsTable[2438] = 4177; // 'state 76' -> COMMA -> reduce (target=20, len=4) -> 'action 382'
-actionsTable[2464] = 4; // 'state 77' -> WS -> shift (target=1, len=0) -> 'action 383'
-actionsTable[2465] = 8; // 'state 77' -> TRUE -> shift (target=2, len=0) -> 'action 384'
-actionsTable[2466] = 12; // 'state 77' -> FALSE -> shift (target=3, len=0) -> 'action 385'
-actionsTable[2467] = 16; // 'state 77' -> NULL -> shift (target=4, len=0) -> 'action 386'
-actionsTable[2468] = 20; // 'state 77' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 387'
-actionsTable[2472] = 24; // 'state 77' -> STRING -> shift (target=6, len=0) -> 'action 388'
-actionsTable[2473] = 28; // 'state 77' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 389'
-actionsTable[2475] = 32; // 'state 77' -> NUMBER -> shift (target=8, len=0) -> 'action 390'
-actionsTable[2480] = 328; // 'state 77' -> Element -> shift (target=82, len=0) -> 'action 391'
-actionsTable[2481] = 44; // 'state 77' -> Value -> shift (target=11, len=0) -> 'action 392'
-actionsTable[2482] = 48; // 'state 77' -> Object -> shift (target=12, len=0) -> 'action 393'
-actionsTable[2485] = 52; // 'state 77' -> Array -> shift (target=13, len=0) -> 'action 394'
+actionsTable[2464] = 128; // 'state 77' -> WS -> shift (target=32, len=0) -> 'action 383'
+actionsTable[2465] = 256; // 'state 77' -> TRUE -> shift (target=64, len=0) -> 'action 384'
+actionsTable[2466] = 384; // 'state 77' -> FALSE -> shift (target=96, len=0) -> 'action 385'
+actionsTable[2467] = 512; // 'state 77' -> NULL -> shift (target=128, len=0) -> 'action 386'
+actionsTable[2468] = 640; // 'state 77' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 387'
+actionsTable[2472] = 768; // 'state 77' -> STRING -> shift (target=192, len=0) -> 'action 388'
+actionsTable[2473] = 896; // 'state 77' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 389'
+actionsTable[2475] = 1024; // 'state 77' -> NUMBER -> shift (target=256, len=0) -> 'action 390'
+actionsTable[2480] = 10496; // 'state 77' -> Element -> shift (target=2624, len=0) -> 'action 391'
+actionsTable[2481] = 1408; // 'state 77' -> Value -> shift (target=352, len=0) -> 'action 392'
+actionsTable[2482] = 1536; // 'state 77' -> Object -> shift (target=384, len=0) -> 'action 393'
+actionsTable[2485] = 1664; // 'state 77' -> Array -> shift (target=416, len=0) -> 'action 394'
 actionsTable[2501] = 4177; // 'state 78' -> CURLY_CLOSE -> reduce (target=20, len=4) -> 'action 395'
 actionsTable[2502] = 4177; // 'state 78' -> COMMA -> reduce (target=20, len=4) -> 'action 396'
 actionsTable[2533] = 4177; // 'state 79' -> CURLY_CLOSE -> reduce (target=20, len=4) -> 'action 397'
 actionsTable[2534] = 4177; // 'state 79' -> COMMA -> reduce (target=20, len=4) -> 'action 398'
-actionsTable[2560] = 4; // 'state 80' -> WS -> shift (target=1, len=0) -> 'action 399'
-actionsTable[2561] = 8; // 'state 80' -> TRUE -> shift (target=2, len=0) -> 'action 400'
-actionsTable[2562] = 12; // 'state 80' -> FALSE -> shift (target=3, len=0) -> 'action 401'
-actionsTable[2563] = 16; // 'state 80' -> NULL -> shift (target=4, len=0) -> 'action 402'
-actionsTable[2564] = 20; // 'state 80' -> CURLY_OPEN -> shift (target=5, len=0) -> 'action 403'
-actionsTable[2568] = 24; // 'state 80' -> STRING -> shift (target=6, len=0) -> 'action 404'
-actionsTable[2569] = 28; // 'state 80' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 405'
-actionsTable[2571] = 32; // 'state 80' -> NUMBER -> shift (target=8, len=0) -> 'action 406'
-actionsTable[2576] = 332; // 'state 80' -> Element -> shift (target=83, len=0) -> 'action 407'
-actionsTable[2577] = 44; // 'state 80' -> Value -> shift (target=11, len=0) -> 'action 408'
-actionsTable[2578] = 48; // 'state 80' -> Object -> shift (target=12, len=0) -> 'action 409'
-actionsTable[2581] = 52; // 'state 80' -> Array -> shift (target=13, len=0) -> 'action 410'
+actionsTable[2560] = 128; // 'state 80' -> WS -> shift (target=32, len=0) -> 'action 399'
+actionsTable[2561] = 256; // 'state 80' -> TRUE -> shift (target=64, len=0) -> 'action 400'
+actionsTable[2562] = 384; // 'state 80' -> FALSE -> shift (target=96, len=0) -> 'action 401'
+actionsTable[2563] = 512; // 'state 80' -> NULL -> shift (target=128, len=0) -> 'action 402'
+actionsTable[2564] = 640; // 'state 80' -> CURLY_OPEN -> shift (target=160, len=0) -> 'action 403'
+actionsTable[2568] = 768; // 'state 80' -> STRING -> shift (target=192, len=0) -> 'action 404'
+actionsTable[2569] = 896; // 'state 80' -> BRACKET_OPEN -> shift (target=224, len=0) -> 'action 405'
+actionsTable[2571] = 1024; // 'state 80' -> NUMBER -> shift (target=256, len=0) -> 'action 406'
+actionsTable[2576] = 10624; // 'state 80' -> Element -> shift (target=2656, len=0) -> 'action 407'
+actionsTable[2577] = 1408; // 'state 80' -> Value -> shift (target=352, len=0) -> 'action 408'
+actionsTable[2578] = 1536; // 'state 80' -> Object -> shift (target=384, len=0) -> 'action 409'
+actionsTable[2581] = 1664; // 'state 80' -> Array -> shift (target=416, len=0) -> 'action 410'
 actionsTable[2597] = 4177; // 'state 81' -> CURLY_CLOSE -> reduce (target=20, len=4) -> 'action 411'
 actionsTable[2598] = 4177; // 'state 81' -> COMMA -> reduce (target=20, len=4) -> 'action 412'
 actionsTable[2629] = 5201; // 'state 82' -> CURLY_CLOSE -> reduce (target=20, len=5) -> 'action 413'
@@ -486,120 +486,113 @@ actionsTable[2661] = 5201; // 'state 83' -> CURLY_CLOSE -> reduce (target=20, le
 actionsTable[2662] = 5201; // 'state 83' -> COMMA -> reduce (target=20, len=5) -> 'action 416'
 
 const gotoTable = new Uint16Array(2688).fill(0xffff);
-gotoTable[15] = 9; // 'state 9'
-gotoTable[16] = 10; // 'state 10'
-gotoTable[17] = 11; // 'state 11'
-gotoTable[18] = 12; // 'state 12'
-gotoTable[21] = 13; // 'state 13'
-gotoTable[49] = 22; // 'state 22'
-gotoTable[50] = 23; // 'state 23'
-gotoTable[53] = 24; // 'state 24'
-gotoTable[179] = 28; // 'state 28'
-gotoTable[180] = 29; // 'state 29'
-gotoTable[246] = 33; // 'state 33'
-gotoTable[240] = 32; // 'state 32'
-gotoTable[241] = 11; // 'state 11'
-gotoTable[242] = 12; // 'state 12'
-gotoTable[245] = 13; // 'state 13'
-gotoTable[595] = 38; // 'state 38'
-gotoTable[596] = 39; // 'state 39'
-gotoTable[662] = 43; // 'state 43'
-gotoTable[656] = 42; // 'state 42'
-gotoTable[657] = 11; // 'state 11'
-gotoTable[658] = 12; // 'state 12'
-gotoTable[661] = 13; // 'state 13'
-gotoTable[977] = 22; // 'state 22'
-gotoTable[978] = 12; // 'state 12'
-gotoTable[981] = 13; // 'state 13'
-gotoTable[1297] = 22; // 'state 22'
-gotoTable[1298] = 12; // 'state 12'
-gotoTable[1301] = 13; // 'state 13'
-gotoTable[1524] = 65; // 'state 65'
-gotoTable[1584] = 66; // 'state 66'
-gotoTable[1585] = 11; // 'state 11'
-gotoTable[1586] = 12; // 'state 12'
-gotoTable[1589] = 13; // 'state 13'
-gotoTable[1648] = 68; // 'state 68'
-gotoTable[1649] = 11; // 'state 11'
-gotoTable[1650] = 12; // 'state 12'
-gotoTable[1653] = 13; // 'state 13'
-gotoTable[1812] = 72; // 'state 72'
-gotoTable[1872] = 73; // 'state 73'
-gotoTable[1873] = 11; // 'state 11'
-gotoTable[1874] = 12; // 'state 12'
-gotoTable[1877] = 13; // 'state 13'
-gotoTable[1936] = 75; // 'state 75'
-gotoTable[1937] = 11; // 'state 11'
-gotoTable[1938] = 12; // 'state 12'
-gotoTable[1941] = 13; // 'state 13'
-gotoTable[2032] = 76; // 'state 76'
-gotoTable[2033] = 11; // 'state 11'
-gotoTable[2034] = 12; // 'state 12'
-gotoTable[2037] = 13; // 'state 13'
-gotoTable[2160] = 78; // 'state 78'
-gotoTable[2161] = 11; // 'state 11'
-gotoTable[2162] = 12; // 'state 12'
-gotoTable[2165] = 13; // 'state 13'
-gotoTable[2256] = 79; // 'state 79'
-gotoTable[2257] = 11; // 'state 11'
-gotoTable[2258] = 12; // 'state 12'
-gotoTable[2261] = 13; // 'state 13'
-gotoTable[2384] = 81; // 'state 81'
-gotoTable[2385] = 11; // 'state 11'
-gotoTable[2386] = 12; // 'state 12'
-gotoTable[2389] = 13; // 'state 13'
-gotoTable[2480] = 82; // 'state 82'
-gotoTable[2481] = 11; // 'state 11'
-gotoTable[2482] = 12; // 'state 12'
-gotoTable[2485] = 13; // 'state 13'
-gotoTable[2576] = 83; // 'state 83'
-gotoTable[2577] = 11; // 'state 11'
-gotoTable[2578] = 12; // 'state 12'
-gotoTable[2581] = 13; // 'state 13'
+gotoTable[15] = 288; // 'state 9'
+gotoTable[16] = 320; // 'state 10'
+gotoTable[17] = 352; // 'state 11'
+gotoTable[18] = 384; // 'state 12'
+gotoTable[21] = 416; // 'state 13'
+gotoTable[49] = 704; // 'state 22'
+gotoTable[50] = 736; // 'state 23'
+gotoTable[53] = 768; // 'state 24'
+gotoTable[179] = 896; // 'state 28'
+gotoTable[180] = 928; // 'state 29'
+gotoTable[246] = 1056; // 'state 33'
+gotoTable[240] = 1024; // 'state 32'
+gotoTable[241] = 352; // 'state 11'
+gotoTable[242] = 384; // 'state 12'
+gotoTable[245] = 416; // 'state 13'
+gotoTable[595] = 1216; // 'state 38'
+gotoTable[596] = 1248; // 'state 39'
+gotoTable[662] = 1376; // 'state 43'
+gotoTable[656] = 1344; // 'state 42'
+gotoTable[657] = 352; // 'state 11'
+gotoTable[658] = 384; // 'state 12'
+gotoTable[661] = 416; // 'state 13'
+gotoTable[977] = 704; // 'state 22'
+gotoTable[978] = 384; // 'state 12'
+gotoTable[981] = 416; // 'state 13'
+gotoTable[1297] = 704; // 'state 22'
+gotoTable[1298] = 384; // 'state 12'
+gotoTable[1301] = 416; // 'state 13'
+gotoTable[1524] = 2080; // 'state 65'
+gotoTable[1584] = 2112; // 'state 66'
+gotoTable[1585] = 352; // 'state 11'
+gotoTable[1586] = 384; // 'state 12'
+gotoTable[1589] = 416; // 'state 13'
+gotoTable[1648] = 2176; // 'state 68'
+gotoTable[1649] = 352; // 'state 11'
+gotoTable[1650] = 384; // 'state 12'
+gotoTable[1653] = 416; // 'state 13'
+gotoTable[1812] = 2304; // 'state 72'
+gotoTable[1872] = 2336; // 'state 73'
+gotoTable[1873] = 352; // 'state 11'
+gotoTable[1874] = 384; // 'state 12'
+gotoTable[1877] = 416; // 'state 13'
+gotoTable[1936] = 2400; // 'state 75'
+gotoTable[1937] = 352; // 'state 11'
+gotoTable[1938] = 384; // 'state 12'
+gotoTable[1941] = 416; // 'state 13'
+gotoTable[2032] = 2432; // 'state 76'
+gotoTable[2033] = 352; // 'state 11'
+gotoTable[2034] = 384; // 'state 12'
+gotoTable[2037] = 416; // 'state 13'
+gotoTable[2160] = 2496; // 'state 78'
+gotoTable[2161] = 352; // 'state 11'
+gotoTable[2162] = 384; // 'state 12'
+gotoTable[2165] = 416; // 'state 13'
+gotoTable[2256] = 2528; // 'state 79'
+gotoTable[2257] = 352; // 'state 11'
+gotoTable[2258] = 384; // 'state 12'
+gotoTable[2261] = 416; // 'state 13'
+gotoTable[2384] = 2592; // 'state 81'
+gotoTable[2385] = 352; // 'state 11'
+gotoTable[2386] = 384; // 'state 12'
+gotoTable[2389] = 416; // 'state 13'
+gotoTable[2480] = 2624; // 'state 82'
+gotoTable[2481] = 352; // 'state 11'
+gotoTable[2482] = 384; // 'state 12'
+gotoTable[2485] = 416; // 'state 13'
+gotoTable[2576] = 2656; // 'state 83'
+gotoTable[2577] = 352; // 'state 11'
+gotoTable[2578] = 384; // 'state 12'
+gotoTable[2581] = 416; // 'state 13'
 
 const nextToken = nextTokenInitial;
 
 /**
- * We use the stack to store shifted/reduced states in [sp] and we also use
- * [sp + 1] to store the tree pointer references to shifted/reduced nodes.
- * This allows us to use a single typed array to store two kinds of data.
- * * [sp] always points to the current state on top of the stack and
- * * [sp + 1] always points to the tree item currently on top of the stack
- * ___________________________________
- * |_dummy_|_state_|_tp_|_state_|_tp_|...
+ * Each 32-bit stack entry packs:
+ * - low 16 bits: tree pointer (tp) of the shifted/reduced CST node
+ * - high 16 bits: parser state
  */
-const stack = new Uint16Array(32768);
+const stack = new Uint32Array(16384);
 
 /**
  * This typed array contains the syntax tree from a parse.
- * A node is stored in the following layout:
- * struct Node {
- *  name: uint16,
- *  start: uint16,
- *  end: uint16,
- *  numChildren: uint16,
- *  firstChild: uint16,
- *  nextSibling: uint16,
- * }
- * This enables efficient storage of nodes with variable number of children and
- * fast DFS traversal.
+ * Each CST node occupies 3 uint32 words:
+ * - word 0 (tp + 0): name | (numChildren << 16)
+ * - word 1 (tp + 1): start | (end << 16) (leaf) or firstChild (internal)
+ * - word 2 (tp + 2): nextSibling
+ * This enables 32-bit coalesced stores and fast DFS traversal.
  */
-const tree = new Uint16Array(32768);
+const tree = new Uint32Array(16384);
 
 const proxyHandler = {
   get(target, prop, receiver) {
-    const { stream, tree, pointer } = target;
-    const nChildren = tree[pointer + 3];
+    const { stream, pointer } = target;
+    const word0 = tree[pointer];
+    const nChildren = word0 >>> 16;
 
     switch (prop) {
       case "name":
-        return parserSymbols[tree[pointer]];
+        return parserSymbols[word0 & 0xffff];
       case "start":
-        return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
+        return nChildren > 0
+          ? receiver.items[0].start
+          : tree[pointer + 1] & 0xffff;
       case "end":
         return nChildren > 0
           ? receiver.items[nChildren - 1].end
-          : tree[pointer + 2];
+          : tree[pointer + 1] >>> 16;
       case "value":
         return stream.subarray(receiver.start, receiver.end);
       case "items": {
@@ -607,13 +600,13 @@ const proxyHandler = {
           return undefined;
         }
 
-        const firstChild = tree[pointer + 4];
-        const children = [createProxy(stream, tree, firstChild)];
-        let nextChild = tree[firstChild + 5];
+        const firstChild = tree[pointer + 1];
+        const children = [createProxy(stream, firstChild)];
+        let nextChild = tree[firstChild + 2];
 
         for (let i = 1; i < nChildren; i++) {
-          children.push(createProxy(stream, tree, nextChild));
-          nextChild = tree[nextChild + 5];
+          children.push(createProxy(stream, nextChild));
+          nextChild = tree[nextChild + 2];
         }
 
         return children;
@@ -637,8 +630,8 @@ const proxyHandler = {
   },
 };
 
-const createProxy = (stream, tree, pointer) =>
-  new Proxy({ stream, tree, pointer }, proxyHandler);
+const createProxy = (stream, pointer) =>
+  new Proxy({ stream, pointer }, proxyHandler);
 
 /**
  * @typedef {Object} Node
@@ -661,18 +654,17 @@ function parse(input) {
   let lookaheadStart = result.start;
   let lookaheadEnd = result.end;
 
-  // add a dummy entry to ensure no out-of-bounds reads for [sp - 1]
-  stack[0] = 0;
-  stack[1] = 0; // starting state
-  let sp = 1;
-  // let the tree stack start from offset 6
+  stack[0] = 0; // starting state
+  let sp = 0;
+  // let the tree stack start from offset 3
   // offset 0 means an error occurred and should be used by the parser
-  let tp = 6;
+  let tp = 3;
 
   while (true) {
-    const currentState = stack[sp];
+    const top = stack[sp];
+    const currentState = top >>> 16;
 
-    const actionLookup = actionsTable[currentState * 32 + lookahead];
+    const actionLookup = actionsTable[currentState + lookahead];
     if (actionLookup === 0xffff) {
       const context = input.toString().substr(lookaheadStart, 10);
       throw new Error(
@@ -682,19 +674,14 @@ function parse(input) {
 
     switch (actionLookup & 3) {
       case 2: // done
-        return createProxy(stream, tree, tp - 6);
+        return createProxy(stream, tp - 3);
       case 0: // shift
-        tree[tp] = lookahead; // name
-        tree[tp + 1] = lookaheadStart;
-        tree[tp + 2] = lookaheadEnd;
-        tree[tp + 3] = 0; // leaf nodes have no children
-        tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
+        tree[tp] = lookahead; // name (and nChildren = 0)
+        tree[tp + 1] = lookaheadStart | (lookaheadEnd << 16);
+        tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
 
-        // shift current address on top of "address stack"
-        stack[sp + 1] = tp;
-
-        sp += 2;
-        stack[sp] = actionLookup >> 2;
+        sp += 1;
+        stack[sp] = tp | ((actionLookup >> 2) << 16);
 
         result = nextToken(stream, lookaheadEnd);
         lookahead = result.state;
@@ -706,26 +693,23 @@ function parse(input) {
         const actionSymbol = (actionLookup >> 2) & 0xff;
         const stackItemsToReduce = actionLookup >> 10;
 
-        // multiply by two because our stack contains adresses and states interleaved
-        sp -= stackItemsToReduce * 2;
+        sp -= stackItemsToReduce;
+        tree[tp] = actionSymbol | (stackItemsToReduce << 16); // name and number of children
 
-        tree[tp] = actionSymbol; // name
-        tree[tp + 3] = stackItemsToReduce; // number of children
-        tree[tp + 4] = stack[sp + 1]; // first child
-        tree[stack[sp - 1] + 5] = tp; // next sibling
+        const rtop = stack[sp];
+        const nextState = gotoTable[(rtop >>> 16) + actionSymbol];
+        tree[(rtop & 0xffff) + 2] = tp; // next sibling
 
-        stack[sp + 1] = tp;
-
-        const nextState = gotoTable[stack[sp] * 32 + actionSymbol];
-        sp += 2;
-        stack[sp] = nextState;
+        sp += 1;
+        tree[tp + 1] = stack[sp] & 0xffff; // first child
+        stack[sp] = tp | (nextState << 16);
 
         break;
       default:
         throw new Error("Parser Error");
     }
 
-    tp += 6;
+    tp += 3;
   }
 }
 
