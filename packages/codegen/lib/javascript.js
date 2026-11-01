@@ -224,7 +224,6 @@ export class JavaScriptBaseCodegen {
       start,
     } = data;
 
-    let actionIndex = 0;
     let actionsTableIndex = 0;
 
     const debug = this._debug.bind(this);
@@ -242,43 +241,6 @@ export class JavaScriptBaseCodegen {
         .map((rule) => `${rule.name} := ${rule.symbols.join(" ")};`)
         .join("\n")}
       */
-
-      const reducerStates = new Uint8Array(${
-        states.length * parserSymbols.length * parserSymbols.length
-      });
-      ${states
-        .reduce((table, state, stateIndex) => {
-          const items = Array.from(state.values());
-
-          parserSymbols.forEach((symbol, symbolIndex) => {
-            const matchedItems = items.filter(
-              (item) =>
-                item.name === symbol && item.marker === item.tokens.length
-            );
-
-            parserSymbols.forEach((lookahead, lookaheadIndex) => {
-              const item = matchedItems.find(
-                (item) => item.lookahead === lookahead
-              );
-
-              if (!item) {
-                return;
-              }
-
-              table.push(
-                `reducerStates[${
-                  lookaheadIndex * states.length * parserSymbols.length +
-                  stateIndex * parserSymbols.length +
-                  symbolIndex
-                }] = ${
-                  item.tokens.length
-                }; // 'state ${stateIndex}' -> ${symbol} -> ${lookahead}`
-              );
-            });
-          });
-          return table;
-        }, /** @type {string[]} */ ([]))
-        .join("\n")}
 
       ${
         requiresSemanticActions
@@ -343,43 +305,37 @@ export class JavaScriptBaseCodegen {
           .join("\n")}
       ];
 
-      const actions = [
-        ${Array.from(actions.entries())
-          .flatMap(([, action]) => {
-            return Array.from(action.entries()).map(([, to]) => {
-              return `// 'action ${actionIndex++}'
-              {
-                op: ${actionOps.indexOf(to.op)}, // ${to.op}
-                state: ${
-                  to.state
-                    ? `${states.indexOf(to.state)}, // 'state ${states.indexOf(
-                        to.state
-                      )}'`
-                    : "undefined,"
-                }
-                symbol: ${
-                  to.symbol
-                    ? `${parserSymbols.indexOf(to.symbol)}, // ${to.symbol}`
-                    : "undefined,"
-                }
-              }`;
-            });
-          })
-          .join(",\n")}
-      ];
       const actionsTable = new Uint16Array(${
         states.length * parserSymbols.length
       }).fill(0xffff);
       ${Array.from(actions.entries())
         .flatMap(([from, action]) => {
+          const stateIndex = states.indexOf(from);
+          const items = Array.from(from.values());
           return Array.from(action.entries()).map(([symbol, to]) => {
-            const action = actionsTableIndex++;
+            const lookaheadIndex = parserSymbols.indexOf(symbol);
+            const opIndex = actionOps.indexOf(to.op);
+            let target = 0;
+            let reduceLen = 0;
+            if (to.op === "shift" && to.state) {
+              target = states.indexOf(to.state);
+            } else if (to.op === "reduce" && to.symbol) {
+              target = parserSymbols.indexOf(to.symbol);
+              const matchedItem = items.find(
+                (item) =>
+                  item.name === to.symbol &&
+                  item.marker === item.tokens.length &&
+                  item.lookahead === symbol
+              );
+              reduceLen = matchedItem ? matchedItem.tokens.length : 0;
+            }
+            const packedAction = (reduceLen << 10) | (target << 2) | opIndex;
+            const actionIdx = actionsTableIndex++;
             return `actionsTable[${
-              states.indexOf(from) * parserSymbols.length +
-              parserSymbols.indexOf(symbol)
-            }] = ${action}; // 'state ${states.indexOf(
-              from
-            )}' -> ${symbol} -> ${to.op} -> 'action ${action}'`;
+              stateIndex * parserSymbols.length + lookaheadIndex
+            }] = ${packedAction}; // 'state ${stateIndex}' -> ${symbol} -> ${
+              to.op
+            } (target=${target}, len=${reduceLen}) -> 'action ${actionIdx}'`;
           });
         })
         .join("\n")}
@@ -562,9 +518,8 @@ export class JavaScriptBaseCodegen {
             const context = input.toString().substr(result.start, 10);
             throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
           }
-          const action = actions[actionLookup];
 
-          switch (action.op) {
+          switch (actionLookup & 3) {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
               lexer.pop(true);
@@ -597,7 +552,7 @@ export class JavaScriptBaseCodegen {
               stack[sp + 1] = tp;
 
               sp += 2;
-              stack[sp] = action.state;
+              stack[sp] = actionLookup >> 2;
 
               result = nextToken(stream, result.end);
               lookahead = result.state;
@@ -619,16 +574,13 @@ export class JavaScriptBaseCodegen {
               )}
               break;
             case ${actionOps.indexOf("reduce")}: // reduce
-              let stackItemsToReduce = reducerStates[lookahead * ${
-                states.length
-              } * ${parserSymbols.length} +
-                currentState * ${parserSymbols.length} +
-                action.symbol];
+              const actionSymbol = (actionLookup >> 2) & 0xff;
+              const stackItemsToReduce = actionLookup >> 10;
 
               ${debug(
                 () =>
-                  `console.log('action: reduce', action.symbol,
-                    parserSymbols[action.symbol],
+                  `console.log('action: reduce', actionSymbol,
+                    parserSymbols[actionSymbol],
                     Array.from({ length: stackItemsToReduce })
                       .map((_, i) => parserSymbols[tree[stack[sp - i * 2 - 1]]])
                       .reverse()
@@ -645,14 +597,14 @@ export class JavaScriptBaseCodegen {
               )}
               ${
                 requiresSemanticActions
-                  ? "semanticReducerActions[currentState]?.[action.symbol][lookahead](stack, sp);"
+                  ? "semanticReducerActions[currentState]?.[actionSymbol][lookahead](stack, sp);"
                   : ""
               }
 
               // multiply by two because our stack contains adresses and states interleaved
               sp -= stackItemsToReduce * 2;
 
-              tree[tp] = action.symbol; // name
+              tree[tp] = actionSymbol; // name
               tree[tp + 1] = -1;        // start
               tree[tp + 2] = -1;        // end
               tree[tp + 3] = stackItemsToReduce; // number of children
@@ -663,7 +615,7 @@ export class JavaScriptBaseCodegen {
 
               const nextState = gotoTable[stack[sp] * ${
                 parserSymbols.length
-              } + action.symbol];
+              } + actionSymbol];
               sp += 2;
               stack[sp] = nextState;
 
