@@ -179,4 +179,56 @@ describe("DFA", () => {
       expect(compiled(Buffer.from("abcffghmnijmn"))).toBe(true);
     });
   });
+
+  describe("toString", () => {
+    it("should render a formatted transition table with state colors and escaped symbols", () => {
+      const dfa = new DFA({
+        states: ["S0", "S1", "S2"],
+        symbols: ["a", "\n", "\x01"],
+        transitions: new Map([
+          [
+            "S0",
+            new Map([
+              ["a", "S1"],
+              ["\n", "S2"],
+              ["\x01", "S2"],
+            ]),
+          ],
+          [
+            "S1",
+            new Map([
+              ["a", "S1"],
+              ["\n", "S1"],
+              ["\x01", "S2"],
+            ]),
+          ],
+          [
+            "S2",
+            new Map([
+              ["a", "S2"],
+              ["\n", "S2"],
+              ["\x01", "S2"],
+            ]),
+          ],
+        ]),
+        start: "S0",
+        finals: ["S1"],
+      });
+
+      const output = dfa.toString();
+      const plain = output.replace(/\x1b\[\d+m/g, "");
+
+      expect(plain).toContain("States (3): S0, S1, S2");
+      expect(plain).toContain("Symbols (3): a, \\n, \\x01");
+      expect(plain).toContain("starting state, accepting state, error state");
+      expect(output).toContain("\x1b[34mS0\x1b[0m");
+      expect(output).toContain("\x1b[32mS1\x1b[0m");
+      expect(output).toContain("\x1b[31mS2\x1b[0m");
+
+      const mapped = dfa.toString((s) => `State_${s}`);
+      expect(mapped.replace(/\x1b\[\d+m/g, "")).toContain(
+        "States (3): State_S0, State_S1, State_S2"
+      );
+    });
+  });
 });

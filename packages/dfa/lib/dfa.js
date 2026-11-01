@@ -212,4 +212,212 @@ export class DFA {
 
     return step(input, this.description.start);
   }
+
+  /**
+   * @param {(state: STATE) => string} [stateMapper]
+   * @returns {string}
+   */
+  toString(stateMapper = (s) => String(s)) {
+    const d = this.description;
+
+    const errorState = (Array.from(d.transitions.entries()).find(
+      ([from, transitions]) =>
+        transitions.size > 0 &&
+        Array.from(transitions.values()).every((to) => to === from) &&
+        !d.finals.includes(from)
+    ) ?? [])[0];
+
+    /**
+     * @param {string} state
+     * @returns {string}
+     */
+    function stateColor(state) {
+      if (state === stateMapper(d.start)) {
+        return blue(state);
+      }
+      if (errorState !== undefined && state === stateMapper(errorState)) {
+        return red(state);
+      }
+      if (d.finals.some((f) => stateMapper(f) === state)) {
+        return green(state);
+      }
+      return state;
+    }
+
+    /**
+     * @param {string} symbol
+     * @returns {string}
+     */
+    function renderSymbol(symbol) {
+      /** @type {Record<string, string>} */
+      const escaped = {
+        "\b": "\\b",
+        "\f": "\\f",
+        "\n": "\\n",
+        "\r": "\\r",
+        "\t": "\\t",
+        "\v": "\\v",
+        "\0": "\\0",
+      };
+
+      return (
+        escaped[symbol] ||
+        (symbol.charCodeAt(0) < 32 || symbol.charCodeAt(0) > 127
+          ? `\\x${symbol.charCodeAt(0).toString(16).padStart(2, "0")}`
+          : symbol)
+      );
+    }
+
+    const table = Object.fromEntries(
+      Array.from(d.transitions.entries()).map(([state, transitions]) => {
+        return [
+          stateColor(stateMapper(state)),
+          Object.fromEntries(
+            Array.from(transitions.entries()).map(([symbol, state]) => {
+              return [
+                renderSymbol(String(symbol)),
+                stateColor(stateMapper(state)),
+              ];
+            })
+          ),
+        ];
+      })
+    );
+
+    return [
+      `States (${d.states.length}): ${d.states
+        .map((s) => stateColor(stateMapper(s)))
+        .join(", ")}`,
+      `Symbols (${d.symbols.length}): ${d.symbols
+        .map((s) => renderSymbol(String(s)))
+        .join(", ")}`,
+      `${blue("starting state")}, ${green("accepting state")}, ${red(
+        "error state"
+      )}`,
+      renderTable(table),
+    ].join("\n");
+  }
+}
+
+/**
+ * @param {Record<string, Record<string, string>>} data
+ * @returns {string}
+ */
+function renderTable(data) {
+  /** @type {string[]} */
+  const headers = [];
+  /** @type {Record<string, string[]>} */
+  const entries = {};
+  /** @type {number[]} */
+  const widths = [];
+  /** @type {number} */
+  let maxLabelWidth = 0;
+
+  for (const row of Object.values(data)) {
+    for (const key of Object.keys(row)) {
+      if (!headers.includes(key)) {
+        headers.push(key);
+      }
+    }
+  }
+  headers.sort();
+
+  for (const [label, row] of Object.entries(data)) {
+    entries[label] = new Array(headers.length).fill("");
+    maxLabelWidth = Math.max(maxLabelWidth, stripAnsi(label).length);
+
+    for (const [key, value] of Object.entries(row)) {
+      const colIdx = headers.indexOf(key);
+      entries[label][colIdx] = value;
+      widths[colIdx] = Math.max(
+        widths[colIdx] ?? 0,
+        stripAnsi(key).length,
+        stripAnsi(value).length
+      );
+    }
+  }
+
+  for (let i = 0; i < headers.length; i++) {
+    widths[i] = Math.max(widths[i] ?? 0, stripAnsi(headers[i]).length);
+  }
+
+  /**
+   * @param {string} label
+   * @param {string[]} row
+   * @returns {string[]}
+   */
+  function renderRow(label, row) {
+    const lw = label.length;
+    const mlw = maxLabelWidth + 2 + lw - stripAnsi(label).length;
+
+    const tmp = [label.padStart(lw + Math.floor((mlw - lw) / 2)).padEnd(mlw)];
+
+    for (let i = 0; i < row.length; i++) {
+      const cell = row[i] ?? "";
+      const rw = cell.length;
+      const mrw = widths[i] + 2 + rw - stripAnsi(cell).length;
+
+      tmp.push(cell.padStart(rw + Math.floor((mrw - rw) / 2)).padEnd(mrw));
+    }
+
+    return tmp;
+  }
+
+  const header = renderRow("", headers);
+  const headerWidth = header.reduce((w, e) => w + stripAnsi(e).length, 0);
+
+  /** @type {string[]} */
+  const out = [
+    dim("-".repeat(headerWidth + header.length - 1)),
+    header.join(dim("|")),
+    dim("-".repeat(headerWidth + header.length - 1)),
+  ];
+
+  for (const [label, row] of Object.entries(entries)) {
+    out.push(renderRow(label, row).join(dim("|")));
+  }
+
+  out.push(dim("-".repeat(headerWidth + header.length - 1)));
+
+  return out.join("\n");
+}
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+function stripAnsi(str) {
+  return str.replace(/\x1b\[\d+m/g, "");
+}
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+function dim(str) {
+  return `\x1b[2m${str}\x1b[0m`;
+}
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+function red(str) {
+  return `\x1b[31m${str}\x1b[0m`;
+}
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+function green(str) {
+  return `\x1b[32m${str}\x1b[0m`;
+}
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+function blue(str) {
+  return `\x1b[34m${str}\x1b[0m`;
 }
