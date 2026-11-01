@@ -87,15 +87,19 @@ export class JavaScriptBaseCodegen {
       ? "Uint16Array"
       : "Uint32Array";
 
+    const tokenIdSize = tokenIds.every((id) => id === undefined || id <= 0xff)
+      ? "Uint8Array"
+      : "Uint16Array";
+
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
 
       const EOF = "${EOF}";
       const ERROR = "${ERROR}";
 
-      const tokenIds = [
-        ${tokenIds.map((id, i) => `${id}, // ${tokenNames[i]}`).join("\n")}
-      ];
+      const tokenIds = new ${tokenIdSize}([
+        ${tokenIds.map((id, i) => `${id ?? 0}, // ${tokenNames[i]}`).join("\n")}
+      ]);
 
       const table = new ${pointerSize}(${columns * tokenIds.length});
       table.fill(${errorState ?? -1});
@@ -145,7 +149,7 @@ export class JavaScriptBaseCodegen {
         }
 
         if (successState !== ${errorState}) {
-          lexeme.state = tokenIds[(successState / ${columns})];
+          lexeme.state = tokenIds[successState >> 8];
           lexeme.start = offset;
           lexeme.end = successPos;
           return lexeme;
