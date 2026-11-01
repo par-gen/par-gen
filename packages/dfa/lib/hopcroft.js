@@ -1,6 +1,8 @@
 import debug from "debug";
 import { performance } from "perf_hooks";
 
+import { transitionEquivClasses } from "./powerset.js";
+
 const log = debug("par-gen:dfa");
 const ZERO = BigInt(0);
 const ONE = BigInt(1);
@@ -50,73 +52,208 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
       stateBits[i] = ONE << BigInt(i);
     }
 
-    /** @type {Map<SYMBOL, number>} */
-    const symbolIdMap = new Map();
-    for (let i = 0; i < numSymbols; i++) {
-      symbolIdMap.set(symbols[i], i);
-    }
+    /** @type {number[][]} */
+    const partitionIds = new Array(initial.length);
+    /** @type {bigint[]} */
+    const partitionMasks = new Array(initial.length);
+    /** @type {number[][]} */
+    const queue = new Array(initial.length);
+    /** @type {bigint[]} */
+    const queueMasks = new Array(initial.length);
 
-    /**
-     * @param {STATE[]} arr
-     * @returns {bigint}
-     */
-    const computeMask = (arr) => {
+    for (let p = 0; p < initial.length; p++) {
+      const arr = initial[p];
+      /** @type {number[]} */
+      const ids = [];
       let mask = ZERO;
       for (let i = 0; i < arr.length; i++) {
         const id = stateIdMap.get(arr[i]);
         if (id !== undefined) {
+          ids.push(id);
           mask |= stateBits[id];
         }
       }
-      return mask;
-    };
+      partitionIds[p] = ids;
+      partitionMasks[p] = mask;
+      queue[p] = ids.slice();
+      queueMasks[p] = mask;
+    }
 
-    const partitions = initial.map((array) => [...array]);
-    const partitionMasks = partitions.map(computeMask);
+    const knownEquiv = transitionEquivClasses.get(transitions);
+    /** @type {Int32Array} */
+    let inTrans;
+    /** @type {number} */
+    let inNumClasses;
+    let allComplete = transitions.size === numStates;
 
-    const queue = initial.map((array) => [...array]);
-    const queueMasks = [...partitionMasks];
+    if (knownEquiv && knownEquiv.symClass.length === numSymbols) {
+      const inClassRep = knownEquiv.classRep;
+      inNumClasses = inClassRep.length;
+      /** @type {SYMBOL[]} */
+      const repSymbols = new Array(inNumClasses);
+      for (let c = 0; c < inNumClasses; c++) {
+        repSymbols[c] = symbols[inClassRep[c]];
+      }
+      inTrans = new Int32Array(numStates * inNumClasses).fill(-1);
+      for (const [from, transition] of transitions.entries()) {
+        const fromId = stateIdMap.get(from);
+        if (fromId === undefined) {
+          continue;
+        }
+        if (transition.size !== numSymbols) {
+          allComplete = false;
+        }
+        const rowOffset = fromId * inNumClasses;
+        /** @type {STATE | undefined} */
+        let prevTarget = undefined;
+        /** @type {number | undefined} */
+        let prevTIdx = -1;
+        for (let c = 0; c < inNumClasses; c++) {
+          const target = transition.get(repSymbols[c]);
+          if (target !== undefined) {
+            const tIdx =
+              target === prevTarget
+                ? prevTIdx
+                : ((prevTarget = target),
+                  (prevTIdx = stateIdMap.get(target)));
+            if (tIdx !== undefined) {
+              inTrans[rowOffset + c] = tIdx;
+            }
+          }
+        }
+      }
+    } else {
+      /** @type {Map<SYMBOL, number>} */
+      const symbolIdMap = new Map();
+      for (let i = 0; i < numSymbols; i++) {
+        symbolIdMap.set(symbols[i], i);
+      }
+      inNumClasses = numSymbols;
+      inTrans = new Int32Array(numStates * numSymbols).fill(-1);
+      for (const [from, transition] of transitions.entries()) {
+        const fromId = stateIdMap.get(from);
+        if (fromId === undefined) {
+          continue;
+        }
+        if (transition.size !== numSymbols) {
+          allComplete = false;
+        }
+        const rowOffset = fromId * numSymbols;
+        let expectedSIdx = 0;
+        /** @type {STATE | undefined} */
+        let prevTarget = undefined;
+        /** @type {number | undefined} */
+        let prevTIdx = -1;
+        for (const [symbol, target] of transition.entries()) {
+          let sIdx;
+          if (symbol === symbols[expectedSIdx]) {
+            sIdx = expectedSIdx;
+            expectedSIdx++;
+          } else {
+            allComplete = false;
+            sIdx = symbolIdMap.get(symbol);
+            expectedSIdx = (sIdx ?? -1) + 1;
+          }
+          const tIdx =
+            target === prevTarget
+              ? prevTIdx
+              : ((prevTarget = target), (prevTIdx = stateIdMap.get(target)));
+          if (sIdx !== undefined && tIdx !== undefined) {
+            inTrans[rowOffset + sIdx] = tIdx;
+          }
+        }
+      }
+    }
+
+    const colToClass = new Int32Array(inNumClasses);
+    /** @type {number[]} */
+    const classCol = [];
+    let numClasses = 0;
+    let lastMatchedC = 0;
+
+    for (let col = 0; col < inNumClasses; col++) {
+      let matchedC = -1;
+      if (numClasses > 0) {
+        const repCol = classCol[lastMatchedC];
+        let eq = true;
+        for (let q = 0; q < numStates; q++) {
+          const rowOffset = q * inNumClasses;
+          if (inTrans[rowOffset + col] !== inTrans[rowOffset + repCol]) {
+            eq = false;
+            break;
+          }
+        }
+        if (eq) {
+          matchedC = lastMatchedC;
+        } else {
+          for (let c = 0; c < numClasses; c++) {
+            if (c === lastMatchedC) {
+              continue;
+            }
+            const rCol = classCol[c];
+            let same = true;
+            for (let q = 0; q < numStates; q++) {
+              const rowOffset = q * inNumClasses;
+              if (inTrans[rowOffset + col] !== inTrans[rowOffset + rCol]) {
+                same = false;
+                break;
+              }
+            }
+            if (same) {
+              matchedC = c;
+              break;
+            }
+          }
+        }
+      }
+      if (matchedC === -1) {
+        matchedC = numClasses++;
+        classCol.push(col);
+      }
+      colToClass[col] = matchedC;
+      lastMatchedC = matchedC;
+    }
+
+    /** @type {Int32Array} */
+    let symClass;
+    if (knownEquiv && knownEquiv.symClass.length === numSymbols) {
+      const inSymClass = knownEquiv.symClass;
+      symClass = new Int32Array(numSymbols);
+      for (let sIdx = 0; sIdx < numSymbols; sIdx++) {
+        symClass[sIdx] = colToClass[inSymClass[sIdx]];
+      }
+    } else {
+      symClass = colToClass;
+    }
 
     /** @type {bigint[]} */
-    const predMask = new Array(numSymbols * numStates).fill(ZERO);
-    for (const [from, transition] of transitions.entries()) {
-      const fromId = stateIdMap.get(from);
-      if (fromId === undefined) {
-        continue;
-      }
+    const predMask = new Array(numClasses * numStates).fill(ZERO);
+    for (let fromId = 0; fromId < numStates; fromId++) {
+      const rowOffset = fromId * inNumClasses;
       const fromBit = stateBits[fromId];
-      for (const [symbol, target] of transition.entries()) {
-        const sIdx = symbolIdMap.get(symbol);
-        const tIdx = stateIdMap.get(target);
-        if (sIdx !== undefined && tIdx !== undefined) {
-          predMask[sIdx * numStates + tIdx] |= fromBit;
+      for (let c = 0; c < numClasses; c++) {
+        const tIdx = inTrans[rowOffset + classCol[c]];
+        if (tIdx !== -1) {
+          predMask[c * numStates + tIdx] |= fromBit;
         }
       }
     }
 
     while (queue.length > 0) {
-      const partitionSet = queue.shift();
+      const pIndices = queue.shift();
       queueMasks.shift();
-      if (!partitionSet) {
+      if (!pIndices) {
         throw new Error("Invalid state");
       }
 
-      /** @type {number[]} */
-      const pIndices = [];
-      for (let i = 0; i < partitionSet.length; i++) {
-        const id = stateIdMap.get(partitionSet[i]);
-        if (id !== undefined) {
-          pIndices.push(id);
-        }
-      }
       const pLen = pIndices.length;
 
       /** @type {Set<bigint>} */
       const seenXMasks = new Set();
 
-      for (let sIdx = 0; sIdx < numSymbols; sIdx++) {
+      for (let c = 0; c < numClasses; c++) {
         let xMask = ZERO;
-        const base = sIdx * numStates;
+        const base = c * numStates;
         for (let i = 0; i < pLen; i++) {
           xMask |= predMask[base + pIndices[i]];
         }
@@ -126,7 +263,7 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
         }
         seenXMasks.add(xMask);
 
-        for (let pIdx = 0; pIdx < partitions.length; pIdx++) {
+        for (let pIdx = 0; pIdx < partitionIds.length; pIdx++) {
           const yMask = partitionMasks[pIdx];
           const yuxMask = yMask & xMask;
           const yoxMask = yMask & ~xMask;
@@ -135,22 +272,21 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
             continue;
           }
 
-          const Y = partitions[pIdx];
-          /** @type {STATE[]} */
+          const Y = partitionIds[pIdx];
+          /** @type {number[]} */
           const yux = [];
-          /** @type {STATE[]} */
+          /** @type {number[]} */
           const yox = [];
           for (let j = 0; j < Y.length; j++) {
-            const y = Y[j];
-            const yId = /** @type {number} */ (stateIdMap.get(y));
+            const yId = Y[j];
             if ((stateBits[yId] & xMask) !== ZERO) {
-              yux.push(y);
+              yux.push(yId);
             } else {
-              yox.push(y);
+              yox.push(yId);
             }
           }
 
-          partitions.splice(pIdx, 1, yux, yox);
+          partitionIds.splice(pIdx, 1, yux, yox);
           partitionMasks.splice(pIdx, 1, yuxMask, yoxMask);
           pIdx++;
 
@@ -170,24 +306,33 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
       }
     }
 
-    /** @type {Map<STATE, number>} */
-    const stateToPartitionIndex = new Map();
-    for (let i = 0; i < partitions.length; i++) {
-      const partition = partitions[i];
-      for (let j = 0; j < partition.length; j++) {
-        stateToPartitionIndex.set(partition[j], i);
+    /** @type {STATE[][]} */
+    const partitions = new Array(partitionIds.length);
+    const stateIdToPartitionIndex = new Int32Array(numStates).fill(-1);
+    let assignedStates = 0;
+    for (let i = 0; i < partitionIds.length; i++) {
+      const ids = partitionIds[i];
+      /** @type {STATE[]} */
+      const part = new Array(ids.length);
+      for (let j = 0; j < ids.length; j++) {
+        const id = ids[j];
+        part[j] = states[id];
+        if (stateIdToPartitionIndex[id] === -1) {
+          assignedStates++;
+        }
+        stateIdToPartitionIndex[id] = i;
       }
+      partitions[i] = part;
+    }
+    if (assignedStates !== numStates) {
+      allComplete = false;
     }
 
-    /**
-     * @param {STATE} state
-     * @return {number}
-     */
-    const newStateIndex = (state) => stateToPartitionIndex.get(state) ?? -1;
+    const startFromId = stateIdMap.get(dfa.description.start);
+    const startPartitionIdx =
+      startFromId !== undefined ? stateIdToPartitionIndex[startFromId] : -1;
 
-    const start = stateMapper(newStateIndex(dfa.description.start), [
-      dfa.description.start,
-    ]);
+    const start = stateMapper(startPartitionIdx, [dfa.description.start]);
 
     /** @type {(NEW_STATE | undefined)[]} */
     const mappedPartitionStates = new Array(partitions.length);
@@ -206,24 +351,58 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
 
     /** @type {DFADescription<NEW_STATE, SYMBOL>['transitions']} */
     const minimalTransitions = new Map();
-    for (let index = 0; index < partitions.length; index++) {
-      const partition = partitions[index];
-      const mappedFrom = getMappedPartitionState(index);
-      /** @type {Map<SYMBOL, NEW_STATE>} */
-      const row = new Map();
-      for (let j = 0; j < partition.length; j++) {
-        const stateTransitions = transitions.get(partition[j]);
-        if (stateTransitions) {
-          for (const [symbol, oldState] of stateTransitions.entries()) {
-            const targetIdx = stateToPartitionIndex.get(oldState);
-            if (targetIdx === undefined) {
+    if (allComplete) {
+      /** @type {NEW_STATE[]} */
+      const classTarget = new Array(numClasses);
+      for (let index = 0; index < partitions.length; index++) {
+        const ids = partitionIds[index];
+        const mappedFrom = getMappedPartitionState(index);
+        /** @type {Map<SYMBOL, NEW_STATE>} */
+        const row = new Map();
+        if (ids.length > 0) {
+          const rowOffset = ids[0] * inNumClasses;
+          for (let c = 0; c < numClasses; c++) {
+            const tIdx = inTrans[rowOffset + classCol[c]];
+            const targetIdx = stateIdToPartitionIndex[tIdx];
+            if (targetIdx === -1) {
               throw new Error("Illegal state");
             }
-            row.set(symbol, getMappedPartitionState(targetIdx));
+            classTarget[c] = getMappedPartitionState(targetIdx);
+          }
+          for (let sIdx = 0; sIdx < numSymbols; sIdx++) {
+            row.set(symbols[sIdx], classTarget[symClass[sIdx]]);
           }
         }
+        minimalTransitions.set(mappedFrom, row);
       }
-      minimalTransitions.set(mappedFrom, row);
+    } else {
+      /** @type {Map<STATE, number>} */
+      const stateToPartitionIndex = new Map();
+      for (let i = 0; i < partitions.length; i++) {
+        const partition = partitions[i];
+        for (let j = 0; j < partition.length; j++) {
+          stateToPartitionIndex.set(partition[j], i);
+        }
+      }
+      for (let index = 0; index < partitions.length; index++) {
+        const partition = partitions[index];
+        const mappedFrom = getMappedPartitionState(index);
+        /** @type {Map<SYMBOL, NEW_STATE>} */
+        const row = new Map();
+        for (let j = 0; j < partition.length; j++) {
+          const stateTransitions = transitions.get(partition[j]);
+          if (stateTransitions) {
+            for (const [symbol, oldState] of stateTransitions.entries()) {
+              const targetIdx = stateToPartitionIndex.get(oldState);
+              if (targetIdx === undefined) {
+                throw new Error("Illegal state");
+              }
+              row.set(symbol, getMappedPartitionState(targetIdx));
+            }
+          }
+        }
+        minimalTransitions.set(mappedFrom, row);
+      }
     }
 
     /** @type {DFADescription<NEW_STATE, SYMBOL>} */
