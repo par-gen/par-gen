@@ -56,7 +56,7 @@ export class JavaScriptCommonJsCodegen extends JavaScriptBaseCodegen {
 
   _parserExports() {
     return `
-      module.exports = { parse };
+      module.exports = { parse, CstNode, TreeCursor };
     `;
   }
 }

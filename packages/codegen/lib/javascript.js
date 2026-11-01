@@ -800,6 +800,130 @@ export class JavaScriptBaseCodegen {
         return next;
       }
 
+      class TreeCursor {
+        #stream;
+        #tree;
+        #rootPointer;
+        #pointer;
+        #parentStack = new Uint32Array(256);
+        #depth = 0;
+
+        constructor(stream, tree, pointer) {
+          this.#stream = stream;
+          this.#tree = tree;
+          this.#rootPointer = pointer;
+          this.#pointer = pointer;
+        }
+
+        get name() {
+          return parserSymbols[this.#tree[this.#pointer] & 0xff];
+        }
+
+        get symbolId() {
+          return this.#tree[this.#pointer] & 0xff;
+        }
+
+        get childCount() {
+          return this.#tree[this.#pointer] >>> 8;
+        }
+
+        get isLeaf() {
+          return (this.#tree[this.#pointer] >>> 8) === 0;
+        }
+
+        get start() {
+          const t = this.#tree;
+          let p = this.#pointer;
+          while ((t[p] >>> 8) > 0) {
+            p = t[p + 1] & 0xfffff;
+          }
+          const span = t[p + 1];
+          const end = span & 0x3fffff;
+          let q = p - 3;
+          while (q >= 3 && (t[q] >>> 8) > 0) {
+            q -= 3;
+          }
+          const prevEnd = q >= 3 ? t[q + 1] & 0x3fffff : 0;
+          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
+        }
+
+        get end() {
+          const t = this.#tree;
+          let p = this.#pointer;
+          let n = t[p] >>> 8;
+          while (n > 0) {
+            p = t[p + 1] & 0xfffff;
+            for (let i = 1; i < n; i++) {
+              p = t[p + 2];
+            }
+            n = t[p] >>> 8;
+          }
+          return t[p + 1] & 0x3fffff;
+        }
+
+        get value() {
+          return this.#stream.subarray(this.start, this.end);
+        }
+
+        get pointer() {
+          return this.#pointer;
+        }
+
+        get depth() {
+          return this.#depth;
+        }
+
+        reset() {
+          this.#pointer = this.#rootPointer;
+          this.#depth = 0;
+          return true;
+        }
+
+        gotoFirstChild() {
+          const t = this.#tree;
+          const p = this.#pointer;
+          const n = t[p] >>> 8;
+          if (n === 0) {
+            return false;
+          }
+          const d = this.#depth + 1;
+          let stack = this.#parentStack;
+          if (d >= stack.length) {
+            stack = this.#parentStack = growBuffer(stack, d);
+          }
+          stack[d] = p | ((n - 1) << 20);
+          this.#depth = d;
+          this.#pointer = t[p + 1] & 0xfffff;
+          return true;
+        }
+
+        gotoNextSibling() {
+          const d = this.#depth;
+          const stack = this.#parentStack;
+          const entry = stack[d];
+          if (entry < 0x100000) {
+            return false;
+          }
+          stack[d] = entry - 0x100000;
+          this.#pointer = this.#tree[this.#pointer + 2];
+          return true;
+        }
+
+        gotoParent() {
+          const d = this.#depth;
+          if (d === 0) {
+            return false;
+          }
+          this.#depth = d - 1;
+          this.#pointer = this.#parentStack[d] & 0xfffff;
+          return true;
+        }
+
+        currentNode() {
+          return new CstNode(this.#stream, this.#tree, this.#pointer);
+        }
+      }
+
       class CstNode {
         #stream;
         #tree;
@@ -822,7 +946,13 @@ export class JavaScriptBaseCodegen {
             p = t[p + 1] & 0xfffff;
           }
           const span = t[p + 1];
-          return (span & 0x3fffff) - (span >>> 22);
+          const end = span & 0x3fffff;
+          let q = p - 3;
+          while (q >= 3 && (t[q] >>> 8) > 0) {
+            q -= 3;
+          }
+          const prevEnd = q >= 3 ? t[q + 1] & 0x3fffff : 0;
+          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
         }
 
         get end() {
@@ -870,6 +1000,10 @@ export class JavaScriptBaseCodegen {
 
         get __pointer() {
           return this.#pointer;
+        }
+
+        cursor() {
+          return new TreeCursor(this.#stream, this.#tree, this.#pointer);
         }
 
         toJSON() {

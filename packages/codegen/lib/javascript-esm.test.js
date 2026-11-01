@@ -168,5 +168,44 @@ describe("JavaScriptModuleCodegen", () => {
     expect(results).toMatchObject(expected);
     expect(results.toJSON()).toEqual(expected);
     expect(util.inspect(results)).toBe(util.inspect(results.toJSON()));
+
+    const cursor = results.cursor();
+    expect(cursor.name).toBe("Rule");
+    expect(cursor.childCount).toBe(1);
+    expect(cursor.isLeaf).toBe(false);
+    expect(cursor.depth).toBe(0);
+    expect(cursor.start).toBe(0);
+    expect(cursor.end).toBe(3);
+    expect(cursor.gotoNextSibling()).toBe(false);
+    expect(cursor.gotoParent()).toBe(false);
+    expect(cursor.gotoFirstChild()).toBe(true);
+    expect(cursor.name).toBe("A");
+    expect(cursor.childCount).toBe(0);
+    expect(cursor.isLeaf).toBe(true);
+    expect(cursor.depth).toBe(1);
+    expect(cursor.start).toBe(0);
+    expect(cursor.end).toBe(3);
+    expect(Buffer.from(cursor.value).toString("utf-8")).toBe("abc");
+    expect(cursor.gotoFirstChild()).toBe(false);
+    expect(cursor.gotoNextSibling()).toBe(false);
+    expect(cursor.gotoParent()).toBe(true);
+    expect(cursor.name).toBe("Rule");
+    expect(cursor.depth).toBe(0);
+
+    const dtsCode = await fsp.readFile(
+      join(directory, "parser.d.ts"),
+      "utf-8"
+    );
+    expect(dtsCode).toContain('export type TokenName = "A"');
+    expect(dtsCode).toContain('export type RuleName = "Rule"');
+    expect(dtsCode).toContain("export type SymbolName = TokenName | RuleName;");
+    expect(dtsCode).toContain('export type StartRuleName = "Rule";');
+    expect(dtsCode).toContain("export interface TreeCursor {");
+    expect(dtsCode).toContain(
+      "export interface CstNode<Name extends SymbolName = SymbolName> {"
+    );
+    expect(dtsCode).toContain(
+      "export function parse(input: Uint8Array | string): CstNode<StartRuleName>;"
+    );
   });
 });

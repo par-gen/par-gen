@@ -1004,4 +1004,126 @@ describe("JSON", () => {
       })
     );
   });
+
+  it("should traverse CST identically with zero-allocation TreeCursor and CstNode#items", async () => {
+    const pkgBuf = await fsp.readFile("package.json");
+    const root = parse(pkgBuf);
+    const cursor = root.cursor();
+
+    /** @type {Array<{ name: string, start: number, end: number, isLeaf: boolean, childCount: number }>} */
+    const cursorNodes = [];
+    outer: while (true) {
+      cursorNodes.push({
+        name: cursor.name,
+        start: cursor.start,
+        end: cursor.end,
+        isLeaf: cursor.isLeaf,
+        childCount: cursor.childCount,
+      });
+      if (cursor.gotoFirstChild() || cursor.gotoNextSibling()) {
+        continue;
+      }
+      while (cursor.gotoParent()) {
+        if (cursor.gotoNextSibling()) {
+          continue outer;
+        }
+      }
+      break;
+    }
+
+    /** @type {Array<{ name: string, start: number, end: number, isLeaf: boolean, childCount: number }>} */
+    const cstNodes = [];
+    /** @param {import("./generated/parser.js").CstNode} node */
+    const walkCst = (node) => {
+      const items = node.items;
+      cstNodes.push({
+        name: node.name,
+        start: node.start,
+        end: node.end,
+        isLeaf: items === undefined,
+        childCount: items ? items.length : 0,
+      });
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          walkCst(items[i]);
+        }
+      }
+    };
+    walkCst(root);
+
+    expect(cursorNodes).toEqual(cstNodes);
+    expect(cursor.depth).toBe(0);
+    expect(cursor.pointer).toBe(root.__pointer);
+
+    // Verify reset() and lossless re-emission via TreeCursor leaf walk
+    expect(cursor.reset()).toBe(true);
+    const reemitted = Buffer.allocUnsafe(pkgBuf.length);
+    let writeOffset = 0;
+    outer2: while (true) {
+      if (cursor.isLeaf) {
+        const slice = cursor.value;
+        reemitted.set(slice, writeOffset);
+        writeOffset += slice.length;
+      }
+      if (cursor.gotoFirstChild() || cursor.gotoNextSibling()) {
+        continue;
+      }
+      while (cursor.gotoParent()) {
+        if (cursor.gotoNextSibling()) {
+          continue outer2;
+        }
+      }
+      break;
+    }
+    expect(writeOffset).toBe(pkgBuf.length);
+    expect(Buffer.compare(reemitted, pkgBuf)).toBe(0);
+  });
+
+  it("should preserve exact start, end, and value for tokens >= 1024 bytes in CstNode and TreeCursor", () => {
+    const longStr = "x".repeat(5000);
+    const json = `{"key":"${longStr}","after":42}`;
+    const root = parse(json);
+
+    expect(root.start).toBe(0);
+    expect(root.end).toBe(json.length);
+    expect(Buffer.from(root.value).toString("utf-8")).toBe(json);
+
+    const cursor = root.cursor();
+    /** @type {Array<{ name: string, start: number, end: number, text: string }>} */
+    const leaves = [];
+    outer: while (true) {
+      if (cursor.isLeaf) {
+        leaves.push({
+          name: cursor.name,
+          start: cursor.start,
+          end: cursor.end,
+          text: Buffer.from(cursor.value).toString("utf-8"),
+        });
+        const node = cursor.currentNode();
+        expect(node.start).toBe(cursor.start);
+        expect(node.end).toBe(cursor.end);
+        expect(Buffer.from(node.value).toString("utf-8")).toBe(
+          Buffer.from(cursor.value).toString("utf-8")
+        );
+      }
+      if (cursor.gotoFirstChild() || cursor.gotoNextSibling()) {
+        continue;
+      }
+      while (cursor.gotoParent()) {
+        if (cursor.gotoNextSibling()) {
+          continue outer;
+        }
+      }
+      break;
+    }
+
+    const expectedStringToken = `"${longStr}"`;
+    const stringLeaf = leaves.find((l) => l.end - l.start > 1024);
+    expect(stringLeaf).toBeDefined();
+    expect(stringLeaf?.name).toBe("STRING");
+    expect(stringLeaf?.start).toBe(7);
+    expect(stringLeaf?.end).toBe(7 + expectedStringToken.length);
+    expect(stringLeaf?.text).toBe(expectedStringToken);
+    expect(leaves.map((l) => l.text).join("")).toBe(json);
+  });
 });
