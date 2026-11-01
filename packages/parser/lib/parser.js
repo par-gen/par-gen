@@ -120,7 +120,98 @@ export function generate(grammar) {
       }
     }
 
-    const start = dfa.description.start;
+    let start = dfa.description.start;
+
+    const hasSemanticActions = Array.from(states).some((state) =>
+      Array.from(state.values()).some((item) => item.semanticAction)
+    );
+    if (!hasSemanticActions) {
+      let changed = true;
+      while (changed) {
+        changed = false;
+        const stateList = Array.from(states);
+        /** @type {Map<string, ItemState>} */
+        const sigMap = new Map();
+        /** @type {Map<ItemState, ItemState>} */
+        const replacement = new Map();
+
+        for (const st of stateList) {
+          const actMap = actions.get(st);
+          const items = Array.from(st.values());
+          const actEntries = actMap
+            ? Array.from(actMap.entries())
+                .map(([sym, act]) => {
+                  if (act.op === "shift") {
+                    return `${sym}:S:${stateList.indexOf(act.state)}`;
+                  }
+                  if (act.op === "reduce") {
+                    const matched = items.find(
+                      (it) =>
+                        it.name === act.symbol &&
+                        it.marker === it.tokens.length &&
+                        it.lookahead === sym
+                    );
+                    const len = matched ? matched.tokens.length : 0;
+                    return `${sym}:R:${act.symbol}:${len}`;
+                  }
+                  return `${sym}:D`;
+                })
+                .sort()
+                .join("|")
+            : "";
+
+          const gotoMap = goto.get(st);
+          const gotoEntries = gotoMap
+            ? Array.from(gotoMap.entries())
+                .map(([sym, target]) => `${sym}:G:${stateList.indexOf(target)}`)
+                .sort()
+                .join("|")
+            : "";
+
+          const sig = `${actEntries}#${gotoEntries}`;
+          const canonical = sigMap.get(sig);
+          if (canonical) {
+            replacement.set(st, canonical);
+            changed = true;
+          } else {
+            sigMap.set(sig, st);
+          }
+        }
+
+        if (changed) {
+          for (const [dup, canonical] of replacement.entries()) {
+            states.delete(dup);
+            actions.delete(dup);
+            goto.delete(dup);
+            if (start === dup) {
+              start = canonical;
+            }
+          }
+          for (const [, actMap] of actions.entries()) {
+            for (const [sym, act] of actMap.entries()) {
+              if (act.op === "shift") {
+                const redirected = replacement.get(act.state);
+                if (redirected) {
+                  actMap.set(sym, {
+                    op: "shift",
+                    state: redirected,
+                    symbol: undefined,
+                  });
+                }
+              }
+            }
+          }
+          for (const [, gotoMap] of goto.entries()) {
+            for (const [sym, target] of gotoMap.entries()) {
+              const redirected = replacement.get(target);
+              if (redirected) {
+                gotoMap.set(sym, redirected);
+              }
+            }
+          }
+        }
+      }
+    }
 
     const allTokenNames = Object.values(lexers).flatMap(
       (data) => data.tokenNames
@@ -599,7 +690,8 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
     const nextStates = nextItemSets(fromItemSet, rules, items, follows);
 
     for (const [token, toItemSet] of nextStates.entries()) {
-      const existing = itemSets.findIndex((exiting) => {
+      const allStates = [...itemSets, ...newItemSets];
+      const existing = allStates.find((exiting) => {
         return (
           exiting.size === toItemSet.size &&
           Array.from(toItemSet.values()).every((item) => exiting.has(item))
@@ -609,10 +701,10 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
         fromItemSet,
         new Map([
           ...Array.from(transitions.get(fromItemSet)?.entries() ?? []),
-          [token, existing !== -1 ? itemSets[existing] : toItemSet],
+          [token, existing ?? toItemSet],
         ])
       );
-      if (existing === -1) {
+      if (!existing) {
         newItemSets.push(toItemSet);
       }
     }
