@@ -157,7 +157,7 @@ export class JavaScriptBaseCodegen {
         let successPos = 0;
 
         // try to find match
-        let i = offset;
+        let i = offset & 0x7fffffff;
         const l = input.length;
         while (i < l) {
           state = table[state + input[i++]];
