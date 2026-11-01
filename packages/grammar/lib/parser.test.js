@@ -1,3 +1,7 @@
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
 import { EOF, ERROR, parse } from "./parser.js";
 
 describe("parse", () => {
@@ -410,5 +414,28 @@ describe("parse", () => {
         actions: [],
       },
     ]);
+  });
+
+  it("should self-parse grammar.pargen", () => {
+    const selfGrammar = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "../grammar.pargen"),
+      "utf-8"
+    );
+    const parsed = parse(selfGrammar);
+
+    expect(parsed.tokens.map((t) => t.name)).toEqual([
+      "WS",
+      "ASSIGN",
+      "SEMICOLON",
+      "PIPE",
+      "AT",
+      "EXPR",
+      "ACTION",
+      "IDENTIFIER",
+      EOF,
+      ERROR,
+    ]);
+    expect(parsed.rules[0].name).toBe("Grammar");
+    expect(parsed.rules.length).toBeGreaterThan(20);
   });
 });

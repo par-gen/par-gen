@@ -4,6 +4,9 @@
   "type": "module",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
+  "scripts": {
+    "start": "par-gen codegen grammar.pargen ./generated"
+  },
   "jest": {
     "displayName": "grammar",
     "transform": {},

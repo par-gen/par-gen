@@ -1,0 +1,63 @@
+#######################################
+#
+# Tokens
+#
+WS := '([ \t\r\n]|\x23[^\n]*)+';
+ASSIGN := ':=';
+SEMICOLON := '\x3b';
+PIPE := '\|';
+AT := '@';
+EXPR := '\x27[^\x27]*\x27';
+ACTION := '\x7b[^\x7d]*\x7d';
+IDENTIFIER := '[A-Za-z0-9_\-]+\??';
+
+#######################################
+#
+# Rules
+#
+
+Grammar := WS? Statements;
+
+Statements :=
+    Statement
+  | Statements Statement
+  ;
+
+Statement :=
+    Assignment Expr Semi
+  | Assignment Expr StateClause Semi
+  | Assignment Alternatives Semi
+  | Assignment Pipe Alternatives Semi
+  ;
+
+Assignment := IDENTIFIER WS? ASSIGN WS?;
+
+Expr := EXPR WS?;
+
+Semi := SEMICOLON WS?;
+
+Pipe := PIPE WS?;
+
+StateClause := AT WS? StateList;
+
+StateList :=
+    StateItem
+  | StateList StateItem
+  ;
+
+StateItem := IDENTIFIER WS?;
+
+Alternatives :=
+    Alternative
+  | Alternatives Pipe Alternative
+  ;
+
+Alternative :=
+    RuleItem
+  | Alternative RuleItem
+  ;
+
+RuleItem :=
+    IDENTIFIER WS?
+  | ACTION WS?
+  ;
