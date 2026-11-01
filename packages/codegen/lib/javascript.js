@@ -459,7 +459,7 @@ export class JavaScriptBaseCodegen {
     );
     const lexerModes = Object.keys(lexerData);
     const hasSingleLexerMode = lexerModes.length === 1;
-    const canPreMultiplyState = states.length * parserSymbols.length < 32767;
+    const canPreMultiplyState = states.length * parserSymbols.length < 2048;
     const stateMultiplier = canPreMultiplyState ? parserSymbols.length : 1;
     const ruleNamesSet = new Set(["S", ...rules.map((r) => r.name)]);
     const paddedTableSize = Math.max(64, states.length * parserSymbols.length);
@@ -582,7 +582,7 @@ export class JavaScriptBaseCodegen {
               states.indexOf(from) * parserSymbols.length +
               parserSymbols.indexOf(symbol)
             }] = ${
-              states.indexOf(to) * stateMultiplier * 65536
+              states.indexOf(to) * stateMultiplier * 1048576
             }; // 'state ${states.indexOf(to)}'`;
           });
         })
@@ -623,8 +623,8 @@ export class JavaScriptBaseCodegen {
 
       /**
        * Each 32-bit stack entry packs:
-       * - low 16 bits: tree pointer (tp) of the shifted/reduced CST node
-       * - high 16 bits: parser state
+       * - low 20 bits: tree pointer (tp) of the shifted/reduced CST node (up to 1,048,575 words)
+       * - high 12 bits: parser state
        */
       const stack = new Uint32Array(16384);
 
@@ -632,11 +632,11 @@ export class JavaScriptBaseCodegen {
        * This typed array contains the syntax tree from a parse.
        * Each CST node occupies 3 uint32 words:
        * - word 0 (tp + 0): name | (numChildren << 8)
-       * - word 1 (tp + 1): start | (end << 16) (leaf) or firstChild (internal)
+       * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or firstChild (internal)
        * - word 2 (tp + 2): nextSibling
-       * This enables 32-bit coalesced stores and fast DFS traversal.
+       * This enables 32-bit coalesced stores and fast DFS traversal on documents up to 4 MiB.
        */
-      const tree = new Uint32Array(16384);
+      const tree = new Uint32Array(524288);
 
       const proxyHandler = {
         get(target, prop, receiver) {
@@ -647,10 +647,26 @@ export class JavaScriptBaseCodegen {
           switch (prop) {
             case "name":
               return parserSymbols[word0 & 0xff];
-            case "start":
-              return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1] & 0xffff;
-            case "end":
-              return nChildren > 0 ? receiver.items[nChildren - 1].end : tree[pointer + 1] >>> 16;
+            case "start": {
+              let p = pointer;
+              while ((tree[p] >>> 8) > 0) {
+                p = tree[p + 1] & 0xfffff;
+              }
+              const span = tree[p + 1];
+              return (span & 0x3fffff) - (span >>> 22);
+            }
+            case "end": {
+              let p = pointer;
+              let n = nChildren;
+              while (n > 0) {
+                p = tree[p + 1] & 0xfffff;
+                for (let i = 1; i < n; i++) {
+                  p = tree[p + 2];
+                }
+                n = tree[p] >>> 8;
+              }
+              return tree[p + 1] & 0x3fffff;
+            }
             case "value":
               return stream.subarray(receiver.start, receiver.end);
             case "items": {
@@ -658,13 +674,13 @@ export class JavaScriptBaseCodegen {
                 return undefined;
               }
 
-              const firstChild = tree[pointer + 1] & 0xffff;
-              const children = [createProxy(stream, firstChild)];
-              let nextChild = tree[firstChild + 2];
+              const children = new Array(nChildren);
+              let child = tree[pointer + 1] & 0xfffff;
+              children[0] = createProxy(stream, child);
 
               for (let i = 1; i < nChildren; i++) {
-                children.push(createProxy(stream, nextChild));
-                nextChild = tree[nextChild + 2];
+                child = tree[child + 2];
+                children[i] = createProxy(stream, child);
               }
 
               return children;
@@ -718,7 +734,7 @@ export class JavaScriptBaseCodegen {
 
         let result = nextToken(stream, 0);
         let lookahead = result.state;
-        let lookaheadSpan = result.start | (result.end << 16);
+        let lookaheadSpan = result.end | ((result.end - result.start) << 22);
 
         ${debug(
           () => `
@@ -731,7 +747,7 @@ export class JavaScriptBaseCodegen {
         )}
 
         stack[0] = ${
-          states.indexOf(start) * stateMultiplier * 65536
+          states.indexOf(start) * stateMultiplier * 1048576
         }; // starting state
         let sp = 0;
         // let the tree stack start from offset 3
@@ -742,7 +758,7 @@ export class JavaScriptBaseCodegen {
         while (true) {
           ${debug(() => `steps++;`)}
           const top = stack[sp];
-          const currentState = top >>> 16;
+          const currentState = top >>> 20;
 
           const actionLookup = actionsTable[${
             canPreMultiplyState
@@ -755,8 +771,7 @@ export class JavaScriptBaseCodegen {
               ${hasSingleLexerMode ? "" : "lexer.pop(true);"}
               return createProxy(stream, tp - 3);
             }
-            const lookaheadStart = (lookaheadSpan << 16) >> 16;
-            const context = input.toString().substr(lookaheadStart, 10);
+            const context = input.toString().substr(result.start, 10);
             throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
           }
 
@@ -784,14 +799,14 @@ export class JavaScriptBaseCodegen {
 
             tree[tp] = lookahead; // name (and nChildren = 0)
             tree[tp + 1] = lookaheadSpan;
-            tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
+            tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
 
             sp += 1;
-            stack[sp] = tp | (actionLookup << 15);
+            stack[sp] = tp | (actionLookup << 19);
 
-            result = nextToken(stream, lookaheadSpan >>> 16);
+            result = nextToken(stream, lookaheadSpan & 0x3fffff);
             lookahead = result.state;
-            lookaheadSpan = result.start | (result.end << 16);
+            lookaheadSpan = result.end | ((result.end - result.start) << 22);
             ${debug(
               () => `
               console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
@@ -804,7 +819,7 @@ export class JavaScriptBaseCodegen {
 
             ${debug(
               () => `
-              console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
+              console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
               console.log('');
               `
             )}
@@ -819,7 +834,7 @@ export class JavaScriptBaseCodegen {
                 `console.log('action: reduce', actionSymbol,
                   parserSymbols[actionSymbol],
                   Array.from({ length: stackItemsToReduce })
-                    .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xffff] & 0xff])
+                    .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xfffff] & 0xff])
                     .reverse()
                 );`
             )}
@@ -848,10 +863,10 @@ export class JavaScriptBaseCodegen {
             const rtop = stack[sp];
             const nextState = gotoTable[${
               canPreMultiplyState
-                ? "(rtop >>> 16)"
-                : `(rtop >>> 16) * ${parserSymbols.length}`
+                ? "(rtop >>> 20)"
+                : `(rtop >>> 20) * ${parserSymbols.length}`
             } + actionSymbol];
-            tree[(rtop & 0xffff) + 2] = tp; // next sibling
+            tree[(rtop & 0xfffff) + 2] = tp; // next sibling
 
             sp += 1;
             tree[tp + 1] = stack[sp]; // first child
@@ -859,7 +874,7 @@ export class JavaScriptBaseCodegen {
 
             ${debug(
               () => `
-              console.log('  next state', (stack[sp] >>> 16) / ${stateMultiplier});
+              console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
               console.log('');
               `
             )}

@@ -38,6 +38,14 @@ describe("JSON", () => {
     expect(parse(await fsp.readFile("package.json"))).toBeTruthy();
   });
 
+  it("should accept large documents > 64 KiB (e.g. package-lock.json) with exact spans", async () => {
+    const lockBuf = await fsp.readFile("package-lock.json");
+    const cst = parse(lockBuf);
+    expect(cst.name).toBe("Json");
+    expect(cst.start).toBe(0);
+    expect(cst.end).toBe(lockBuf.length);
+  });
+
   it("should produce correct tree for complex structures", () => {
     const input =
       '{"a": 1, "b": true, "c": false, "d": null, "e": "abc", "f": [0,true,false,null,"abc",[],{}], "g": {}}';

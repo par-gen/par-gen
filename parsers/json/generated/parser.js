@@ -210,48 +210,48 @@ actionsTable[1125] = 2601; // 'state 35' -> CURLY_CLOSE -> reduce (target=20, le
 actionsTable[1126] = 2601; // 'state 35' -> COMMA -> reduce (target=20, len=5) -> 'action 140'
 
 const gotoTable = new Uint32Array(1152);
-gotoTable[15] = 10485760; // 'state 5'
-gotoTable[16] = 12582912; // 'state 6'
-gotoTable[17] = 14680064; // 'state 7'
-gotoTable[18] = 4194304; // 'state 2'
-gotoTable[21] = 4194304; // 'state 2'
-gotoTable[49] = 18874368; // 'state 9'
-gotoTable[50] = 4194304; // 'state 2'
-gotoTable[53] = 4194304; // 'state 2'
-gotoTable[115] = 27262976; // 'state 13'
-gotoTable[116] = 29360128; // 'state 14'
-gotoTable[150] = 37748736; // 'state 18'
-gotoTable[144] = 35651584; // 'state 17'
-gotoTable[145] = 14680064; // 'state 7'
-gotoTable[146] = 4194304; // 'state 2'
-gotoTable[149] = 4194304; // 'state 2'
-gotoTable[497] = 18874368; // 'state 9'
-gotoTable[498] = 4194304; // 'state 2'
-gotoTable[501] = 4194304; // 'state 2'
-gotoTable[724] = 62914560; // 'state 30'
-gotoTable[784] = 65011712; // 'state 31'
-gotoTable[785] = 14680064; // 'state 7'
-gotoTable[786] = 4194304; // 'state 2'
-gotoTable[789] = 4194304; // 'state 2'
-gotoTable[848] = 67108864; // 'state 32'
-gotoTable[849] = 14680064; // 'state 7'
-gotoTable[850] = 4194304; // 'state 2'
-gotoTable[853] = 4194304; // 'state 2'
-gotoTable[912] = 69206016; // 'state 33'
-gotoTable[913] = 14680064; // 'state 7'
-gotoTable[914] = 4194304; // 'state 2'
-gotoTable[917] = 4194304; // 'state 2'
-gotoTable[1104] = 73400320; // 'state 35'
-gotoTable[1105] = 14680064; // 'state 7'
-gotoTable[1106] = 4194304; // 'state 2'
-gotoTable[1109] = 4194304; // 'state 2'
+gotoTable[15] = 167772160; // 'state 5'
+gotoTable[16] = 201326592; // 'state 6'
+gotoTable[17] = 234881024; // 'state 7'
+gotoTable[18] = 67108864; // 'state 2'
+gotoTable[21] = 67108864; // 'state 2'
+gotoTable[49] = 301989888; // 'state 9'
+gotoTable[50] = 67108864; // 'state 2'
+gotoTable[53] = 67108864; // 'state 2'
+gotoTable[115] = 436207616; // 'state 13'
+gotoTable[116] = 469762048; // 'state 14'
+gotoTable[150] = 603979776; // 'state 18'
+gotoTable[144] = 570425344; // 'state 17'
+gotoTable[145] = 234881024; // 'state 7'
+gotoTable[146] = 67108864; // 'state 2'
+gotoTable[149] = 67108864; // 'state 2'
+gotoTable[497] = 301989888; // 'state 9'
+gotoTable[498] = 67108864; // 'state 2'
+gotoTable[501] = 67108864; // 'state 2'
+gotoTable[724] = 1006632960; // 'state 30'
+gotoTable[784] = 1040187392; // 'state 31'
+gotoTable[785] = 234881024; // 'state 7'
+gotoTable[786] = 67108864; // 'state 2'
+gotoTable[789] = 67108864; // 'state 2'
+gotoTable[848] = 1073741824; // 'state 32'
+gotoTable[849] = 234881024; // 'state 7'
+gotoTable[850] = 67108864; // 'state 2'
+gotoTable[853] = 67108864; // 'state 2'
+gotoTable[912] = 1107296256; // 'state 33'
+gotoTable[913] = 234881024; // 'state 7'
+gotoTable[914] = 67108864; // 'state 2'
+gotoTable[917] = 67108864; // 'state 2'
+gotoTable[1104] = 1174405120; // 'state 35'
+gotoTable[1105] = 234881024; // 'state 7'
+gotoTable[1106] = 67108864; // 'state 2'
+gotoTable[1109] = 67108864; // 'state 2'
 
 const nextToken = nextTokenInitial;
 
 /**
  * Each 32-bit stack entry packs:
- * - low 16 bits: tree pointer (tp) of the shifted/reduced CST node
- * - high 16 bits: parser state
+ * - low 20 bits: tree pointer (tp) of the shifted/reduced CST node (up to 1,048,575 words)
+ * - high 12 bits: parser state
  */
 const stack = new Uint32Array(16384);
 
@@ -259,11 +259,11 @@ const stack = new Uint32Array(16384);
  * This typed array contains the syntax tree from a parse.
  * Each CST node occupies 3 uint32 words:
  * - word 0 (tp + 0): name | (numChildren << 8)
- * - word 1 (tp + 1): start | (end << 16) (leaf) or firstChild (internal)
+ * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or firstChild (internal)
  * - word 2 (tp + 2): nextSibling
- * This enables 32-bit coalesced stores and fast DFS traversal.
+ * This enables 32-bit coalesced stores and fast DFS traversal on documents up to 4 MiB.
  */
-const tree = new Uint32Array(16384);
+const tree = new Uint32Array(524288);
 
 const proxyHandler = {
   get(target, prop, receiver) {
@@ -274,14 +274,26 @@ const proxyHandler = {
     switch (prop) {
       case "name":
         return parserSymbols[word0 & 0xff];
-      case "start":
-        return nChildren > 0
-          ? receiver.items[0].start
-          : tree[pointer + 1] & 0xffff;
-      case "end":
-        return nChildren > 0
-          ? receiver.items[nChildren - 1].end
-          : tree[pointer + 1] >>> 16;
+      case "start": {
+        let p = pointer;
+        while (tree[p] >>> 8 > 0) {
+          p = tree[p + 1] & 0xfffff;
+        }
+        const span = tree[p + 1];
+        return (span & 0x3fffff) - (span >>> 22);
+      }
+      case "end": {
+        let p = pointer;
+        let n = nChildren;
+        while (n > 0) {
+          p = tree[p + 1] & 0xfffff;
+          for (let i = 1; i < n; i++) {
+            p = tree[p + 2];
+          }
+          n = tree[p] >>> 8;
+        }
+        return tree[p + 1] & 0x3fffff;
+      }
       case "value":
         return stream.subarray(receiver.start, receiver.end);
       case "items": {
@@ -289,13 +301,13 @@ const proxyHandler = {
           return undefined;
         }
 
-        const firstChild = tree[pointer + 1] & 0xffff;
-        const children = [createProxy(stream, firstChild)];
-        let nextChild = tree[firstChild + 2];
+        const children = new Array(nChildren);
+        let child = tree[pointer + 1] & 0xfffff;
+        children[0] = createProxy(stream, child);
 
         for (let i = 1; i < nChildren; i++) {
-          children.push(createProxy(stream, nextChild));
-          nextChild = tree[nextChild + 2];
+          child = tree[child + 2];
+          children[i] = createProxy(stream, child);
         }
 
         return children;
@@ -340,7 +352,7 @@ function parse(input) {
 
   let result = nextToken(stream, 0);
   let lookahead = result.state;
-  let lookaheadSpan = result.start | (result.end << 16);
+  let lookaheadSpan = result.end | ((result.end - result.start) << 22);
 
   stack[0] = 0; // starting state
   let sp = 0;
@@ -350,15 +362,14 @@ function parse(input) {
 
   while (true) {
     const top = stack[sp];
-    const currentState = top >>> 16;
+    const currentState = top >>> 20;
 
     const actionLookup = actionsTable[currentState + lookahead];
     if (actionLookup >= 0xfffe) {
       if (actionLookup === 0xfffe) {
         return createProxy(stream, tp - 3);
       }
-      const lookaheadStart = (lookaheadSpan << 16) >> 16;
-      const context = input.toString().substr(lookaheadStart, 10);
+      const context = input.toString().substr(result.start, 10);
       throw new Error(
         `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
       );
@@ -369,14 +380,14 @@ function parse(input) {
 
       tree[tp] = lookahead; // name (and nChildren = 0)
       tree[tp + 1] = lookaheadSpan;
-      tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
+      tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
 
       sp += 1;
-      stack[sp] = tp | (actionLookup << 15);
+      stack[sp] = tp | (actionLookup << 19);
 
-      result = nextToken(stream, lookaheadSpan >>> 16);
+      result = nextToken(stream, lookaheadSpan & 0x3fffff);
       lookahead = result.state;
-      lookaheadSpan = result.start | (result.end << 16);
+      lookaheadSpan = result.end | ((result.end - result.start) << 22);
     } else {
       // reduce
       const word0 = actionLookup >>> 1;
@@ -387,8 +398,8 @@ function parse(input) {
       tree[tp] = word0; // name and number of children
 
       const rtop = stack[sp];
-      const nextState = gotoTable[(rtop >>> 16) + actionSymbol];
-      tree[(rtop & 0xffff) + 2] = tp; // next sibling
+      const nextState = gotoTable[(rtop >>> 20) + actionSymbol];
+      tree[(rtop & 0xfffff) + 2] = tp; // next sibling
 
       sp += 1;
       tree[tp + 1] = stack[sp]; // first child

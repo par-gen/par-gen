@@ -143,35 +143,35 @@ const parserSymbols = [
 ];
 
 const actionsTable = new Uint16Array(2432).fill(0xffff);
-actionsTable[0] = 128; // 'state 0' -> CHARACTER -> shift (target=64, len=0) -> 'action 0'
-actionsTable[1] = 256; // 'state 0' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 1'
-actionsTable[2] = 384; // 'state 0' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 2'
-actionsTable[3] = 512; // 'state 0' -> BACKSLASH -> shift (target=256, len=0) -> 'action 3'
-actionsTable[4] = 128; // 'state 0' -> X -> shift (target=64, len=0) -> 'action 4'
-actionsTable[5] = 256; // 'state 0' -> B -> shift (target=128, len=0) -> 'action 5'
-actionsTable[6] = 256; // 'state 0' -> F -> shift (target=128, len=0) -> 'action 6'
-actionsTable[7] = 640; // 'state 0' -> CARET -> shift (target=320, len=0) -> 'action 7'
-actionsTable[8] = 640; // 'state 0' -> DASH -> shift (target=320, len=0) -> 'action 8'
-actionsTable[11] = 768; // 'state 0' -> PAREN_OPEN -> shift (target=384, len=0) -> 'action 9'
-actionsTable[14] = 896; // 'state 0' -> BRACKET_OPEN -> shift (target=448, len=0) -> 'action 10'
+actionsTable[0] = 2; // 'state 0' -> CHARACTER -> shift (target=1, len=0) -> 'action 0'
+actionsTable[1] = 4; // 'state 0' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 1'
+actionsTable[2] = 6; // 'state 0' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 2'
+actionsTable[3] = 8; // 'state 0' -> BACKSLASH -> shift (target=4, len=0) -> 'action 3'
+actionsTable[4] = 2; // 'state 0' -> X -> shift (target=1, len=0) -> 'action 4'
+actionsTable[5] = 4; // 'state 0' -> B -> shift (target=2, len=0) -> 'action 5'
+actionsTable[6] = 4; // 'state 0' -> F -> shift (target=2, len=0) -> 'action 6'
+actionsTable[7] = 10; // 'state 0' -> CARET -> shift (target=5, len=0) -> 'action 7'
+actionsTable[8] = 10; // 'state 0' -> DASH -> shift (target=5, len=0) -> 'action 8'
+actionsTable[11] = 12; // 'state 0' -> PAREN_OPEN -> shift (target=6, len=0) -> 'action 9'
+actionsTable[14] = 14; // 'state 0' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 10'
 actionsTable[528] = 65534; // 'state 8' -> @par-gen.EOF -> done (target=0, len=0) -> 'action 11'
 actionsTable[592] = 551; // 'state 9' -> @par-gen.EOF -> reduce (target=19, len=1) -> 'action 12'
-actionsTable[650] = 1664; // 'state 10' -> UNION -> shift (target=832, len=0) -> 'action 13'
+actionsTable[650] = 26; // 'state 10' -> UNION -> shift (target=13, len=0) -> 'action 13'
 actionsTable[656] = 553; // 'state 10' -> @par-gen.EOF -> reduce (target=20, len=1) -> 'action 14'
-actionsTable[704] = 128; // 'state 11' -> CHARACTER -> shift (target=64, len=0) -> 'action 15'
-actionsTable[705] = 256; // 'state 11' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 16'
-actionsTable[706] = 384; // 'state 11' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 17'
-actionsTable[707] = 512; // 'state 11' -> BACKSLASH -> shift (target=256, len=0) -> 'action 18'
-actionsTable[708] = 128; // 'state 11' -> X -> shift (target=64, len=0) -> 'action 19'
-actionsTable[709] = 256; // 'state 11' -> B -> shift (target=128, len=0) -> 'action 20'
-actionsTable[710] = 256; // 'state 11' -> F -> shift (target=128, len=0) -> 'action 21'
-actionsTable[711] = 640; // 'state 11' -> CARET -> shift (target=320, len=0) -> 'action 22'
-actionsTable[712] = 640; // 'state 11' -> DASH -> shift (target=320, len=0) -> 'action 23'
-actionsTable[714] = 1664; // 'state 11' -> UNION -> shift (target=832, len=0) -> 'action 24'
-actionsTable[715] = 768; // 'state 11' -> PAREN_OPEN -> shift (target=384, len=0) -> 'action 25'
-actionsTable[718] = 896; // 'state 11' -> BRACKET_OPEN -> shift (target=448, len=0) -> 'action 26'
+actionsTable[704] = 2; // 'state 11' -> CHARACTER -> shift (target=1, len=0) -> 'action 15'
+actionsTable[705] = 4; // 'state 11' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 16'
+actionsTable[706] = 6; // 'state 11' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 17'
+actionsTable[707] = 8; // 'state 11' -> BACKSLASH -> shift (target=4, len=0) -> 'action 18'
+actionsTable[708] = 2; // 'state 11' -> X -> shift (target=1, len=0) -> 'action 19'
+actionsTable[709] = 4; // 'state 11' -> B -> shift (target=2, len=0) -> 'action 20'
+actionsTable[710] = 4; // 'state 11' -> F -> shift (target=2, len=0) -> 'action 21'
+actionsTable[711] = 10; // 'state 11' -> CARET -> shift (target=5, len=0) -> 'action 22'
+actionsTable[712] = 10; // 'state 11' -> DASH -> shift (target=5, len=0) -> 'action 23'
+actionsTable[714] = 26; // 'state 11' -> UNION -> shift (target=13, len=0) -> 'action 24'
+actionsTable[715] = 12; // 'state 11' -> PAREN_OPEN -> shift (target=6, len=0) -> 'action 25'
+actionsTable[718] = 14; // 'state 11' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 26'
 actionsTable[720] = 553; // 'state 11' -> @par-gen.EOF -> reduce (target=20, len=1) -> 'action 27'
-actionsTable[781] = 1920; // 'state 12' -> QUANTIFIER -> shift (target=960, len=0) -> 'action 28'
+actionsTable[781] = 30; // 'state 12' -> QUANTIFIER -> shift (target=15, len=0) -> 'action 28'
 actionsTable[768] = 559; // 'state 12' -> CHARACTER -> reduce (target=23, len=1) -> 'action 29'
 actionsTable[769] = 559; // 'state 12' -> HEX_NUMBER -> reduce (target=23, len=1) -> 'action 30'
 actionsTable[770] = 559; // 'state 12' -> CONTROL_CHARACTER -> reduce (target=23, len=1) -> 'action 31'
@@ -201,42 +201,42 @@ actionsTable[332] = 571; // 'state 5' -> PAREN_CLOSE -> reduce (target=29, len=1
 actionsTable[333] = 571; // 'state 5' -> QUANTIFIER -> reduce (target=29, len=1) -> 'action 55'
 actionsTable[334] = 571; // 'state 5' -> BRACKET_OPEN -> reduce (target=29, len=1) -> 'action 56'
 actionsTable[336] = 571; // 'state 5' -> @par-gen.EOF -> reduce (target=29, len=1) -> 'action 57'
-actionsTable[258] = 384; // 'state 4' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 58'
-actionsTable[259] = 2048; // 'state 4' -> BACKSLASH -> shift (target=1024, len=0) -> 'action 59'
-actionsTable[260] = 2176; // 'state 4' -> X -> shift (target=1088, len=0) -> 'action 60'
-actionsTable[261] = 384; // 'state 4' -> B -> shift (target=192, len=0) -> 'action 61'
-actionsTable[262] = 384; // 'state 4' -> F -> shift (target=192, len=0) -> 'action 62'
-actionsTable[265] = 2048; // 'state 4' -> DOT -> shift (target=1024, len=0) -> 'action 63'
-actionsTable[266] = 2048; // 'state 4' -> UNION -> shift (target=1024, len=0) -> 'action 64'
-actionsTable[267] = 2048; // 'state 4' -> PAREN_OPEN -> shift (target=1024, len=0) -> 'action 65'
-actionsTable[268] = 2048; // 'state 4' -> PAREN_CLOSE -> shift (target=1024, len=0) -> 'action 66'
-actionsTable[269] = 2048; // 'state 4' -> QUANTIFIER -> shift (target=1024, len=0) -> 'action 67'
-actionsTable[270] = 2048; // 'state 4' -> BRACKET_OPEN -> shift (target=1024, len=0) -> 'action 68'
-actionsTable[271] = 2048; // 'state 4' -> BRACKET_CLOSE -> shift (target=1024, len=0) -> 'action 69'
-actionsTable[384] = 128; // 'state 6' -> CHARACTER -> shift (target=64, len=0) -> 'action 70'
-actionsTable[385] = 256; // 'state 6' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 71'
-actionsTable[386] = 384; // 'state 6' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 72'
-actionsTable[387] = 512; // 'state 6' -> BACKSLASH -> shift (target=256, len=0) -> 'action 73'
-actionsTable[388] = 128; // 'state 6' -> X -> shift (target=64, len=0) -> 'action 74'
-actionsTable[389] = 256; // 'state 6' -> B -> shift (target=128, len=0) -> 'action 75'
-actionsTable[390] = 256; // 'state 6' -> F -> shift (target=128, len=0) -> 'action 76'
-actionsTable[391] = 640; // 'state 6' -> CARET -> shift (target=320, len=0) -> 'action 77'
-actionsTable[392] = 640; // 'state 6' -> DASH -> shift (target=320, len=0) -> 'action 78'
-actionsTable[395] = 768; // 'state 6' -> PAREN_OPEN -> shift (target=384, len=0) -> 'action 79'
-actionsTable[398] = 896; // 'state 6' -> BRACKET_OPEN -> shift (target=448, len=0) -> 'action 80'
-actionsTable[448] = 128; // 'state 7' -> CHARACTER -> shift (target=64, len=0) -> 'action 81'
-actionsTable[449] = 256; // 'state 7' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 82'
-actionsTable[450] = 384; // 'state 7' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 83'
-actionsTable[451] = 2688; // 'state 7' -> BACKSLASH -> shift (target=1344, len=0) -> 'action 84'
-actionsTable[452] = 128; // 'state 7' -> X -> shift (target=64, len=0) -> 'action 85'
-actionsTable[453] = 256; // 'state 7' -> B -> shift (target=128, len=0) -> 'action 86'
-actionsTable[454] = 256; // 'state 7' -> F -> shift (target=128, len=0) -> 'action 87'
-actionsTable[455] = 2816; // 'state 7' -> CARET -> shift (target=1408, len=0) -> 'action 88'
-actionsTable[457] = 2944; // 'state 7' -> DOT -> shift (target=1472, len=0) -> 'action 89'
-actionsTable[458] = 2944; // 'state 7' -> UNION -> shift (target=1472, len=0) -> 'action 90'
-actionsTable[459] = 2944; // 'state 7' -> PAREN_OPEN -> shift (target=1472, len=0) -> 'action 91'
-actionsTable[460] = 2944; // 'state 7' -> PAREN_CLOSE -> shift (target=1472, len=0) -> 'action 92'
-actionsTable[461] = 2944; // 'state 7' -> QUANTIFIER -> shift (target=1472, len=0) -> 'action 93'
+actionsTable[258] = 6; // 'state 4' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 58'
+actionsTable[259] = 32; // 'state 4' -> BACKSLASH -> shift (target=16, len=0) -> 'action 59'
+actionsTable[260] = 34; // 'state 4' -> X -> shift (target=17, len=0) -> 'action 60'
+actionsTable[261] = 6; // 'state 4' -> B -> shift (target=3, len=0) -> 'action 61'
+actionsTable[262] = 6; // 'state 4' -> F -> shift (target=3, len=0) -> 'action 62'
+actionsTable[265] = 32; // 'state 4' -> DOT -> shift (target=16, len=0) -> 'action 63'
+actionsTable[266] = 32; // 'state 4' -> UNION -> shift (target=16, len=0) -> 'action 64'
+actionsTable[267] = 32; // 'state 4' -> PAREN_OPEN -> shift (target=16, len=0) -> 'action 65'
+actionsTable[268] = 32; // 'state 4' -> PAREN_CLOSE -> shift (target=16, len=0) -> 'action 66'
+actionsTable[269] = 32; // 'state 4' -> QUANTIFIER -> shift (target=16, len=0) -> 'action 67'
+actionsTable[270] = 32; // 'state 4' -> BRACKET_OPEN -> shift (target=16, len=0) -> 'action 68'
+actionsTable[271] = 32; // 'state 4' -> BRACKET_CLOSE -> shift (target=16, len=0) -> 'action 69'
+actionsTable[384] = 2; // 'state 6' -> CHARACTER -> shift (target=1, len=0) -> 'action 70'
+actionsTable[385] = 4; // 'state 6' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 71'
+actionsTable[386] = 6; // 'state 6' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 72'
+actionsTable[387] = 8; // 'state 6' -> BACKSLASH -> shift (target=4, len=0) -> 'action 73'
+actionsTable[388] = 2; // 'state 6' -> X -> shift (target=1, len=0) -> 'action 74'
+actionsTable[389] = 4; // 'state 6' -> B -> shift (target=2, len=0) -> 'action 75'
+actionsTable[390] = 4; // 'state 6' -> F -> shift (target=2, len=0) -> 'action 76'
+actionsTable[391] = 10; // 'state 6' -> CARET -> shift (target=5, len=0) -> 'action 77'
+actionsTable[392] = 10; // 'state 6' -> DASH -> shift (target=5, len=0) -> 'action 78'
+actionsTable[395] = 12; // 'state 6' -> PAREN_OPEN -> shift (target=6, len=0) -> 'action 79'
+actionsTable[398] = 14; // 'state 6' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 80'
+actionsTable[448] = 2; // 'state 7' -> CHARACTER -> shift (target=1, len=0) -> 'action 81'
+actionsTable[449] = 4; // 'state 7' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 82'
+actionsTable[450] = 6; // 'state 7' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 83'
+actionsTable[451] = 42; // 'state 7' -> BACKSLASH -> shift (target=21, len=0) -> 'action 84'
+actionsTable[452] = 2; // 'state 7' -> X -> shift (target=1, len=0) -> 'action 85'
+actionsTable[453] = 4; // 'state 7' -> B -> shift (target=2, len=0) -> 'action 86'
+actionsTable[454] = 4; // 'state 7' -> F -> shift (target=2, len=0) -> 'action 87'
+actionsTable[455] = 44; // 'state 7' -> CARET -> shift (target=22, len=0) -> 'action 88'
+actionsTable[457] = 46; // 'state 7' -> DOT -> shift (target=23, len=0) -> 'action 89'
+actionsTable[458] = 46; // 'state 7' -> UNION -> shift (target=23, len=0) -> 'action 90'
+actionsTable[459] = 46; // 'state 7' -> PAREN_OPEN -> shift (target=23, len=0) -> 'action 91'
+actionsTable[460] = 46; // 'state 7' -> PAREN_CLOSE -> shift (target=23, len=0) -> 'action 92'
+actionsTable[461] = 46; // 'state 7' -> QUANTIFIER -> shift (target=23, len=0) -> 'action 93'
 actionsTable[64] = 575; // 'state 1' -> CHARACTER -> reduce (target=31, len=1) -> 'action 94'
 actionsTable[65] = 575; // 'state 1' -> HEX_NUMBER -> reduce (target=31, len=1) -> 'action 95'
 actionsTable[66] = 575; // 'state 1' -> CONTROL_CHARACTER -> reduce (target=31, len=1) -> 'action 96'
@@ -288,17 +288,17 @@ actionsTable[141] = 573; // 'state 2' -> QUANTIFIER -> reduce (target=30, len=1)
 actionsTable[142] = 573; // 'state 2' -> BRACKET_OPEN -> reduce (target=30, len=1) -> 'action 142'
 actionsTable[143] = 573; // 'state 2' -> BRACKET_CLOSE -> reduce (target=30, len=1) -> 'action 143'
 actionsTable[144] = 573; // 'state 2' -> @par-gen.EOF -> reduce (target=30, len=1) -> 'action 144'
-actionsTable[832] = 128; // 'state 13' -> CHARACTER -> shift (target=64, len=0) -> 'action 145'
-actionsTable[833] = 256; // 'state 13' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 146'
-actionsTable[834] = 384; // 'state 13' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 147'
-actionsTable[835] = 512; // 'state 13' -> BACKSLASH -> shift (target=256, len=0) -> 'action 148'
-actionsTable[836] = 128; // 'state 13' -> X -> shift (target=64, len=0) -> 'action 149'
-actionsTable[837] = 256; // 'state 13' -> B -> shift (target=128, len=0) -> 'action 150'
-actionsTable[838] = 256; // 'state 13' -> F -> shift (target=128, len=0) -> 'action 151'
-actionsTable[839] = 640; // 'state 13' -> CARET -> shift (target=320, len=0) -> 'action 152'
-actionsTable[840] = 640; // 'state 13' -> DASH -> shift (target=320, len=0) -> 'action 153'
-actionsTable[843] = 768; // 'state 13' -> PAREN_OPEN -> shift (target=384, len=0) -> 'action 154'
-actionsTable[846] = 896; // 'state 13' -> BRACKET_OPEN -> shift (target=448, len=0) -> 'action 155'
+actionsTable[832] = 2; // 'state 13' -> CHARACTER -> shift (target=1, len=0) -> 'action 145'
+actionsTable[833] = 4; // 'state 13' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 146'
+actionsTable[834] = 6; // 'state 13' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 147'
+actionsTable[835] = 8; // 'state 13' -> BACKSLASH -> shift (target=4, len=0) -> 'action 148'
+actionsTable[836] = 2; // 'state 13' -> X -> shift (target=1, len=0) -> 'action 149'
+actionsTable[837] = 4; // 'state 13' -> B -> shift (target=2, len=0) -> 'action 150'
+actionsTable[838] = 4; // 'state 13' -> F -> shift (target=2, len=0) -> 'action 151'
+actionsTable[839] = 10; // 'state 13' -> CARET -> shift (target=5, len=0) -> 'action 152'
+actionsTable[840] = 10; // 'state 13' -> DASH -> shift (target=5, len=0) -> 'action 153'
+actionsTable[843] = 12; // 'state 13' -> PAREN_OPEN -> shift (target=6, len=0) -> 'action 154'
+actionsTable[846] = 14; // 'state 13' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 155'
 actionsTable[842] = 1067; // 'state 13' -> UNION -> reduce (target=21, len=2) -> 'action 156'
 actionsTable[844] = 1067; // 'state 13' -> PAREN_CLOSE -> reduce (target=21, len=2) -> 'action 157'
 actionsTable[848] = 1067; // 'state 13' -> @par-gen.EOF -> reduce (target=21, len=2) -> 'action 158'
@@ -360,37 +360,37 @@ actionsTable[1036] = 579; // 'state 16' -> PAREN_CLOSE -> reduce (target=33, len
 actionsTable[1037] = 579; // 'state 16' -> QUANTIFIER -> reduce (target=33, len=1) -> 'action 214'
 actionsTable[1038] = 579; // 'state 16' -> BRACKET_OPEN -> reduce (target=33, len=1) -> 'action 215'
 actionsTable[1040] = 579; // 'state 16' -> @par-gen.EOF -> reduce (target=33, len=1) -> 'action 216'
-actionsTable[1089] = 256; // 'state 17' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 217'
-actionsTable[1093] = 256; // 'state 17' -> B -> shift (target=128, len=0) -> 'action 218'
-actionsTable[1094] = 256; // 'state 17' -> F -> shift (target=128, len=0) -> 'action 219'
-actionsTable[1226] = 1664; // 'state 19' -> UNION -> shift (target=832, len=0) -> 'action 220'
-actionsTable[1228] = 3712; // 'state 19' -> PAREN_CLOSE -> shift (target=1856, len=0) -> 'action 221'
-actionsTable[1280] = 128; // 'state 20' -> CHARACTER -> shift (target=64, len=0) -> 'action 222'
-actionsTable[1281] = 256; // 'state 20' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 223'
-actionsTable[1282] = 384; // 'state 20' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 224'
-actionsTable[1283] = 512; // 'state 20' -> BACKSLASH -> shift (target=256, len=0) -> 'action 225'
-actionsTable[1284] = 128; // 'state 20' -> X -> shift (target=64, len=0) -> 'action 226'
-actionsTable[1285] = 256; // 'state 20' -> B -> shift (target=128, len=0) -> 'action 227'
-actionsTable[1286] = 256; // 'state 20' -> F -> shift (target=128, len=0) -> 'action 228'
-actionsTable[1287] = 640; // 'state 20' -> CARET -> shift (target=320, len=0) -> 'action 229'
-actionsTable[1288] = 640; // 'state 20' -> DASH -> shift (target=320, len=0) -> 'action 230'
-actionsTable[1290] = 1664; // 'state 20' -> UNION -> shift (target=832, len=0) -> 'action 231'
-actionsTable[1291] = 768; // 'state 20' -> PAREN_OPEN -> shift (target=384, len=0) -> 'action 232'
-actionsTable[1292] = 3712; // 'state 20' -> PAREN_CLOSE -> shift (target=1856, len=0) -> 'action 233'
-actionsTable[1294] = 896; // 'state 20' -> BRACKET_OPEN -> shift (target=448, len=0) -> 'action 234'
-actionsTable[1536] = 128; // 'state 24' -> CHARACTER -> shift (target=64, len=0) -> 'action 235'
-actionsTable[1537] = 256; // 'state 24' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 236'
-actionsTable[1538] = 384; // 'state 24' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 237'
-actionsTable[1539] = 2688; // 'state 24' -> BACKSLASH -> shift (target=1344, len=0) -> 'action 238'
-actionsTable[1540] = 128; // 'state 24' -> X -> shift (target=64, len=0) -> 'action 239'
-actionsTable[1541] = 256; // 'state 24' -> B -> shift (target=128, len=0) -> 'action 240'
-actionsTable[1542] = 256; // 'state 24' -> F -> shift (target=128, len=0) -> 'action 241'
-actionsTable[1545] = 2944; // 'state 24' -> DOT -> shift (target=1472, len=0) -> 'action 242'
-actionsTable[1546] = 2944; // 'state 24' -> UNION -> shift (target=1472, len=0) -> 'action 243'
-actionsTable[1547] = 2944; // 'state 24' -> PAREN_OPEN -> shift (target=1472, len=0) -> 'action 244'
-actionsTable[1548] = 2944; // 'state 24' -> PAREN_CLOSE -> shift (target=1472, len=0) -> 'action 245'
-actionsTable[1549] = 2944; // 'state 24' -> QUANTIFIER -> shift (target=1472, len=0) -> 'action 246'
-actionsTable[1551] = 3840; // 'state 24' -> BRACKET_CLOSE -> shift (target=1920, len=0) -> 'action 247'
+actionsTable[1089] = 4; // 'state 17' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 217'
+actionsTable[1093] = 4; // 'state 17' -> B -> shift (target=2, len=0) -> 'action 218'
+actionsTable[1094] = 4; // 'state 17' -> F -> shift (target=2, len=0) -> 'action 219'
+actionsTable[1226] = 26; // 'state 19' -> UNION -> shift (target=13, len=0) -> 'action 220'
+actionsTable[1228] = 58; // 'state 19' -> PAREN_CLOSE -> shift (target=29, len=0) -> 'action 221'
+actionsTable[1280] = 2; // 'state 20' -> CHARACTER -> shift (target=1, len=0) -> 'action 222'
+actionsTable[1281] = 4; // 'state 20' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 223'
+actionsTable[1282] = 6; // 'state 20' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 224'
+actionsTable[1283] = 8; // 'state 20' -> BACKSLASH -> shift (target=4, len=0) -> 'action 225'
+actionsTable[1284] = 2; // 'state 20' -> X -> shift (target=1, len=0) -> 'action 226'
+actionsTable[1285] = 4; // 'state 20' -> B -> shift (target=2, len=0) -> 'action 227'
+actionsTable[1286] = 4; // 'state 20' -> F -> shift (target=2, len=0) -> 'action 228'
+actionsTable[1287] = 10; // 'state 20' -> CARET -> shift (target=5, len=0) -> 'action 229'
+actionsTable[1288] = 10; // 'state 20' -> DASH -> shift (target=5, len=0) -> 'action 230'
+actionsTable[1290] = 26; // 'state 20' -> UNION -> shift (target=13, len=0) -> 'action 231'
+actionsTable[1291] = 12; // 'state 20' -> PAREN_OPEN -> shift (target=6, len=0) -> 'action 232'
+actionsTable[1292] = 58; // 'state 20' -> PAREN_CLOSE -> shift (target=29, len=0) -> 'action 233'
+actionsTable[1294] = 14; // 'state 20' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 234'
+actionsTable[1536] = 2; // 'state 24' -> CHARACTER -> shift (target=1, len=0) -> 'action 235'
+actionsTable[1537] = 4; // 'state 24' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 236'
+actionsTable[1538] = 6; // 'state 24' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 237'
+actionsTable[1539] = 42; // 'state 24' -> BACKSLASH -> shift (target=21, len=0) -> 'action 238'
+actionsTable[1540] = 2; // 'state 24' -> X -> shift (target=1, len=0) -> 'action 239'
+actionsTable[1541] = 4; // 'state 24' -> B -> shift (target=2, len=0) -> 'action 240'
+actionsTable[1542] = 4; // 'state 24' -> F -> shift (target=2, len=0) -> 'action 241'
+actionsTable[1545] = 46; // 'state 24' -> DOT -> shift (target=23, len=0) -> 'action 242'
+actionsTable[1546] = 46; // 'state 24' -> UNION -> shift (target=23, len=0) -> 'action 243'
+actionsTable[1547] = 46; // 'state 24' -> PAREN_OPEN -> shift (target=23, len=0) -> 'action 244'
+actionsTable[1548] = 46; // 'state 24' -> PAREN_CLOSE -> shift (target=23, len=0) -> 'action 245'
+actionsTable[1549] = 46; // 'state 24' -> QUANTIFIER -> shift (target=23, len=0) -> 'action 246'
+actionsTable[1551] = 60; // 'state 24' -> BRACKET_CLOSE -> shift (target=30, len=0) -> 'action 247'
 actionsTable[1600] = 565; // 'state 25' -> CHARACTER -> reduce (target=26, len=1) -> 'action 248'
 actionsTable[1601] = 565; // 'state 25' -> HEX_NUMBER -> reduce (target=26, len=1) -> 'action 249'
 actionsTable[1602] = 565; // 'state 25' -> CONTROL_CHARACTER -> reduce (target=26, len=1) -> 'action 250'
@@ -404,7 +404,7 @@ actionsTable[1611] = 565; // 'state 25' -> PAREN_OPEN -> reduce (target=26, len=
 actionsTable[1612] = 565; // 'state 25' -> PAREN_CLOSE -> reduce (target=26, len=1) -> 'action 258'
 actionsTable[1613] = 565; // 'state 25' -> QUANTIFIER -> reduce (target=26, len=1) -> 'action 259'
 actionsTable[1615] = 565; // 'state 25' -> BRACKET_CLOSE -> reduce (target=26, len=1) -> 'action 260'
-actionsTable[1672] = 4096; // 'state 26' -> DASH -> shift (target=2048, len=0) -> 'action 261'
+actionsTable[1672] = 64; // 'state 26' -> DASH -> shift (target=32, len=0) -> 'action 261'
 actionsTable[1664] = 567; // 'state 26' -> CHARACTER -> reduce (target=27, len=1) -> 'action 262'
 actionsTable[1665] = 567; // 'state 26' -> HEX_NUMBER -> reduce (target=27, len=1) -> 'action 263'
 actionsTable[1666] = 567; // 'state 26' -> CONTROL_CHARACTER -> reduce (target=27, len=1) -> 'action 264'
@@ -418,14 +418,14 @@ actionsTable[1675] = 567; // 'state 26' -> PAREN_OPEN -> reduce (target=27, len=
 actionsTable[1676] = 567; // 'state 26' -> PAREN_CLOSE -> reduce (target=27, len=1) -> 'action 272'
 actionsTable[1677] = 567; // 'state 26' -> QUANTIFIER -> reduce (target=27, len=1) -> 'action 273'
 actionsTable[1679] = 567; // 'state 26' -> BRACKET_CLOSE -> reduce (target=27, len=1) -> 'action 274'
-actionsTable[1346] = 384; // 'state 21' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 275'
-actionsTable[1347] = 4224; // 'state 21' -> BACKSLASH -> shift (target=2112, len=0) -> 'action 276'
-actionsTable[1349] = 384; // 'state 21' -> B -> shift (target=192, len=0) -> 'action 277'
-actionsTable[1350] = 384; // 'state 21' -> F -> shift (target=192, len=0) -> 'action 278'
-actionsTable[1351] = 4224; // 'state 21' -> CARET -> shift (target=2112, len=0) -> 'action 279'
-actionsTable[1352] = 4224; // 'state 21' -> DASH -> shift (target=2112, len=0) -> 'action 280'
-actionsTable[1358] = 4224; // 'state 21' -> BRACKET_OPEN -> shift (target=2112, len=0) -> 'action 281'
-actionsTable[1359] = 4224; // 'state 21' -> BRACKET_CLOSE -> shift (target=2112, len=0) -> 'action 282'
+actionsTable[1346] = 6; // 'state 21' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 275'
+actionsTable[1347] = 66; // 'state 21' -> BACKSLASH -> shift (target=33, len=0) -> 'action 276'
+actionsTable[1349] = 6; // 'state 21' -> B -> shift (target=3, len=0) -> 'action 277'
+actionsTable[1350] = 6; // 'state 21' -> F -> shift (target=3, len=0) -> 'action 278'
+actionsTable[1351] = 66; // 'state 21' -> CARET -> shift (target=33, len=0) -> 'action 279'
+actionsTable[1352] = 66; // 'state 21' -> DASH -> shift (target=33, len=0) -> 'action 280'
+actionsTable[1358] = 66; // 'state 21' -> BRACKET_OPEN -> shift (target=33, len=0) -> 'action 281'
+actionsTable[1359] = 66; // 'state 21' -> BRACKET_CLOSE -> shift (target=33, len=0) -> 'action 282'
 actionsTable[1472] = 567; // 'state 23' -> CHARACTER -> reduce (target=27, len=1) -> 'action 283'
 actionsTable[1473] = 567; // 'state 23' -> HEX_NUMBER -> reduce (target=27, len=1) -> 'action 284'
 actionsTable[1474] = 567; // 'state 23' -> CONTROL_CHARACTER -> reduce (target=27, len=1) -> 'action 285'
@@ -439,35 +439,35 @@ actionsTable[1483] = 567; // 'state 23' -> PAREN_OPEN -> reduce (target=27, len=
 actionsTable[1484] = 567; // 'state 23' -> PAREN_CLOSE -> reduce (target=27, len=1) -> 'action 293'
 actionsTable[1485] = 567; // 'state 23' -> QUANTIFIER -> reduce (target=27, len=1) -> 'action 294'
 actionsTable[1487] = 567; // 'state 23' -> BRACKET_CLOSE -> reduce (target=27, len=1) -> 'action 295'
-actionsTable[1408] = 128; // 'state 22' -> CHARACTER -> shift (target=64, len=0) -> 'action 296'
-actionsTable[1409] = 256; // 'state 22' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 297'
-actionsTable[1410] = 384; // 'state 22' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 298'
-actionsTable[1411] = 2688; // 'state 22' -> BACKSLASH -> shift (target=1344, len=0) -> 'action 299'
-actionsTable[1412] = 128; // 'state 22' -> X -> shift (target=64, len=0) -> 'action 300'
-actionsTable[1413] = 256; // 'state 22' -> B -> shift (target=128, len=0) -> 'action 301'
-actionsTable[1414] = 256; // 'state 22' -> F -> shift (target=128, len=0) -> 'action 302'
-actionsTable[1417] = 2944; // 'state 22' -> DOT -> shift (target=1472, len=0) -> 'action 303'
-actionsTable[1418] = 2944; // 'state 22' -> UNION -> shift (target=1472, len=0) -> 'action 304'
-actionsTable[1419] = 2944; // 'state 22' -> PAREN_OPEN -> shift (target=1472, len=0) -> 'action 305'
-actionsTable[1420] = 2944; // 'state 22' -> PAREN_CLOSE -> shift (target=1472, len=0) -> 'action 306'
-actionsTable[1421] = 2944; // 'state 22' -> QUANTIFIER -> shift (target=1472, len=0) -> 'action 307'
-actionsTable[1728] = 128; // 'state 27' -> CHARACTER -> shift (target=64, len=0) -> 'action 308'
-actionsTable[1729] = 256; // 'state 27' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 309'
-actionsTable[1730] = 384; // 'state 27' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 310'
-actionsTable[1731] = 512; // 'state 27' -> BACKSLASH -> shift (target=256, len=0) -> 'action 311'
-actionsTable[1732] = 128; // 'state 27' -> X -> shift (target=64, len=0) -> 'action 312'
-actionsTable[1733] = 256; // 'state 27' -> B -> shift (target=128, len=0) -> 'action 313'
-actionsTable[1734] = 256; // 'state 27' -> F -> shift (target=128, len=0) -> 'action 314'
-actionsTable[1735] = 640; // 'state 27' -> CARET -> shift (target=320, len=0) -> 'action 315'
-actionsTable[1736] = 640; // 'state 27' -> DASH -> shift (target=320, len=0) -> 'action 316'
-actionsTable[1739] = 768; // 'state 27' -> PAREN_OPEN -> shift (target=384, len=0) -> 'action 317'
-actionsTable[1742] = 896; // 'state 27' -> BRACKET_OPEN -> shift (target=448, len=0) -> 'action 318'
+actionsTable[1408] = 2; // 'state 22' -> CHARACTER -> shift (target=1, len=0) -> 'action 296'
+actionsTable[1409] = 4; // 'state 22' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 297'
+actionsTable[1410] = 6; // 'state 22' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 298'
+actionsTable[1411] = 42; // 'state 22' -> BACKSLASH -> shift (target=21, len=0) -> 'action 299'
+actionsTable[1412] = 2; // 'state 22' -> X -> shift (target=1, len=0) -> 'action 300'
+actionsTable[1413] = 4; // 'state 22' -> B -> shift (target=2, len=0) -> 'action 301'
+actionsTable[1414] = 4; // 'state 22' -> F -> shift (target=2, len=0) -> 'action 302'
+actionsTable[1417] = 46; // 'state 22' -> DOT -> shift (target=23, len=0) -> 'action 303'
+actionsTable[1418] = 46; // 'state 22' -> UNION -> shift (target=23, len=0) -> 'action 304'
+actionsTable[1419] = 46; // 'state 22' -> PAREN_OPEN -> shift (target=23, len=0) -> 'action 305'
+actionsTable[1420] = 46; // 'state 22' -> PAREN_CLOSE -> shift (target=23, len=0) -> 'action 306'
+actionsTable[1421] = 46; // 'state 22' -> QUANTIFIER -> shift (target=23, len=0) -> 'action 307'
+actionsTable[1728] = 2; // 'state 27' -> CHARACTER -> shift (target=1, len=0) -> 'action 308'
+actionsTable[1729] = 4; // 'state 27' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 309'
+actionsTable[1730] = 6; // 'state 27' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 310'
+actionsTable[1731] = 8; // 'state 27' -> BACKSLASH -> shift (target=4, len=0) -> 'action 311'
+actionsTable[1732] = 2; // 'state 27' -> X -> shift (target=1, len=0) -> 'action 312'
+actionsTable[1733] = 4; // 'state 27' -> B -> shift (target=2, len=0) -> 'action 313'
+actionsTable[1734] = 4; // 'state 27' -> F -> shift (target=2, len=0) -> 'action 314'
+actionsTable[1735] = 10; // 'state 27' -> CARET -> shift (target=5, len=0) -> 'action 315'
+actionsTable[1736] = 10; // 'state 27' -> DASH -> shift (target=5, len=0) -> 'action 316'
+actionsTable[1739] = 12; // 'state 27' -> PAREN_OPEN -> shift (target=6, len=0) -> 'action 317'
+actionsTable[1742] = 14; // 'state 27' -> BRACKET_OPEN -> shift (target=7, len=0) -> 'action 318'
 actionsTable[1738] = 1579; // 'state 27' -> UNION -> reduce (target=21, len=3) -> 'action 319'
 actionsTable[1740] = 1579; // 'state 27' -> PAREN_CLOSE -> reduce (target=21, len=3) -> 'action 320'
 actionsTable[1744] = 1579; // 'state 27' -> @par-gen.EOF -> reduce (target=21, len=3) -> 'action 321'
-actionsTable[1793] = 256; // 'state 28' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 322'
-actionsTable[1797] = 256; // 'state 28' -> B -> shift (target=128, len=0) -> 'action 323'
-actionsTable[1798] = 256; // 'state 28' -> F -> shift (target=128, len=0) -> 'action 324'
+actionsTable[1793] = 4; // 'state 28' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 322'
+actionsTable[1797] = 4; // 'state 28' -> B -> shift (target=2, len=0) -> 'action 323'
+actionsTable[1798] = 4; // 'state 28' -> F -> shift (target=2, len=0) -> 'action 324'
 actionsTable[1856] = 1585; // 'state 29' -> CHARACTER -> reduce (target=24, len=3) -> 'action 325'
 actionsTable[1857] = 1585; // 'state 29' -> HEX_NUMBER -> reduce (target=24, len=3) -> 'action 326'
 actionsTable[1858] = 1585; // 'state 29' -> CONTROL_CHARACTER -> reduce (target=24, len=3) -> 'action 327'
@@ -511,12 +511,12 @@ actionsTable[1995] = 1077; // 'state 31' -> PAREN_OPEN -> reduce (target=26, len
 actionsTable[1996] = 1077; // 'state 31' -> PAREN_CLOSE -> reduce (target=26, len=2) -> 'action 365'
 actionsTable[1997] = 1077; // 'state 31' -> QUANTIFIER -> reduce (target=26, len=2) -> 'action 366'
 actionsTable[1999] = 1077; // 'state 31' -> BRACKET_CLOSE -> reduce (target=26, len=2) -> 'action 367'
-actionsTable[2048] = 128; // 'state 32' -> CHARACTER -> shift (target=64, len=0) -> 'action 368'
-actionsTable[2049] = 256; // 'state 32' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 369'
-actionsTable[2050] = 384; // 'state 32' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 370'
-actionsTable[2052] = 128; // 'state 32' -> X -> shift (target=64, len=0) -> 'action 371'
-actionsTable[2053] = 256; // 'state 32' -> B -> shift (target=128, len=0) -> 'action 372'
-actionsTable[2054] = 256; // 'state 32' -> F -> shift (target=128, len=0) -> 'action 373'
+actionsTable[2048] = 2; // 'state 32' -> CHARACTER -> shift (target=1, len=0) -> 'action 368'
+actionsTable[2049] = 4; // 'state 32' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 369'
+actionsTable[2050] = 6; // 'state 32' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 370'
+actionsTable[2052] = 2; // 'state 32' -> X -> shift (target=1, len=0) -> 'action 371'
+actionsTable[2053] = 4; // 'state 32' -> B -> shift (target=2, len=0) -> 'action 372'
+actionsTable[2054] = 4; // 'state 32' -> F -> shift (target=2, len=0) -> 'action 373'
 actionsTable[2112] = 1079; // 'state 33' -> CHARACTER -> reduce (target=27, len=2) -> 'action 374'
 actionsTable[2113] = 1079; // 'state 33' -> HEX_NUMBER -> reduce (target=27, len=2) -> 'action 375'
 actionsTable[2114] = 1079; // 'state 33' -> CONTROL_CHARACTER -> reduce (target=27, len=2) -> 'action 376'
@@ -530,19 +530,19 @@ actionsTable[2123] = 1079; // 'state 33' -> PAREN_OPEN -> reduce (target=27, len
 actionsTable[2124] = 1079; // 'state 33' -> PAREN_CLOSE -> reduce (target=27, len=2) -> 'action 384'
 actionsTable[2125] = 1079; // 'state 33' -> QUANTIFIER -> reduce (target=27, len=2) -> 'action 385'
 actionsTable[2127] = 1079; // 'state 33' -> BRACKET_CLOSE -> reduce (target=27, len=2) -> 'action 386'
-actionsTable[2176] = 128; // 'state 34' -> CHARACTER -> shift (target=64, len=0) -> 'action 387'
-actionsTable[2177] = 256; // 'state 34' -> HEX_NUMBER -> shift (target=128, len=0) -> 'action 388'
-actionsTable[2178] = 384; // 'state 34' -> CONTROL_CHARACTER -> shift (target=192, len=0) -> 'action 389'
-actionsTable[2179] = 2688; // 'state 34' -> BACKSLASH -> shift (target=1344, len=0) -> 'action 390'
-actionsTable[2180] = 128; // 'state 34' -> X -> shift (target=64, len=0) -> 'action 391'
-actionsTable[2181] = 256; // 'state 34' -> B -> shift (target=128, len=0) -> 'action 392'
-actionsTable[2182] = 256; // 'state 34' -> F -> shift (target=128, len=0) -> 'action 393'
-actionsTable[2185] = 2944; // 'state 34' -> DOT -> shift (target=1472, len=0) -> 'action 394'
-actionsTable[2186] = 2944; // 'state 34' -> UNION -> shift (target=1472, len=0) -> 'action 395'
-actionsTable[2187] = 2944; // 'state 34' -> PAREN_OPEN -> shift (target=1472, len=0) -> 'action 396'
-actionsTable[2188] = 2944; // 'state 34' -> PAREN_CLOSE -> shift (target=1472, len=0) -> 'action 397'
-actionsTable[2189] = 2944; // 'state 34' -> QUANTIFIER -> shift (target=1472, len=0) -> 'action 398'
-actionsTable[2191] = 4736; // 'state 34' -> BRACKET_CLOSE -> shift (target=2368, len=0) -> 'action 399'
+actionsTable[2176] = 2; // 'state 34' -> CHARACTER -> shift (target=1, len=0) -> 'action 387'
+actionsTable[2177] = 4; // 'state 34' -> HEX_NUMBER -> shift (target=2, len=0) -> 'action 388'
+actionsTable[2178] = 6; // 'state 34' -> CONTROL_CHARACTER -> shift (target=3, len=0) -> 'action 389'
+actionsTable[2179] = 42; // 'state 34' -> BACKSLASH -> shift (target=21, len=0) -> 'action 390'
+actionsTable[2180] = 2; // 'state 34' -> X -> shift (target=1, len=0) -> 'action 391'
+actionsTable[2181] = 4; // 'state 34' -> B -> shift (target=2, len=0) -> 'action 392'
+actionsTable[2182] = 4; // 'state 34' -> F -> shift (target=2, len=0) -> 'action 393'
+actionsTable[2185] = 46; // 'state 34' -> DOT -> shift (target=23, len=0) -> 'action 394'
+actionsTable[2186] = 46; // 'state 34' -> UNION -> shift (target=23, len=0) -> 'action 395'
+actionsTable[2187] = 46; // 'state 34' -> PAREN_OPEN -> shift (target=23, len=0) -> 'action 396'
+actionsTable[2188] = 46; // 'state 34' -> PAREN_CLOSE -> shift (target=23, len=0) -> 'action 397'
+actionsTable[2189] = 46; // 'state 34' -> QUANTIFIER -> shift (target=23, len=0) -> 'action 398'
+actionsTable[2191] = 74; // 'state 34' -> BRACKET_CLOSE -> shift (target=37, len=0) -> 'action 399'
 actionsTable[2240] = 2107; // 'state 35' -> CHARACTER -> reduce (target=29, len=4) -> 'action 400'
 actionsTable[2241] = 2107; // 'state 35' -> HEX_NUMBER -> reduce (target=29, len=4) -> 'action 401'
 actionsTable[2242] = 2107; // 'state 35' -> CONTROL_CHARACTER -> reduce (target=29, len=4) -> 'action 402'
@@ -588,92 +588,92 @@ actionsTable[2382] = 2099; // 'state 37' -> BRACKET_OPEN -> reduce (target=25, l
 actionsTable[2384] = 2099; // 'state 37' -> @par-gen.EOF -> reduce (target=25, len=4) -> 'action 442'
 
 const gotoTable = new Uint32Array(2432);
-gotoTable[19] = 33554432; // 'state 8'
-gotoTable[20] = 37748736; // 'state 9'
-gotoTable[21] = 41943040; // 'state 10'
-gotoTable[22] = 46137344; // 'state 11'
-gotoTable[23] = 46137344; // 'state 11'
-gotoTable[29] = 50331648; // 'state 12'
-gotoTable[24] = 50331648; // 'state 12'
-gotoTable[25] = 50331648; // 'state 12'
-gotoTable[31] = 20971520; // 'state 5'
-gotoTable[32] = 20971520; // 'state 5'
-gotoTable[30] = 4194304; // 'state 1'
-gotoTable[727] = 58720256; // 'state 14'
-gotoTable[733] = 50331648; // 'state 12'
-gotoTable[728] = 50331648; // 'state 12'
-gotoTable[729] = 50331648; // 'state 12'
-gotoTable[735] = 20971520; // 'state 5'
-gotoTable[736] = 20971520; // 'state 5'
-gotoTable[734] = 4194304; // 'state 1'
-gotoTable[289] = 75497472; // 'state 18'
-gotoTable[288] = 67108864; // 'state 16'
-gotoTable[405] = 79691776; // 'state 19'
-gotoTable[406] = 83886080; // 'state 20'
-gotoTable[407] = 83886080; // 'state 20'
-gotoTable[413] = 50331648; // 'state 12'
-gotoTable[408] = 50331648; // 'state 12'
-gotoTable[409] = 50331648; // 'state 12'
-gotoTable[415] = 20971520; // 'state 5'
-gotoTable[416] = 20971520; // 'state 5'
-gotoTable[414] = 4194304; // 'state 1'
-gotoTable[474] = 100663296; // 'state 24'
-gotoTable[475] = 104857600; // 'state 25'
-gotoTable[479] = 109051904; // 'state 26'
-gotoTable[480] = 109051904; // 'state 26'
-gotoTable[476] = 96468992; // 'state 23'
-gotoTable[478] = 4194304; // 'state 1'
-gotoTable[854] = 113246208; // 'state 27'
-gotoTable[855] = 113246208; // 'state 27'
-gotoTable[861] = 50331648; // 'state 12'
-gotoTable[856] = 50331648; // 'state 12'
-gotoTable[857] = 50331648; // 'state 12'
-gotoTable[863] = 20971520; // 'state 5'
-gotoTable[864] = 20971520; // 'state 5'
-gotoTable[862] = 4194304; // 'state 1'
-gotoTable[1118] = 117440512; // 'state 28'
-gotoTable[1303] = 58720256; // 'state 14'
-gotoTable[1309] = 50331648; // 'state 12'
-gotoTable[1304] = 50331648; // 'state 12'
-gotoTable[1305] = 50331648; // 'state 12'
-gotoTable[1311] = 20971520; // 'state 5'
-gotoTable[1312] = 20971520; // 'state 5'
-gotoTable[1310] = 4194304; // 'state 1'
-gotoTable[1563] = 130023424; // 'state 31'
-gotoTable[1567] = 109051904; // 'state 26'
-gotoTable[1568] = 109051904; // 'state 26'
-gotoTable[1564] = 96468992; // 'state 23'
-gotoTable[1566] = 4194304; // 'state 1'
-gotoTable[1376] = 138412032; // 'state 33'
-gotoTable[1434] = 142606336; // 'state 34'
-gotoTable[1435] = 104857600; // 'state 25'
-gotoTable[1439] = 109051904; // 'state 26'
-gotoTable[1440] = 109051904; // 'state 26'
-gotoTable[1436] = 96468992; // 'state 23'
-gotoTable[1438] = 4194304; // 'state 1'
-gotoTable[1751] = 58720256; // 'state 14'
-gotoTable[1757] = 50331648; // 'state 12'
-gotoTable[1752] = 50331648; // 'state 12'
-gotoTable[1753] = 50331648; // 'state 12'
-gotoTable[1759] = 20971520; // 'state 5'
-gotoTable[1760] = 20971520; // 'state 5'
-gotoTable[1758] = 4194304; // 'state 1'
-gotoTable[1822] = 146800640; // 'state 35'
-gotoTable[2079] = 150994944; // 'state 36'
-gotoTable[2078] = 4194304; // 'state 1'
-gotoTable[2080] = 150994944; // 'state 36'
-gotoTable[2203] = 130023424; // 'state 31'
-gotoTable[2207] = 109051904; // 'state 26'
-gotoTable[2208] = 109051904; // 'state 26'
-gotoTable[2204] = 96468992; // 'state 23'
-gotoTable[2206] = 4194304; // 'state 1'
+gotoTable[19] = 8388608; // 'state 8'
+gotoTable[20] = 9437184; // 'state 9'
+gotoTable[21] = 10485760; // 'state 10'
+gotoTable[22] = 11534336; // 'state 11'
+gotoTable[23] = 11534336; // 'state 11'
+gotoTable[29] = 12582912; // 'state 12'
+gotoTable[24] = 12582912; // 'state 12'
+gotoTable[25] = 12582912; // 'state 12'
+gotoTable[31] = 5242880; // 'state 5'
+gotoTable[32] = 5242880; // 'state 5'
+gotoTable[30] = 1048576; // 'state 1'
+gotoTable[727] = 14680064; // 'state 14'
+gotoTable[733] = 12582912; // 'state 12'
+gotoTable[728] = 12582912; // 'state 12'
+gotoTable[729] = 12582912; // 'state 12'
+gotoTable[735] = 5242880; // 'state 5'
+gotoTable[736] = 5242880; // 'state 5'
+gotoTable[734] = 1048576; // 'state 1'
+gotoTable[289] = 18874368; // 'state 18'
+gotoTable[288] = 16777216; // 'state 16'
+gotoTable[405] = 19922944; // 'state 19'
+gotoTable[406] = 20971520; // 'state 20'
+gotoTable[407] = 20971520; // 'state 20'
+gotoTable[413] = 12582912; // 'state 12'
+gotoTable[408] = 12582912; // 'state 12'
+gotoTable[409] = 12582912; // 'state 12'
+gotoTable[415] = 5242880; // 'state 5'
+gotoTable[416] = 5242880; // 'state 5'
+gotoTable[414] = 1048576; // 'state 1'
+gotoTable[474] = 25165824; // 'state 24'
+gotoTable[475] = 26214400; // 'state 25'
+gotoTable[479] = 27262976; // 'state 26'
+gotoTable[480] = 27262976; // 'state 26'
+gotoTable[476] = 24117248; // 'state 23'
+gotoTable[478] = 1048576; // 'state 1'
+gotoTable[854] = 28311552; // 'state 27'
+gotoTable[855] = 28311552; // 'state 27'
+gotoTable[861] = 12582912; // 'state 12'
+gotoTable[856] = 12582912; // 'state 12'
+gotoTable[857] = 12582912; // 'state 12'
+gotoTable[863] = 5242880; // 'state 5'
+gotoTable[864] = 5242880; // 'state 5'
+gotoTable[862] = 1048576; // 'state 1'
+gotoTable[1118] = 29360128; // 'state 28'
+gotoTable[1303] = 14680064; // 'state 14'
+gotoTable[1309] = 12582912; // 'state 12'
+gotoTable[1304] = 12582912; // 'state 12'
+gotoTable[1305] = 12582912; // 'state 12'
+gotoTable[1311] = 5242880; // 'state 5'
+gotoTable[1312] = 5242880; // 'state 5'
+gotoTable[1310] = 1048576; // 'state 1'
+gotoTable[1563] = 32505856; // 'state 31'
+gotoTable[1567] = 27262976; // 'state 26'
+gotoTable[1568] = 27262976; // 'state 26'
+gotoTable[1564] = 24117248; // 'state 23'
+gotoTable[1566] = 1048576; // 'state 1'
+gotoTable[1376] = 34603008; // 'state 33'
+gotoTable[1434] = 35651584; // 'state 34'
+gotoTable[1435] = 26214400; // 'state 25'
+gotoTable[1439] = 27262976; // 'state 26'
+gotoTable[1440] = 27262976; // 'state 26'
+gotoTable[1436] = 24117248; // 'state 23'
+gotoTable[1438] = 1048576; // 'state 1'
+gotoTable[1751] = 14680064; // 'state 14'
+gotoTable[1757] = 12582912; // 'state 12'
+gotoTable[1752] = 12582912; // 'state 12'
+gotoTable[1753] = 12582912; // 'state 12'
+gotoTable[1759] = 5242880; // 'state 5'
+gotoTable[1760] = 5242880; // 'state 5'
+gotoTable[1758] = 1048576; // 'state 1'
+gotoTable[1822] = 36700160; // 'state 35'
+gotoTable[2079] = 37748736; // 'state 36'
+gotoTable[2078] = 1048576; // 'state 1'
+gotoTable[2080] = 37748736; // 'state 36'
+gotoTable[2203] = 32505856; // 'state 31'
+gotoTable[2207] = 27262976; // 'state 26'
+gotoTable[2208] = 27262976; // 'state 26'
+gotoTable[2204] = 24117248; // 'state 23'
+gotoTable[2206] = 1048576; // 'state 1'
 
 const nextToken = nextTokenInitial;
 
 /**
  * Each 32-bit stack entry packs:
- * - low 16 bits: tree pointer (tp) of the shifted/reduced CST node
- * - high 16 bits: parser state
+ * - low 20 bits: tree pointer (tp) of the shifted/reduced CST node (up to 1,048,575 words)
+ * - high 12 bits: parser state
  */
 const stack = new Uint32Array(16384);
 
@@ -681,11 +681,11 @@ const stack = new Uint32Array(16384);
  * This typed array contains the syntax tree from a parse.
  * Each CST node occupies 3 uint32 words:
  * - word 0 (tp + 0): name | (numChildren << 8)
- * - word 1 (tp + 1): start | (end << 16) (leaf) or firstChild (internal)
+ * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or firstChild (internal)
  * - word 2 (tp + 2): nextSibling
- * This enables 32-bit coalesced stores and fast DFS traversal.
+ * This enables 32-bit coalesced stores and fast DFS traversal on documents up to 4 MiB.
  */
-const tree = new Uint32Array(16384);
+const tree = new Uint32Array(524288);
 
 const proxyHandler = {
   get(target, prop, receiver) {
@@ -696,14 +696,26 @@ const proxyHandler = {
     switch (prop) {
       case "name":
         return parserSymbols[word0 & 0xff];
-      case "start":
-        return nChildren > 0
-          ? receiver.items[0].start
-          : tree[pointer + 1] & 0xffff;
-      case "end":
-        return nChildren > 0
-          ? receiver.items[nChildren - 1].end
-          : tree[pointer + 1] >>> 16;
+      case "start": {
+        let p = pointer;
+        while (tree[p] >>> 8 > 0) {
+          p = tree[p + 1] & 0xfffff;
+        }
+        const span = tree[p + 1];
+        return (span & 0x3fffff) - (span >>> 22);
+      }
+      case "end": {
+        let p = pointer;
+        let n = nChildren;
+        while (n > 0) {
+          p = tree[p + 1] & 0xfffff;
+          for (let i = 1; i < n; i++) {
+            p = tree[p + 2];
+          }
+          n = tree[p] >>> 8;
+        }
+        return tree[p + 1] & 0x3fffff;
+      }
       case "value":
         return stream.subarray(receiver.start, receiver.end);
       case "items": {
@@ -711,13 +723,13 @@ const proxyHandler = {
           return undefined;
         }
 
-        const firstChild = tree[pointer + 1] & 0xffff;
-        const children = [createProxy(stream, firstChild)];
-        let nextChild = tree[firstChild + 2];
+        const children = new Array(nChildren);
+        let child = tree[pointer + 1] & 0xfffff;
+        children[0] = createProxy(stream, child);
 
         for (let i = 1; i < nChildren; i++) {
-          children.push(createProxy(stream, nextChild));
-          nextChild = tree[nextChild + 2];
+          child = tree[child + 2];
+          children[i] = createProxy(stream, child);
         }
 
         return children;
@@ -762,7 +774,7 @@ function parse(input) {
 
   let result = nextToken(stream, 0);
   let lookahead = result.state;
-  let lookaheadSpan = result.start | (result.end << 16);
+  let lookaheadSpan = result.end | ((result.end - result.start) << 22);
 
   stack[0] = 0; // starting state
   let sp = 0;
@@ -772,15 +784,14 @@ function parse(input) {
 
   while (true) {
     const top = stack[sp];
-    const currentState = top >>> 16;
+    const currentState = top >>> 20;
 
-    const actionLookup = actionsTable[currentState + lookahead];
+    const actionLookup = actionsTable[currentState * 64 + lookahead];
     if (actionLookup >= 0xfffe) {
       if (actionLookup === 0xfffe) {
         return createProxy(stream, tp - 3);
       }
-      const lookaheadStart = (lookaheadSpan << 16) >> 16;
-      const context = input.toString().substr(lookaheadStart, 10);
+      const context = input.toString().substr(result.start, 10);
       throw new Error(
         `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
       );
@@ -791,14 +802,14 @@ function parse(input) {
 
       tree[tp] = lookahead; // name (and nChildren = 0)
       tree[tp + 1] = lookaheadSpan;
-      tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
+      tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
 
       sp += 1;
-      stack[sp] = tp | (actionLookup << 15);
+      stack[sp] = tp | (actionLookup << 19);
 
-      result = nextToken(stream, lookaheadSpan >>> 16);
+      result = nextToken(stream, lookaheadSpan & 0x3fffff);
       lookahead = result.state;
-      lookaheadSpan = result.start | (result.end << 16);
+      lookaheadSpan = result.end | ((result.end - result.start) << 22);
     } else {
       // reduce
       const word0 = actionLookup >>> 1;
@@ -809,8 +820,8 @@ function parse(input) {
       tree[tp] = word0; // name and number of children
 
       const rtop = stack[sp];
-      const nextState = gotoTable[(rtop >>> 16) + actionSymbol];
-      tree[(rtop & 0xffff) + 2] = tp; // next sibling
+      const nextState = gotoTable[(rtop >>> 20) * 64 + actionSymbol];
+      tree[(rtop & 0xfffff) + 2] = tp; // next sibling
 
       sp += 1;
       tree[tp + 1] = stack[sp]; // first child

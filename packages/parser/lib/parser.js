@@ -301,12 +301,24 @@ export function generate(grammar, options) {
     for (
       let i = 0,
         n =
-          Math.pow(2, Math.ceil(Math.sqrt(parserSymbols.length))) -
+          Math.pow(2, Math.ceil(Math.log2(parserSymbols.length))) -
           parserSymbols.length;
       i < n;
       i++
     ) {
       parserSymbols.push(/** @type {*} */ (undefined));
+    }
+
+    if (byteTableSkippedTokens.size > 0) {
+      for (const data of Object.values(lexers)) {
+        data.tokenIds = data.tokenNames.map((name) => {
+          if (name === undefined) {
+            return undefined;
+          }
+          const idx = parserSymbols.indexOf(name);
+          return idx === -1 ? undefined : idx;
+        });
+      }
     }
 
     const parserSymbolIds = parserSymbols.map((symbol) => {
