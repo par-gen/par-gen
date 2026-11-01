@@ -456,7 +456,7 @@ class CstNode {
   }
 }
 
-function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan, result) {
+function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan) {
   let s = arena.stack;
   let t = tp === 3 ? new Uint32Array(arena.tree.length) : arena.tree;
   if (tp === 3) {
@@ -474,7 +474,7 @@ function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan, result) {
     const currentState = top >>> 20;
 
     const actionLookup = actionsTable[currentState + lookahead];
-    if (actionLookup >= 0xfffe) {
+    if ((actionLookup & 1) === 0) {
       if (actionLookup === 0xfffe) {
         if (s !== arena.stack || t !== arena.tree) {
           delete arena.stack;
@@ -485,13 +485,7 @@ function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan, result) {
         }
         return new CstNode(stream, t, tp - 3);
       }
-      const context = input.toString().substr(result.start, 10);
-      throw new Error(
-        `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
-      );
-    }
 
-    if ((actionLookup & 1) === 0) {
       t[tp] = lookahead;
       t[tp + 1] = lookaheadSpan;
       t[(top & 0xfffff) + 2] = tp;
@@ -499,10 +493,20 @@ function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan, result) {
       sp += 1;
       s[sp] = tp | (actionLookup << 19);
 
-      result = nextToken(stream, lookaheadSpan & 0x3fffff);
-      lookahead = result.state;
-      lookaheadSpan = result.end | ((result.end - result.start) << 22);
+      const res = nextToken(stream, lookaheadSpan & 0x3fffff);
+      lookahead = res.state;
+      lookaheadSpan = res.end | ((res.end - res.start) << 22);
     } else {
+      if (actionLookup === 0xffff) {
+        const errStart =
+          (lookaheadSpan & 0x3fffff) === 0x3fffff
+            ? -1
+            : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
+        const context = input.toString().substr(errStart, 10);
+        throw new Error(
+          `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
+        );
+      }
       const word0 = actionLookup >>> 1;
       const actionSymbol = word0 & 0xff;
       const stackItemsToReduce = word0 >>> 8;
@@ -539,14 +543,14 @@ function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan, result) {
 function parse(input) {
   const stream = typeof input === "string" ? Buffer.from(input) : input;
 
-  let result = nextToken(stream, 0);
-  let lookahead = result.state;
-  let lookaheadSpan = result.end | ((result.end - result.start) << 22);
+  const firstRes = nextToken(stream, 0);
+  let lookahead = firstRes.state;
+  let lookaheadSpan = firstRes.end | ((firstRes.end - firstRes.start) << 22);
 
   const stack = arena.stack;
   const tree = arena.tree;
   if (stream.length >>> 1 > tree.length) {
-    return parseCold(stream, input, 0, 3, lookahead, lookaheadSpan, result);
+    return parseCold(stream, input, 0, 3, lookahead, lookaheadSpan);
   }
 
   stack[0] = 0; // starting state
@@ -560,18 +564,11 @@ function parse(input) {
     const currentState = top >>> 20;
 
     const actionLookup = actionsTable[currentState + lookahead];
-    if (actionLookup >= 0xfffe) {
+    if ((actionLookup & 1) === 0) {
+      // shift
       if (actionLookup === 0xfffe) {
         return new CstNode(stream, tree, tp - 3);
       }
-      const context = input.toString().substr(result.start, 10);
-      throw new Error(
-        `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
-      );
-    }
-
-    if ((actionLookup & 1) === 0) {
-      // shift
 
       tree[tp] = lookahead; // name (and nChildren = 0)
       tree[tp + 1] = lookaheadSpan;
@@ -580,11 +577,21 @@ function parse(input) {
       sp += 1;
       stack[sp] = tp | (actionLookup << 19);
 
-      result = nextToken(stream, lookaheadSpan & 0x3fffff);
-      lookahead = result.state;
-      lookaheadSpan = result.end | ((result.end - result.start) << 22);
+      const res = nextToken(stream, lookaheadSpan & 0x3fffff);
+      lookahead = res.state;
+      lookaheadSpan = res.end | ((res.end - res.start) << 22);
     } else {
       // reduce
+      if (actionLookup === 0xffff) {
+        const errStart =
+          (lookaheadSpan & 0x3fffff) === 0x3fffff
+            ? -1
+            : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
+        const context = input.toString().substr(errStart, 10);
+        throw new Error(
+          `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
+        );
+      }
       const word0 = actionLookup >>> 1;
       const actionSymbol = word0 & 0xff;
       const stackItemsToReduce = word0 >>> 8;
@@ -603,7 +610,7 @@ function parse(input) {
 
     tp += 3;
     if (tp >= tree.length - 2) {
-      return parseCold(stream, input, sp, tp, lookahead, lookaheadSpan, result);
+      return parseCold(stream, input, sp, tp, lookahead, lookaheadSpan);
     }
   }
 }

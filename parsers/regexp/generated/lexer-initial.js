@@ -45,12 +45,7 @@ const next = (input, offset) => {
   let i = offset & 0x7fffffff;
   const l = input.length;
 
-  while (i < l) {
-    state = table[state + input[i++]];
-    if (state <= 12) {
-      break;
-    }
-  }
+  while (i < l && (state = table[state + input[i++]]) > 12);
 
   state -= 1;
   if (state >>> 0 >= 12) {

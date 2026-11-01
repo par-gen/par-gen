@@ -371,12 +371,10 @@ export class JavaScriptBaseCodegen {
         offset = i;`
             : ""
         }
-        while (i < l) {
-          state = table[state + input[i++]];
-          if (state <= ${remappedLastFinal}) {
-            break;
-          }
-        }
+        while (
+          i < l &&
+          (state = table[state + input[i++]]) > ${remappedLastFinal}
+        );
 
         state -= 1;
         if (state >>> 0 >= ${remappedLastFinal}) {
@@ -413,11 +411,14 @@ export class JavaScriptBaseCodegen {
             : ""
         }
         while (i < l) {
-          state = table[state + input[i++]];
+          while (
+            i < l &&
+            (state = table[state + input[i++]]) > ${remappedLastFinal}
+          );
+          if (state <= ${remappedLastDeadEndFinal}) {
+            break;
+          }
           if (state <= ${remappedLastFinal}) {
-            if (state <= ${remappedLastDeadEndFinal}) {
-              break;
-            }
             ${
               distinctContinuableTokenIds.length === 1
                 ? ""
@@ -456,33 +457,43 @@ export class JavaScriptBaseCodegen {
           let state = ${remappedStart};
           let successState = 0;
           let successPos = 0;
-          while (i < l) {
-            state = table[state + input[i++]];
-            if (state <= ${remappedLastFinal}) {
-              ${
-                deadEndFinals.length === finals.length
-                  ? `if (state !== 0) {
+          ${
+            deadEndFinals.length === finals.length
+              ? `while (
+            i < l &&
+            (state = table[state + input[i++]]) > ${remappedLastFinal}
+          );
+          if (state <= ${remappedLastFinal} && state !== 0) {
+            successState = state;
+            successPos = i;
+          }`
+              : `while (i < l) {
+            while (
+              i < l &&
+              (state = table[state + input[i++]]) > ${remappedLastFinal}
+            );
+            ${
+              deadEndFinals.length > 0
+                ? `if (state <= ${remappedLastDeadEndFinal}) {
+              if (state !== 0) {
                 successState = state;
                 successPos = i;
               }
-              break;`
-                  : deadEndFinals.length > 0
-                  ? `if (state <= ${remappedLastDeadEndFinal}) {
-                if (state !== 0) {
-                  successState = state;
-                  successPos = i;
-                }
-                break;
-              }
-              successState = state;
-              successPos = i;`
-                  : `if (state === 0) {
-                break;
-              }
-              successState = state;
-              successPos = i;`
-              }
+              break;
             }
+            if (state <= ${remappedLastFinal}) {
+              successState = state;
+              successPos = i;
+            }`
+                : `if (state === 0) {
+              break;
+            }
+            if (state <= ${remappedLastFinal}) {
+              successState = state;
+              successPos = i;
+            }`
+            }
+          }`
           }
           if (successState !== 0) {
             if (${skipMappedStates
@@ -526,33 +537,43 @@ export class JavaScriptBaseCodegen {
         offset = i;`
             : ""
         }
-        while (i < l) {
-          state = table[state + input[i++]];
-          if (state <= ${remappedLastFinal}) {
-            ${
-              deadEndFinals.length === finals.length
-                ? `if (state !== 0) {
+        ${
+          deadEndFinals.length === finals.length
+            ? `while (
+          i < l &&
+          (state = table[state + input[i++]]) > ${remappedLastFinal}
+        );
+        if (state <= ${remappedLastFinal} && state !== 0) {
+          successState = state;
+          successPos = i;
+        }`
+            : `while (i < l) {
+          while (
+            i < l &&
+            (state = table[state + input[i++]]) > ${remappedLastFinal}
+          );
+          ${
+            deadEndFinals.length > 0
+              ? `if (state <= ${remappedLastDeadEndFinal}) {
+            if (state !== 0) {
               successState = state;
               successPos = i;
             }
-            break;`
-                : deadEndFinals.length > 0
-                ? `if (state <= ${remappedLastDeadEndFinal}) {
-              if (state !== 0) {
-                successState = state;
-                successPos = i;
-              }
-              break;
-            }
-            successState = state;
-            successPos = i;`
-                : `if (state === 0) {
-              break;
-            }
-            successState = state;
-            successPos = i;`
-            }
+            break;
           }
+          if (state <= ${remappedLastFinal}) {
+            successState = state;
+            successPos = i;
+          }`
+              : `if (state === 0) {
+            break;
+          }
+          if (state <= ${remappedLastFinal}) {
+            successState = state;
+            successPos = i;
+          }`
+          }
+        }`
         }
 
         if (successState !== 0) {
@@ -1160,8 +1181,7 @@ export class JavaScriptBaseCodegen {
         sp,
         tp,
         lookahead,
-        lookaheadSpan,
-        result
+        lookaheadSpan
       ) {
         let s = arena.stack;
         let t = tp === 3 ? new Uint32Array(arena.tree.length) : arena.tree;
@@ -1182,7 +1202,7 @@ export class JavaScriptBaseCodegen {
           const currentState = top >>> 20;
 
           ${actionLookupCode}
-          if (actionLookup >= 0xfffe) {
+          if ((actionLookup & 1) === 0) {
             if (actionLookup === 0xfffe) {
               if (s !== arena.stack || t !== arena.tree) {
                 delete arena.stack;
@@ -1193,11 +1213,6 @@ export class JavaScriptBaseCodegen {
               }
               return new CstNode(stream, t, tp - 3);
             }
-            const context = input.toString().substr(result.start, 10);
-            throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
-          }
-
-          if ((actionLookup & 1) === 0) {
             ${shiftActionDispatchCode}
 
             t[tp] = lookahead;
@@ -1207,10 +1222,18 @@ export class JavaScriptBaseCodegen {
             sp += 1;
             s[sp] = tp | (actionLookup << 19);
 
-            result = ${nextTokenExpr};
-            lookahead = result.state;
-            lookaheadSpan = result.end | ((result.end - result.start) << 22);
+            const res = ${nextTokenExpr};
+            lookahead = res.state;
+            lookaheadSpan = res.end | ((res.end - res.start) << 22);
           } else {
+            if (actionLookup === 0xffff) {
+              const errStart =
+                (lookaheadSpan & 0x3fffff) === 0x3fffff
+                  ? -1
+                  : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
+              const context = input.toString().substr(errStart, 10);
+              throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
+            }
             const word0 = actionLookup >>> 1;
             const actionSymbol = word0 & 0xff;
             const stackItemsToReduce = word0 >>> 8;
@@ -1266,13 +1289,28 @@ export class JavaScriptBaseCodegen {
 
         const stream = typeof input === "string" ? Buffer.from(input) : input;
 
-        let result = ${
-          hasSingleLexerMode
-            ? "nextToken(stream, 0)"
-            : `nextToken${this._lexerModePascalCase(lexerModes[0])}(stream, 0)`
-        };
+        ${
+          this.options.debug
+            ? `let result = ${
+                hasSingleLexerMode
+                  ? "nextToken(stream, 0)"
+                  : `nextToken${this._lexerModePascalCase(
+                      lexerModes[0]
+                    )}(stream, 0)`
+              };
         let lookahead = result.state;
-        let lookaheadSpan = result.end | ((result.end - result.start) << 22);
+        let lookaheadSpan = result.end | ((result.end - result.start) << 22);`
+            : `const firstRes = ${
+                hasSingleLexerMode
+                  ? "nextToken(stream, 0)"
+                  : `nextToken${this._lexerModePascalCase(
+                      lexerModes[0]
+                    )}(stream, 0)`
+              };
+        let lookahead = firstRes.state;
+        let lookaheadSpan =
+          firstRes.end | ((firstRes.end - firstRes.start) << 22);`
+        }
 
         ${debug(
           () => `
@@ -1293,8 +1331,7 @@ export class JavaScriptBaseCodegen {
             0,
             3,
             lookahead,
-            lookaheadSpan,
-            result
+            lookaheadSpan
           );
         }
 
@@ -1313,17 +1350,12 @@ export class JavaScriptBaseCodegen {
           const currentState = top >>> 20;
 
           ${actionLookupCode}
-          if (actionLookup >= 0xfffe) {
+          if ((actionLookup & 1) === 0) {
+            // shift
             if (actionLookup === 0xfffe) {
               ${debug(() => `console.log('steps', steps);`)}
               return new CstNode(stream, tree, tp - 3);
             }
-            const context = input.toString().substr(result.start, 10);
-            throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
-          }
-
-          if ((actionLookup & 1) === 0) {
-            // shift
             ${debug(
               () =>
                 `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
@@ -1337,9 +1369,15 @@ export class JavaScriptBaseCodegen {
             sp += 1;
             stack[sp] = tp | (actionLookup << 19);
 
-            result = ${nextTokenExpr};
+            ${
+              this.options.debug
+                ? `result = ${nextTokenExpr};
             lookahead = result.state;
-            lookaheadSpan = result.end | ((result.end - result.start) << 22);
+            lookaheadSpan = result.end | ((result.end - result.start) << 22);`
+                : `const res = ${nextTokenExpr};
+            lookahead = res.state;
+            lookaheadSpan = res.end | ((res.end - res.start) << 22);`
+            }
             ${debug(
               () => `
               console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
@@ -1358,6 +1396,14 @@ export class JavaScriptBaseCodegen {
             )}
           } else {
             // reduce
+            if (actionLookup === 0xffff) {
+              const errStart =
+                (lookaheadSpan & 0x3fffff) === 0x3fffff
+                  ? -1
+                  : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
+              const context = input.toString().substr(errStart, 10);
+              throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
+            }
             const word0 = actionLookup >>> 1;
             const actionSymbol = word0 & 0xff;
             const stackItemsToReduce = word0 >>> 8;
@@ -1412,8 +1458,7 @@ export class JavaScriptBaseCodegen {
               sp,
               tp,
               lookahead,
-              lookaheadSpan,
-              result
+              lookaheadSpan
             );
           }
         }

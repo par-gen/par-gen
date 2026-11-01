@@ -96,11 +96,11 @@ const next = (input, offset) => {
   const l = input.length;
 
   while (i < l) {
-    state = table[state + input[i++]];
+    while (i < l && (state = table[state + input[i++]]) > 1280);
+    if (state <= 12) {
+      break;
+    }
     if (state <= 1280) {
-      if (state <= 12) {
-        break;
-      }
       successState = state;
       successPos = i;
     }

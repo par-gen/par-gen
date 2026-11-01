@@ -20,12 +20,7 @@ const next = (input, offset) => {
   let i = offset & 0x7fffffff;
   const l = input.length;
 
-  while (i < l) {
-    state = table[state + input[i++]];
-    if (state <= 3) {
-      break;
-    }
-  }
+  while (i < l && (state = table[state + input[i++]]) > 3);
 
   state -= 1;
   if (state >>> 0 >= 3) {
