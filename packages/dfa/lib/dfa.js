@@ -50,36 +50,51 @@ export class DFA {
 
     ok(states.length > 0, `Must be created with a list of states`);
     ok(symbols.length > 0, `Must be created with a list of symbols`);
-    ok(
-      states.includes(start),
-      `Start state '${start}' must be included in list of states`
-    );
-    finals.forEach((final) => {
+
+    const stateSet = new Set(states);
+    const symbolSet = new Set(symbols);
+
+    if (!stateSet.has(start)) {
       ok(
-        states.includes(final),
-        `Final state '${final}' must be included in list of states`
-      );
-    });
-    for (const state of transitions.keys()) {
-      ok(
-        states.includes(state),
-        `Transition contains unknown state '${state}'`
+        false,
+        `Start state '${start}' must be included in list of states`
       );
     }
-    for (const [state, row] of transitions.entries()) {
-      for (const symbol of row.keys()) {
+    for (let i = 0; i < finals.length; i++) {
+      const final = finals[i];
+      if (!stateSet.has(final)) {
         ok(
-          symbols.includes(symbol),
-          `Transition from '${state}' contains unknown symbol '${symbol}'`
+          false,
+          `Final state '${final}' must be included in list of states`
+        );
+      }
+    }
+    for (const state of transitions.keys()) {
+      if (!stateSet.has(state)) {
+        ok(
+          false,
+          `Transition contains unknown state '${state}'`
         );
       }
     }
     for (const [state, row] of transitions.entries()) {
+      for (const symbol of row.keys()) {
+        if (!symbolSet.has(symbol)) {
+          ok(
+            false,
+            `Transition from '${state}' contains unknown symbol '${symbol}'`
+          );
+        }
+      }
+    }
+    for (const [state, row] of transitions.entries()) {
       for (const [symbol, target] of row.entries()) {
-        ok(
-          states.includes(target),
-          `Transition from '${state}' with symbol '${symbol}' contains unknown target state '${target}'`
-        );
+        if (!stateSet.has(target)) {
+          ok(
+            false,
+            `Transition from '${state}' with symbol '${symbol}' contains unknown target state '${target}'`
+          );
+        }
       }
     }
   }
@@ -102,17 +117,28 @@ export class DFA {
 
     const columns = 256;
 
-    const start = d.states.indexOf(d.start) * columns;
+    /** @type {Map<STATE, number>} */
+    const stateIndexMap = new Map();
+    for (let i = 0; i < d.states.length; i++) {
+      stateIndexMap.set(d.states[i], i);
+    }
 
-    const finals = d.finals.map((final) => d.states.indexOf(final) * columns);
+    const start = /** @type {number} */ (stateIndexMap.get(d.start)) * columns;
+
+    const finals = d.finals.map(
+      (final) => /** @type {number} */ (stateIndexMap.get(final)) * columns
+    );
 
     const transitions = Array.from(d.transitions.entries()).map(
       ([from, transition]) =>
         /** @type {[number, [number, number][]]} */ ([
-          d.states.indexOf(from),
+          /** @type {number} */ (stateIndexMap.get(from)),
           /** @type {[number, number][]} */ Array.from(
             transition.entries()
-          ).map(([symbol, to]) => [symbolMapper(symbol), d.states.indexOf(to)]),
+          ).map(([symbol, to]) => [
+            symbolMapper(symbol),
+            /** @type {number} */ (stateIndexMap.get(to)),
+          ]),
         ])
     );
 

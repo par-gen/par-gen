@@ -2,6 +2,8 @@ import debug from "debug";
 import { performance } from "perf_hooks";
 
 const log = debug("par-gen:dfa");
+const ZERO = BigInt(0);
+const ONE = BigInt(1);
 
 /**
  * @template STATE, SYMBOL
@@ -29,197 +31,200 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
   log("enter minimize");
   try {
     const { states, symbols, transitions, finals } = dfa.description;
+    const numStates = states.length;
+    const numSymbols = symbols.length;
+
+    const finalSet = new Set(finals);
 
     const initial = partitionizer?.() ?? [
       finals,
-      states.filter((state) => !finals.includes(state)),
+      states.filter((state) => !finalSet.has(state)),
     ];
 
-    const partitions = [...initial.map((array) => [...array])];
-    const queue = [...initial.map((array) => [...array])];
+    /** @type {Map<STATE, number>} */
+    const stateIdMap = new Map();
+    /** @type {bigint[]} */
+    const stateBits = new Array(numStates);
+    for (let i = 0; i < numStates; i++) {
+      stateIdMap.set(states[i], i);
+      stateBits[i] = ONE << BigInt(i);
+    }
 
-    /** @type {Map<SYMBOL, Map<STATE, STATE[]>>} */
-    const targetSourceStateCache = new Map();
+    /** @type {Map<SYMBOL, number>} */
+    const symbolIdMap = new Map();
+    for (let i = 0; i < numSymbols; i++) {
+      symbolIdMap.set(symbols[i], i);
+    }
 
     /**
-     * @param {SYMBOL} s
-     * @returns {Map<STATE, STATE[]>}
+     * @param {STATE[]} arr
+     * @returns {bigint}
      */
-    const transitionsPerSymbol = (s) => {
-      let result = targetSourceStateCache.get(s);
-      if (!result) {
-        result = new Map();
-
-        for (const [from, transition] of transitions.entries()) {
-          for (const [symbol, target] of transition.entries()) {
-            if (s === symbol) {
-              let sources = result.get(target);
-              if (!sources) {
-                sources = [];
-                result.set(target, sources);
-              }
-              sources.push(from);
-            }
-          }
+    const computeMask = (arr) => {
+      let mask = ZERO;
+      for (let i = 0; i < arr.length; i++) {
+        const id = stateIdMap.get(arr[i]);
+        if (id !== undefined) {
+          mask |= stateBits[id];
         }
-
-        targetSourceStateCache.set(s, result);
       }
-      return result;
+      return mask;
     };
 
+    const partitions = initial.map((array) => [...array]);
+    const partitionMasks = partitions.map(computeMask);
+
+    const queue = initial.map((array) => [...array]);
+    const queueMasks = [...partitionMasks];
+
+    /** @type {bigint[]} */
+    const predMask = new Array(numSymbols * numStates).fill(ZERO);
+    for (const [from, transition] of transitions.entries()) {
+      const fromId = stateIdMap.get(from);
+      if (fromId === undefined) {
+        continue;
+      }
+      const fromBit = stateBits[fromId];
+      for (const [symbol, target] of transition.entries()) {
+        const sIdx = symbolIdMap.get(symbol);
+        const tIdx = stateIdMap.get(target);
+        if (sIdx !== undefined && tIdx !== undefined) {
+          predMask[sIdx * numStates + tIdx] |= fromBit;
+        }
+      }
+    }
+
     while (queue.length > 0) {
-      const item = queue.shift();
-      if (!item) {
+      const partitionSet = queue.shift();
+      queueMasks.shift();
+      if (!partitionSet) {
         throw new Error("Invalid state");
       }
-      const partitionSet = item;
 
-      /**
-       * @type {Map<STATE, boolean>}
-       */
-      const includesCache = new Map();
-      /**
-       * @param {STATE} state
-       */
-      const includesStates = (state) => {
-        let result = includesCache.get(state);
-        if (result === undefined) {
-          result = partitionSet.includes(state);
-          includesCache.set(state, result);
+      /** @type {number[]} */
+      const pIndices = [];
+      for (let i = 0; i < partitionSet.length; i++) {
+        const id = stateIdMap.get(partitionSet[i]);
+        if (id !== undefined) {
+          pIndices.push(id);
         }
-        return result;
-      };
+      }
+      const pLen = pIndices.length;
 
-      /** @type {STATE[][]} */
-      const xCache = [];
+      /** @type {Set<bigint>} */
+      const seenXMasks = new Set();
 
-      /**
-       * @param {STATE[]} X
-       * @returns {number}
-       */
-      const calculateXCacheKey = (X) => {
-        let i = 0;
-        for (let c of xCache) {
-          if (c.length === X.length) {
-            if (X.every((x) => c.includes(x))) {
-              return i;
-            }
-          }
-          i++;
-        }
-        return xCache.push(X);
-      };
-
-      /** @type {Map<number, Map<STATE[], [STATE[], STATE[]]>>}} */
-      const partitionSetCache = new Map();
-      /**
-       * @param {number} key
-       * @param {STATE[]} Y
-       * @param {STATE[]} X
-       */
-      const calculatePartitionSets = (key, X, Y) => {
-        let xState = partitionSetCache.get(key);
-        if (!xState) {
-          xState = new Map();
-          partitionSetCache.set(key, xState);
-        }
-        let yState = xState.get(Y);
-        if (!yState) {
-          const yux = Y.filter((y) => X.includes(y));
-          const yox = Y.filter((y) => !X.includes(y));
-          yState = [yux, yox];
-          xState.set(Y, yState);
-        }
-        return yState;
-      };
-
-      symbols.forEach((c) => {
-        /** @type {STATE[]} */
-        let X = [];
-
-        for (const [target, sources] of transitionsPerSymbol(c).entries()) {
-          if (includesStates(target)) {
-            X.push(...sources);
-          }
+      for (let sIdx = 0; sIdx < numSymbols; sIdx++) {
+        let xMask = ZERO;
+        const base = sIdx * numStates;
+        for (let i = 0; i < pLen; i++) {
+          xMask |= predMask[base + pIndices[i]];
         }
 
-        if (X.length === 0) {
-          // if X is empty, we will not find partitions with overlap
-          return;
+        if (xMask === ZERO || seenXMasks.has(xMask)) {
+          continue;
         }
+        seenXMasks.add(xMask);
 
-        const xCacheKey = calculateXCacheKey(X);
+        for (let pIdx = 0; pIdx < partitions.length; pIdx++) {
+          const yMask = partitionMasks[pIdx];
+          const yuxMask = yMask & xMask;
+          const yoxMask = yMask & ~xMask;
 
-        for (const Y of partitions) {
-          const [yux, yox] = calculatePartitionSets(xCacheKey, X, Y);
-
-          if (!(yux.length > 0 && yox.length > 0)) {
+          if (yuxMask === ZERO || yoxMask === ZERO) {
             continue;
           }
 
-          partitions.splice(partitions.indexOf(Y), 1, yux, yox);
+          const Y = partitions[pIdx];
+          /** @type {STATE[]} */
+          const yux = [];
+          /** @type {STATE[]} */
+          const yox = [];
+          for (let j = 0; j < Y.length; j++) {
+            const y = Y[j];
+            const yId = /** @type {number} */ (stateIdMap.get(y));
+            if ((stateBits[yId] & xMask) !== ZERO) {
+              yux.push(y);
+            } else {
+              yox.push(y);
+            }
+          }
 
-          const queueIndex = queue.findIndex(
-            (w) =>
-              w.length === Y.length && w.every((entry) => Y.includes(entry))
-          );
+          partitions.splice(pIdx, 1, yux, yox);
+          partitionMasks.splice(pIdx, 1, yuxMask, yoxMask);
+          pIdx++;
+
+          const queueIndex = queueMasks.indexOf(yMask);
 
           if (queueIndex > -1) {
             queue.splice(queueIndex, 1, yux, yox);
+            queueMasks.splice(queueIndex, 1, yuxMask, yoxMask);
           } else if (yux.length <= yox.length) {
             queue.push(yux);
+            queueMasks.push(yuxMask);
           } else {
             queue.push(yox);
+            queueMasks.push(yoxMask);
           }
         }
-      });
+      }
+    }
+
+    /** @type {Map<STATE, number>} */
+    const stateToPartitionIndex = new Map();
+    for (let i = 0; i < partitions.length; i++) {
+      const partition = partitions[i];
+      for (let j = 0; j < partition.length; j++) {
+        stateToPartitionIndex.set(partition[j], i);
+      }
     }
 
     /**
      * @param {STATE} state
      * @return {number}
      */
-    const newStateIndex = (state) =>
-      partitions.findIndex((partition) => partition.includes(state));
+    const newStateIndex = (state) => stateToPartitionIndex.get(state) ?? -1;
 
     const start = stateMapper(newStateIndex(dfa.description.start), [
       dfa.description.start,
     ]);
 
+    /** @type {(NEW_STATE | undefined)[]} */
+    const mappedPartitionStates = new Array(partitions.length);
     /**
-     * @param {STATE} oldState
-     * @return {STATE[]}
+     * @param {number} idx
+     * @returns {NEW_STATE}
      */
-    const oldStates = (oldState) => {
-      const partition = partitions.find((partition) =>
-        partition.includes(oldState)
-      );
-      if (!partition) {
-        throw new Error("Illegal state");
+    const getMappedPartitionState = (idx) => {
+      let mapped = mappedPartitionStates[idx];
+      if (mapped === undefined) {
+        mapped = stateMapper(idx, partitions[idx]);
+        mappedPartitionStates[idx] = mapped;
       }
-      return partition;
+      return mapped;
     };
 
-    const minimalTransitions = partitions.reduce(
-      (accumulator, partition, index) => {
-        accumulator.set(
-          stateMapper(index, partition),
-          new Map(
-            partition.flatMap((state) => {
-              return Array.from(
-                transitions.get(state)?.entries() ?? []
-              ).map(([symbol, oldState]) => [
-                symbol,
-                stateMapper(newStateIndex(oldState), oldStates(oldState)),
-              ]);
-            })
-          )
-        );
-        return accumulator;
-      },
-      /** @type {DFADescription<NEW_STATE, SYMBOL>['transitions']} */ (new Map())
-    );
+    /** @type {DFADescription<NEW_STATE, SYMBOL>['transitions']} */
+    const minimalTransitions = new Map();
+    for (let index = 0; index < partitions.length; index++) {
+      const partition = partitions[index];
+      const mappedFrom = getMappedPartitionState(index);
+      /** @type {Map<SYMBOL, NEW_STATE>} */
+      const row = new Map();
+      for (let j = 0; j < partition.length; j++) {
+        const stateTransitions = transitions.get(partition[j]);
+        if (stateTransitions) {
+          for (const [symbol, oldState] of stateTransitions.entries()) {
+            const targetIdx = stateToPartitionIndex.get(oldState);
+            if (targetIdx === undefined) {
+              throw new Error("Illegal state");
+            }
+            row.set(symbol, getMappedPartitionState(targetIdx));
+          }
+        }
+      }
+      minimalTransitions.set(mappedFrom, row);
+    }
 
     /** @type {DFADescription<NEW_STATE, SYMBOL>} */
     const description = {
@@ -228,10 +233,7 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
       transitions: minimalTransitions,
       start,
       finals: partitions
-        .filter(
-          (partition) =>
-            finals.filter((final) => partition.includes(final)).length > 0
-        )
+        .filter((partition) => partition.some((s) => finalSet.has(s)))
         .map((partition, index) => stateMapper(index, partition)),
     };
 

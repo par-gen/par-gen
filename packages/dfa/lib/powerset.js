@@ -3,6 +3,8 @@ import debug from "debug";
 import { performance } from "perf_hooks";
 
 const log = debug("par-gen:dfa");
+const ZERO = BigInt(0);
+const ONE = BigInt(1);
 
 /**
  * @template STATE, SYMBOL
@@ -66,96 +68,32 @@ function singleStateEpsilonClosure(cache, nfa, state) {
 
   if (!cached) {
     /** @type {Set<STATE>} */
-    const selected = new Set();
+    const selected = new Set([state]);
     const open = [state];
 
     while (open.length > 0) {
-      const state = open.pop();
-      if (!state) {
+      const current = open.pop();
+      if (!current) {
         continue;
       }
 
-      const transitions = nfa.description.transitions.get(state);
+      const transitions = nfa.description.transitions.get(current);
       const next = transitions?.get(Epsilon);
       if (!next) {
         continue;
       }
       open.push(...next);
 
-      next.forEach((state) => {
-        selected.add(state);
-      });
+      for (let i = 0; i < next.length; i++) {
+        selected.add(next[i]);
+      }
     }
 
-    cached = [state, ...Array.from(selected)];
+    cached = Array.from(selected);
     cache.set(state, cached);
   }
 
   return cached;
-}
-
-/**
- * @template STATE
- * @param {STATE[][]} closureKeyCache
- * @param {STATE[]} input
- * @returns {number}
- */
-const calculateCacheKey = (closureKeyCache, input) => {
-  for (let i = 0; i < closureKeyCache.length; i++) {
-    const cacheItem = closureKeyCache[i];
-    if (cacheItem.length === input.length) {
-      let equal = true;
-      for (let j = 0; j < input.length; j++) {
-        if (cacheItem[j] !== input[j]) {
-          equal = false;
-        }
-      }
-      if (equal) {
-        return i;
-      }
-    }
-  }
-  return closureKeyCache.push(input) - 1;
-};
-
-/**
- * @template STATE, SYMBOL
- * @param {Map<number, STATE[]>} epsilonCache
- * @param {STATE[][]} closureKeyCache
- * @param {Map<STATE, STATE[]>} singleStateCache
- * @param {NFA<STATE, SYMBOL>} nfa
- * @param {STATE[]} states
- * @returns {STATE[]}
- */
-function getEpsilonClosure(
-  epsilonCache,
-  closureKeyCache,
-  singleStateCache,
-  nfa,
-  states
-) {
-  const key = calculateCacheKey(closureKeyCache, states);
-
-  let result = epsilonCache.get(key);
-  if (!result) {
-    /** @type {Set<STATE>} */
-    const selected = new Set();
-
-    for (const state of states) {
-      for (const item of singleStateEpsilonClosure(
-        singleStateCache,
-        nfa,
-        state
-      )) {
-        selected.add(item);
-      }
-    }
-
-    result = Array.from(selected);
-    epsilonCache.set(key, result);
-  }
-
-  return result;
 }
 
 /**
@@ -170,105 +108,197 @@ function construct(nfa, stateMapper) {
   try {
     let index = 0;
 
+    const {
+      states: nfaStatesList,
+      symbols,
+      transitions: nfaTransitions,
+      start: nfaStart,
+      finals: nfaFinals,
+    } = nfa.description;
+    const numSymbols = symbols.length;
+
+    /** @type {Map<STATE, number>} */
+    const stateIdMap = new Map();
+    /** @type {bigint[]} */
+    const stateBit = new Array(nfaStatesList.length);
+    for (let i = 0; i < nfaStatesList.length; i++) {
+      stateIdMap.set(nfaStatesList[i], i);
+      stateBit[i] = ONE << BigInt(i);
+    }
+
+    /** @type {Map<SYMBOL, number>} */
+    const symbolIdMap = new Map();
+    for (let i = 0; i < numSymbols; i++) {
+      symbolIdMap.set(symbols[i], i);
+    }
+
     /** @type {Map<STATE, STATE[]>} */
-    let closureCache = new Map();
+    const closureCache = new Map();
+    /** @type {Map<STATE, bigint>} */
+    const closureMaskCache = new Map();
 
-    /** @type {STATE[][]} */
-    const closureKeyCache = [];
+    /**
+     * @param {STATE} s
+     * @returns {bigint}
+     */
+    const getSingleMask = (s) => {
+      let mask = closureMaskCache.get(s);
+      if (mask === undefined) {
+        const closure = singleStateEpsilonClosure(closureCache, nfa, s);
+        mask = ZERO;
+        for (let i = 0; i < closure.length; i++) {
+          const id = stateIdMap.get(closure[i]);
+          if (id !== undefined) {
+            mask |= stateBit[id];
+          }
+        }
+        closureMaskCache.set(s, mask);
+      }
+      return mask;
+    };
 
-    /** @type {Map<number, STATE[]>} */
-    const epsilonCache = new Map();
+    /** @type {Map<STATE, number>} */
+    const activeStateOffsetMap = new Map();
+    let numActive = 0;
+    for (const [from, transition] of nfaTransitions.entries()) {
+      for (const symbol of transition.keys()) {
+        if (symbol !== Epsilon) {
+          activeStateOffsetMap.set(from, numActive * numSymbols);
+          numActive++;
+          break;
+        }
+      }
+    }
 
-    /** @type {Map<STATE[], DFAState<STATE, NEW_STATE>>} */
+    /** @type {(STATE[] | undefined)[]} */
+    const toStatesTable = new Array(numActive * numSymbols);
+    /** @type {(bigint | undefined)[]} */
+    const toMaskTable = new Array(numActive * numSymbols);
+
+    for (const [from, transition] of nfaTransitions.entries()) {
+      const rowOffset = activeStateOffsetMap.get(from);
+      if (rowOffset === undefined) {
+        continue;
+      }
+      for (const [symbol, to] of transition.entries()) {
+        if (symbol !== Epsilon && to.length > 0) {
+          const sIdx = symbolIdMap.get(symbol);
+          if (sIdx !== undefined) {
+            const cell = rowOffset + sIdx;
+            toStatesTable[cell] = to;
+            let mask = ZERO;
+            for (let i = 0; i < to.length; i++) {
+              mask |= getSingleMask(to[i]);
+            }
+            toMaskTable[cell] = mask;
+          }
+        }
+      }
+    }
+
+    /** @type {Map<bigint, DFAState<STATE, NEW_STATE>>} */
     const dfaStateMap = new Map();
 
+    const startClosure = singleStateEpsilonClosure(closureCache, nfa, nfaStart);
     const start = {
-      name: stateMapper(index++, [nfa.description.start]),
-      nfaStates: getEpsilonClosure(
-        epsilonCache,
-        closureKeyCache,
-        closureCache,
-        nfa,
-        [nfa.description.start]
-      ),
+      name: stateMapper(index++, [nfaStart]),
+      nfaStates: startClosure,
     };
+
     /** @type {DFAState<STATE, NEW_STATE>[]} */
     const dfaStates = [];
 
     /** @type {DFAState<STATE, NEW_STATE>[]} */
     const queue = [start];
+    let queueHead = 0;
 
     /** @type {Map<NEW_STATE, Map<SYMBOL, NEW_STATE>>} */
     const transitions = new Map();
 
-    /** @type {Map<SYMBOL, Map<STATE, STATE[]>>} */
-    const toStatesCache = new Map();
+    /** @type {STATE[]} */
+    const emptyClosure = [];
 
-    nfa.description.symbols.forEach((s) => {
-      for (const [from, transition] of nfa.description.transitions.entries()) {
-        for (const [symbol, to] of transition.entries()) {
-          if (symbol === s) {
-            let map = toStatesCache.get(s);
-            if (!map) {
-              map = new Map();
-              toStatesCache.set(s, map);
-            }
-            map.set(from, to);
-          }
-        }
-      }
-    });
-
-    while (queue.length > 0) {
-      const dfaState = queue.shift();
-      if (!dfaState) {
-        continue;
-      }
+    while (queueHead < queue.length) {
+      const dfaState = queue[queueHead++];
       dfaStates.push(dfaState);
 
-      nfa.description.symbols.forEach((symbol) => {
-        const toStates = toStatesCache.get(symbol) ?? new Map();
+      /** @type {number[]} */
+      const activeOffsets = [];
+      const currentNfaStates = dfaState.nfaStates;
+      for (let i = 0; i < currentNfaStates.length; i++) {
+        const offset = activeStateOffsetMap.get(currentNfaStates[i]);
+        if (offset !== undefined) {
+          activeOffsets.push(offset);
+        }
+      }
 
-        const states = dfaState.nfaStates.reduce((list, from) => {
-          const to = toStates.get(from);
-          if (to) {
-            list.push(...to);
+      /** @type {Map<SYMBOL, NEW_STATE>} */
+      const stateTransitions = new Map();
+      transitions.set(dfaState.name, stateTransitions);
+
+      const numActiveInState = activeOffsets.length;
+
+      for (let sIdx = 0; sIdx < numSymbols; sIdx++) {
+        let mask = ZERO;
+        for (let i = 0; i < numActiveInState; i++) {
+          const m = toMaskTable[activeOffsets[i] + sIdx];
+          if (m !== undefined) {
+            mask |= m;
           }
-          return list;
-        }, /** @type {STATE[]} */ ([]));
+        }
 
-        const statesWithEpsilon = getEpsilonClosure(
-          epsilonCache,
-          closureKeyCache,
-          closureCache,
-          nfa,
-          states
-        );
-
-        let targetDFAState = dfaStateMap.get(statesWithEpsilon);
+        let targetDFAState = dfaStateMap.get(mask);
         if (!targetDFAState) {
+          /** @type {STATE[]} */
+          let statesWithEpsilon;
+          if (mask === ZERO) {
+            statesWithEpsilon = emptyClosure;
+          } else {
+            /** @type {Set<STATE>} */
+            const selected = new Set();
+            for (let i = 0; i < numActiveInState; i++) {
+              const to = toStatesTable[activeOffsets[i] + sIdx];
+              if (to !== undefined) {
+                for (let j = 0; j < to.length; j++) {
+                  const closure = singleStateEpsilonClosure(
+                    closureCache,
+                    nfa,
+                    to[j]
+                  );
+                  for (let k = 0; k < closure.length; k++) {
+                    selected.add(closure[k]);
+                  }
+                }
+              }
+            }
+            statesWithEpsilon = Array.from(selected);
+          }
+
           targetDFAState = {
             name: stateMapper(index++, statesWithEpsilon),
             nfaStates: statesWithEpsilon,
           };
 
           queue.push(targetDFAState);
-          dfaStateMap.set(statesWithEpsilon, targetDFAState);
+          dfaStateMap.set(mask, targetDFAState);
         }
 
-        transitions.set(
-          dfaState.name,
-          new Map([
-            ...Array.from(transitions.get(dfaState.name)?.entries() ?? []),
-            [symbol, targetDFAState.name],
-          ])
-        );
-      });
+        stateTransitions.set(symbols[sIdx], targetDFAState.name);
+      }
     }
 
-    const finals = nfa.description.finals.flatMap((state) =>
-      dfaStates.filter((dfaState) => dfaState.nfaStates.includes(state))
-    );
+    /** @type {Set<DFAState<STATE, NEW_STATE>>} */
+    const finalsSet = new Set();
+    for (let i = 0; i < nfaFinals.length; i++) {
+      const finalState = nfaFinals[i];
+      for (let j = 0; j < dfaStates.length; j++) {
+        const dfaState = dfaStates[j];
+        if (dfaState.nfaStates.includes(finalState)) {
+          finalsSet.add(dfaState);
+        }
+      }
+    }
+    const finals = Array.from(finalsSet);
 
     return { dfaStates, transitions, start, finals };
   } finally {

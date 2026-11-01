@@ -47,47 +47,62 @@ export class NFA {
 
     ok(symbols.length > 0, "Must have at least one symbol");
 
-    ok(
-      states.includes(start),
-      `Start state '${start}' must be included in list of states [${states.join(
-        ", "
-      )}]`
-    );
+    const stateSet = new Set(states);
+    const symbolSet = new Set(symbols);
 
-    ok(finals.length > 0, "Must have at least one final state");
-    finals.forEach((final) =>
+    if (!stateSet.has(start)) {
       ok(
-        states.includes(final),
-        `Final state '${final}' must be included in list of states [${states.join(
+        false,
+        `Start state '${start}' must be included in list of states [${states.join(
           ", "
         )}]`
-      )
-    );
-
-    for (const state of transitions.keys()) {
-      ok(
-        states.includes(state),
-        `Transitions contain unknown state '${state}'`
       );
     }
 
-    for (const row of transitions.values()) {
-      for (const symbol of row.keys()) {
+    ok(finals.length > 0, "Must have at least one final state");
+    for (let i = 0; i < finals.length; i++) {
+      const final = finals[i];
+      if (!stateSet.has(final)) {
         ok(
-          symbol === Epsilon || symbols.includes(symbol),
-          `Transitions contain unknown symbol '${String(symbol)}'`
+          false,
+          `Final state '${final}' must be included in list of states [${states.join(
+            ", "
+          )}]`
+        );
+      }
+    }
+
+    for (const state of transitions.keys()) {
+      if (!stateSet.has(state)) {
+        ok(
+          false,
+          `Transitions contain unknown state '${state}'`
         );
       }
     }
 
     for (const row of transitions.values()) {
-      for (const column of row.values()) {
-        column.forEach((state) =>
+      for (const symbol of row.keys()) {
+        if (symbol !== Epsilon && !symbolSet.has(symbol)) {
           ok(
-            states.includes(state),
-            `Transitions contain unknown target state '${state}'`
-          )
-        );
+            false,
+            `Transitions contain unknown symbol '${String(symbol)}'`
+          );
+        }
+      }
+    }
+
+    for (const row of transitions.values()) {
+      for (const column of row.values()) {
+        for (let i = 0; i < column.length; i++) {
+          const state = column[i];
+          if (!stateSet.has(state)) {
+            ok(
+              false,
+              `Transitions contain unknown target state '${state}'`
+            );
+          }
+        }
       }
     }
   }

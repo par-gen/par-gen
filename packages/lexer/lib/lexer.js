@@ -105,11 +105,10 @@ function createOptimalDFA(nfa) {
       group.push(final);
     }
 
+    const finalsSet = new Set(dfa.description.finals);
     const initialPartitions = [
       ...finalsByToken.values(),
-      dfa.description.states.filter(
-        (state) => !dfa.description.finals.includes(state)
-      ),
+      dfa.description.states.filter((state) => !finalsSet.has(state)),
     ];
 
     const optimizedStateMapper = () => {
@@ -218,18 +217,27 @@ export function generateFromTokens(tokens) {
 
     const columns = 256;
 
-    const start = d.states.indexOf(d.start) * columns;
-    const finals = d.finals.map((final) => d.states.indexOf(final) * columns);
+    /** @type {Map<{ n: number; uids: number[]; names: string[]; }, number>} */
+    const stateOffsetMap = new Map();
+    for (let i = 0; i < d.states.length; i++) {
+      stateOffsetMap.set(d.states[i], i * columns);
+    }
+
+    const start = /** @type {number} */ (stateOffsetMap.get(d.start));
+    const finals = d.finals.map(
+      (final) => /** @type {number} */ (stateOffsetMap.get(final))
+    );
+    const finalsOffsetSet = new Set(finals);
 
     const transitions = Array.from(d.transitions.entries()).map(
       ([from, transition]) =>
         /** @type {[number, [number, number][]]} */ ([
-          d.states.indexOf(from) * columns,
+          /** @type {number} */ (stateOffsetMap.get(from)),
           /** @type {[number, number][]} */ Array.from(
             transition.entries()
           ).map(([symbol, to]) => [
             symbol.charCodeAt(0),
-            d.states.indexOf(to) * columns,
+            /** @type {number} */ (stateOffsetMap.get(to)),
           ]),
         ])
     );
@@ -240,7 +248,7 @@ export function generateFromTokens(tokens) {
           transition.every(([, to]) => from === to)
         )
         .map(([state]) => state)
-        .find((state) => !finals.includes(state)) ?? -1;
+        .find((state) => !finalsOffsetSet.has(state)) ?? -1;
 
     const tokenIds = [
       ...d.states.map((state) => state.uids[0]),
