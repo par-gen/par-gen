@@ -3,7 +3,7 @@
 const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 
-const tokenIds = [
+const tokenIds = new Uint8Array([
   0, // WS
   4, // CURLY_OPEN
   5, // CURLY_CLOSE
@@ -20,7 +20,7 @@ const tokenIds = [
   1, // TRUE
   3, // NULL
   2, // FALSE
-  undefined, // undefined
+  0, // undefined
   11, // NUMBER
   11, // NUMBER
   11, // NUMBER
@@ -41,10 +41,10 @@ const tokenIds = [
   8, // STRING
   2, // FALSE
   8, // STRING
-  undefined, // undefined
+  0, // undefined
   12, // @par-gen.EOF
   13, // @par-gen.ERROR
-];
+]);
 
 const table = new Uint16Array(10240);
 table.fill(9472);
@@ -552,7 +552,7 @@ const next = (input, offset) => {
   }
 
   if (successState !== 9472) {
-    lexeme.state = tokenIds[successState / 256];
+    lexeme.state = tokenIds[successState >> 8];
     lexeme.start = offset;
     lexeme.end = successPos;
     return lexeme;
