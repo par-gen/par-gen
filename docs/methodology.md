@@ -50,17 +50,20 @@ for p in $(ps -eo pid=); do
 done
 ```
 
-### 1.3 Running Node.js on an Isolated Single Core
+### 1.3 Runtime & Single-Core Pinning Rules
+- **Required Runtime:** Always use **Node.js v26 Active LTS (`v26.13.0`, V8 `14.6.202.34` with Turboshaft)** (or at minimum Node.js v22 / v24 maintenance LTS; never use EOL Node.js v20).
+
 > [!IMPORTANT]
 > **Critical V8 + Single-Core Pinning Pitfalls:**
-> 1. **Never use `chrt -f 99` (`SCHED_FIFO`) with `taskset -c 1` on Node.js:** When the main V8 thread spins at `SCHED_FIFO` priority 99 on a single core and reaches a safepoint or waits on a V8 background worker thread pinned to the same core, the worker thread can never pre-empt the main thread, causing a deadlock.
-> 2. **Always pass `--single-threaded-gc --v8-pool-size=1` when pinning to 1 core (`taskset -c 1`) for GC-heavy comparison parsers (`acorn`, `babel`, `typescript`):** By default, V8 spawns parallel Scavenger/Marking worker threads that synchronize via spin-wait barriers assuming multiple CPU cores are available. Pinning all threads to a single core causes parallel GC barrier contention.
-> 3. **Avoid ESM `import` of large CommonJS bundles (`acorn`, `@babel/parser`, `typescript`) in the same V8 Isolate when benchmarking `TypedArray` code on Node.js v20:** When Node.js loads a large CJS file (>100 KiB) via ESM `import`, its internal `cjs-module-lexer` calls `WebAssembly.Memory.prototype.grow()`. In V8 11.x (Node 20), `memory.grow()` detaches the old backing `JSArrayBuffer` and invalidates the Isolate-wide `ArrayBufferDetachingProtector`, forcing TurboFan to emit `CheckArrayBufferNotDetached` (`testb [ArrayBuffer + 0x3f], 0x4; jnz deopt`) before every `TypedArray` access (+704 bytes of machine code and ~18% slowdown). Always load CJS comparison libraries via `createRequire(import.meta.url)` or benchmark each parser in its own process.
+> 1. **Never use `chrt -f 99` (`SCHED_FIFO`) with `taskset -c 1` on Node.js:** When `node-MainThread` and all four `node-V8Worker` background compiler/GC threads are pinned to a single core (`CPU 1`) at equal `SCHED_FIFO` priority (`PRI 139`), Linux `SCHED_FIFO` has no time-slicing. Because `node-MainThread` never makes a blocking syscall during a tight JS loop, it completely starves the four `node-V8Worker` threads (`0.0%` CPU in runnable `Rl` state). Consequently, Maglev/TurboFan/Turboshaft background compilation never executes, forcing `parse()` to run in the unoptimized Ignition bytecode interpreter (~33x slower) and livelocking when concurrent GC is triggered. Always use `sudo nice -n -20 taskset -c 1` (`SCHED_OTHER` at highest priority), which allows `node-V8Worker` threads to finish tier-up compilation during warmup and sleep during timed trials.
+> 2. **Use `sudo pkill -9 node` (not `killall`) on Amazon Linux 2023:** Minimal AL2023 images do not include `killall` (`psmisc`). Always use `pkill -9 node` and verify with `ps -ef | grep [n]ode` before starting a benchmark so stale processes cannot contend on CPU 1.
+> 3. **Resolve `acorn` from `parsers/json/node_modules/acorn` (`v8.2.4`):** The workspace root `node_modules/acorn` is `v7.4.1` (transitive dependency of Jest/ESLint), which enters an infinite loop when passed `{ ecmaVersion: "latest" }`. Always resolve `acorn` from `./parsers/json/node_modules/acorn/dist/acorn.mjs` (`v8.2.4`).
+> 4. **Note on `ArrayBufferDetachingProtector` (Fixed in Node v26 / V8 14.6):** In older V8 (Node v20), importing large CommonJS bundles via ESM caused `cjs-module-lexer`'s `WebAssembly.Memory.prototype.grow()` to invalidate `ArrayBufferDetachingProtector`. In Node `v26.13.0` (V8 `14.6`), Wasm memory growth no longer invalidates `ArrayBufferDetachingProtector` (`--trace-deopt-verbose` confirms zero protector invalidations).
 
 Run benchmarks pinned to CPU 1 with highest CFS priority (`nice -n -20`):
 
 ```bash
-sudo nice -n -20 taskset -c 1 node --single-threaded-gc --v8-pool-size=1 bench.mjs
+sudo nice -n -20 taskset -c 1 /usr/local/bin/node bench.mjs
 ```
 
 ### 1.4 Teardown
