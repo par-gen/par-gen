@@ -51,7 +51,7 @@ done
 ```
 
 ### 1.3 Runtime & Single-Core Pinning Rules
-- **Required Runtime:** Always use **Node.js v26 Active LTS (`v26.13.0`, V8 `14.6.202.34` with Turboshaft)** (or at minimum Node.js v22 / v24 maintenance LTS; never use EOL Node.js v20).
+- **Required Runtime:** Always use **Node.js v26 Active LTS (`v26.13.0`, V8 `14.6.202.34` with Turboshaft)** (or at minimum Node.js v22 / v24 maintenance LTS; never use EOL Node.js v20). On minimal Amazon Linux 2023 AMIs, install `libatomic` (`sudo dnf install -y libatomic`) before running the official Node.js v26 binary.
 
 > [!IMPORTANT]
 > **Critical V8 + Single-Core Pinning Pitfalls:**
@@ -115,6 +115,8 @@ When reading `opt-lexer.asm` and `opt-parser.asm`, systematically check for:
    - Indirect calls through mutable variables (`let nextToken`) or object methods (`lexer.push` / `lexer.pop`) prevent static call resolution or add unnecessary prologue/epilogue work. Use direct `const` function references whenever the grammar has a single lexer mode.
 5. **Dead Stores:**
    - Every `movw [r14 + offset], imm` to the `tree` or `stack` array in the shift/reduce cases must be read by consumers; remove stores that are never read.
+6. **On-Heap vs. Off-Heap `TypedArray` Backing Stores (`64B` Threshold):**
+   - V8 defaults to `--typed-array-max-size-in-heap=64`. Any `TypedArray` whose byte length is `<= 64` bytes has its backing store allocated **on the movable V8 JS heap**. Because GC can relocate on-heap backing stores, V8 cannot constant-fold their base address in JIT code; instead, every access emits 3 dependent memory loads (`[reg+0x4f]` external_pointer, `[reg+0x47]` base_pointer, `[reg+0x37]` byte_length) and consumes 3 scratch registers. Padding static module-scoped `TypedArray`s (`tokenIds`, `actionsTable`, `gotoTable`) to `>= 128` bytes forces V8 to allocate an off-heap non-moving backing store and constant-fold its 64-bit address directly into the displacement of a single `movzxbl` / `movzxwl` / `movl` instruction.
 
 ---
 
