@@ -4,22 +4,8 @@ const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 
 const table = new Uint16Array(1024);
-table[304] = 3; // HEX_NUMBER
-table[305] = 3; // HEX_NUMBER
-table[306] = 3; // HEX_NUMBER
-table[307] = 3; // HEX_NUMBER
-table[308] = 3; // HEX_NUMBER
-table[309] = 3; // HEX_NUMBER
-table[310] = 3; // HEX_NUMBER
-table[311] = 3; // HEX_NUMBER
-table[312] = 3; // HEX_NUMBER
-table[313] = 3; // HEX_NUMBER
-table[353] = 3; // HEX_NUMBER
-table[354] = 3; // HEX_NUMBER
-table[355] = 3; // HEX_NUMBER
-table[356] = 3; // HEX_NUMBER
-table[357] = 3; // HEX_NUMBER
-table[358] = 3; // HEX_NUMBER
+table.fill(3, 304, 314); // HEX_NUMBER
+table.fill(3, 353, 359); // HEX_NUMBER
 
 /**
  * @param {Uint8Array} input

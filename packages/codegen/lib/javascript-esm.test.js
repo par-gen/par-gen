@@ -252,4 +252,23 @@ describe("JavaScriptModuleCodegen", () => {
     expect(code3).toContain("const tokenIds = new Uint8Array(4);");
     expect(code3).toContain("tokenIds[successState >> 8]");
   });
+
+  it("should coalesce contiguous lexer and parser table runs using .fill()", async () => {
+    const grammar = `
+      DIGITS := '[0-9]+';
+      LETTERS := '[a-z]+';
+
+      Expr := Item | Expr Item;
+      Item := DIGITS | LETTERS;
+    `;
+
+    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    await codegen.parser(genParser(grammar));
+
+    const lexerCode = await fsp.readFile(lexerStateFile, "utf-8");
+    const parserCode = await fsp.readFile(parserFile, "utf-8");
+
+    expect(lexerCode).toContain("table.fill(");
+    expect(parserCode).toContain("actionsTable.fill(");
+  });
 });

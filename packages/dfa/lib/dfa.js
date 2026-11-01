@@ -149,19 +149,43 @@ export class DFA {
 
     const error = errorState ?? -1;
 
+    const tableEntries = transitions
+      .flatMap(([from, transition]) =>
+        transition.map(([symbol, to]) => ({
+          index: symbol + from * columns,
+          value: to * columns,
+        }))
+      )
+      .sort((a, b) => a.index - b.index);
+
+    /** @type {string[]} */
+    const tableLines = [];
+    for (let i = 0; i < tableEntries.length; ) {
+      const first = tableEntries[i];
+      let j = i + 1;
+      while (
+        j < tableEntries.length &&
+        tableEntries[j].index === tableEntries[j - 1].index + 1 &&
+        tableEntries[j].value === first.value
+      ) {
+        j++;
+      }
+      const start = first.index;
+      const end = tableEntries[j - 1].index + 1;
+      if (end - start === 1) {
+        tableLines.push(`table[${start}] = ${first.value};`);
+      } else {
+        tableLines.push(`table.fill(${first.value}, ${start}, ${end});`);
+      }
+      i = j;
+    }
+
     const code = `'use strict';
       const table = new Uint16Array(${
         columns * d.states.length
       }).fill(${error});
 
-      ${transitions
-        .flatMap(([from, transition]) =>
-          transition.map(
-            ([symbol, to]) =>
-              `table[${symbol + from * columns}] = ${to * columns};`
-          )
-        )
-        .join("\n")}
+      ${tableLines.join("\n")}
 
       return (input) => {
         let state = ${start};

@@ -328,24 +328,26 @@ export class JavaScriptBaseCodegen {
       }
 
       const table = new ${pointerSize}(${columns * rowStates.length});
-      ${transitions
-        .flatMap(([from, transition]) => {
-          if (compactDeadEndFinals && deadEndFinals.includes(from)) {
-            return [];
-          }
-          return transition.map(([symbol, to]) => {
-            if (to === errorState) {
-              return undefined;
+      ${this._formatTableRuns(
+        "table",
+        transitions
+          .flatMap(([from, transition]) => {
+            if (compactDeadEndFinals && deadEndFinals.includes(from)) {
+              return [];
             }
             const mappedFrom = remapState(from);
-            const mappedTo = remapState(to);
-            return `table[${mappedFrom + symbol}] = ${mappedTo}; // ${
-              mappedStateNames.get(mappedTo)
-            }`;
-          });
-        })
-        .filter(Boolean)
-        .join("\n")}
+            return transition
+              .filter(([, to]) => to !== errorState)
+              .map(([symbol, to]) => {
+                const mappedTo = remapState(to);
+                return {
+                  index: mappedFrom + symbol,
+                  value: mappedTo,
+                  comment: mappedStateNames.get(mappedTo),
+                };
+              });
+          })
+      )}
 
       /**
        * @param {Uint8Array} input
@@ -636,8 +638,6 @@ export class JavaScriptBaseCodegen {
       start,
     } = data;
 
-    let actionsTableIndex = 0;
-
     const debug = this._debug.bind(this);
 
     const requiresSemanticActions = states.some((state) =>
@@ -794,8 +794,9 @@ export class JavaScriptBaseCodegen {
       ];
 
       const actionsTable = new Uint16Array(${paddedTableSize}).fill(0xffff);
-      ${Array.from(actions.entries())
-        .flatMap(([from, action]) => {
+      ${this._formatTableRuns(
+        "actionsTable",
+        Array.from(actions.entries()).flatMap(([from, action]) => {
           const stateIndex = states.indexOf(from);
           const items = Array.from(from.values());
           return Array.from(action.entries())
@@ -821,41 +822,54 @@ export class JavaScriptBaseCodegen {
               } else if (to.op === "done") {
                 packedAction = 0xfffe;
               }
-              const actionIdx = actionsTableIndex++;
-              return `actionsTable[${
-                stateIndex * parserSymbols.length + lookaheadIndex
-              }] = ${packedAction}; // 'state ${stateIndex}' -> ${symbol} -> ${
-                to.op
-              } (target=${target}, len=${reduceLen}) -> 'action ${actionIdx}'`;
+              return {
+                index: stateIndex * parserSymbols.length + lookaheadIndex,
+                value: packedAction,
+                groupKey: stateIndex,
+                symbol,
+                comment: `'state ${stateIndex}' -> ${symbol} -> ${to.op} (target=${target}, len=${reduceLen})`,
+                runComment: (first, last) =>
+                  `'state ${stateIndex}' -> ${first.symbol}..${last.symbol} -> ${to.op} (target=${target}, len=${reduceLen})`,
+              };
             });
         })
-        .join("\n")}
+      )}
 
       ${
         hasShiftSemanticActions
           ? `const shiftActionsTable = new Uint8Array(${paddedTableSize});
-      ${shiftActionEntries
-        .map(
-          (entry) =>
-            `shiftActionsTable[${entry.tableIndex}] = ${entry.actionId}; // 'state ${entry.stateIndex}' -> ${entry.symbol} -> ${entry.code}`
-        )
-        .join("\n")}`
+      ${this._formatTableRuns(
+        "shiftActionsTable",
+        shiftActionEntries.map((entry) => ({
+          index: entry.tableIndex,
+          value: entry.actionId,
+          groupKey: entry.stateIndex,
+          symbol: entry.symbol,
+          comment: `'state ${entry.stateIndex}' -> ${entry.symbol} -> ${entry.code}`,
+          runComment: (first, last) =>
+            `'state ${entry.stateIndex}' -> ${first.symbol}..${last.symbol} -> ${entry.code}`,
+        }))
+      )}`
           : ""
       }
 
       const gotoTable = new Uint32Array(${paddedTableSize});
-      ${Array.from(goto.entries())
-        .flatMap(([from, target]) => {
+      ${this._formatTableRuns(
+        "gotoTable",
+        Array.from(goto.entries()).flatMap(([from, target]) => {
+          const fromIndex = states.indexOf(from);
           return Array.from(target.entries()).map(([symbol, to]) => {
-            return `gotoTable[${
-              states.indexOf(from) * parserSymbols.length +
-              parserSymbols.indexOf(symbol)
-            }] = ${
-              states.indexOf(to) * stateMultiplier * 1048576
-            }; // 'state ${states.indexOf(to)}'`;
+            const toIndex = states.indexOf(to);
+            return {
+              index:
+                fromIndex * parserSymbols.length +
+                parserSymbols.indexOf(symbol),
+              value: toIndex * stateMultiplier * 1048576,
+              comment: `'state ${toIndex}'`,
+            };
           });
         })
-        .join("\n")}
+      )}
 
       ${
         hasSingleLexerMode
@@ -1413,6 +1427,53 @@ export class JavaScriptBaseCodegen {
     });
 
     return formattedCode;
+  }
+
+  /**
+   * @protected
+   * @param {string} tableName
+   * @param {Array<{ index: number, value: number, groupKey?: string | number, symbol?: string, comment?: string, runComment?: (first: { index: number, value: number, symbol?: string }, last: { index: number, value: number, symbol?: string }) => string }>} entries
+   * @returns {string}
+   */
+  _formatTableRuns(tableName, entries) {
+    if (entries.length === 0) {
+      return "";
+    }
+    const sorted = entries.slice().sort((a, b) => a.index - b.index);
+    /** @type {string[]} */
+    const lines = [];
+    let i = 0;
+    while (i < sorted.length) {
+      const first = sorted[i];
+      let j = i + 1;
+      while (
+        j < sorted.length &&
+        sorted[j].index === sorted[j - 1].index + 1 &&
+        sorted[j].value === first.value &&
+        sorted[j].groupKey === first.groupKey
+      ) {
+        j++;
+      }
+      const last = sorted[j - 1];
+      const start = first.index;
+      const end = last.index + 1;
+      const comment =
+        end - start === 1
+          ? first.comment
+          : first.runComment
+          ? first.runComment(first, last)
+          : first.comment;
+      const suffix = comment ? ` // ${comment}` : "";
+      if (end - start === 1) {
+        lines.push(`${tableName}[${start}] = ${first.value};${suffix}`);
+      } else {
+        lines.push(
+          `${tableName}.fill(${first.value}, ${start}, ${end});${suffix}`
+        );
+      }
+      i = j;
+    }
+    return lines.join("\n");
   }
 
   /**
