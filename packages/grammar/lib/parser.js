@@ -65,6 +65,22 @@ const altScratch = new Uint32Array(512);
 const itemScratch = new Uint32Array(256);
 
 /**
+ * @param {Uint32Array} tree
+ * @param {number} p
+ * @returns {number}
+ */
+function getLeafStart(tree, p) {
+  let q = p - 3;
+  while (q >= 3 && tree[q] >>> 8 > 0) {
+    q -= 3;
+  }
+  const prevEnd = q >= 3 ? tree[q + 1] & 0x3fffff : 0;
+  const span = tree[p + 1];
+  const end = span & 0x3fffff;
+  return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
+}
+
+/**
  * @param {string} grammar
  * @param {ParseOptions=} options
  * @returns {{tokens: Token[], rules: Rule[]}}
@@ -137,7 +153,7 @@ export function parse(grammar, options) {
           const stLeaf = tree[stateItem + 1] & 0xfffff;
           const stSpan = tree[stLeaf + 1];
           let stEnd = stSpan & 0x3fffff;
-          const stStart = stEnd - (stSpan >>> 22);
+          const stStart = getLeafStart(tree, stLeaf);
           if (stream[stEnd - 1] === 44) {
             stEnd--;
           }
@@ -152,7 +168,7 @@ export function parse(grammar, options) {
         const stLeaf = tree[firstStateItem + 1] & 0xfffff;
         const stSpan = tree[stLeaf + 1];
         let stEnd = stSpan & 0x3fffff;
-        const stStart = stEnd - (stSpan >>> 22);
+        const stStart = getLeafStart(tree, stLeaf);
         if (stream[stEnd - 1] === 44) {
           stEnd--;
         }
@@ -165,14 +181,14 @@ export function parse(grammar, options) {
       }
       const nameSpan = tree[nameIdPtr + 1];
       const nameEnd = nameSpan & 0x3fffff;
-      const nameStart = nameEnd - (nameSpan >>> 22);
+      const nameStart = getLeafStart(tree, nameIdPtr);
       const tokenName = isAscii
         ? grammar.slice(nameStart, nameEnd)
         : stream.toString("utf-8", nameStart, nameEnd);
 
       const exprSpan = tree[exprLeafPtr + 1];
       const exprEnd = (exprSpan & 0x3fffff) - 1;
-      const exprStart = exprEnd + 2 - (exprSpan >>> 22);
+      const exprStart = getLeafStart(tree, exprLeafPtr) + 1;
       const tokenExpr = isAscii
         ? grammar.slice(exprStart, exprEnd)
         : stream.toString("utf-8", exprStart, exprEnd);
@@ -227,7 +243,7 @@ export function parse(grammar, options) {
     const nameIdPtr = tree[assignPtr + 1] & 0xfffff;
     const nameSpan = tree[nameIdPtr + 1];
     const nameEnd = nameSpan & 0x3fffff;
-    const nameStart = nameEnd - (nameSpan >>> 22);
+    const nameStart = getLeafStart(tree, nameIdPtr);
     const ruleName = isAscii
       ? grammar.slice(nameStart, nameEnd)
       : stream.toString("utf-8", nameStart, nameEnd);
@@ -272,7 +288,7 @@ export function parse(grammar, options) {
         const leafSym = tree[leaf] & 0xff;
         const leafSpan = tree[leaf + 1];
         const leafEnd = leafSpan & 0x3fffff;
-        const leafStart = leafEnd - (leafSpan >>> 22);
+        const leafStart = getLeafStart(tree, leaf);
         if (leafSym === SYM_IDENTIFIER) {
           const sym = isAscii
             ? grammar.slice(leafStart, leafEnd)

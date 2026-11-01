@@ -69,8 +69,14 @@ class FlatCstNode {
     while (rawTree[p] >>> 8 > 0) {
       p = rawTree[p + 1] & 0xfffff;
     }
+    let q = p - 3;
+    while (q >= 3 && rawTree[q] >>> 8 > 0) {
+      q -= 3;
+    }
+    const prevEnd = q >= 3 ? rawTree[q + 1] & 0x3fffff : 0;
     const span = rawTree[p + 1];
-    return (span & 0x3fffff) - (span >>> 22);
+    const end = span & 0x3fffff;
+    return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
   }
 
   get end() {
@@ -123,9 +129,14 @@ function convertFlatNode(rawTree, ptr, input, mapper) {
   const nChildren = word0 >>> 8;
 
   if (nChildren === 0) {
+    let q = ptr - 3;
+    while (q >= 3 && rawTree[q] >>> 8 > 0) {
+      q -= 3;
+    }
+    const prevEnd = q >= 3 ? rawTree[q + 1] & 0x3fffff : 0;
     const span = rawTree[ptr + 1];
     const end = span & 0x3fffff;
-    const start = end - (span >>> 22);
+    const start = prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
     const raw =
       end - start === 1 ? input.charAt(start) : input.slice(start, end);
     return {
