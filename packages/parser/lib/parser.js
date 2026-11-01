@@ -161,10 +161,13 @@ export function generate(grammar, options) {
       }
     }
     const EOF = lexers.initial.tokens.EOF;
-    const parserTokens =
+    const filteredTokens =
       byteTableSkippedTokens.size > 0
         ? tokens.filter((t) => !byteTableSkippedTokens.has(t.name))
         : tokens;
+    const parserTokens = filteredTokens.filter(
+      (t, idx, arr) => arr.findIndex((x) => x.name === t.name) === idx
+    );
 
     const augmentedRules = [
       /** @type {Rule} */
@@ -221,7 +224,8 @@ export function generate(grammar, options) {
                     .filter(
                       (it) => it.tokens[it.marker] === sym && it.semanticAction
                     )
-                    .map((it) => it.semanticAction)
+                    .map((it) => it.semanticAction?.trim())
+                    .filter((v, idx, arr) => arr.indexOf(v) === idx)
                     .join(",");
                   return `${sym}:S:${stateList.indexOf(act.state)}:${semActs}`;
                 }
@@ -299,28 +303,25 @@ export function generate(grammar, options) {
     );
 
     let parserSymbols = Array.from(new Set(dfa.description.symbols));
-    // add to align to power of 2
-    for (
-      let i = 0,
-        n =
-          Math.pow(2, Math.ceil(Math.log2(parserSymbols.length))) -
-          parserSymbols.length;
-      i < n;
-      i++
+    // add to align to power of 2 when it does not exceed the 11-bit pre-multiplied state budget
+    const nextPow2 = Math.pow(2, Math.ceil(Math.log2(parserSymbols.length)));
+    if (
+      states.size * nextPow2 < 2048 ||
+      states.size * parserSymbols.length >= 2048
     ) {
-      parserSymbols.push(/** @type {*} */ (undefined));
+      for (let i = 0, n = nextPow2 - parserSymbols.length; i < n; i++) {
+        parserSymbols.push(/** @type {*} */ (undefined));
+      }
     }
 
-    if (byteTableSkippedTokens.size > 0) {
-      for (const data of Object.values(lexers)) {
-        data.tokenIds = data.tokenNames.map((name) => {
-          if (name === undefined) {
-            return undefined;
-          }
-          const idx = parserSymbols.indexOf(name);
-          return idx === -1 ? undefined : idx;
-        });
-      }
+    for (const data of Object.values(lexers)) {
+      data.tokenIds = data.tokenNames.map((name) => {
+        if (name === undefined) {
+          return undefined;
+        }
+        const idx = parserSymbols.indexOf(name);
+        return idx === -1 ? undefined : idx;
+      });
     }
 
     const parserSymbolIds = parserSymbols.map((symbol) => {

@@ -113,8 +113,22 @@ export class JavaScriptBaseCodegen {
       (s) => s !== errorState && !finalSet.has(s)
     );
 
+    const skipBytes = data.skipBytes ?? [];
+    const skipTokenNames = new Set(data.skipTokenNames ?? []);
+
     const compactDeadEndFinals =
       deadEndFinals.length > 0 && deadEndFinals.length < columns;
+
+    const maxDeadEndTokenId = deadEndFinals.reduce((max, origState) => {
+      const id = tokenIds[origState / columns] ?? 0;
+      return id > max ? id : max;
+    }, 0);
+
+    const directDeadEndTokenIds =
+      compactDeadEndFinals &&
+      continuableFinals.length === 0 &&
+      skipTokenNames.size === 0 &&
+      maxDeadEndTokenId + 1 < columns;
 
     const rowStates = compactDeadEndFinals
       ? [errorState, ...continuableFinals, ...nonFinals]
@@ -122,7 +136,16 @@ export class JavaScriptBaseCodegen {
 
     /** @type {Map<number, number>} */
     const stateRemap = new Map();
-    if (compactDeadEndFinals) {
+    if (directDeadEndTokenIds) {
+      stateRemap.set(errorState, 0);
+      deadEndFinals.forEach((origState) => {
+        const id = tokenIds[origState / columns] ?? 0;
+        stateRemap.set(origState, id + 1);
+      });
+      nonFinals.forEach((origState, idx) => {
+        stateRemap.set(origState, (1 + idx) * columns);
+      });
+    } else if (compactDeadEndFinals) {
       stateRemap.set(errorState, 0);
       deadEndFinals.forEach((origState, idx) => {
         stateRemap.set(origState, idx + 1);
@@ -146,10 +169,14 @@ export class JavaScriptBaseCodegen {
     const remapState = (s) => stateRemap.get(s) ?? 0;
 
     const remappedStart = remapState(start);
-    const remappedLastDeadEndFinal = compactDeadEndFinals
+    const remappedLastDeadEndFinal = directDeadEndTokenIds
+      ? maxDeadEndTokenId + 1
+      : compactDeadEndFinals
       ? deadEndFinals.length
       : deadEndFinals.length * columns;
-    const remappedLastFinal = compactDeadEndFinals
+    const remappedLastFinal = directDeadEndTokenIds
+      ? maxDeadEndTokenId + 1
+      : compactDeadEndFinals
       ? continuableFinals.length > 0
         ? continuableFinals.length * columns
         : deadEndFinals.length
@@ -161,43 +188,45 @@ export class JavaScriptBaseCodegen {
 
     /** @type {string[]} */
     const tokenIdsAssignments = [];
-    if (compactDeadEndFinals) {
-      deadEndFinals.forEach((origState, idx) => {
-        const origIdx = origState / columns;
-        const id = tokenIds[origIdx];
-        const name = tokenNames[origIdx];
-        if (id !== undefined && id !== 0) {
-          tokenIdsAssignments.push(`tokenIds[${idx + 1}] = ${id}; // ${name}`);
-        } else {
-          tokenIdsAssignments.push(`// tokenIds[${idx + 1}] = 0; // ${name}`);
-        }
-      });
-      continuableFinals.forEach((origState, idx) => {
-        const origIdx = origState / columns;
-        const id = tokenIds[origIdx];
-        const name = tokenNames[origIdx];
-        const mappedState = (idx + 1) * columns;
-        if (id !== undefined && id !== 0) {
-          tokenIdsAssignments.push(
-            `tokenIds[${mappedState}] = ${id}; // ${name}`
-          );
-        } else {
-          tokenIdsAssignments.push(
-            `// tokenIds[${mappedState}] = 0; // ${name}`
-          );
-        }
-      });
-    } else {
-      rowStates.forEach((origState, i) => {
-        const origIdx = origState / columns;
-        const id = tokenIds[origIdx];
-        const name = tokenNames[origIdx];
-        if (id !== undefined && id !== 0) {
-          tokenIdsAssignments.push(`tokenIds[${i}] = ${id}; // ${name}`);
-        } else {
-          tokenIdsAssignments.push(`// tokenIds[${i}] = 0; // ${name}`);
-        }
-      });
+    if (!directDeadEndTokenIds) {
+      if (compactDeadEndFinals) {
+        deadEndFinals.forEach((origState, idx) => {
+          const origIdx = origState / columns;
+          const id = tokenIds[origIdx];
+          const name = tokenNames[origIdx];
+          if (id !== undefined && id !== 0) {
+            tokenIdsAssignments.push(`tokenIds[${idx + 1}] = ${id}; // ${name}`);
+          } else {
+            tokenIdsAssignments.push(`// tokenIds[${idx + 1}] = 0; // ${name}`);
+          }
+        });
+        continuableFinals.forEach((origState, idx) => {
+          const origIdx = origState / columns;
+          const id = tokenIds[origIdx];
+          const name = tokenNames[origIdx];
+          const mappedState = (idx + 1) * columns;
+          if (id !== undefined && id !== 0) {
+            tokenIdsAssignments.push(
+              `tokenIds[${mappedState}] = ${id}; // ${name}`
+            );
+          } else {
+            tokenIdsAssignments.push(
+              `// tokenIds[${mappedState}] = 0; // ${name}`
+            );
+          }
+        });
+      } else {
+        rowStates.forEach((origState, i) => {
+          const origIdx = origState / columns;
+          const id = tokenIds[origIdx];
+          const name = tokenNames[origIdx];
+          if (id !== undefined && id !== 0) {
+            tokenIdsAssignments.push(`tokenIds[${i}] = ${id}; // ${name}`);
+          } else {
+            tokenIdsAssignments.push(`// tokenIds[${i}] = 0; // ${name}`);
+          }
+        });
+      }
     }
 
     /** @type {Map<number, string | undefined>} */
@@ -209,8 +238,6 @@ export class JavaScriptBaseCodegen {
       );
     });
 
-    const skipBytes = data.skipBytes ?? [];
-    const skipTokenNames = new Set(data.skipTokenNames ?? []);
     const skipMappedStates = finals
       .filter((origState) => {
         const name = tokenNames[origState / columns];
@@ -231,8 +258,12 @@ export class JavaScriptBaseCodegen {
           : ""
       }
 
-      const tokenIds = new ${tokenIdSize}(${paddedTokenIdsLength});
-      ${tokenIdsAssignments.join("\n")}
+      ${
+        directDeadEndTokenIds
+          ? ""
+          : `const tokenIds = new ${tokenIdSize}(${paddedTokenIdsLength});
+      ${tokenIdsAssignments.join("\n")}`
+      }
 
       const table = new ${pointerSize}(${columns * rowStates.length});
       ${transitions
@@ -261,7 +292,43 @@ export class JavaScriptBaseCodegen {
        */
       const next = (input, offset) => {
         ${
-          skipMappedStates.length > 0
+          directDeadEndTokenIds
+            ? `// ${remappedStart / columns}
+        let state = ${remappedStart};
+
+        // try to find match
+        let i = offset & 0x7fffffff;
+        const l = input.length;
+        ${
+          skipBytes.length > 0
+            ? `while (i < l && skipTable[input[i]] !== 0) {
+          i++;
+        }
+        offset = i;`
+            : ""
+        }
+        while (i < l) {
+          state = table[state + input[i++]];
+          if (state <= ${remappedLastFinal}) {
+            break;
+          }
+        }
+
+        if (state !== 0 && state <= ${remappedLastFinal}) {
+          state -= 1;
+        } else {
+          state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                tokenIds[tokenNames.indexOf(ERROR)]
+              };
+          offset = -1;
+          i = -1;
+        }
+        return {
+          state,
+          start: offset,
+          end: i,
+        };`
+            : skipMappedStates.length > 0
             ? `let i = offset & 0x7fffffff;
         const l = input.length;
         while (true) {
@@ -464,6 +531,83 @@ export class JavaScriptBaseCodegen {
     const ruleNamesSet = new Set(["S", ...rules.map((r) => r.name)]);
     const paddedTableSize = Math.max(64, states.length * parserSymbols.length);
 
+    if (requiresSemanticActions) {
+      for (const state of states) {
+        for (const item of state.values()) {
+          if (item.semanticAction && item.marker === item.tokens.length) {
+            throw new Error("Semantic reducer actions are not implemented");
+          }
+        }
+      }
+    }
+
+    /**
+     * @param {string} actionCode
+     */
+    const transformSemanticAction = (actionCode) => {
+      if (hasSingleLexerMode) {
+        return actionCode;
+      }
+      return actionCode.replace(
+        /\blexer\.push\(\s*(['"])([^'"]+)\1\s*\)/g,
+        (match, _quote, modeName) => {
+          if (Object.prototype.hasOwnProperty.call(lexerData, modeName)) {
+            return `lexer.push(LexerMode.${this._lexerModeEnumKey(modeName)})`;
+          }
+          return match;
+        }
+      );
+    };
+
+    /** @type {string[]} */
+    const shiftActionBodies = [];
+    /** @type {Map<string, number>} */
+    const shiftActionBodyToId = new Map();
+    /** @type {Array<{ tableIndex: number, stateIndex: number, symbol: string, actionId: number, code: string }>} */
+    const shiftActionEntries = [];
+
+    if (requiresSemanticActions) {
+      for (const [from, action] of actions.entries()) {
+        const stateIndex = states.indexOf(from);
+        const items = Array.from(from.values());
+        for (const [symbol, to] of action.entries()) {
+          if (ruleNamesSet.has(symbol) || to.op !== "shift") {
+            continue;
+          }
+          /** @type {string[]} */
+          const matchingActions = [];
+          for (const item of items) {
+            if (item.tokens[item.marker] === symbol && item.semanticAction) {
+              const transformed = transformSemanticAction(
+                item.semanticAction.trim()
+              );
+              if (!matchingActions.includes(transformed)) {
+                matchingActions.push(transformed);
+              }
+            }
+          }
+          if (matchingActions.length > 0) {
+            const combinedCode = matchingActions.join("; ");
+            let actionId = shiftActionBodyToId.get(combinedCode);
+            if (actionId === undefined) {
+              shiftActionBodies.push(combinedCode);
+              actionId = shiftActionBodies.length;
+              shiftActionBodyToId.set(combinedCode, actionId);
+            }
+            const lookaheadIndex = parserSymbols.indexOf(symbol);
+            shiftActionEntries.push({
+              tableIndex: stateIndex * parserSymbols.length + lookaheadIndex,
+              stateIndex,
+              symbol,
+              actionId,
+              code: combinedCode,
+            });
+          }
+        }
+      }
+    }
+    const hasShiftSemanticActions = shiftActionEntries.length > 0;
+
     const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
 
@@ -472,61 +616,6 @@ export class JavaScriptBaseCodegen {
         .map((rule) => `${rule.name} := ${rule.symbols.join(" ")};`)
         .join("\n")}
       */
-
-      ${
-        requiresSemanticActions
-          ? `const semanticReducerActions = [
-          ${states
-            .map((state) => {
-              const items = Array.from(state.values());
-              const hasSemanticActions = items.some((item) =>
-                Boolean(
-                  item.semanticAction && item.marker === item.tokens.length
-                )
-              );
-              if (hasSemanticActions) {
-                throw new Error("Semantic reducer actions are not implemented");
-              }
-              return `undefined,`;
-            })
-            .join("\n")}
-          ];
-          `
-          : ""
-      }
-
-      ${
-        requiresSemanticActions
-          ? `
-          const states = [
-            ${states
-              .map(
-                (state, i) =>
-                  `
-                  // 'state ${i}'
-                  new Set([${Array.from(state.values())
-                    .map(
-                      (item) => `{
-                      name: ${parserSymbols.indexOf(item.name)}, // ${item.name}
-                      tokens: ${JSON.stringify(item.tokens)},
-                      marker: ${item.marker},
-                      lookahead: ${parserSymbols.indexOf(item.lookahead)}, // ${
-                        item.lookahead
-                      }
-                      semanticAction: ${
-                        item.semanticAction
-                          ? `(stack, sp) => { ${item.semanticAction}; }`
-                          : "undefined"
-                      }
-                    }`
-                    )
-                    .join(",\n")}])`
-              )
-              .join(",\n")}
-          ];
-          `
-          : ""
-      }
 
       const parserSymbols = [
         ${parserSymbols
@@ -574,6 +663,18 @@ export class JavaScriptBaseCodegen {
         })
         .join("\n")}
 
+      ${
+        hasShiftSemanticActions
+          ? `const shiftActionsTable = new Uint8Array(${paddedTableSize});
+      ${shiftActionEntries
+        .map(
+          (entry) =>
+            `shiftActionsTable[${entry.tableIndex}] = ${entry.actionId}; // 'state ${entry.stateIndex}' -> ${entry.symbol} -> ${entry.code}`
+        )
+        .join("\n")}`
+          : ""
+      }
+
       const gotoTable = new Uint32Array(${paddedTableSize});
       ${Array.from(goto.entries())
         .flatMap(([from, target]) => {
@@ -590,35 +691,38 @@ export class JavaScriptBaseCodegen {
 
       ${
         hasSingleLexerMode
-          ? `const nextToken = nextToken${
-              lexerModes[0][0].toUpperCase() + lexerModes[0].substr(1)
-            };`
-          : `const nextTokens = {
+          ? `const nextToken = nextToken${this._lexerModePascalCase(
+              lexerModes[0]
+            )};`
+          : `const LexerMode = {
         ${lexerModes
-          .map(
-            (name) =>
-              `${name}: nextToken${name[0].toUpperCase() + name.substr(1)},`
-          )
+          .map((name, idx) => `${this._lexerModeEnumKey(name)}: ${idx},`)
           .join("\n")}
       };
 
+      const lexerModeNames = {
+        ${lexerModes
+          .map((name, idx) => `${JSON.stringify(name)}: ${idx},`)
+          .join("\n")}
+      };
+
+      const lexerStack = new Uint8Array(64);
+      let lexerSp = 0;
+      let lexerMode = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};
+
       const lexer = {
-        _stack: [],
-        push(name) {
-          nextToken = nextTokens[name];
-          lexer._stack.push(nextToken);
+        push(mode) {
+          const modeId = typeof mode === "number" ? mode : lexerModeNames[mode];
+          lexerStack[++lexerSp] = modeId;
+          lexerMode = modeId;
         },
-        pop(done) {
-          lexer._stack.pop();
-          if (done) {
-            return;
-          } else if (lexer._stack.length === 0) {
+        pop() {
+          if (lexerSp === 0) {
             throw new Error("Cannot remove more lexer states than have been pushed.");
           }
-          nextToken = lexer._stack[lexer._stack.length - 1];
-        }
-      };
-      let nextToken;`
+          lexerMode = lexerStack[--lexerSp];
+        },
+      };`
       }
 
       /**
@@ -746,11 +850,21 @@ export class JavaScriptBaseCodegen {
           console.log('---');
           `
         )}
-        ${hasSingleLexerMode ? "" : "lexer.push('initial');"}
+        ${
+          hasSingleLexerMode
+            ? ""
+            : `lexerSp = 0;
+        lexerStack[0] = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};
+        lexerMode = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};`
+        }
 
         const stream = typeof input === "string" ? Buffer.from(input) : input;
 
-        let result = nextToken(stream, 0);
+        let result = ${
+          hasSingleLexerMode
+            ? "nextToken(stream, 0)"
+            : `nextToken${this._lexerModePascalCase(lexerModes[0])}(stream, 0)`
+        };
         let lookahead = result.state;
         let lookaheadSpan = result.end | ((result.end - result.start) << 22);
 
@@ -778,15 +892,23 @@ export class JavaScriptBaseCodegen {
           const top = stack[sp];
           const currentState = top >>> 20;
 
-          const actionLookup = actionsTable[${
-            canPreMultiplyState
-              ? "currentState"
-              : `currentState * ${parserSymbols.length}`
-          } + lookahead];
+          ${
+            hasShiftSemanticActions
+              ? `const actionIndex = ${
+                  canPreMultiplyState
+                    ? "currentState"
+                    : `currentState * ${parserSymbols.length}`
+                } + lookahead;
+          const actionLookup = actionsTable[actionIndex];`
+              : `const actionLookup = actionsTable[${
+                  canPreMultiplyState
+                    ? "currentState"
+                    : `currentState * ${parserSymbols.length}`
+                } + lookahead];`
+          }
           if (actionLookup >= 0xfffe) {
             if (actionLookup === 0xfffe) {
               ${debug(() => `console.log('steps', steps);`)}
-              ${hasSingleLexerMode ? "" : "lexer.pop(true);"}
               return new CstNode(stream, tree, tp - 3);
             }
             const context = input.toString().substr(result.start, 10);
@@ -800,18 +922,23 @@ export class JavaScriptBaseCodegen {
                 `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
             )}
             ${
-              requiresSemanticActions
-                ? `
-                for (const item of states[${
-                  canPreMultiplyState
-                    ? `currentState / ${parserSymbols.length}`
-                    : "currentState"
-                }].values()) {
-                  if (item.tokens[item.marker] === parserSymbols[lookahead]) {
-                    item.semanticAction?.(stack, sp);
-                  }
-                }
-                `
+              hasShiftSemanticActions
+                ? shiftActionBodies.length === 1
+                  ? `if (shiftActionsTable[actionIndex] !== 0) {
+              ${shiftActionBodies[0]};
+            }`
+                  : `const shiftAction = shiftActionsTable[actionIndex];
+            if (shiftAction !== 0) {
+              switch (shiftAction) {
+                ${shiftActionBodies
+                  .map(
+                    (body, idx) => `case ${idx + 1}:
+                  ${body};
+                  break;`
+                  )
+                  .join("\n")}
+              }
+            }`
                 : ""
             }
 
@@ -822,7 +949,24 @@ export class JavaScriptBaseCodegen {
             sp += 1;
             stack[sp] = tp | (actionLookup << 19);
 
-            result = nextToken(stream, lookaheadSpan & 0x3fffff);
+            result = ${
+              hasSingleLexerMode
+                ? "nextToken(stream, lookaheadSpan & 0x3fffff)"
+                : lexerModes
+                    .slice(0, -1)
+                    .map(
+                      (name) =>
+                        `lexerMode === LexerMode.${this._lexerModeEnumKey(
+                          name
+                        )} ? nextToken${this._lexerModePascalCase(
+                          name
+                        )}(stream, lookaheadSpan & 0x3fffff) : `
+                    )
+                    .join("") +
+                  `nextToken${this._lexerModePascalCase(
+                    lexerModes[lexerModes.length - 1]
+                  )}(stream, lookaheadSpan & 0x3fffff)`
+            };
             lookahead = result.state;
             lookaheadSpan = result.end | ((result.end - result.start) << 22);
             ${debug(
@@ -865,15 +1009,6 @@ export class JavaScriptBaseCodegen {
               }
               `
             )}
-            ${
-              requiresSemanticActions
-                ? `semanticReducerActions[${
-                    canPreMultiplyState
-                      ? `currentState / ${parserSymbols.length}`
-                      : "currentState"
-                  }]?.[actionSymbol][lookahead](stack, sp);`
-                : ""
-            }
 
             sp -= stackItemsToReduce;
             tree[tp] = word0; // name and number of children
@@ -910,6 +1045,32 @@ export class JavaScriptBaseCodegen {
     });
 
     return formattedCode;
+  }
+
+  /**
+   * @protected
+   * @param {string} name
+   * @returns {string}
+   */
+  _lexerModePascalCase(name) {
+    return name
+      .split(/[^a-zA-Z0-9]+/)
+      .filter(Boolean)
+      .map((part) => part[0].toUpperCase() + part.slice(1))
+      .join("");
+  }
+
+  /**
+   * @protected
+   * @param {string} name
+   * @returns {string}
+   */
+  _lexerModeEnumKey(name) {
+    return name
+      .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+      .replace(/[^a-zA-Z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .toUpperCase();
   }
 
   /**

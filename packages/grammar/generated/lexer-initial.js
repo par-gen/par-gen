@@ -277,6 +277,7 @@ table[521] = 512; // WS
 table[525] = 512; // WS
 table[522] = 512; // WS
 table[547] = 256; // WS
+table[812] = 1; // IDENTIFIER
 table[813] = 768; // IDENTIFIER
 table[816] = 768; // IDENTIFIER
 table[817] = 768; // IDENTIFIER

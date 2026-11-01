@@ -2,22 +2,20 @@
 #
 # Tokens
 #
-CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\frnbtf\\\-\^x0-9a-f]';
-HEX_NUMBER := '[0-9c-ea]';
-CONTROL_CHARACTER := '[rnt]';
-BACKSLASH := '\\';
-X := 'x';
-B := 'b';
-F := 'f';
-CARET := '^';
-DASH := '-';
-DOT := '\.';
-UNION := '\|';
-PAREN_OPEN := '\(';
-PAREN_CLOSE := '\)';
-QUANTIFIER := '[\*?+]';
-BRACKET_OPEN := '\[';
-BRACKET_CLOSE := '\]';
+CHARACTER := '[^\(\)\[\]\|\.\*?+\r\n\b\t\f\\]' @ initial;
+CHARACTER := '[^\[\]\r\n\b\t\f\\\-\^]' @ character-class;
+HEX_PREFIX := '\\x' @ initial, character-class;
+HEX_NUMBER := '[0-9a-f]' @ hex-escape;
+ESCAPED_CHARACTER := '\\[\(\)\[\]\|\.\*?+rnbtf\\\-\^]' @ initial, character-class;
+CARET := '^' @ character-class;
+DASH := '-' @ character-class;
+DOT := '\.' @ initial;
+UNION := '\|' @ initial;
+PAREN_OPEN := '\(' @ initial;
+PAREN_CLOSE := '\)' @ initial;
+QUANTIFIER := '[\*?+]' @ initial;
+BRACKET_OPEN := '\[' @ initial;
+BRACKET_CLOSE := '\]' @ character-class;
 
 #######################################
 #
@@ -63,8 +61,8 @@ Group :=
   ;
 
 CharacterClass :=
-    BRACKET_OPEN CharacterClassCharacters BRACKET_CLOSE
-  | BRACKET_OPEN CARET CharacterClassCharacters BRACKET_CLOSE
+    { lexer.push('character-class') } BRACKET_OPEN CharacterClassCharacters { lexer.pop() } BRACKET_CLOSE
+  | { lexer.push('character-class') } BRACKET_OPEN CARET CharacterClassCharacters { lexer.pop() } BRACKET_CLOSE
   ;
 
 CharacterClassCharacters :=
@@ -73,71 +71,25 @@ CharacterClassCharacters :=
   ;
 
 CharacterClassCharacter :=
-    CharacterOrNumberOrX
-  | ControlCharacter
+    CHARACTER
+  | ESCAPED_CHARACTER
   | HexEscape
-  | BACKSLASH DASH
-  | BACKSLASH CARET
-  | QUANTIFIER
-  | PAREN_OPEN
-  | PAREN_CLOSE
-  | UNION
-  | DOT
-  | BACKSLASH EscapedCharacter
   | CharacterClassRange
   ;
 
 CharacterClassRange :=
-    CharacterOrNumberOrX DASH CharacterOrNumberOrX
-  | CharacterOrNumberOrX DASH ControlCharacter
-  | ControlCharacter DASH CharacterOrNumberOrX
-  | ControlCharacter DASH ControlCharacter
+    CHARACTER DASH CHARACTER
   | HexEscape DASH HexEscape
-  | HexEscape DASH CharacterOrNumberOrX
-  | CharacterOrNumberOrX DASH HexEscape
-  | HexEscape DASH ControlCharacter
-  | ControlCharacter DASH HexEscape
+  | HexEscape DASH CHARACTER
+  | CHARACTER DASH HexEscape
   ;
 
 Character :=
-    CharacterOrNumberOrX
-  | ControlCharacter
-  | CARET
-  | DASH
-  | BACKSLASH EscapedCharacter
+    CHARACTER
+  | ESCAPED_CHARACTER
   | HexEscape
   ;
 
 HexEscape :=
-    BACKSLASH X HexNumber HexNumber
-  ;
-
-HexNumber :=
-    HEX_NUMBER
-  | B
-  | F
-  ;
-
-CharacterOrNumberOrX :=
-    CHARACTER
-  | HexNumber
-  | X
-  ;
-
-ControlCharacter :=
-    CONTROL_CHARACTER
-  | B
-  | F
-  ;
-
-EscapedCharacter :=
-    ControlCharacter
-  | BACKSLASH
-  | DOT
-  | UNION
-  | PAREN_OPEN
-  | PAREN_CLOSE
-  | BRACKET_OPEN
-  | BRACKET_CLOSE
-  | QUANTIFIER
+    { lexer.push('hex-escape') } HEX_PREFIX HEX_NUMBER { lexer.pop() } HEX_NUMBER
   ;

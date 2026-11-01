@@ -5,21 +5,22 @@ import { performance } from "perf_hooks";
 
 const log = debug("par-gen:nfa");
 
-const SYM_CARET = 7;
-const SYM_DOT = 9;
-const SYM_QUANTIFIER = 13;
-const SYM_REGEXP = 19;
-const SYM_EXPRESSION = 20;
-const SYM_UNION_RULE = 21;
-const SYM_SEQUENCE = 22;
-const SYM_ATOM = 23;
-const SYM_GROUP = 24;
-const SYM_CHARACTER_CLASS = 25;
-const SYM_CHARACTER_CLASS_CHARACTERS = 26;
-const SYM_CHARACTER_CLASS_CHARACTER = 27;
-const SYM_CHARACTER_CLASS_RANGE = 28;
-const SYM_CHARACTER_RULE = 29;
-const SYM_HEX_ESCAPE = 30;
+const SYM_ESCAPED_CHARACTER = 3;
+const SYM_CARET = 4;
+const SYM_DOT = 6;
+const SYM_QUANTIFIER = 10;
+const SYM_REGEXP = 16;
+const SYM_EXPRESSION = 17;
+const SYM_UNION_RULE = 18;
+const SYM_SEQUENCE = 19;
+const SYM_ATOM = 20;
+const SYM_GROUP = 21;
+const SYM_CHARACTER_CLASS = 22;
+const SYM_CHARACTER_CLASS_CHARACTERS = 23;
+const SYM_CHARACTER_CLASS_CHARACTER = 24;
+const SYM_CHARACTER_CLASS_RANGE = 25;
+const SYM_CHARACTER_RULE = 26;
+const SYM_HEX_ESCAPE = 27;
 
 const BYTE_CHARS = Array.from({ length: 256 }, (_, i) =>
   String.fromCharCode(i)
@@ -226,9 +227,15 @@ function hexDigitValue(code) {
  * @returns {number}
  */
 function decodeFlatHexEscapeCode(rawTree, hexPtr, input) {
+  const n = rawTree[hexPtr] >>> 8;
   const c0 = rawTree[hexPtr + 1] & 0xfffff;
   const c1 = rawTree[c0 + 2];
   const c2 = rawTree[c1 + 2];
+  if (n === 3) {
+    const d1 = hexDigitValue(extractFlatCharCode(rawTree, c1, input));
+    const d2 = hexDigitValue(extractFlatCharCode(rawTree, c2, input));
+    return (d1 << 4) | d2;
+  }
   const c3 = rawTree[c2 + 2];
   const d1 = hexDigitValue(extractFlatCharCode(rawTree, c2, input));
   const d2 = hexDigitValue(extractFlatCharCode(rawTree, c3, input));
@@ -325,6 +332,19 @@ function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
               ctx.symbols.add(sym);
               transitionMap.set(sym, finalTarget);
             }
+          }
+        }
+      } else if (childSym === SYM_ESCAPED_CHARACTER) {
+        const span = rawTree[c0 + 1];
+        const start = (span & 0x3fffff) - (span >>> 22);
+        const ch = decodeEscapedChar(BYTE_CHARS[input.charCodeAt(start + 1)]);
+        if (excluded !== null) {
+          excluded[ch.charCodeAt(0)] = 1;
+        } else {
+          const sym = mapFlatChar(ctx, ch);
+          if (!transitionMap.has(sym)) {
+            ctx.symbols.add(sym);
+            transitionMap.set(sym, finalTarget);
           }
         }
       } else {
@@ -481,11 +501,16 @@ function visitFlat(ctx, ptr) {
 
     case SYM_CHARACTER_RULE: {
       const c0 = rawTree[currentPtr + 1] & 0xfffff;
+      const childSym = rawTree[c0] & 0xff;
       let decoded = "";
       if (nChildren === 2) {
         const c1 = rawTree[c0 + 2];
         decoded = decodeEscapedChar(extractFlatChar(rawTree, c1, input));
-      } else if ((rawTree[c0] & 0xff) === SYM_HEX_ESCAPE) {
+      } else if (childSym === SYM_ESCAPED_CHARACTER) {
+        const span = rawTree[c0 + 1];
+        const start = (span & 0x3fffff) - (span >>> 22);
+        decoded = decodeEscapedChar(BYTE_CHARS[input.charCodeAt(start + 1)]);
+      } else if (childSym === SYM_HEX_ESCAPE) {
         decoded = BYTE_CHARS[decodeFlatHexEscapeCode(rawTree, c0, input)];
       } else if (nChildren === 4) {
         decoded =
@@ -696,8 +721,9 @@ function decodeEscapedChar(ch) {
  */
 function decodeHexEscapeNode(hexNode) {
   const items = hexNode.items ?? [];
-  const d1 = extractRawString(items[2]) ?? "0";
-  const d2 = extractRawString(items[3]) ?? "0";
+  const offset = items.length === 3 ? 1 : 2;
+  const d1 = extractRawString(items[offset]) ?? "0";
+  const d2 = extractRawString(items[offset + 1]) ?? "0";
   return BYTE_CHARS[parseInt(d1 + d2, 16)];
 }
 
@@ -879,6 +905,10 @@ function atom(ctx, tree) {
         let decoded = "";
         if (charItems[0]?.name === "HexEscape") {
           decoded = decodeHexEscapeNode(charItems[0]);
+        } else if (charItems[0]?.name === "ESCAPED_CHARACTER") {
+          decoded = decodeEscapedChar(
+            (extractRawString(charItems[0]) ?? "").slice(1)
+          );
         } else if (charItems.length === 4) {
           decoded = decodeHexEscapeNode(node);
         } else if (charItems.length === 2) {
@@ -990,6 +1020,8 @@ function walkCharacterClassNode(
         const ch =
           child.name === "HexEscape"
             ? decodeHexEscapeNode(child)
+            : child.name === "ESCAPED_CHARACTER"
+            ? decodeEscapedChar((extractRawString(child) ?? "").slice(1))
             : extractRawString(child) ?? "";
         if (excluded !== null) {
           excluded[ch.charCodeAt(0)] = 1;

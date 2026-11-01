@@ -39,9 +39,9 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
     ${Object.keys(lexers)
       .map(
         (name) =>
-          `import { next as nextToken${
-            name[0].toUpperCase() + name.substr(1)
-          } } from './${relative(
+          `import { next as nextToken${this._lexerModePascalCase(
+            name
+          )} } from './${relative(
             dirname(this.options.parserFile),
             this._lexerStateFile(name)
           )}';`

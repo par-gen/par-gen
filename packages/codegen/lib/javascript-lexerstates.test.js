@@ -158,4 +158,97 @@ describe("Lexer States", () => {
     expect(results).toMatchObject(expected);
     expect(results.toJSON()).toEqual(expected);
   });
+
+  it("should emit LexerMode enum, Uint8Array lexerStack, and shiftActionsTable for hyphenated multi-mode lexers", async () => {
+    /** @type {any[]} */
+    const results = [];
+    /** @type {(_result: *) => void} */
+    const output = (_result) => {
+      results.push(_result);
+    };
+
+    const grammar = `
+      BRACKET_OPEN := '\\[' @ initial, character-class;
+      BRACKET_CLOSE := '\\]' @ character-class;
+      HEX_PREFIX := '\\\\x' @ initial, character-class;
+      HEX_DIGIT := '[0-9a-fA-F]' @ hex-escape;
+      CLASS_CHAR := '[^\\]\\\\]' @ character-class;
+      CHAR := '[^\\[\\\\]' @ initial;
+
+      Expr := Item | Expr Item;
+      Item := CharClass | HexEscape | CHAR;
+      CharClass := { lexer.push('character-class') } BRACKET_OPEN ClassItems { lexer.pop() } BRACKET_CLOSE;
+      ClassItems := ClassItem | ClassItems ClassItem;
+      ClassItem := HexEscape | CLASS_CHAR;
+      HexEscape := { lexer.push('hex-escape') } HEX_PREFIX HEX_DIGIT { lexer.pop() } HEX_DIGIT;
+    `;
+
+    const codegen = new JavaScriptModuleCodegen({
+      lexerFile,
+      parserFile,
+      debug: false,
+    });
+    await codegen.parser(genParser(grammar));
+
+    const generatedParserCode = await fsp.readFile(parserFile, "utf-8");
+    expect(generatedParserCode).toContain("const LexerMode = {");
+    expect(generatedParserCode).toContain("INITIAL: 0");
+    expect(generatedParserCode).toContain("CHARACTER_CLASS: 1");
+    expect(generatedParserCode).toContain("HEX_ESCAPE: 2");
+    expect(generatedParserCode).toContain("const lexerStack = new Uint8Array(64)");
+    expect(generatedParserCode).toContain("const shiftActionsTable = new Uint8Array(");
+    expect(generatedParserCode).toContain("lexer.push(LexerMode.CHARACTER_CLASS)");
+    expect(generatedParserCode).toContain("lexer.push(LexerMode.HEX_ESCAPE)");
+    expect(generatedParserCode).not.toContain("const states = [");
+
+    const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+    const context = vm.createContext({
+      output,
+      Buffer,
+      console,
+    });
+
+    const module = new SourceTextModule(
+      `
+        import { parse } from 'parser-file';
+
+        output(parse("a[b\\\\x41c]\\\\x39"));
+        output(parse("[\\\\x20]z"));
+      `,
+      { context }
+    );
+
+    await module.link(
+      /**
+       * @param {string} specifier
+       * @param {*} referencingModule
+       */
+      async function (specifier, referencingModule) {
+        if (specifier === "parser-file") {
+          const code = await fsp.readFile(parserFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+            identifier: parserFile,
+          });
+        }
+        if (specifier.startsWith("./")) {
+          const targetPath = join(directory, specifier.slice(2));
+          const code = await fsp.readFile(targetPath, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+            identifier: targetPath,
+          });
+        }
+        throw new Error(`Unable to resolve dependency: ${specifier}`);
+      }
+    );
+
+    await module.evaluate();
+
+    expect(results).toHaveLength(2);
+    expect(results[0].name).toBe("Expr");
+    expect(results[0].end).toBe(13);
+    expect(results[1].name).toBe("Expr");
+    expect(results[1].end).toBe(7);
+  });
 });

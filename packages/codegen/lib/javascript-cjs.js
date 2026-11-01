@@ -43,9 +43,9 @@ export class JavaScriptCommonJsCodegen extends JavaScriptBaseCodegen {
       ${Object.keys(lexers)
         .map(
           (name) =>
-            `const { next: nextToken${
-              name[0].toUpperCase() + name.substr(1)
-            } } = require('./${relative(
+            `const { next: nextToken${this._lexerModePascalCase(
+              name
+            )} } = require('./${relative(
               dirname(this.options.parserFile),
               this._lexerStateFile(name)
             )}');`

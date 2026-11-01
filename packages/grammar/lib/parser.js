@@ -114,8 +114,11 @@ export function parse(grammar, options) {
           const stateItem = tree[first + 2];
           const stLeaf = tree[stateItem + 1] & 0xfffff;
           const stSpan = tree[stLeaf + 1];
-          const stEnd = stSpan & 0x3fffff;
+          let stEnd = stSpan & 0x3fffff;
           const stStart = stEnd - (stSpan >>> 22);
+          if (stream[stEnd - 1] === 44) {
+            stEnd--;
+          }
           state.push(
             isAscii
               ? grammar.slice(stStart, stEnd)
@@ -126,8 +129,11 @@ export function parse(grammar, options) {
         const firstStateItem = tree[sl + 1] & 0xfffff;
         const stLeaf = tree[firstStateItem + 1] & 0xfffff;
         const stSpan = tree[stLeaf + 1];
-        const stEnd = stSpan & 0x3fffff;
+        let stEnd = stSpan & 0x3fffff;
         const stStart = stEnd - (stSpan >>> 22);
+        if (stream[stEnd - 1] === 44) {
+          stEnd--;
+        }
         state.push(
           isAscii
             ? grammar.slice(stStart, stEnd)

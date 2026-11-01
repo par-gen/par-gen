@@ -2,44 +2,37 @@ import { parse } from "@par-gen/regexp";
 
 const REGEXP_SYMBOLS = [
   "CHARACTER", // 0
-  "HEX_NUMBER", // 1
-  "CONTROL_CHARACTER", // 2
-  "BACKSLASH", // 3
-  "X", // 4
-  "B", // 5
-  "F", // 6
-  "CARET", // 7
-  "DASH", // 8
-  "DOT", // 9
-  "UNION", // 10
-  "PAREN_OPEN", // 11
-  "PAREN_CLOSE", // 12
-  "QUANTIFIER", // 13
-  "BRACKET_OPEN", // 14
-  "BRACKET_CLOSE", // 15
-  "@par-gen.EOF", // 16
-  "@par-gen.ERROR", // 17
-  "S", // 18
-  "RegExp", // 19
-  "Expression", // 20
-  "Union", // 21
-  "Sequence", // 22
-  "Atom", // 23
-  "Group", // 24
-  "CharacterClass", // 25
-  "CharacterClassCharacters", // 26
-  "CharacterClassCharacter", // 27
-  "CharacterClassRange", // 28
-  "Character", // 29
-  "HexEscape", // 30
-  "HexNumber", // 31
-  "CharacterOrNumberOrX", // 32
-  "ControlCharacter", // 33
-  "EscapedCharacter", // 34
+  "HEX_PREFIX", // 1
+  "HEX_NUMBER", // 2
+  "ESCAPED_CHARACTER", // 3
+  "CARET", // 4
+  "DASH", // 5
+  "DOT", // 6
+  "UNION", // 7
+  "PAREN_OPEN", // 8
+  "PAREN_CLOSE", // 9
+  "QUANTIFIER", // 10
+  "BRACKET_OPEN", // 11
+  "BRACKET_CLOSE", // 12
+  "@par-gen.EOF", // 13
+  "@par-gen.ERROR", // 14
+  "S", // 15
+  "RegExp", // 16
+  "Expression", // 17
+  "Union", // 18
+  "Sequence", // 19
+  "Atom", // 20
+  "Group", // 21
+  "CharacterClass", // 22
+  "CharacterClassCharacters", // 23
+  "CharacterClassCharacter", // 24
+  "CharacterClassRange", // 25
+  "Character", // 26
+  "HexEscape", // 27
 ];
 
-const SYM_REGEXP = 19;
-const SYM_EXPRESSION = 20;
+const SYM_REGEXP = 16;
+const SYM_EXPRESSION = 17;
 
 /**
  * @template VALUE

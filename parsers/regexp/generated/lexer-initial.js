@@ -3,25 +3,7 @@
 const EOF = "@par-gen.EOF";
 const ERROR = "@par-gen.ERROR";
 
-const tokenIds = new Uint8Array(256);
-// tokenIds[1] = 0; // CHARACTER
-tokenIds[2] = 1; // HEX_NUMBER
-tokenIds[3] = 2; // CONTROL_CHARACTER
-tokenIds[4] = 3; // BACKSLASH
-tokenIds[5] = 4; // X
-tokenIds[6] = 5; // B
-tokenIds[7] = 6; // F
-tokenIds[8] = 7; // CARET
-tokenIds[9] = 8; // DASH
-tokenIds[10] = 9; // DOT
-tokenIds[11] = 10; // UNION
-tokenIds[12] = 11; // PAREN_OPEN
-tokenIds[13] = 12; // PAREN_CLOSE
-tokenIds[14] = 13; // QUANTIFIER
-tokenIds[15] = 14; // BRACKET_OPEN
-tokenIds[16] = 15; // BRACKET_CLOSE
-
-const table = new Uint16Array(1024);
+const table = new Uint16Array(1280);
 table[256] = 1; // CHARACTER
 table[257] = 1; // CHARACTER
 table[258] = 1; // CHARACTER
@@ -58,7 +40,18 @@ table[293] = 1; // CHARACTER
 table[294] = 1; // CHARACTER
 table[295] = 1; // CHARACTER
 table[300] = 1; // CHARACTER
+table[301] = 1; // CHARACTER
 table[303] = 1; // CHARACTER
+table[304] = 1; // CHARACTER
+table[305] = 1; // CHARACTER
+table[306] = 1; // CHARACTER
+table[307] = 1; // CHARACTER
+table[308] = 1; // CHARACTER
+table[309] = 1; // CHARACTER
+table[310] = 1; // CHARACTER
+table[311] = 1; // CHARACTER
+table[312] = 1; // CHARACTER
+table[313] = 1; // CHARACTER
 table[314] = 1; // CHARACTER
 table[315] = 1; // CHARACTER
 table[316] = 1; // CHARACTER
@@ -91,8 +84,15 @@ table[343] = 1; // CHARACTER
 table[344] = 1; // CHARACTER
 table[345] = 1; // CHARACTER
 table[346] = 1; // CHARACTER
+table[350] = 1; // CHARACTER
 table[351] = 1; // CHARACTER
 table[352] = 1; // CHARACTER
+table[353] = 1; // CHARACTER
+table[354] = 1; // CHARACTER
+table[355] = 1; // CHARACTER
+table[356] = 1; // CHARACTER
+table[357] = 1; // CHARACTER
+table[358] = 1; // CHARACTER
 table[359] = 1; // CHARACTER
 table[360] = 1; // CHARACTER
 table[361] = 1; // CHARACTER
@@ -100,13 +100,17 @@ table[362] = 1; // CHARACTER
 table[363] = 1; // CHARACTER
 table[364] = 1; // CHARACTER
 table[365] = 1; // CHARACTER
+table[366] = 1; // CHARACTER
 table[367] = 1; // CHARACTER
 table[368] = 1; // CHARACTER
 table[369] = 1; // CHARACTER
+table[370] = 1; // CHARACTER
 table[371] = 1; // CHARACTER
+table[372] = 1; // CHARACTER
 table[373] = 1; // CHARACTER
 table[374] = 1; // CHARACTER
 table[375] = 1; // CHARACTER
+table[376] = 1; // CHARACTER
 table[377] = 1; // CHARACTER
 table[378] = 1; // CHARACTER
 table[379] = 1; // CHARACTER
@@ -241,38 +245,33 @@ table[508] = 1; // CHARACTER
 table[509] = 1; // CHARACTER
 table[510] = 1; // CHARACTER
 table[511] = 1; // CHARACTER
-table[304] = 2; // HEX_NUMBER
-table[305] = 2; // HEX_NUMBER
-table[306] = 2; // HEX_NUMBER
-table[307] = 2; // HEX_NUMBER
-table[308] = 2; // HEX_NUMBER
-table[309] = 2; // HEX_NUMBER
-table[310] = 2; // HEX_NUMBER
-table[311] = 2; // HEX_NUMBER
-table[312] = 2; // HEX_NUMBER
-table[313] = 2; // HEX_NUMBER
-table[355] = 2; // HEX_NUMBER
-table[356] = 2; // HEX_NUMBER
-table[357] = 2; // HEX_NUMBER
-table[353] = 2; // HEX_NUMBER
-table[370] = 3; // CONTROL_CHARACTER
-table[366] = 3; // CONTROL_CHARACTER
-table[372] = 3; // CONTROL_CHARACTER
-table[348] = 4; // BACKSLASH
-table[376] = 5; // X
-table[354] = 6; // B
-table[358] = 7; // F
-table[350] = 8; // CARET
-table[301] = 9; // DASH
-table[302] = 10; // DOT
-table[380] = 11; // UNION
-table[296] = 12; // PAREN_OPEN
-table[297] = 13; // PAREN_CLOSE
-table[298] = 14; // QUANTIFIER
-table[319] = 14; // QUANTIFIER
-table[299] = 14; // QUANTIFIER
-table[347] = 15; // BRACKET_OPEN
-table[349] = 16; // BRACKET_CLOSE
+table[348] = 512; // ESCAPED_CHARACTER
+table[296] = 9; // PAREN_OPEN
+table[297] = 10; // PAREN_CLOSE
+table[347] = 12; // BRACKET_OPEN
+table[380] = 8; // UNION
+table[302] = 7; // DOT
+table[298] = 11; // QUANTIFIER
+table[319] = 11; // QUANTIFIER
+table[299] = 11; // QUANTIFIER
+table[557] = 4; // ESCAPED_CHARACTER
+table[606] = 4; // ESCAPED_CHARACTER
+table[610] = 4; // ESCAPED_CHARACTER
+table[614] = 4; // ESCAPED_CHARACTER
+table[622] = 4; // ESCAPED_CHARACTER
+table[626] = 4; // ESCAPED_CHARACTER
+table[628] = 4; // ESCAPED_CHARACTER
+table[632] = 2; // HEX_PREFIX
+table[604] = 4; // ESCAPED_CHARACTER
+table[552] = 4; // ESCAPED_CHARACTER
+table[553] = 4; // ESCAPED_CHARACTER
+table[603] = 4; // ESCAPED_CHARACTER
+table[605] = 4; // ESCAPED_CHARACTER
+table[636] = 4; // ESCAPED_CHARACTER
+table[558] = 4; // ESCAPED_CHARACTER
+table[554] = 4; // ESCAPED_CHARACTER
+table[575] = 4; // ESCAPED_CHARACTER
+table[555] = 4; // ESCAPED_CHARACTER
 
 /**
  * @param {Uint8Array} input
@@ -282,8 +281,6 @@ table[349] = 16; // BRACKET_CLOSE
 const next = (input, offset) => {
   // 1
   let state = 256;
-  let successState = 0;
-  let successPos = 0;
 
   // try to find match
   let i = offset & 0x7fffffff;
@@ -291,26 +288,22 @@ const next = (input, offset) => {
 
   while (i < l) {
     state = table[state + input[i++]];
-    if (state <= 16) {
-      if (state !== 0) {
-        successState = state;
-        successPos = i;
-      }
+    if (state <= 12) {
       break;
     }
   }
 
-  if (successState !== 0) {
-    state = tokenIds[successState];
+  if (state !== 0 && state <= 12) {
+    state -= 1;
   } else {
-    state = i === l ? 16 : 17;
+    state = i === l ? 13 : 14;
     offset = -1;
-    successPos = -1;
+    i = -1;
   }
   return {
     state,
     start: offset,
-    end: successPos,
+    end: i,
   };
 };
 
