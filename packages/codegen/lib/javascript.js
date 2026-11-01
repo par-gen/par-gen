@@ -91,6 +91,31 @@ export class JavaScriptBaseCodegen {
       ? "Uint8Array"
       : "Uint16Array";
 
+    /**
+     * @param {number} s
+     * @returns {number}
+     */
+    const remapState = (s) => {
+      if (s === errorState) {
+        return 0;
+      }
+      return s < errorState ? s + columns : s;
+    };
+
+    const errorIndex = errorState / columns;
+    const remappedTokenIds = [
+      tokenIds[errorIndex],
+      ...tokenIds.slice(0, errorIndex),
+      ...tokenIds.slice(errorIndex + 1),
+    ];
+    const remappedTokenNames = [
+      tokenNames[errorIndex],
+      ...tokenNames.slice(0, errorIndex),
+      ...tokenNames.slice(errorIndex + 1),
+    ];
+    const remappedStart = remapState(start);
+    const remappedLastFinal = remapState(finals[finals.length - 1]);
+
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
 
@@ -98,19 +123,22 @@ export class JavaScriptBaseCodegen {
       const ERROR = "${ERROR}";
 
       const tokenIds = new ${tokenIdSize}([
-        ${tokenIds.map((id, i) => `${id ?? 0}, // ${tokenNames[i]}`).join("\n")}
+        ${remappedTokenIds
+          .map((id, i) => `${id ?? 0}, // ${remappedTokenNames[i]}`)
+          .join("\n")}
       ]);
 
-      const table = new ${pointerSize}(${columns * tokenIds.length});
-      table.fill(${errorState ?? -1});
+      const table = new ${pointerSize}(${columns * remappedTokenIds.length});
       ${transitions
         .flatMap(([from, transition]) =>
           transition.map(([symbol, to]) => {
             if (to === errorState) {
               return undefined;
             }
-            return `table[${from + symbol}] = ${to}; // ${
-              tokenNames[to / columns]
+            const mappedFrom = remapState(from);
+            const mappedTo = remapState(to);
+            return `table[${mappedFrom + symbol}] = ${mappedTo}; // ${
+              remappedTokenNames[mappedTo / columns]
             }`;
           })
         )
@@ -130,9 +158,9 @@ export class JavaScriptBaseCodegen {
        * @returns {{ state: number, start: number, end: number }}
        */
       const next = (input, offset) => {
-        // ${start / columns}
-        let state = ${start};
-        let successState = ${errorState};
+        // ${remappedStart / columns}
+        let state = ${remappedStart};
+        let successState = 0;
         let successPos = 0;
 
         // try to find match
@@ -140,15 +168,16 @@ export class JavaScriptBaseCodegen {
         const l = input.length;
         while (i < l) {
           state = table[state + input[i++]];
-          if (state <= ${finals[finals.length - 1]}) {
+          if (state <= ${remappedLastFinal}) {
+            if (state === 0) {
+              break;
+            }
             successState = state;
             successPos = i;
-          } else if (state === ${errorState}) {
-            break;
           }
         }
 
-        if (successState !== ${errorState}) {
+        if (successState !== 0) {
           lexeme.state = tokenIds[successState >> 8];
           lexeme.start = offset;
           lexeme.end = successPos;
