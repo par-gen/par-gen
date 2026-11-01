@@ -414,44 +414,35 @@ export class JavaScriptBaseCodegen {
       }
 
       /**
-       * We use the stack to store shifted/reduced states in [sp] and we also use
-       * [sp + 1] to store the tree pointer references to shifted/reduced nodes.
-       * This allows us to use a single typed array to store two kinds of data.
-       * * [sp] always points to the current state on top of the stack and
-       * * [sp + 1] always points to the tree item currently on top of the stack
-       * ___________________________________
-       * |_dummy_|_state_|_tp_|_state_|_tp_|...
+       * Each 32-bit stack entry packs:
+       * - low 16 bits: tree pointer (tp) of the shifted/reduced CST node
+       * - high 16 bits: parser state
        */
-      const stack = new Uint16Array(32768);
+      const stack = new Uint32Array(16384);
 
       /**
        * This typed array contains the syntax tree from a parse.
-       * A node is stored in the following layout:
-       * struct Node {
-       *  name: uint16,
-       *  start: uint16,
-       *  end: uint16,
-       *  numChildren: uint16,
-       *  firstChild: uint16,
-       *  nextSibling: uint16,
-       * }
-       * This enables efficient storage of nodes with variable number of children and
-       * fast DFS traversal.
+       * Each CST node occupies 3 uint32 words:
+       * - word 0 (tp + 0): name | (numChildren << 16)
+       * - word 1 (tp + 1): start | (end << 16) (leaf) or firstChild (internal)
+       * - word 2 (tp + 2): nextSibling
+       * This enables 32-bit coalesced stores and fast DFS traversal.
        */
-      const tree = new Uint16Array(32768);
+      const tree = new Uint32Array(16384);
 
       const proxyHandler = {
         get(target, prop, receiver) {
-          const { stream, tree, pointer } = target;
-          const nChildren = tree[pointer + 3];
+          const { stream, pointer } = target;
+          const word0 = tree[pointer];
+          const nChildren = word0 >>> 16;
 
           switch (prop) {
             case "name":
-              return parserSymbols[tree[pointer]];
+              return parserSymbols[word0 & 0xffff];
             case "start":
-              return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
+              return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1] & 0xffff;
             case "end":
-              return nChildren > 0 ? receiver.items[nChildren - 1].end : tree[pointer + 2];
+              return nChildren > 0 ? receiver.items[nChildren - 1].end : tree[pointer + 1] >>> 16;
             case "value":
               return stream.subarray(receiver.start, receiver.end);
             case "items": {
@@ -459,13 +450,13 @@ export class JavaScriptBaseCodegen {
                 return undefined;
               }
 
-              const firstChild = tree[pointer + 4];
-              const children = [createProxy(stream, tree, firstChild)];
-              let nextChild = tree[firstChild + 5];
+              const firstChild = tree[pointer + 1];
+              const children = [createProxy(stream, firstChild)];
+              let nextChild = tree[firstChild + 2];
 
               for (let i = 1; i < nChildren; i++) {
-                children.push(createProxy(stream, tree, nextChild));
-                nextChild = tree[nextChild + 5];
+                children.push(createProxy(stream, nextChild));
+                nextChild = tree[nextChild + 2];
               }
 
               return children;
@@ -489,8 +480,8 @@ export class JavaScriptBaseCodegen {
         },
       };
 
-      const createProxy = (stream, tree, pointer) =>
-        new Proxy({ stream, tree, pointer }, proxyHandler);
+      const createProxy = (stream, pointer) =>
+        new Proxy({ stream, pointer }, proxyHandler);
 
       /**
        * @typedef {Object} Node
@@ -532,18 +523,17 @@ export class JavaScriptBaseCodegen {
           `
         )}
 
-        // add a dummy entry to ensure no out-of-bounds reads for [sp - 1]
-        stack[0] = 0;
-        stack[1] = ${states.indexOf(start)}; // starting state
-        let sp = 1;
-        // let the tree stack start from offset 6
+        stack[0] = ${states.indexOf(start) * 65536}; // starting state
+        let sp = 0;
+        // let the tree stack start from offset 3
         // offset 0 means an error occurred and should be used by the parser
-        let tp = 6;
+        let tp = 3;
 
         ${debug(() => `let steps = 0;`)}
         while (true) {
           ${debug(() => `steps++;`)}
-          const currentState = stack[sp];
+          const top = stack[sp];
+          const currentState = top >>> 16;
 
           const actionLookup = actionsTable[currentState * ${
             parserSymbols.length
@@ -557,7 +547,7 @@ export class JavaScriptBaseCodegen {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
               ${hasSingleLexerMode ? "" : "lexer.pop(true);"}
-              return createProxy(stream, tree, tp - 6);
+              return createProxy(stream, tp - 3);
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(
                 () =>
@@ -575,17 +565,12 @@ export class JavaScriptBaseCodegen {
                   : ""
               }
 
-              tree[tp] = lookahead; // name
-              tree[tp + 1] = lookaheadStart;
-              tree[tp + 2] = lookaheadEnd;
-              tree[tp + 3] = 0; // leaf nodes have no children
-              tree[stack[sp -  1] + 5] = tp; // write the current address to the previous item as next sibling
+              tree[tp] = lookahead; // name (and nChildren = 0)
+              tree[tp + 1] = lookaheadStart | (lookaheadEnd << 16);
+              tree[(top & 0xffff) + 2] = tp; // write the current address to the previous item as next sibling
 
-              // shift current address on top of "address stack"
-              stack[sp + 1] = tp;
-
-              sp += 2;
-              stack[sp] = actionLookup >> 2;
+              sp += 1;
+              stack[sp] = tp | ((actionLookup >> 2) << 16);
 
               result = nextToken(stream, lookaheadEnd);
               lookahead = result.state;
@@ -603,7 +588,7 @@ export class JavaScriptBaseCodegen {
 
               ${debug(
                 () => `
-                console.log('  next state', stack[sp]);
+                console.log('  next state', stack[sp] >>> 16);
                 console.log('');
                 `
               )}
@@ -617,7 +602,7 @@ export class JavaScriptBaseCodegen {
                   `console.log('action: reduce', actionSymbol,
                     parserSymbols[actionSymbol],
                     Array.from({ length: stackItemsToReduce })
-                      .map((_, i) => parserSymbols[tree[stack[sp - i * 2 - 1]]])
+                      .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xffff] & 0xffff])
                       .reverse()
                   );`
               )}
@@ -636,25 +621,22 @@ export class JavaScriptBaseCodegen {
                   : ""
               }
 
-              // multiply by two because our stack contains adresses and states interleaved
-              sp -= stackItemsToReduce * 2;
+              sp -= stackItemsToReduce;
+              tree[tp] = actionSymbol | (stackItemsToReduce << 16); // name and number of children
 
-              tree[tp] = actionSymbol; // name
-              tree[tp + 3] = stackItemsToReduce; // number of children
-              tree[tp + 4] = stack[sp + 1]; // first child
-              tree[stack[sp - 1] + 5] = tp; // next sibling
-
-              stack[sp + 1] = tp;
-
-              const nextState = gotoTable[stack[sp] * ${
+              const rtop = stack[sp];
+              const nextState = gotoTable[(rtop >>> 16) * ${
                 parserSymbols.length
               } + actionSymbol];
-              sp += 2;
-              stack[sp] = nextState;
+              tree[(rtop & 0xffff) + 2] = tp; // next sibling
+
+              sp += 1;
+              tree[tp + 1] = stack[sp] & 0xffff; // first child
+              stack[sp] = tp | (nextState << 16);
 
               ${debug(
                 () => `
-                console.log('  next state', stack[sp]);
+                console.log('  next state', stack[sp] >>> 16);
                 console.log('');
                 `
               )}
@@ -663,7 +645,7 @@ export class JavaScriptBaseCodegen {
               throw new Error("Parser Error");
           }
 
-          tp += 6;
+          tp += 3;
         }
       }
 
