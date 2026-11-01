@@ -145,13 +145,6 @@ export class JavaScriptBaseCodegen {
         .filter(Boolean)
         .join("\n")}
 
-      // the currently matched lexeme
-      const lexeme = {
-        state: -1,
-        start: -1,
-        end: -1,
-      };
-
       /**
        * @param {Uint8Array} input
        * @param {number} offset
@@ -178,17 +171,19 @@ export class JavaScriptBaseCodegen {
         }
 
         if (successState !== 0) {
-          lexeme.state = tokenIds[successState >> 8];
-          lexeme.start = offset;
-          lexeme.end = successPos;
-          return lexeme;
-        }
-        lexeme.state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+          state = tokenIds[successState >> 8];
+        } else {
+          state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
       tokenIds[tokenNames.indexOf(ERROR)]
     };
-        lexeme.start = -1;
-        lexeme.end = -1;
-        return lexeme;
+          offset = -1;
+          successPos = -1;
+        }
+        return {
+          state,
+          start: offset,
+          end: successPos,
+        };
       };
 
       ${this._lexerExport()}
@@ -524,13 +519,15 @@ export class JavaScriptBaseCodegen {
 
         let result = nextToken(stream, 0);
         let lookahead = result.state;
+        let lookaheadStart = result.start;
+        let lookaheadEnd = result.end;
 
         ${debug(
           () => `
-          console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
-          console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
-          if (result.start !== -1) {
-            console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
+          console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + lookaheadStart + ',' + lookaheadEnd + ')');
+          console.log("    '" + input.toString().substring(Math.max(0, lookaheadStart - 10), Math.min(lookaheadStart + 10, input.length)) + "'");
+          if (lookaheadStart !== -1) {
+            console.log("     " + Array(lookaheadStart - Math.max(0, lookaheadStart - 10)).fill(' ').join('') + "^");
           }
           `
         )}
@@ -552,7 +549,7 @@ export class JavaScriptBaseCodegen {
             parserSymbols.length
           } + lookahead];
           if (actionLookup === 0xffff) {
-            const context = input.toString().substr(result.start, 10);
+            const context = input.toString().substr(lookaheadStart, 10);
             throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
           }
 
@@ -579,8 +576,8 @@ export class JavaScriptBaseCodegen {
               }
 
               tree[tp] = lookahead; // name
-              tree[tp + 1] = result.start;
-              tree[tp + 2] = result.end;
+              tree[tp + 1] = lookaheadStart;
+              tree[tp + 2] = lookaheadEnd;
               tree[tp + 3] = 0; // leaf nodes have no children
               tree[tp + 4] = 0; // leaf nodes have first child
               tree[stack[sp -  1] + 5] = tp; // write the current address to the previous item as next sibling
@@ -591,14 +588,16 @@ export class JavaScriptBaseCodegen {
               sp += 2;
               stack[sp] = actionLookup >> 2;
 
-              result = nextToken(stream, result.end);
+              result = nextToken(stream, lookaheadEnd);
               lookahead = result.state;
+              lookaheadStart = result.start;
+              lookaheadEnd = result.end;
               ${debug(
                 () => `
-                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
-                console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
-                if (result.start !== -1) {
-                  console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
+                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + lookaheadStart + ',' + lookaheadEnd + ')');
+                console.log("    '" + input.toString().substring(Math.max(0, lookaheadStart - 10), Math.min(lookaheadStart + 10, input.length)) + "'");
+                if (lookaheadStart !== -1) {
+                  console.log("     " + Array(lookaheadStart - Math.max(0, lookaheadStart - 10)).fill(' ').join('') + "^");
                 }
                 `
               )}
