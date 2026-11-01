@@ -150,4 +150,77 @@ describe("JavaScriptFunctionCodegen", () => {
       ],
     });
   });
+
+  it("should execute multi-state lexer switching via semantic actions", async () => {
+    const data = genParser(`
+      A := 'a';
+      B := 'b' @ b;
+      C := 'c';
+
+      RuleA := { lexer.push('b') } A RuleB;
+      RuleB := { lexer.pop() } B RuleC;
+      RuleC := C;
+    `);
+
+    const codegen = new JavaScriptFunctionCodegen();
+    const { parse } = await codegen.parser(data);
+
+    const ast = parse("abc");
+
+    expect(ast).toEqual({
+      name: "RuleA",
+      items: [
+        {
+          name: "A",
+          start: 0,
+          end: 1,
+        },
+        {
+          name: "RuleB",
+          items: [
+            {
+              name: "B",
+              start: 1,
+              end: 2,
+            },
+            {
+              name: "RuleC",
+              items: [
+                {
+                  name: "C",
+                  start: 2,
+                  end: 3,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it("should lex and parse inputs larger than 1024 bytes", async () => {
+    const data = genParser(`
+      NUMBER := '[0-9]+';
+      PLUS := '\\+';
+
+      Expr := NUMBER;
+      Expr := Expr PLUS NUMBER;
+    `);
+
+    const codegen = new JavaScriptFunctionCodegen();
+    const { parse } = await codegen.parser(data);
+
+    // 1025 terms of "1+" followed by "1" = 2051 bytes (> 1024 bytes)
+    const largeInput = Array(1025).fill("1").join("+");
+    expect(largeInput.length).toBeGreaterThan(2048);
+
+    const ast = /** @type {*} */ (parse(largeInput));
+    expect(ast.name).toBe("Expr");
+    expect(ast.items[2]).toEqual({
+      name: "NUMBER",
+      start: largeInput.length - 1,
+      end: largeInput.length,
+    });
+  });
 });
