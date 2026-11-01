@@ -232,6 +232,8 @@ export class JavaScriptBaseCodegen {
     const requiresSemanticActions = states.some((state) =>
       Array.from(state.values()).some((item) => item.semanticAction)
     );
+    const lexerModes = Object.keys(lexerData);
+    const hasSingleLexerMode = lexerModes.length === 1;
 
     const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
@@ -354,8 +356,13 @@ export class JavaScriptBaseCodegen {
         })
         .join("\n")}
 
-      const nextTokens = {
-        ${Object.keys(lexerData)
+      ${
+        hasSingleLexerMode
+          ? `const nextToken = nextToken${
+              lexerModes[0][0].toUpperCase() + lexerModes[0].substr(1)
+            };`
+          : `const nextTokens = {
+        ${lexerModes
           .map(
             (name) =>
               `${name}: nextToken${name[0].toUpperCase() + name.substr(1)},`
@@ -379,7 +386,8 @@ export class JavaScriptBaseCodegen {
           nextToken = lexer._stack[lexer._stack.length - 1];
         }
       };
-      let nextToken;
+      let nextToken;`
+      }
 
       /**
        * We use the stack to store shifted/reduced states in [sp] and we also use
@@ -481,7 +489,7 @@ export class JavaScriptBaseCodegen {
           console.log('---');
           `
         )}
-        lexer.push('initial');
+        ${hasSingleLexerMode ? "" : "lexer.push('initial');"}
 
         const stream = Buffer.isBuffer(input) ? input : Buffer.from(input);
 
@@ -522,7 +530,7 @@ export class JavaScriptBaseCodegen {
           switch (actionLookup & 3) {
             case ${actionOps.indexOf("done")}: // done
               ${debug(() => `console.log('steps', steps);`)}
-              lexer.pop(true);
+              ${hasSingleLexerMode ? "" : "lexer.pop(true);"}
               return createProxy(stream, tree, tp - 6);
             case ${actionOps.indexOf("shift")}: // shift
               ${debug(
@@ -605,8 +613,6 @@ export class JavaScriptBaseCodegen {
               sp -= stackItemsToReduce * 2;
 
               tree[tp] = actionSymbol; // name
-              tree[tp + 1] = -1;        // start
-              tree[tp + 2] = -1;        // end
               tree[tp + 3] = stackItemsToReduce; // number of children
               tree[tp + 4] = stack[sp + 1]; // first child
               tree[stack[sp - 1] + 5] = tp; // next sibling
