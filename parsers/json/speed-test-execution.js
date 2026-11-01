@@ -55,12 +55,12 @@ async function run(file, iterations) {
 
   // warm
   for (let i = 0; i < warmup; i++) {
-    acornParse(source, { ecmaVersion: "latest" });
+    acornParse(source, { ecmaVersion: 2020 });
   }
 
   const acorn = time("acorn", () => {
     for (let i = 0; i < iterations; i++) {
-      acornParse(source, { ecmaVersion: "latest" });
+      acornParse(source, { ecmaVersion: 2020 });
     }
   });
 
