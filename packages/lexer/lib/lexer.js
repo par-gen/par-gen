@@ -93,8 +93,20 @@ function createOptimalDFA(nfa) {
       }))
     );
 
+    /** @type {Map<number | undefined, { n: number; uids: number[]; names: string[]; }[]>} */
+    const finalsByToken = new Map();
+    for (const final of dfa.description.finals) {
+      const uid = final.uids[0];
+      let group = finalsByToken.get(uid);
+      if (!group) {
+        group = [];
+        finalsByToken.set(uid, group);
+      }
+      group.push(final);
+    }
+
     const initialPartitions = [
-      ...dfa.description.finals.map((final) => [final]),
+      ...finalsByToken.values(),
       dfa.description.states.filter(
         (state) => !dfa.description.finals.includes(state)
       ),
