@@ -586,59 +586,59 @@ const stack = new Uint16Array(32768);
  */
 const tree = new Uint16Array(32768);
 
-const createProxy = (stream, tree, pointer) => {
-  return new Proxy(
-    {},
-    {
-      get(target, prop, receiver) {
-        const nChildren = tree[pointer + 3];
+const proxyHandler = {
+  get(target, prop, receiver) {
+    const { stream, tree, pointer } = target;
+    const nChildren = tree[pointer + 3];
 
-        switch (prop) {
-          case "name":
-            return parserSymbols[tree[pointer]];
-          case "start":
-            return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
-          case "end":
-            return nChildren > 0
-              ? receiver.items[nChildren - 1].end
-              : tree[pointer + 2];
-          case "value":
-            return stream.subarray(receiver.start, receiver.end);
-          case "items":
-            if (nChildren === 0) {
-              return undefined;
-            }
-
-            const firstChild = tree[pointer + 4];
-            const children = [createProxy(stream, tree, firstChild)];
-            let nextChild = tree[firstChild + 5];
-
-            for (let i = 1; i < nChildren; i++) {
-              children.push(createProxy(stream, tree, nextChild));
-              nextChild = tree[nextChild + 5];
-            }
-
-            return children;
-          case "__tree":
-            return tree;
-          case "__pointer":
-            return pointer;
+    switch (prop) {
+      case "name":
+        return parserSymbols[tree[pointer]];
+      case "start":
+        return nChildren > 0 ? receiver.items[0].start : tree[pointer + 1];
+      case "end":
+        return nChildren > 0
+          ? receiver.items[nChildren - 1].end
+          : tree[pointer + 2];
+      case "value":
+        return stream.subarray(receiver.start, receiver.end);
+      case "items": {
+        if (nChildren === 0) {
+          return undefined;
         }
-      },
-      ownKeys(target) {
-        return ["name", "start", "end", "value", "items"];
-      },
-      has(target, prop) {
-        return this.ownKeys(target).includes(prop);
-      },
-      getOwnPropertyDescriptor(target, prop) {
-        return this.has(target, prop)
-          ? { enumerable: true, configurable: true }
-          : undefined;
-      },
+
+        const firstChild = tree[pointer + 4];
+        const children = [createProxy(stream, tree, firstChild)];
+        let nextChild = tree[firstChild + 5];
+
+        for (let i = 1; i < nChildren; i++) {
+          children.push(createProxy(stream, tree, nextChild));
+          nextChild = tree[nextChild + 5];
+        }
+
+        return children;
+      }
+      case "__tree":
+        return tree;
+      case "__pointer":
+        return pointer;
     }
-  );
+  },
+  ownKeys() {
+    return ["name", "start", "end", "value", "items"];
+  },
+  has(target, prop) {
+    return this.ownKeys(target).includes(prop);
+  },
+  getOwnPropertyDescriptor(target, prop) {
+    return this.has(target, prop)
+      ? { enumerable: true, configurable: true }
+      : undefined;
+  },
 };
+
+const createProxy = (stream, tree, pointer) =>
+  new Proxy({ stream, tree, pointer }, proxyHandler);
 
 /**
  * @typedef {Object} Node
@@ -654,10 +654,12 @@ const createProxy = (stream, tree, pointer) => {
  * @returns {Node}
  */
 function parse(input) {
-  const stream = Buffer.isBuffer(input) ? input : Buffer.from(input);
+  const stream = typeof input === "string" ? Buffer.from(input) : input;
 
   let result = nextToken(stream, 0);
   let lookahead = result.state;
+  let lookaheadStart = result.start;
+  let lookaheadEnd = result.end;
 
   // add a dummy entry to ensure no out-of-bounds reads for [sp - 1]
   stack[0] = 0;
@@ -672,7 +674,7 @@ function parse(input) {
 
     const actionLookup = actionsTable[currentState * 32 + lookahead];
     if (actionLookup === 0xffff) {
-      const context = input.toString().substr(result.start, 10);
+      const context = input.toString().substr(lookaheadStart, 10);
       throw new Error(
         `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
       );
@@ -683,10 +685,9 @@ function parse(input) {
         return createProxy(stream, tree, tp - 6);
       case 0: // shift
         tree[tp] = lookahead; // name
-        tree[tp + 1] = result.start;
-        tree[tp + 2] = result.end;
+        tree[tp + 1] = lookaheadStart;
+        tree[tp + 2] = lookaheadEnd;
         tree[tp + 3] = 0; // leaf nodes have no children
-        tree[tp + 4] = 0; // leaf nodes have first child
         tree[stack[sp - 1] + 5] = tp; // write the current address to the previous item as next sibling
 
         // shift current address on top of "address stack"
@@ -695,8 +696,10 @@ function parse(input) {
         sp += 2;
         stack[sp] = actionLookup >> 2;
 
-        result = nextToken(stream, result.end);
+        result = nextToken(stream, lookaheadEnd);
         lookahead = result.state;
+        lookaheadStart = result.start;
+        lookaheadEnd = result.end;
 
         break;
       case 1: // reduce
