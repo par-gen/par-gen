@@ -82,13 +82,8 @@ class FlatCstNode {
   get end() {
     const rawTree = this.__tree;
     let p = this.__pointer;
-    let n = rawTree[p] >>> 8;
-    while (n > 0) {
-      p = rawTree[p + 1] & 0xfffff;
-      for (let i = 1; i < n; i++) {
-        p = rawTree[p + 2];
-      }
-      n = rawTree[p] >>> 8;
+    while (rawTree[p] >>> 8 > 0) {
+      p -= 3;
     }
     return rawTree[p + 1] & 0x3fffff;
   }

@@ -1004,13 +1004,8 @@ export class JavaScriptBaseCodegen {
         get end() {
           const t = this.#tree;
           let p = this.#pointer;
-          let n = t[p] >>> 8;
-          while (n > 0) {
-            p = t[p + 1] & 0xfffff;
-            for (let i = 1; i < n; i++) {
-              p = t[p + 2];
-            }
-            n = t[p] >>> 8;
+          while ((t[p] >>> 8) > 0) {
+            p -= 3;
           }
           return t[p + 1] & 0x3fffff;
         }
@@ -1112,13 +1107,8 @@ export class JavaScriptBaseCodegen {
         get end() {
           const t = this.#tree;
           let p = this.#pointer;
-          let n = t[p] >>> 8;
-          while (n > 0) {
-            p = t[p + 1] & 0xfffff;
-            for (let i = 1; i < n; i++) {
-              p = t[p + 2];
-            }
-            n = t[p] >>> 8;
+          while ((t[p] >>> 8) > 0) {
+            p -= 3;
           }
           return t[p + 1] & 0x3fffff;
         }
