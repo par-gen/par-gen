@@ -1,10 +1,16 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { performance } from "perf_hooks";
 import { fileURLToPath } from "url";
 import * as acorn from "acorn";
 import * as babelParser from "@babel/parser";
+import * as meriyah from "meriyah";
+import * as oxc from "oxc-parser";
+import * as swc from "@swc/core";
+import * as esbuild from "esbuild";
 import ts from "typescript";
+import { API as TsGoAPI } from "@typescript/native-preview/unstable/sync";
 import { parse, parsePreserveExtras } from "./index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -31,6 +37,64 @@ function traverseCursor(root) {
       }
     }
   }
+}
+
+/**
+ * Creates a reusable @typescript/native-preview (tsgo) harness for a workload.
+ * Uses an 8-byte in-place pwrite trailer so tsgo's content-hash ParseCache
+ * re-parses the source file in native Go on every invocation.
+ * @param {string} fileName
+ * @param {string} code
+ */
+function createTsGoHarness(fileName, code) {
+  const baseTmp = fs.existsSync("/dev/shm") ? "/dev/shm" : os.tmpdir();
+  const dir = fs.mkdtempSync(path.join(baseTmp, "pargen-tsgo-"));
+  const filePath = path.join(dir, fileName);
+  const tsconfigPath = path.join(dir, "tsconfig.json");
+
+  fs.writeFileSync(
+    tsconfigPath,
+    JSON.stringify({
+      compilerOptions: {
+        noLib: true,
+        types: [],
+        allowJs: true,
+        noResolve: true,
+        target: "esnext",
+        module: "esnext",
+      },
+      files: [fileName],
+    })
+  );
+
+  const baseBuf = Buffer.from(`${code}\n// 00000000\n`, "utf8");
+  const patchOffset = baseBuf.length - 9;
+  fs.writeFileSync(filePath, baseBuf);
+  const fd = fs.openSync(filePath, "r+");
+  const patchBuf = Buffer.alloc(8);
+  let seq = 1;
+
+  const api = new TsGoAPI({ cwd: dir });
+  let snap = api.updateSnapshot({ openProject: tsconfigPath });
+  snap.dispose();
+
+  return {
+    parseAndFetchAst() {
+      patchBuf.write(String(seq++).padStart(8, "0"), 0, 8, "ascii");
+      fs.writeSync(fd, patchBuf, 0, 8, patchOffset);
+      api.clearSourceFileCache();
+      const s = api.updateSnapshot({ fileChanges: { changed: [filePath] } });
+      const proj = s.getProject(tsconfigPath);
+      const sf = proj.program.getSourceFile(filePath);
+      s.dispose();
+      return sf;
+    },
+    close() {
+      api.close();
+      fs.closeSync(fd);
+      fs.rmSync(dir, { recursive: true, force: true });
+    },
+  };
 }
 
 const smallJsCode = fs.readFileSync(
@@ -128,53 +192,68 @@ export class MemoryRepository<T extends Identifiable> implements Repository<T, s
   }
 }
 `;
-const largeTsBundle = new Array(80).fill(0).map((_, i) =>
-  tsUnit
-    .replace(/Repository/g, `Repository_${i}`)
-    .replace(/QueryResult/g, `QueryResult_${i}`)
-).join("\n");
+const largeTsBundle = new Array(80)
+  .fill(0)
+  .map((_, i) =>
+    tsUnit
+      .replace(/Repository/g, `Repository_${i}`)
+      .replace(/QueryResult/g, `QueryResult_${i}`)
+  )
+  .join("\n");
 
 const workloads = [
   {
     name: "Small JS (generator.js)",
+    fileName: "bench.js",
     code: smallJsCode,
     buf: Buffer.from(smallJsCode, "utf8"),
     isTsOnly: false,
+    isDts: false,
     iters: 500,
   },
   {
     name: "Small TS (parser.d.ts)",
+    fileName: "bench.d.ts",
     code: smallDtsCode,
     buf: Buffer.from(smallDtsCode, "utf8"),
     isTsOnly: true,
+    isDts: true,
     iters: 500,
   },
   {
     name: "Medium JS (hopcroft.js)",
+    fileName: "bench.js",
     code: medHopcroftCode,
     buf: Buffer.from(medHopcroftCode, "utf8"),
     isTsOnly: false,
+    isDts: false,
     iters: 150,
   },
   {
     name: "Medium-Large JS (parser.js)",
+    fileName: "bench.js",
     code: medParserCode,
     buf: Buffer.from(medParserCode, "utf8"),
     isTsOnly: false,
+    isDts: false,
     iters: 30,
   },
   {
     name: "Large TS Corpus (80x modules)",
+    fileName: "bench.ts",
     code: largeTsBundle,
     buf: Buffer.from(largeTsBundle, "utf8"),
     isTsOnly: true,
+    isDts: false,
     iters: 15,
   },
   {
     name: "Large JS Bundle (2x codebase)",
+    fileName: "bench.js",
     code: largeJsBundle,
     buf: Buffer.from(largeJsBundle, "utf8"),
     isTsOnly: false,
+    isDts: false,
     iters: 8,
   },
 ];
@@ -187,81 +266,126 @@ function median(arr) {
 
 const ROUNDS = 7;
 
-console.log("=== Interleaved Head-to-Head Benchmark: par-gen vs acorn vs @babel/parser vs typescript ===\n");
+console.log(
+  "=== Interleaved Head-to-Head Benchmark: par-gen vs Native Rust (oxc, swc) vs Native Go (tsgo, esbuild) vs Pure JS (meriyah, acorn, babel, typescript) ===\n"
+);
 
 for (const w of workloads) {
+  const tsgoHarness = createTsGoHarness(w.fileName, w.code);
+
   const candidates = [
     {
-      name: "par-gen (SkipExtras)",
+      name: "par-gen (SkipExtras, Buffer)",
       fn: () => parse(w.buf),
     },
     {
-      name: "par-gen (SkipExtras + Cursor)",
+      name: "par-gen (SkipExtras, string)",
+      fn: () => parse(w.code),
+    },
+    {
+      name: "par-gen (SkipExtras + TreeCursor)",
       fn: () => traverseCursor(parse(w.buf)),
     },
     {
-      name: "par-gen (PreserveExtras)",
+      name: "par-gen (PreserveExtras, Buffer)",
       fn: () => parsePreserveExtras(w.buf),
+    },
+    {
+      name: "oxc-parser (Native Rust)",
+      fn: () => oxc.parseSync(w.fileName, w.code),
+    },
+    {
+      name: "@swc/core (Native Rust)",
+      fn: () =>
+        swc.parseSync(w.code, {
+          syntax: w.isTsOnly ? "typescript" : "ecmascript",
+          dts: w.isDts,
+        }),
+    },
+    {
+      name: "esbuild (Native Go)",
+      fn: () =>
+        esbuild.transformSync(w.code, { loader: w.isTsOnly ? "ts" : "js" }),
+    },
+    {
+      name: "@typescript/native-preview (Go tsgo)",
+      fn: () => tsgoHarness.parseAndFetchAst(),
+      maxIters: 10,
     },
     ...(w.isTsOnly
       ? []
       : [
           {
-            name: "acorn",
+            name: "meriyah (Pure JS ESTree)",
+            fn: () => meriyah.parseModule(w.code, { next: true }),
+          },
+          {
+            name: "acorn (v8.19, Pure JS ESTree)",
             fn: () =>
               acorn.parse(w.code, {
-                ecmaVersion: 2020,
+                ecmaVersion: "latest",
                 sourceType: "module",
               }),
           },
         ]),
     {
-      name: "@babel/parser (TS)",
+      name: "@babel/parser (v8.1, TS AST)",
       fn: () =>
         babelParser.parse(w.code, {
           sourceType: "module",
-          plugins: ["typescript"],
+          plugins: w.isDts ? [["typescript", { dts: true }]] : ["typescript"],
         }),
     },
     {
-      name: "typescript (createSourceFile)",
+      name: "typescript (v5.9, createSourceFile)",
       fn: () =>
-        ts.createSourceFile("bench.ts", w.code, ts.ScriptTarget.Latest, true),
+        ts.createSourceFile(w.fileName, w.code, ts.ScriptTarget.Latest, true),
     },
   ];
 
-  // Warmup
-  for (const c of candidates) {
-    for (let i = 0; i < Math.max(5, w.iters >> 2); i++) {
-      c.fn();
-    }
-  }
-
-  const samples = new Map(candidates.map((c) => [c.name, []]));
-
-  for (let r = 0; r < ROUNDS; r++) {
-    for (let cIdx = 0; cIdx < candidates.length; cIdx++) {
-      // Rotate candidate order each round
-      const c = candidates[(cIdx + r) % candidates.length];
-      const t0 = performance.now();
-      for (let i = 0; i < w.iters; i++) {
+  try {
+    // Warmup
+    for (const c of candidates) {
+      const warmupIters = Math.max(
+        3,
+        (c.maxIters ? Math.min(w.iters, c.maxIters) : w.iters) >> 2
+      );
+      for (let i = 0; i < warmupIters; i++) {
         c.fn();
       }
-      const elapsedMs = performance.now() - t0;
-      samples.get(c.name).push(elapsedMs / w.iters);
     }
-  }
 
-  console.log(`### ${w.name} (${(w.buf.length / 1024).toFixed(2)} KiB, ${w.iters} iters x ${ROUNDS} rounds)`);
-  const baseMs = median(samples.get("par-gen (SkipExtras)"));
-  for (const c of candidates) {
-    const medMs = median(samples.get(c.name));
-    const opsPerSec = 1000 / medMs;
-    const mbPerSec = (w.buf.length / (1024 * 1024)) * opsPerSec;
-    const ratio = medMs / baseMs;
+    const samples = new Map(candidates.map((c) => [c.name, []]));
+
+    for (let r = 0; r < ROUNDS; r++) {
+      for (let cIdx = 0; cIdx < candidates.length; cIdx++) {
+        // Rotate candidate order each round
+        const c = candidates[(cIdx + r) % candidates.length];
+        const iters = c.maxIters ? Math.min(w.iters, c.maxIters) : w.iters;
+        const t0 = performance.now();
+        for (let i = 0; i < iters; i++) {
+          c.fn();
+        }
+        const elapsedMs = performance.now() - t0;
+        samples.get(c.name).push(elapsedMs / iters);
+      }
+    }
+
     console.log(
-      `  ${c.name.padEnd(30)} | ${(medMs * 1000).toFixed(1).padStart(9)} us | ${opsPerSec.toFixed(0).padStart(8)} ops/s | ${mbPerSec.toFixed(2).padStart(7)} MB/s | ${ratio.toFixed(2)}x`
+      `### ${w.name} (${(w.buf.length / 1024).toFixed(2)} KiB, ${w.iters} iters x ${ROUNDS} rounds)`
     );
+    const baseMs = median(samples.get("par-gen (SkipExtras, Buffer)"));
+    for (const c of candidates) {
+      const medMs = median(samples.get(c.name));
+      const opsPerSec = 1000 / medMs;
+      const mbPerSec = (w.buf.length / (1024 * 1024)) * opsPerSec;
+      const ratio = medMs / baseMs;
+      console.log(
+        `  ${c.name.padEnd(36)} | ${(medMs * 1000).toFixed(1).padStart(9)} us | ${opsPerSec.toFixed(0).padStart(8)} ops/s | ${mbPerSec.toFixed(2).padStart(7)} MB/s | ${ratio.toFixed(2)}x`
+      );
+    }
+    console.log("");
+  } finally {
+    tsgoHarness.close();
   }
-  console.log("");
 }

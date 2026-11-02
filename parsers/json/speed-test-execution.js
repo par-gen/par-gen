@@ -1,14 +1,22 @@
 import { promises as fsp } from "fs";
+import path from "path";
 import { performance } from "perf_hooks";
-import { parse as acornParse } from "acorn";
-import { parse as babelParse } from "@babel/parser";
-// note: does not work on windows
-// import simdJsonParser from "simdjson";
-import ts from "typescript";
-// import esbuildParser from "esbuild";
-import json5Parser from "json5";
+import { fileURLToPath } from "url";
 
 import { parse as pargenParse } from "./generated/parser.js";
+import {
+  parseChevrotainCst,
+  parseChevrotainNoCst,
+  parsePeggy,
+  parseNearley,
+  parseAntlr4,
+  parseAcorn,
+  parseBabelJsonExpression,
+  parseTypeScriptJson,
+  parseJson5,
+} from "./competitors.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * @param {string} file
@@ -27,118 +35,178 @@ async function run(file, iterations) {
     return [name, end - start];
   };
 
-  const warmup = 1_000;
+  const warmup = Math.min(200, Math.max(20, iterations >> 2));
 
   const buffer = await fsp.readFile(file);
-  const string = buffer.toString();
+  const string = buffer.toString("utf8");
   const source = `var a = ${string};`;
 
-  // warm
+  // 1. par-gen (Buffer)
   for (let i = 0; i < warmup; i++) {
     pargenParse(buffer);
   }
-
-  const pargen = time("par-gen", () => {
+  const pargen = time("par-gen (Buffer)", () => {
     for (let i = 0; i < iterations; i++) {
       pargenParse(buffer);
     }
   });
 
-  // warm
-  // no warm-up required (native code)
+  // 2. par-gen (string)
+  for (let i = 0; i < warmup; i++) {
+    pargenParse(string);
+  }
+  const pargenString = time("par-gen (string)", () => {
+    for (let i = 0; i < iterations; i++) {
+      pargenParse(string);
+    }
+  });
 
-  const native = time("native", () => {
+  // 3. V8 JSON.parse (native)
+  const native = time("V8 JSON.parse", () => {
     for (let i = 0; i < iterations; i++) {
       JSON.parse(string);
     }
   });
 
-  // warm
+  // 4. Chevrotain (CST)
   for (let i = 0; i < warmup; i++) {
-    acornParse(source, { ecmaVersion: 2020 });
+    parseChevrotainCst(string);
   }
-
-  const acorn = time("acorn", () => {
+  const chevrotain = time("Chevrotain (CST)", () => {
     for (let i = 0; i < iterations; i++) {
-      acornParse(source, { ecmaVersion: 2020 });
+      parseChevrotainCst(string);
     }
   });
 
-  // warm
+  // 5. Chevrotain (No-CST)
   for (let i = 0; i < warmup; i++) {
-    babelParse(source);
+    parseChevrotainNoCst(string);
   }
-
-  const babel = time("babel", () => {
+  const chevrotainNoCst = time("Chevrotain (No-CST)", () => {
     for (let i = 0; i < iterations; i++) {
-      babelParse(source);
+      parseChevrotainNoCst(string);
     }
   });
 
-  // skip simdjson because it does not work on windows
-  // warm
-  // no warm-up required (native code)
-
-  // const simdJson = time("simdjson", () => {
-  //   for (let i = 0; i < iterations; i++) {
-  //     simdJsonParser.parse(string);
-  //   }
-  // });
-
-  // warm
+  // 6. Peggy
   for (let i = 0; i < warmup; i++) {
-    ts.parseJsonText("file", string);
+    parsePeggy(string);
   }
-
-  const typescript = time("typescript", () => {
+  const peggy = time("Peggy", () => {
     for (let i = 0; i < iterations; i++) {
-      ts.parseJsonText("file", string);
+      parsePeggy(string);
     }
   });
 
-  // skip esbuild because its too slow to parse just json
-  // warm
-  // no warm-up required (native code)
-
-  // const esbuild = time("esbuild", () => {
-  //   for (let i = 0; i < 1_000; i++) {
-  //     esbuildParser.transformSync(source, { loader: "js", minify: false });
-  //   }
-  // });
-
-  // warm
+  // 7. Nearley (with moo lexer)
   for (let i = 0; i < warmup; i++) {
-    json5Parser.parse(string);
+    parseNearley(string);
   }
-
-  const json5 = time("json5", () => {
+  const nearley = time("Nearley (moo)", () => {
     for (let i = 0; i < iterations; i++) {
-      json5Parser.parse(string);
+      parseNearley(string);
     }
   });
 
-  process.send?.({
-    command: "done",
-    body: {
-      pargen,
-      native,
-      acorn,
-      babel,
-      // simdJson,
-      typescript,
-      // esbuild,
-      json5,
-    },
+  // 8. ANTLR4
+  for (let i = 0; i < warmup; i++) {
+    parseAntlr4(string);
+  }
+  const antlr4 = time("ANTLR4", () => {
+    for (let i = 0; i < iterations; i++) {
+      parseAntlr4(string);
+    }
   });
+
+  // 9. acorn (v8.19)
+  for (let i = 0; i < warmup; i++) {
+    parseAcorn(source);
+  }
+  const acorn = time("acorn (v8.19)", () => {
+    for (let i = 0; i < iterations; i++) {
+      parseAcorn(source);
+    }
+  });
+
+  // 10. @babel/parser (v8.1)
+  for (let i = 0; i < warmup; i++) {
+    parseBabelJsonExpression(string);
+  }
+  const babel = time("@babel/parser (v8.1)", () => {
+    for (let i = 0; i < iterations; i++) {
+      parseBabelJsonExpression(string);
+    }
+  });
+
+  // 11. typescript (v5.9)
+  for (let i = 0; i < warmup; i++) {
+    parseTypeScriptJson(string);
+  }
+  const typescript = time("typescript (v5.9)", () => {
+    for (let i = 0; i < iterations; i++) {
+      parseTypeScriptJson(string);
+    }
+  });
+
+  // 12. json5 (v2.2.3)
+  for (let i = 0; i < warmup; i++) {
+    parseJson5(string);
+  }
+  const json5 = time("json5 (v2.2.3)", () => {
+    for (let i = 0; i < iterations; i++) {
+      parseJson5(string);
+    }
+  });
+
+  const body = {
+    pargen,
+    pargenString,
+    native,
+    chevrotain,
+    chevrotainNoCst,
+    peggy,
+    nearley,
+    antlr4,
+    acorn,
+    babel,
+    typescript,
+    json5,
+  };
+
+  if (process.send) {
+    process.send({
+      command: "done",
+      body,
+    });
+  } else {
+    console.log(
+      `=== JSON Benchmark (${path.basename(file)}, ${buffer.length} B, ${iterations.toLocaleString()} iterations) ===`
+    );
+    const baseMs = pargen[1];
+    for (const [name, totalMs] of Object.values(body)) {
+      const usPerIter = (totalMs * 1000) / iterations;
+      const mbPerSec =
+        ((buffer.length * iterations) / (1024 * 1024)) / (totalMs / 1000);
+      const ratio = totalMs / baseMs;
+      console.log(
+        `  ${name.padEnd(24)} | ${totalMs.toFixed(2).padStart(8)} ms total | ${usPerIter.toFixed(2).padStart(8)} us/op | ${mbPerSec.toFixed(2).padStart(7)} MB/s | ${ratio.toFixed(2)}x`
+      );
+    }
+  }
 
   process.exit(0);
 }
 
-process.on("message", async ({ command, body }) => {
-  if (command === "start") {
-    const { file, iterations } = body;
-    run(file, iterations);
-  }
-});
+if (process.send) {
+  process.on("message", async ({ command, body }) => {
+    if (command === "start") {
+      const { file, iterations } = body;
+      run(file, iterations);
+    }
+  });
 
-process.send?.({ command: "ready" });
+  process.send({ command: "ready" });
+} else {
+  const defaultFile = path.resolve(__dirname, "../../package.json");
+  run(defaultFile, 1_000);
+}

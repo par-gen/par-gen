@@ -3,7 +3,7 @@ import { fileURLToPath } from "url";
 import { dirname, resolve as pathResolve } from "path";
 import { jest } from "@jest/globals";
 
-const iterations = 10_000;
+const iterations = 2_000;
 
 /**
  * @param {{[name: string]: [string, number]}} results
@@ -17,7 +17,7 @@ ${Object.values(results)
   `);
 };
 
-jest.setTimeout(20_000);
+jest.setTimeout(30_000);
 
 if (process.env.RUN_SLOW_TESTS) {
   describe("JSON", () => {
@@ -61,13 +61,16 @@ if (process.env.RUN_SLOW_TESTS) {
 
       result(results);
 
-      // expect pargen to run three times slower to native (for now)
+      // expect pargen to run within 3x of native V8 JSON.parse and faster than all 3rd-party JS/TS/PEG/LL/LR parsers
       expect(results.pargen[1]).toBeLessThanOrEqual(results.native[1] * 3);
+      expect(results.pargen[1]).toBeLessThanOrEqual(results.chevrotain[1]);
+      expect(results.pargen[1]).toBeLessThanOrEqual(results.chevrotainNoCst[1]);
+      expect(results.pargen[1]).toBeLessThanOrEqual(results.peggy[1]);
+      expect(results.pargen[1]).toBeLessThanOrEqual(results.nearley[1]);
+      expect(results.pargen[1]).toBeLessThanOrEqual(results.antlr4[1]);
       expect(results.pargen[1]).toBeLessThanOrEqual(results.acorn[1]);
       expect(results.pargen[1]).toBeLessThanOrEqual(results.babel[1]);
-      // expect(results.pargen[1]).toBeLessThanOrEqual(results.simdJson[1]);
       expect(results.pargen[1]).toBeLessThanOrEqual(results.typescript[1]);
-      // expect(results.pargen[1]).toBeLessThanOrEqual(results.esbuild[1]);
       expect(results.pargen[1]).toBeLessThanOrEqual(results.json5[1]);
     });
   });

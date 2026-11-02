@@ -17,9 +17,14 @@
     ]
   },
   "devDependencies": {
-    "@babel/parser": "7.17.3",
+    "@babel/parser": "8.1.0",
     "@jest/globals": "26.6.2",
-    "acorn": "8.2.4",
-    "typescript": "4.3.5"
+    "@swc/core": "1.16.21",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
+    "acorn": "8.19.0",
+    "esbuild": "0.28.2",
+    "meriyah": "7.4.1",
+    "oxc-parser": "0.157.0",
+    "typescript": "5.9.3"
   }
 }

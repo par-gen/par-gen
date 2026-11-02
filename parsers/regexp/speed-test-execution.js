@@ -66,14 +66,14 @@ async function run(iterations) {
 
   for (let i = 0; i < warmup; i++) {
     for (let j = 0; j < jsSources.length; j++) {
-      acornParse(jsSources[j], { ecmaVersion: 2020 });
+      acornParse(jsSources[j], { ecmaVersion: "latest" });
     }
   }
 
-  const acorn = time("acorn", () => {
+  const acorn = time("acorn (v8.19)", () => {
     for (let i = 0; i < iterations; i++) {
       for (let j = 0; j < jsSources.length; j++) {
-        acornParse(jsSources[j], { ecmaVersion: 2020 });
+        acornParse(jsSources[j], { ecmaVersion: "latest" });
       }
     }
   });
@@ -84,7 +84,7 @@ async function run(iterations) {
     }
   }
 
-  const babel = time("babel", () => {
+  const babel = time("@babel/parser (v8.1)", () => {
     for (let i = 0; i < iterations; i++) {
       for (let j = 0; j < jsSources.length; j++) {
         babelParse(jsSources[j]);
@@ -98,7 +98,7 @@ async function run(iterations) {
     }
   }
 
-  const typescript = time("typescript", () => {
+  const typescript = time("typescript (v5.9)", () => {
     for (let i = 0; i < iterations; i++) {
       for (let j = 0; j < jsSources.length; j++) {
         ts.createSourceFile("file.ts", jsSources[j], ts.ScriptTarget.Latest);
@@ -106,25 +106,44 @@ async function run(iterations) {
     }
   });
 
-  process.send?.({
-    command: "done",
-    body: {
-      pargen,
-      native,
-      acorn,
-      babel,
-      typescript,
-    },
-  });
+  const body = {
+    pargen,
+    native,
+    acorn,
+    babel,
+    typescript,
+  };
+
+  if (process.send) {
+    process.send({
+      command: "done",
+      body,
+    });
+  } else {
+    console.log(
+      `=== RegExp Benchmark (${CORPUS.length} patterns x ${iterations.toLocaleString()} iterations) ===`
+    );
+    const baseMs = pargen[1];
+    for (const [name, totalMs] of Object.values(body)) {
+      const ratio = totalMs / baseMs;
+      console.log(
+        `  ${name.padEnd(24)} | ${totalMs.toFixed(2).padStart(8)} ms total | ${ratio.toFixed(2)}x`
+      );
+    }
+  }
 
   process.exit(0);
 }
 
-process.on("message", async ({ command, body }) => {
-  if (command === "start") {
-    const { iterations } = body;
-    run(iterations);
-  }
-});
+if (process.send) {
+  process.on("message", async ({ command, body }) => {
+    if (command === "start") {
+      const { iterations } = body;
+      run(iterations);
+    }
+  });
 
-process.send?.({ command: "ready" });
+  process.send({ command: "ready" });
+} else {
+  run(1_000);
+}
