@@ -10,7 +10,9 @@ import * as oxc from "oxc-parser";
 import * as swc from "@swc/core";
 import * as esbuild from "esbuild";
 import ts from "typescript";
-import { API as TsGoAPI } from "@typescript/native-preview/unstable/sync";
+import { API as TsGoAPI } from "tsgo/sync";
+import { API as TsRsAPI } from "tsrs/sync";
+import { API as TscRsAPI } from "tsc-rs/unstable/sync";
 import { parse, parsePreserveExtras } from "./index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -40,32 +42,17 @@ function traverseCursor(root) {
 }
 
 /**
- * Creates a reusable @typescript/native-preview (tsgo) harness for a workload.
- * Uses an 8-byte in-place pwrite trailer so tsgo's content-hash ParseCache
- * re-parses the source file in native Go on every invocation.
+ * Creates a reusable TypeScript 7.1 RPC parser harness for tsgo (Go), tsrs (Cloudflare/Oxc Rust),
+ * and tsc-rs (Theo/Ping.gg Rust) using the direct `createSourceFileFromFile` endpoint.
+ * Uses an 8-byte in-place pwrite trailer in RAM disk (/dev/shm) so each invocation
+ * has a fresh content hash and never short-circuits on the server's ParseCache.
  * @param {string} fileName
  * @param {string} code
  */
-function createTsGoHarness(fileName, code) {
+function createNativeTs7Harness(fileName, code) {
   const baseTmp = fs.existsSync("/dev/shm") ? "/dev/shm" : os.tmpdir();
-  const dir = fs.mkdtempSync(path.join(baseTmp, "pargen-tsgo-"));
+  const dir = fs.mkdtempSync(path.join(baseTmp, "pargen-ts7-"));
   const filePath = path.join(dir, fileName);
-  const tsconfigPath = path.join(dir, "tsconfig.json");
-
-  fs.writeFileSync(
-    tsconfigPath,
-    JSON.stringify({
-      compilerOptions: {
-        noLib: true,
-        types: [],
-        allowJs: true,
-        noResolve: true,
-        target: "esnext",
-        module: "esnext",
-      },
-      files: [fileName],
-    })
-  );
 
   const baseBuf = Buffer.from(`${code}\n// 00000000\n`, "utf8");
   const patchOffset = baseBuf.length - 9;
@@ -74,23 +61,28 @@ function createTsGoHarness(fileName, code) {
   const patchBuf = Buffer.alloc(8);
   let seq = 1;
 
-  const api = new TsGoAPI({ cwd: dir });
-  let snap = api.updateSnapshot({ openProject: tsconfigPath });
-  snap.dispose();
+  const tsgoApi = new TsGoAPI({ cwd: dir });
+  const tsrsApi = new TsRsAPI({ cwd: dir });
+  const tscRsApi = new TscRsAPI({ cwd: dir });
+
+  function parseWith(api) {
+    patchBuf.write(String(seq++).padStart(8, "0"), 0, 8, "ascii");
+    fs.writeSync(fd, patchBuf, 0, 8, patchOffset);
+    api.clearSourceFileCache();
+    const retained = api.createSourceFileFromFile(filePath);
+    const sf = retained.sourceFile;
+    retained.dispose();
+    return sf;
+  }
 
   return {
-    parseAndFetchAst() {
-      patchBuf.write(String(seq++).padStart(8, "0"), 0, 8, "ascii");
-      fs.writeSync(fd, patchBuf, 0, 8, patchOffset);
-      api.clearSourceFileCache();
-      const s = api.updateSnapshot({ fileChanges: { changed: [filePath] } });
-      const proj = s.getProject(tsconfigPath);
-      const sf = proj.program.getSourceFile(filePath);
-      s.dispose();
-      return sf;
-    },
+    parseTsGo: () => parseWith(tsgoApi),
+    parseTsRs: () => parseWith(tsrsApi),
+    parseTscRs: () => parseWith(tscRsApi),
     close() {
-      api.close();
+      tsgoApi.close();
+      tsrsApi.close();
+      tscRsApi.close();
       fs.closeSync(fd);
       fs.rmSync(dir, { recursive: true, force: true });
     },
@@ -267,11 +259,11 @@ function median(arr) {
 const ROUNDS = 7;
 
 console.log(
-  "=== Interleaved Head-to-Head Benchmark: par-gen vs Native Rust (oxc, swc) vs Native Go (tsgo, esbuild) vs Pure JS (meriyah, acorn, babel, typescript) ===\n"
+  "=== Interleaved Head-to-Head Benchmark: par-gen vs Native Rust (oxc, swc, tsrs, tsc-rs) vs Native Go (tsgo 7.1, esbuild) vs Pure JS (meriyah, acorn, babel, typescript 5.9) ===\n"
 );
 
 for (const w of workloads) {
-  const tsgoHarness = createTsGoHarness(w.fileName, w.code);
+  const ts7Harness = createNativeTs7Harness(w.fileName, w.code);
 
   const candidates = [
     {
@@ -291,11 +283,11 @@ for (const w of workloads) {
       fn: () => parsePreserveExtras(w.buf),
     },
     {
-      name: "oxc-parser (Native Rust)",
+      name: "oxc-parser (v0.157, Native Rust)",
       fn: () => oxc.parseSync(w.fileName, w.code),
     },
     {
-      name: "@swc/core (Native Rust)",
+      name: "@swc/core (v1.16, Native Rust)",
       fn: () =>
         swc.parseSync(w.code, {
           syntax: w.isTsOnly ? "typescript" : "ecmascript",
@@ -303,20 +295,30 @@ for (const w of workloads) {
         }),
     },
     {
-      name: "esbuild (Native Go)",
-      fn: () =>
-        esbuild.transformSync(w.code, { loader: w.isTsOnly ? "ts" : "js" }),
+      name: "tsrs (v0.20, Cloudflare/Oxc Rust TS)",
+      fn: () => ts7Harness.parseTsRs(),
+      maxIters: 10,
     },
     {
-      name: "@typescript/native-preview (Go tsgo)",
-      fn: () => tsgoHarness.parseAndFetchAst(),
+      name: "tsc-rs (v0.8, Theo/Ping.gg Rust TS)",
+      fn: () => ts7Harness.parseTscRs(),
       maxIters: 10,
+    },
+    {
+      name: "tsgo (v7.1-beta, Microsoft Go TS)",
+      fn: () => ts7Harness.parseTsGo(),
+      maxIters: 10,
+    },
+    {
+      name: "esbuild (v0.28, Native Go)",
+      fn: () =>
+        esbuild.transformSync(w.code, { loader: w.isTsOnly ? "ts" : "js" }),
     },
     ...(w.isTsOnly
       ? []
       : [
           {
-            name: "meriyah (Pure JS ESTree)",
+            name: "meriyah (v7.4, Pure JS ESTree)",
             fn: () => meriyah.parseModule(w.code, { next: true }),
           },
           {
@@ -329,7 +331,7 @@ for (const w of workloads) {
           },
         ]),
     {
-      name: "@babel/parser (v8.1, TS AST)",
+      name: "@babel/parser (v8.1, Pure JS TS AST)",
       fn: () =>
         babelParser.parse(w.code, {
           sourceType: "module",
@@ -337,7 +339,7 @@ for (const w of workloads) {
         }),
     },
     {
-      name: "typescript (v5.9, createSourceFile)",
+      name: "typescript (v5.9, Pure JS AST)",
       fn: () =>
         ts.createSourceFile(w.fileName, w.code, ts.ScriptTarget.Latest, true),
     },
@@ -386,6 +388,6 @@ for (const w of workloads) {
     }
     console.log("");
   } finally {
-    tsgoHarness.close();
+    ts7Harness.close();
   }
 }
