@@ -66,29 +66,37 @@ const next = (input, offset) => {
   const l = input.length;
   const t = table;
 
-  if (i < l && (state = t[1536 + input[i++]]) > 8) {
-    do {
+  if (i < l && (state = t[input[i++] + 1536]) > 8) {
+    while (true) {
       if (state > 1280) {
         while (i < l && (state = t[state + input[i++]]) > 1280);
       }
       if (state === 1024) {
-        while (i < l && (state = t[1024 + input[i++]]) === 1024);
+        while (i < l && (state = t[input[i++] + 1024]) === 1024);
       }
       if (state === 1280) {
-        while (i < l && (state = t[1280 + input[i++]]) === 1280);
+        while (i < l && (state = t[input[i++] + 1280]) === 1280);
       }
       if (state <= 8) {
         break;
       }
+
       if (state <= 768) {
-        while (i < l && t[state + input[i]] === state) {
+        successState = state;
+        while (i < l && state === (state = t[state + input[i]])) {
           i++;
         }
-
-        successState = state;
+        if (state === 0 || i >= l) {
+          state = (successState === 768 ? 7 : 0) + 1;
+          break;
+        }
         successPos = i;
+        i++;
       }
-    } while (i < l && (state = t[state + input[i++]]));
+      if (i >= l) {
+        break;
+      }
+    }
   }
 
   if (--state >>> 0 >= 8) {

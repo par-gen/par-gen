@@ -391,10 +391,13 @@ describe("JavaScriptModuleCodegen", () => {
     const lexerCode = await fsp.readFile(lexerStateFile, "utf-8");
     expect(lexerCode).toContain("const t = table;");
     expect(lexerCode).toContain(
-      "while (i < l && t[state + input[i]] === state)"
+      "while (i < l && t[input[i] + 256])"
+    );
+    expect(lexerCode).toContain(
+      "while (i < l && state === (state = t[state + input[i]]))"
     );
     expect(lexerCode).toMatch(
-      /while \(i < l && \(state = t\[\d+ \+ input\[i\+\+\]\]\) === \d+\);/
+      /while \(i < l && \(state = t\[input\[i\+\+\] \+ \d+\]\) === \d+\);/
     );
     expect(lexerCode).not.toContain("let successState =");
     expect(lexerCode).toContain("if (successPos !== 0)");
@@ -427,7 +430,7 @@ describe("JavaScriptModuleCodegen", () => {
 
     // 2. Verify at most 1 constant-base non-final self-loop is emitted when skipBytes.length > 0
     const constSelfLoops = lexerCode.match(
-      /while \(i < l && \(state = t\[\d+ \+ input\[i\+\+\]\]\) === \d+\);/g
+      /while \(i < l && \(state = t\[input\[i\+\+\] \+ \d+\]\) === \d+\);/g
     );
     expect(constSelfLoops ? constSelfLoops.length : 0).toBe(1);
 

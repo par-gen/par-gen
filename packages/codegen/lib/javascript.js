@@ -132,10 +132,6 @@ export class JavaScriptBaseCodegen {
       (s) => !selfLoopNonFinalSet.has(s)
     );
     const orderedNonFinals = [...selfLoopNonFinals, ...otherNonFinals];
-    const hasContinuableSelfLoops = continuableFinals.some((s) => {
-      const tr = transMap.get(s) || [];
-      return tr.some(([, to]) => to === s);
-    });
 
     const activeRowCount = 1 + continuableFinals.length + nonFinals.length;
     const ecInfo = computeEquivalenceClasses(data);
@@ -192,13 +188,20 @@ export class JavaScriptBaseCodegen {
       : [];
     const pureSelfLoopFinals =
       rawPureSelfLoopFinals.length === 1 &&
-      rawPureSelfLoopFinals.length < continuableFinals.length
+      rawPureSelfLoopFinals.length < continuableFinals.length &&
+      !useEquivalenceClasses
         ? rawPureSelfLoopFinals
         : [];
-    const maxDirectTokenId = pureSelfLoopFinals.reduce((max, origState) => {
-      const id = tokenIds[origState / origColumns] ?? 0;
-      return id > max ? id : max;
-    }, maxDeadEndTokenId);
+    const maxDirectTokenId =
+      directDeadEndTokenIds && !useEquivalenceClasses
+        ? finals.reduce((max, origState) => {
+            const id = tokenIds[origState / origColumns] ?? 0;
+            return id + 1 < columns && id > max ? id : max;
+          }, maxDeadEndTokenId)
+        : pureSelfLoopFinals.reduce((max, origState) => {
+            const id = tokenIds[origState / origColumns] ?? 0;
+            return id > max ? id : max;
+          }, maxDeadEndTokenId);
 
     const remappedLastDeadEndFinal = directDeadEndTokenIds
       ? maxDirectTokenId + 1
@@ -298,6 +301,20 @@ export class JavaScriptBaseCodegen {
     const branchingContinuableFinals = continuableFinals.filter(
       (s) => !pureSelfLoopSet.has(s)
     );
+    const hasBranchingSelfLoops = branchingContinuableFinals.some((s) => {
+      const tr = transMap.get(s) || [];
+      return tr.some(([, to]) => to === s);
+    });
+    const allBranchingContinuationsAboveFinal =
+      branchingContinuableFinals.every((origState) => {
+        const tr = transMap.get(origState) || [];
+        return tr.every(
+          ([, to]) =>
+            to === origState ||
+            to === errorState ||
+            remapState(to) > remappedLastFinal
+        );
+      });
     const branchingContinuableTokenIds = branchingContinuableFinals.map(
       (origState) => tokenIds[origState / origColumns] ?? 0
     );
@@ -549,9 +566,9 @@ export class JavaScriptBaseCodegen {
         }
         if (
           i < l &&
-          (state = t[${remappedStart} + input[i++]]) > ${remappedLastDeadEndFinal}
+          (state = t[input[i++] + ${remappedStart}]) > ${remappedLastDeadEndFinal}
         ) {
-          do {
+          while (true) {
             if (state > ${remappedLastSelfLoop}) {
               while (
                 i < l &&
@@ -562,39 +579,72 @@ export class JavaScriptBaseCodegen {
               .map((origState) => {
                 const s = remapState(origState);
                 return `if (state === ${s}) {
-              while (i < l && (state = t[${s} + input[i++]]) === ${s});
+              while (i < l && (state = t[input[i++] + ${s}]) === ${s});
             }`;
               })
               .join("\n")}
             if (state <= ${remappedLastDeadEndFinal}) {
               break;
             }
-            if (state <= ${remappedLastFinal}) {
-              ${
-                hasContinuableSelfLoops
-                  ? `while (i < l && t[state + input[i]] === state) {
+            ${pureSelfLoopFinals
+              .map((origState) => {
+                const s = remapState(origState);
+                const id = tokenIds[origState / origColumns] ?? 0;
+                return `if (state === ${s}) {
+              while (i < l && t[input[i] + ${s}]) {
                 i++;
-              }`
-                  : ""
               }
-              ${pureSelfLoopFinals
-                .map((origState) => {
-                  const s = remapState(origState);
-                  const id = tokenIds[origState / origColumns] ?? 0;
-                  return `if (state === ${s}) {
-                state = ${id + 1};
-                break;
-              }`;
-                })
-                .join("\n")}
+              state = ${id + 1};
+              break;
+            }`;
+              })
+              .join("\n")}
+            ${
+              branchingContinuableFinals.length > 0
+                ? `if (state <= ${remappedLastFinal}) {
               ${
                 distinctContinuableTokenIds.length <= 1
                   ? ""
                   : "successState = state;"
               }
-              ${branchingContinuableFinals.length > 0 ? "successPos = i;" : ""}
+              ${
+                hasBranchingSelfLoops
+                  ? branchingContinuableFinals.length === 1
+                    ? `while (i < l && (state = t[input[i] + ${remapState(
+                        branchingContinuableFinals[0]
+                      )}]) === ${remapState(
+                        branchingContinuableFinals[0]
+                      )}) {
+                i++;
+              }`
+                    : `while (i < l && state === (state = t[state + input[i]])) {
+                i++;
+              }`
+                  : `if (i < l) {
+                state = t[state + input[i]];
+              }`
+              }
+              if (${
+                allBranchingContinuationsAboveFinal
+                  ? `state <= ${remappedLastFinal}`
+                  : "state === 0 || i >= l"
+              }) {
+                state = ${
+                  distinctContinuableTokenIds.length === 1
+                    ? `${distinctContinuableTokenIds[0] + 1}`
+                    : `(${continuableTokenIdExpr}) + 1`
+                };
+                break;
+              }
+              successPos = i;
+              i++;
+            }`
+                : ""
             }
-          } while (i < l && (state = t[state + input[i++]]));
+            if (i >= l) {
+              break;
+            }
+          }
         }
 
         if (--state >>> 0 >= ${remappedLastDeadEndFinal}) {

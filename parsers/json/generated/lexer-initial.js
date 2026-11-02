@@ -96,29 +96,39 @@ const next = (input, offset) => {
   const l = input.length;
   const t = table;
 
-  if (i < l && (state = t[1792 + input[i++]]) > 12) {
-    do {
+  if (i < l && (state = t[input[i++] + 1792]) > 12) {
+    while (true) {
       if (state > 1536) {
         while (i < l && (state = t[state + input[i++]]) > 1536);
       }
       if (state === 1536) {
-        while (i < l && (state = t[1536 + input[i++]]) === 1536);
+        while (i < l && (state = t[input[i++] + 1536]) === 1536);
       }
       if (state <= 12) {
         break;
       }
-      if (state <= 1280) {
-        while (i < l && t[state + input[i]] === state) {
+      if (state === 256) {
+        while (i < l && t[input[i] + 256]) {
           i++;
         }
-        if (state === 256) {
-          state = 1;
+        state = 1;
+        break;
+      }
+      if (state <= 1280) {
+        while (i < l && state === (state = t[state + input[i]])) {
+          i++;
+        }
+        if (state <= 1280) {
+          state = 12;
           break;
         }
-
         successPos = i;
+        i++;
       }
-    } while (i < l && (state = t[state + input[i++]]));
+      if (i >= l) {
+        break;
+      }
+    }
   }
 
   if (--state >>> 0 >= 12) {
