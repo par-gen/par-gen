@@ -1224,14 +1224,6 @@ export class JavaScriptBaseCodegen {
         tree: new Uint32Array(16384),
       };
 
-      function growBuffer(buf, usedLen) {
-        const next = new Uint32Array(buf.length << 1);
-        if (usedLen > 0) {
-          next.set(buf.subarray(0, usedLen));
-        }
-        return next;
-      }
-
       class TreeCursor {
         #stream;
         #tree;
@@ -1316,7 +1308,9 @@ export class JavaScriptBaseCodegen {
           const d = this.#depth + 1;
           let stack = this.#parentStack;
           if (d >= stack.length) {
-            stack = this.#parentStack = growBuffer(stack, d);
+            const next = new Uint32Array(stack.length << 1);
+            next.set(stack);
+            stack = this.#parentStack = next;
           }
           stack[d] = p | ((n - 1) << 20);
           this.#depth = d;
@@ -1443,102 +1437,6 @@ export class JavaScriptBaseCodegen {
         }
       }
 
-      function parseCold(
-        stream,
-        input,
-        sp,
-        tp,
-        lookahead,
-        lookaheadSpan
-      ) {
-        let s = arena.stack;
-        let t = tp === 3 ? new Uint32Array(arena.tree.length) : arena.tree;
-        if (tp === 3) {
-          s[0] = ${
-            states.indexOf(start) * stateMultiplier * 1048576
-          }; // starting state
-        }
-
-        while (true) {
-          if (tp >= t.length - 2) {
-            t = growBuffer(t, tp);
-          }
-          if (sp >= s.length - 1) {
-            s = growBuffer(s, sp + 1);
-          }
-          const top = s[sp];
-          const currentState = top >>> 20;
-
-          ${actionLookupCode}
-          if ((actionLookup & 1) === 0) {
-            if (actionLookup === 0xfffe) {
-              if (s !== arena.stack || t !== arena.tree) {
-                delete arena.stack;
-                delete arena.tree;
-                arena.stack = s;
-                arena.tree = t;
-                Object.create(arena);
-              }
-              return new CstNode(stream, t, tp - 3);
-            }
-            ${shiftActionDispatchCode}
-
-            t[tp] = lookahead;
-            t[tp + 1] = lookaheadSpan;
-            t[(top & 0xfffff) + 2] = tp;
-
-            sp += 1;
-            s[sp] = tp | (actionLookup << 19);
-
-            ${nextTokenUpdateCode}
-          } else {
-            if (actionLookup === 0xffff) {
-              ${
-                hasWordFallback
-                  ? `if (
-                wordFallbackTable[lookahead] !== 0 &&
-                actionsTable[${
-                  canPreMultiplyState
-                    ? "currentState"
-                    : `currentState * ${parserSymbols.length}`
-                } + ${wordTokenId}] !== 0xffff
-              ) {
-                lookahead = ${wordTokenId};
-                continue;
-              }`
-                  : ""
-              }
-              const errStart =
-                (lookaheadSpan & 0x3fffff) === 0x3fffff
-                  ? -1
-                  : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
-              const context = input.toString().substr(errStart, 10);
-              throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
-            }
-            const word0 = actionLookup >>> 1;
-            const actionSymbol = word0 & 0xff;
-            const stackItemsToReduce = word0 >>> 8;
-
-            sp -= stackItemsToReduce;
-            t[tp] = word0;
-
-            const rtop = s[sp];
-            const nextState = gotoTable[${
-              canPreMultiplyState
-                ? "(rtop >>> 20)"
-                : `(rtop >>> 20) * ${parserSymbols.length}`
-            } + actionSymbol];
-            t[(rtop & 0xfffff) + 2] = tp;
-
-            sp += 1;
-            t[tp + 1] = s[sp];
-            s[sp] = tp | nextState;
-          }
-
-          tp += 3;
-        }
-      }
-
       /**
        * @typedef {Object} Node
        * @property {string} name
@@ -1605,157 +1503,154 @@ export class JavaScriptBaseCodegen {
 
         const stack = arena.stack;
         const tree = arena.tree;
-        if (stream.length >>> 1 > tree.length) {
-          return parseCold(
-            stream,
-            input,
-            0,
-            3,
-            lookahead,
-            lookaheadSpan
-          );
-        }
+        if (stream.length >>> 1 <= tree.length) {
+          stack[0] = ${
+            states.indexOf(start) * stateMultiplier * 1048576
+          }; // starting state
+          let sp = 0;
+          // let the tree stack start from offset 3
+          // offset 0 means an error occurred and should be used by the parser
+          let tp = 3;
 
-        stack[0] = ${
-          states.indexOf(start) * stateMultiplier * 1048576
-        }; // starting state
-        let sp = 0;
-        // let the tree stack start from offset 3
-        // offset 0 means an error occurred and should be used by the parser
-        let tp = 3;
+          ${debug(() => `let steps = 0;`)}
+          while (true) {
+            ${debug(() => `steps++;`)}
+            const top = stack[sp];
+            const currentState = top >>> 20;
 
-        ${debug(() => `let steps = 0;`)}
-        while (true) {
-          ${debug(() => `steps++;`)}
-          const top = stack[sp];
-          const currentState = top >>> 20;
-
-          ${actionLookupCode}
-          if ((actionLookup & 1) === 0) {
-            // shift
-            if (actionLookup === 0xfffe) {
-              ${debug(() => `console.log('steps', steps);`)}
-              return new CstNode(stream, tree, tp - 3);
-            }
-            ${debug(
-              () =>
-                `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
-            )}
-            ${shiftActionDispatchCode}
-
-            tree[tp] = lookahead; // name (and nChildren = 0)
-            tree[tp + 1] = lookaheadSpan;
-            tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
-
-            sp += 1;
-            stack[sp] = tp | (actionLookup << 19);
-
-            ${
-              this.options.debug
-                ? `result = ${nextTokenExpr};
-            lookahead = result.state;
-            lookaheadSpan = result.end | ((result.end - result.start) << 22);`
-                : nextTokenUpdateCode
-            }
-            ${debug(
-              () => `
-              console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
-              console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
-              if (result.start !== -1) {
-                console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
+            ${actionLookupCode}
+            if ((actionLookup & 1) === 0) {
+              // shift
+              if (actionLookup === 0xfffe) {
+                ${debug(() => `console.log('steps', steps);`)}
+                return new CstNode(stream, tree, tp - 3);
               }
-              `
-            )}
+              ${debug(
+                () =>
+                  `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
+              )}
+              ${shiftActionDispatchCode}
 
-            ${debug(
-              () => `
-              console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
-              console.log('');
-              `
-            )}
-          } else {
-            // reduce
-            if (actionLookup === 0xffff) {
+              tree[tp] = lookahead; // name (and nChildren = 0)
+              tree[tp + 1] = lookaheadSpan;
+              tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
+
+              sp += 1;
+              stack[sp] = tp | (actionLookup << 19);
+
               ${
-                hasWordFallback
-                  ? `if (
-                wordFallbackTable[lookahead] !== 0 &&
-                actionsTable[${
-                  canPreMultiplyState
-                    ? "currentState"
-                    : `currentState * ${parserSymbols.length}`
-                } + ${wordTokenId}] !== 0xffff
-              ) {
-                lookahead = ${wordTokenId};
-                continue;
-              }`
-                  : ""
+                this.options.debug
+                  ? `result = ${nextTokenExpr};
+              lookahead = result.state;
+              lookaheadSpan = result.end | ((result.end - result.start) << 22);`
+                  : nextTokenUpdateCode
               }
-              const errStart =
-                (lookaheadSpan & 0x3fffff) === 0x3fffff
-                  ? -1
-                  : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
-              const context = input.toString().substr(errStart, 10);
-              throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
+              ${debug(
+                () => `
+                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
+                console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
+                if (result.start !== -1) {
+                  console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
+                }
+                `
+              )}
+
+              ${debug(
+                () => `
+                console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
+                console.log('');
+                `
+              )}
+            } else {
+              // reduce
+              if (actionLookup === 0xffff) {
+                ${
+                  hasWordFallback
+                    ? `if (
+                  wordFallbackTable[lookahead] !== 0 &&
+                  actionsTable[${
+                    canPreMultiplyState
+                      ? "currentState"
+                      : `currentState * ${parserSymbols.length}`
+                  } + ${wordTokenId}] !== 0xffff
+                ) {
+                  lookahead = ${wordTokenId};
+                  continue;
+                }`
+                    : ""
+                }
+                const errStart =
+                  (lookaheadSpan & 0x3fffff) === 0x3fffff
+                    ? -1
+                    : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
+                const context = input.toString().substr(errStart, 10);
+                throw new Error(\`Unexpected lookahead \${parserSymbols[lookahead]} at '\${context}'\`);
+              }
+              const word0 = actionLookup >>> 1;
+              const actionSymbol = word0 & 0xff;
+              const stackItemsToReduce = word0 >>> 8;
+
+              ${debug(
+                () =>
+                  `console.log('action: reduce', actionSymbol,
+                    parserSymbols[actionSymbol],
+                    Array.from({ length: stackItemsToReduce })
+                      .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xfffff] & 0xff])
+                      .reverse()
+                  );`
+              )}
+              ${debug(
+                () => `
+                console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
+                console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
+                if (result.start !== -1) {
+                  console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
+                }
+                `
+              )}
+
+              sp -= stackItemsToReduce;
+              tree[tp] = word0; // name and number of children
+
+              const rtop = stack[sp];
+              const nextState = gotoTable[${
+                canPreMultiplyState
+                  ? "(rtop >>> 20)"
+                  : `(rtop >>> 20) * ${parserSymbols.length}`
+              } + actionSymbol];
+              tree[(rtop & 0xfffff) + 2] = tp; // next sibling
+
+              sp += 1;
+              tree[tp + 1] = stack[sp]; // first child
+              stack[sp] = tp | nextState;
+
+              ${debug(
+                () => `
+                console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
+                console.log('');
+                `
+              )}
             }
-            const word0 = actionLookup >>> 1;
-            const actionSymbol = word0 & 0xff;
-            const stackItemsToReduce = word0 >>> 8;
 
-            ${debug(
-              () =>
-                `console.log('action: reduce', actionSymbol,
-                  parserSymbols[actionSymbol],
-                  Array.from({ length: stackItemsToReduce })
-                    .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xfffff] & 0xff])
-                    .reverse()
-                );`
-            )}
-            ${debug(
-              () => `
-              console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
-              console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
-              if (result.start !== -1) {
-                console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
-              }
-              `
-            )}
-
-            sp -= stackItemsToReduce;
-            tree[tp] = word0; // name and number of children
-
-            const rtop = stack[sp];
-            const nextState = gotoTable[${
-              canPreMultiplyState
-                ? "(rtop >>> 20)"
-                : `(rtop >>> 20) * ${parserSymbols.length}`
-            } + actionSymbol];
-            tree[(rtop & 0xfffff) + 2] = tp; // next sibling
-
-            sp += 1;
-            tree[tp + 1] = stack[sp]; // first child
-            stack[sp] = tp | nextState;
-
-            ${debug(
-              () => `
-              console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
-              console.log('');
-              `
-            )}
-          }
-
-          tp += 3;
-          if (tp >= tree.length - 2) {
-            return parseCold(
-              stream,
-              input,
-              sp,
-              tp,
-              lookahead,
-              lookaheadSpan
-            );
+            tp += 3;
+            if (tp >= tree.length - 2) {
+              break;
+            }
           }
         }
+
+        let len = tree.length << 1;
+        while (len < stream.length >>> 1) {
+          len <<= 1;
+        }
+        const nextStack = new Uint32Array(len);
+        const nextTree = new Uint32Array(len);
+        delete arena.stack;
+        delete arena.tree;
+        arena.stack = nextStack;
+        arena.tree = nextTree;
+        Object.create(arena);
+        return parse(input);
       }
 
       ${this._parserExports()}

@@ -236,14 +236,6 @@ const arena = {
   tree: new Uint32Array(16384),
 };
 
-function growBuffer(buf, usedLen) {
-  const next = new Uint32Array(buf.length << 1);
-  if (usedLen > 0) {
-    next.set(buf.subarray(0, usedLen));
-  }
-  return next;
-}
-
 class TreeCursor {
   #stream;
   #tree;
@@ -328,7 +320,9 @@ class TreeCursor {
     const d = this.#depth + 1;
     let stack = this.#parentStack;
     if (d >= stack.length) {
-      stack = this.#parentStack = growBuffer(stack, d);
+      const next = new Uint32Array(stack.length << 1);
+      next.set(stack);
+      stack = this.#parentStack = next;
     }
     stack[d] = p | ((n - 1) << 20);
     this.#depth = d;
@@ -455,77 +449,6 @@ class CstNode {
   }
 }
 
-function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan) {
-  let s = arena.stack;
-  let t = tp === 3 ? new Uint32Array(arena.tree.length) : arena.tree;
-  if (tp === 3) {
-    s[0] = 0; // starting state
-  }
-
-  while (true) {
-    if (tp >= t.length - 2) {
-      t = growBuffer(t, tp);
-    }
-    if (sp >= s.length - 1) {
-      s = growBuffer(s, sp + 1);
-    }
-    const top = s[sp];
-    const currentState = top >>> 20;
-
-    const actionLookup = actionsTable[currentState + lookahead];
-    if ((actionLookup & 1) === 0) {
-      if (actionLookup === 0xfffe) {
-        if (s !== arena.stack || t !== arena.tree) {
-          delete arena.stack;
-          delete arena.tree;
-          arena.stack = s;
-          arena.tree = t;
-          Object.create(arena);
-        }
-        return new CstNode(stream, t, tp - 3);
-      }
-
-      t[tp] = lookahead;
-      t[tp + 1] = lookaheadSpan;
-      t[(top & 0xfffff) + 2] = tp;
-
-      sp += 1;
-      s[sp] = tp | (actionLookup << 19);
-
-      const res = nextToken(stream, lookaheadSpan & 0x3fffff);
-      lookahead = res.state;
-      lookaheadSpan = res.end | ((res.end - res.start) << 22);
-    } else {
-      if (actionLookup === 0xffff) {
-        const errStart =
-          (lookaheadSpan & 0x3fffff) === 0x3fffff
-            ? -1
-            : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
-        const context = input.toString().substr(errStart, 10);
-        throw new Error(
-          `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
-        );
-      }
-      const word0 = actionLookup >>> 1;
-      const actionSymbol = word0 & 0xff;
-      const stackItemsToReduce = word0 >>> 8;
-
-      sp -= stackItemsToReduce;
-      t[tp] = word0;
-
-      const rtop = s[sp];
-      const nextState = gotoTable[(rtop >>> 20) + actionSymbol];
-      t[(rtop & 0xfffff) + 2] = tp;
-
-      sp += 1;
-      t[tp + 1] = s[sp];
-      s[sp] = tp | nextState;
-    }
-
-    tp += 3;
-  }
-}
-
 /**
  * @typedef {Object} Node
  * @property {string} name
@@ -548,70 +471,81 @@ function parse(input) {
 
   const stack = arena.stack;
   const tree = arena.tree;
-  if (stream.length >>> 1 > tree.length) {
-    return parseCold(stream, input, 0, 3, lookahead, lookaheadSpan);
-  }
+  if (stream.length >>> 1 <= tree.length) {
+    stack[0] = 0; // starting state
+    let sp = 0;
+    // let the tree stack start from offset 3
+    // offset 0 means an error occurred and should be used by the parser
+    let tp = 3;
 
-  stack[0] = 0; // starting state
-  let sp = 0;
-  // let the tree stack start from offset 3
-  // offset 0 means an error occurred and should be used by the parser
-  let tp = 3;
+    while (true) {
+      const top = stack[sp];
+      const currentState = top >>> 20;
 
-  while (true) {
-    const top = stack[sp];
-    const currentState = top >>> 20;
+      const actionLookup = actionsTable[currentState + lookahead];
+      if ((actionLookup & 1) === 0) {
+        // shift
+        if (actionLookup === 0xfffe) {
+          return new CstNode(stream, tree, tp - 3);
+        }
 
-    const actionLookup = actionsTable[currentState + lookahead];
-    if ((actionLookup & 1) === 0) {
-      // shift
-      if (actionLookup === 0xfffe) {
-        return new CstNode(stream, tree, tp - 3);
+        tree[tp] = lookahead; // name (and nChildren = 0)
+        tree[tp + 1] = lookaheadSpan;
+        tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
+
+        sp += 1;
+        stack[sp] = tp | (actionLookup << 19);
+
+        const res = nextToken(stream, lookaheadSpan & 0x3fffff);
+        lookahead = res.state;
+        lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      } else {
+        // reduce
+        if (actionLookup === 0xffff) {
+          const errStart =
+            (lookaheadSpan & 0x3fffff) === 0x3fffff
+              ? -1
+              : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
+          const context = input.toString().substr(errStart, 10);
+          throw new Error(
+            `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
+          );
+        }
+        const word0 = actionLookup >>> 1;
+        const actionSymbol = word0 & 0xff;
+        const stackItemsToReduce = word0 >>> 8;
+
+        sp -= stackItemsToReduce;
+        tree[tp] = word0; // name and number of children
+
+        const rtop = stack[sp];
+        const nextState = gotoTable[(rtop >>> 20) + actionSymbol];
+        tree[(rtop & 0xfffff) + 2] = tp; // next sibling
+
+        sp += 1;
+        tree[tp + 1] = stack[sp]; // first child
+        stack[sp] = tp | nextState;
       }
 
-      tree[tp] = lookahead; // name (and nChildren = 0)
-      tree[tp + 1] = lookaheadSpan;
-      tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
-
-      sp += 1;
-      stack[sp] = tp | (actionLookup << 19);
-
-      const res = nextToken(stream, lookaheadSpan & 0x3fffff);
-      lookahead = res.state;
-      lookaheadSpan = res.end | ((res.end - res.start) << 22);
-    } else {
-      // reduce
-      if (actionLookup === 0xffff) {
-        const errStart =
-          (lookaheadSpan & 0x3fffff) === 0x3fffff
-            ? -1
-            : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
-        const context = input.toString().substr(errStart, 10);
-        throw new Error(
-          `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
-        );
+      tp += 3;
+      if (tp >= tree.length - 2) {
+        break;
       }
-      const word0 = actionLookup >>> 1;
-      const actionSymbol = word0 & 0xff;
-      const stackItemsToReduce = word0 >>> 8;
-
-      sp -= stackItemsToReduce;
-      tree[tp] = word0; // name and number of children
-
-      const rtop = stack[sp];
-      const nextState = gotoTable[(rtop >>> 20) + actionSymbol];
-      tree[(rtop & 0xfffff) + 2] = tp; // next sibling
-
-      sp += 1;
-      tree[tp + 1] = stack[sp]; // first child
-      stack[sp] = tp | nextState;
-    }
-
-    tp += 3;
-    if (tp >= tree.length - 2) {
-      return parseCold(stream, input, sp, tp, lookahead, lookaheadSpan);
     }
   }
+
+  let len = tree.length << 1;
+  while (len < stream.length >>> 1) {
+    len <<= 1;
+  }
+  const nextStack = new Uint32Array(len);
+  const nextTree = new Uint32Array(len);
+  delete arena.stack;
+  delete arena.tree;
+  arena.stack = nextStack;
+  arena.tree = nextTree;
+  Object.create(arena);
+  return parse(input);
 }
 
 export { parse, CstNode, TreeCursor };
