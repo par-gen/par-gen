@@ -105,6 +105,19 @@ export class JavaScriptBaseCodegen {
     const nonFinals = allOrigStates.filter(
       (s) => s !== errorState && !finalSet.has(s)
     );
+    const selfLoopNonFinals = nonFinals.filter((s) => {
+      const tr = transMap.get(s) || [];
+      return tr.some(([, to]) => to === s);
+    });
+    const otherNonFinals = nonFinals.filter((s) => {
+      const tr = transMap.get(s) || [];
+      return !tr.some(([, to]) => to === s);
+    });
+    const orderedNonFinals = [...selfLoopNonFinals, ...otherNonFinals];
+    const hasContinuableSelfLoops = continuableFinals.some((s) => {
+      const tr = transMap.get(s) || [];
+      return tr.some(([, to]) => to === s);
+    });
 
     const skipBytes = data.skipBytes ?? [];
     const skipTokenNames = new Set(data.skipTokenNames ?? []);
@@ -145,8 +158,35 @@ export class JavaScriptBaseCodegen {
       );
     }
 
+    const rawPureSelfLoopFinals = directDeadEndTokenIds
+      ? continuableFinals.filter((s) => {
+          const id = tokenIds[s / origColumns] ?? 0;
+          if (!useEquivalenceClasses && id + 1 >= columns) {
+            return false;
+          }
+          return continuableFinals
+            .filter((s2) => (tokenIds[s2 / origColumns] ?? 0) === id)
+            .every((s2) => {
+              const tr = transMap.get(s2) || [];
+              return (
+                tr.length > 0 &&
+                tr.every(([, to]) => to === s2 || to === errorState)
+              );
+            });
+        })
+      : [];
+    const pureSelfLoopFinals =
+      rawPureSelfLoopFinals.length === 1 &&
+      rawPureSelfLoopFinals.length < continuableFinals.length
+        ? rawPureSelfLoopFinals
+        : [];
+    const maxDirectTokenId = pureSelfLoopFinals.reduce((max, origState) => {
+      const id = tokenIds[origState / origColumns] ?? 0;
+      return id > max ? id : max;
+    }, maxDeadEndTokenId);
+
     const remappedLastDeadEndFinal = directDeadEndTokenIds
-      ? maxDeadEndTokenId + 1
+      ? maxDirectTokenId + 1
       : compactDeadEndFinals
       ? deadEndFinals.length
       : deadEndFinals.length * columns;
@@ -156,11 +196,16 @@ export class JavaScriptBaseCodegen {
       : 1;
 
     const rowStates = compactDeadEndFinals
-      ? [errorState, ...continuableFinals, ...nonFinals]
-      : [errorState, ...deadEndFinals, ...continuableFinals, ...nonFinals];
+      ? [errorState, ...continuableFinals, ...orderedNonFinals]
+      : [
+          errorState,
+          ...deadEndFinals,
+          ...continuableFinals,
+          ...orderedNonFinals,
+        ];
 
     const totalRows = compactDeadEndFinals
-      ? firstActiveRow + continuableFinals.length + nonFinals.length
+      ? firstActiveRow + continuableFinals.length + orderedNonFinals.length
       : rowStates.length;
 
     /** @type {Map<number, number>} */
@@ -174,7 +219,7 @@ export class JavaScriptBaseCodegen {
       continuableFinals.forEach((origState, idx) => {
         stateRemap.set(origState, (firstActiveRow + idx) * columns);
       });
-      nonFinals.forEach((origState, idx) => {
+      orderedNonFinals.forEach((origState, idx) => {
         stateRemap.set(
           origState,
           (firstActiveRow + continuableFinals.length + idx) * columns
@@ -188,7 +233,7 @@ export class JavaScriptBaseCodegen {
       continuableFinals.forEach((origState, idx) => {
         stateRemap.set(origState, (firstActiveRow + idx) * columns);
       });
-      nonFinals.forEach((origState, idx) => {
+      orderedNonFinals.forEach((origState, idx) => {
         stateRemap.set(
           origState,
           (firstActiveRow + continuableFinals.length + idx) * columns
@@ -210,12 +255,22 @@ export class JavaScriptBaseCodegen {
     const remappedLastFinal = directDeadEndTokenIds
       ? continuableFinals.length > 0
         ? (firstActiveRow + continuableFinals.length - 1) * columns
-        : maxDeadEndTokenId + 1
+        : remappedLastDeadEndFinal
       : compactDeadEndFinals
       ? continuableFinals.length > 0
         ? (firstActiveRow + continuableFinals.length - 1) * columns
         : deadEndFinals.length
       : finals.length * columns;
+    const remappedLastSelfLoop =
+      selfLoopNonFinals.length > 0
+        ? compactDeadEndFinals
+          ? (firstActiveRow +
+              continuableFinals.length +
+              selfLoopNonFinals.length -
+              1) *
+            columns
+          : (finals.length + selfLoopNonFinals.length) * columns
+        : remappedLastFinal;
 
     const maxStateValue = Math.max(
       (totalRows - 1) * columns,
@@ -224,36 +279,44 @@ export class JavaScriptBaseCodegen {
     );
     const pointerSize = maxStateValue <= 0xffff ? "Uint16Array" : "Uint32Array";
 
-    const continuableTokenIds = continuableFinals.map(
+    const pureSelfLoopSet = new Set(pureSelfLoopFinals);
+    const branchingContinuableFinals = continuableFinals.filter(
+      (s) => !pureSelfLoopSet.has(s)
+    );
+    const branchingContinuableTokenIds = branchingContinuableFinals.map(
       (origState) => tokenIds[origState / origColumns] ?? 0
     );
     const distinctContinuableTokenIds = Array.from(
-      new Set(continuableTokenIds)
+      new Set(branchingContinuableTokenIds)
     );
     const needsContinuableTokenIdsTable =
       directDeadEndTokenIds && distinctContinuableTokenIds.length >= 3;
 
     let continuableTokenIdExpr = `tokenIds[successState >> ${columnShift}]`;
-    if (directDeadEndTokenIds && continuableFinals.length > 0) {
+    if (directDeadEndTokenIds && branchingContinuableFinals.length > 0) {
       if (distinctContinuableTokenIds.length === 1) {
         continuableTokenIdExpr = `${distinctContinuableTokenIds[0]}`;
       } else if (distinctContinuableTokenIds.length === 2) {
         const id0 = distinctContinuableTokenIds[0];
         const id1 = distinctContinuableTokenIds[1];
-        const count0 = continuableTokenIds.filter((id) => id === id0).length;
-        const count1 = continuableFinals.length - count0;
-        if (count0 === 1) {
-          continuableTokenIdExpr = `successState === ${
-            firstActiveRow * columns
-          } ? ${id0} : ${id1}`;
-        } else if (count1 === 1) {
-          continuableTokenIdExpr = `successState === ${
-            (firstActiveRow + continuableFinals.length - 1) * columns
-          } ? ${id1} : ${id0}`;
+        const states0 = branchingContinuableFinals.filter(
+          (s) => (tokenIds[s / origColumns] ?? 0) === id0
+        );
+        const states1 = branchingContinuableFinals.filter(
+          (s) => (tokenIds[s / origColumns] ?? 0) === id1
+        );
+        if (states0.length === 1) {
+          continuableTokenIdExpr = `successState === ${remapState(
+            states0[0]
+          )} ? ${id0} : ${id1}`;
+        } else if (states1.length === 1) {
+          continuableTokenIdExpr = `successState === ${remapState(
+            states1[0]
+          )} ? ${id1} : ${id0}`;
         } else {
-          continuableTokenIdExpr = `successState <= ${
-            (firstActiveRow + count0 - 1) * columns
-          } ? ${id0} : ${id1}`;
+          continuableTokenIdExpr = `successState <= ${remapState(
+            states0[states0.length - 1]
+          )} ? ${id0} : ${id1}`;
         }
       }
     }
@@ -447,11 +510,117 @@ export class JavaScriptBaseCodegen {
           start: offset,
           end: i,
         };`
+            : directDeadEndTokenIds && !useEquivalenceClasses
+            ? `// ${remappedStart / columns}
+        let state = ${remappedStart};
+        ${
+          distinctContinuableTokenIds.length <= 1
+            ? ""
+            : "let successState = 0;"
+        }
+        ${branchingContinuableFinals.length > 0 ? "let successPos = 0;" : ""}
+
+        // try to find match
+        let i = offset & 0x7fffffff;
+        const l = input.length;
+        const t = table;
+        ${
+          skipBytes.length > 0
+            ? `while (i < l && skipTable[input[i]] !== 0) {
+          i++;
+        }
+        offset = i;`
+            : ""
+        }
+        if (
+          i < l &&
+          (state = t[${remappedStart} + input[i++]]) > ${remappedLastDeadEndFinal}
+        ) {
+          while (true) {
+            if (state > ${remappedLastSelfLoop}) {
+              while (
+                i < l &&
+                (state = t[state + input[i++]]) > ${remappedLastSelfLoop}
+              );
+            }
+            ${selfLoopNonFinals
+              .map((origState) => {
+                const s = remapState(origState);
+                return `if (state === ${s}) {
+              while (i < l && (state = t[${s} + input[i++]]) === ${s});
+            }`;
+              })
+              .join("\n")}
+            if (state <= ${remappedLastDeadEndFinal}) {
+              break;
+            }
+            if (state <= ${remappedLastFinal}) {
+              ${
+                hasContinuableSelfLoops
+                  ? `while (i < l && t[state + input[i]] === state) {
+                i++;
+              }`
+                  : ""
+              }
+              ${pureSelfLoopFinals
+                .map((origState) => {
+                  const s = remapState(origState);
+                  const id = tokenIds[origState / origColumns] ?? 0;
+                  return `if (state === ${s}) {
+                state = ${id + 1};
+                break;
+              }`;
+                })
+                .join("\n")}
+              ${
+                distinctContinuableTokenIds.length <= 1
+                  ? ""
+                  : "successState = state;"
+              }
+              ${branchingContinuableFinals.length > 0 ? "successPos = i;" : ""}
+            }
+            if (i >= l) {
+              break;
+            }
+            state = t[state + input[i++]];
+          }
+        }
+
+        state -= 1;
+        if (state >>> 0 >= ${remappedLastDeadEndFinal}) {
+          ${
+            branchingContinuableFinals.length > 0
+              ? `if (${
+                  distinctContinuableTokenIds.length <= 1
+                    ? "successPos !== 0"
+                    : "successState !== 0"
+                }) {
+            state = ${continuableTokenIdExpr};
+            i = successPos;
+          } else {
+            state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                  tokenIds[tokenNames.indexOf(ERROR)]
+                };
+            offset = -1;
+            i = -1;
+          }`
+              : `state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                  tokenIds[tokenNames.indexOf(ERROR)]
+                };
+          offset = -1;
+          i = -1;`
+          }
+        }
+        return {
+          state,
+          start: offset,
+          end: i,
+        };`
             : directDeadEndTokenIds
             ? `// ${remappedStart / columns}
         let state = ${remappedStart};
         ${
-          distinctContinuableTokenIds.length === 1
+          distinctContinuableTokenIds.length <= 1
             ? ""
             : "let successState = 0;"
         }
@@ -478,7 +647,7 @@ export class JavaScriptBaseCodegen {
           }
           if (state <= ${remappedLastFinal}) {
             ${
-              distinctContinuableTokenIds.length === 1
+              distinctContinuableTokenIds.length <= 1
                 ? ""
                 : "successState = state;"
             }
@@ -489,7 +658,7 @@ export class JavaScriptBaseCodegen {
         state -= 1;
         if (state >>> 0 >= ${remappedLastDeadEndFinal}) {
           if (${
-            distinctContinuableTokenIds.length === 1
+            distinctContinuableTokenIds.length <= 1
               ? "successPos !== 0"
               : "successState !== 0"
           }) {
@@ -826,6 +995,34 @@ export class JavaScriptBaseCodegen {
         `nextToken${this._lexerModePascalCase(
           lexerModes[lexerModes.length - 1]
         )}(stream, lookaheadSpan & 0x3fffff)`;
+
+    const nextTokenUpdateCode = hasSingleLexerMode
+      ? `const res = nextToken(stream, lookaheadSpan & 0x3fffff);
+            lookahead = res.state;
+            lookaheadSpan = res.end | ((res.end - res.start) << 22);`
+      : lexerModes
+          .map((name, idx) => {
+            const callExpr = `nextToken${this._lexerModePascalCase(
+              name
+            )}(stream, lookaheadSpan & 0x3fffff)`;
+            const body = `{
+              const res = ${callExpr};
+              lookahead = res.state;
+              lookaheadSpan = res.end | ((res.end - res.start) << 22);
+            }`;
+            if (idx === 0) {
+              return `if (lexerMode === LexerMode.${this._lexerModeEnumKey(
+                name
+              )}) ${body}`;
+            }
+            if (idx < lexerModes.length - 1) {
+              return `else if (lexerMode === LexerMode.${this._lexerModeEnumKey(
+                name
+              )}) ${body}`;
+            }
+            return `else ${body}`;
+          })
+          .join(" ");
 
     const shiftActionDispatchCode = hasShiftSemanticActions
       ? shiftActionBodies.length === 1
@@ -1293,9 +1490,7 @@ export class JavaScriptBaseCodegen {
             sp += 1;
             s[sp] = tp | (actionLookup << 19);
 
-            const res = ${nextTokenExpr};
-            lookahead = res.state;
-            lookaheadSpan = res.end | ((res.end - res.start) << 22);
+            ${nextTokenUpdateCode}
           } else {
             if (actionLookup === 0xffff) {
               ${
@@ -1460,9 +1655,7 @@ export class JavaScriptBaseCodegen {
                 ? `result = ${nextTokenExpr};
             lookahead = result.state;
             lookaheadSpan = result.end | ((result.end - result.start) << 22);`
-                : `const res = ${nextTokenExpr};
-            lookahead = res.state;
-            lookaheadSpan = res.end | ((res.end - res.start) << 22);`
+                : nextTokenUpdateCode
             }
             ${debug(
               () => `

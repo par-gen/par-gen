@@ -19,36 +19,36 @@ table[831] = 8; // IDENTIFIER
 table.fill(768, 833, 859); // IDENTIFIER
 table[863] = 768; // IDENTIFIER
 table.fill(768, 865, 891); // IDENTIFIER
-table.fill(512, 1033, 1035); // WS
-table[1037] = 512; // WS
-table[1056] = 512; // WS
-table[1059] = 256; // WS
-table[1061] = 1280; // IDENTIFIER
-table[1063] = 1536; // EXPR
-table[1069] = 768; // IDENTIFIER
-table.fill(768, 1072, 1082); // IDENTIFIER
-table[1082] = 1792; // ASSIGN
-table[1083] = 3; // SEMICOLON
-table[1086] = 768; // IDENTIFIER
-table[1088] = 5; // AT
-table.fill(768, 1089, 1115); // IDENTIFIER
-table[1119] = 768; // IDENTIFIER
-table.fill(768, 1121, 1147); // IDENTIFIER
-table[1147] = 2048; // ACTION
-table[1148] = 4; // PIPE
-table[1325] = 768; // IDENTIFIER
-table.fill(768, 1328, 1338); // IDENTIFIER
-table[1342] = 768; // IDENTIFIER
-table.fill(768, 1345, 1371); // IDENTIFIER
-table[1375] = 768; // IDENTIFIER
-table.fill(768, 1377, 1403); // IDENTIFIER
-table.fill(1536, 1536, 1575); // EXPR
-table[1575] = 6; // EXPR
-table.fill(1536, 1576, 1792); // EXPR
-table[1853] = 2; // ASSIGN
-table.fill(2048, 2048, 2173); // ACTION
-table[2173] = 7; // ACTION
-table.fill(2048, 2174, 2304); // ACTION
+table.fill(1024, 1024, 1063); // EXPR
+table[1063] = 6; // EXPR
+table.fill(1024, 1064, 1280); // EXPR
+table.fill(1280, 1280, 1405); // ACTION
+table[1405] = 7; // ACTION
+table.fill(1280, 1406, 1536); // ACTION
+table.fill(512, 1545, 1547); // WS
+table[1549] = 512; // WS
+table[1568] = 512; // WS
+table[1571] = 256; // WS
+table[1573] = 1792; // IDENTIFIER
+table[1575] = 1024; // EXPR
+table[1581] = 768; // IDENTIFIER
+table.fill(768, 1584, 1594); // IDENTIFIER
+table[1594] = 2048; // ASSIGN
+table[1595] = 3; // SEMICOLON
+table[1598] = 768; // IDENTIFIER
+table[1600] = 5; // AT
+table.fill(768, 1601, 1627); // IDENTIFIER
+table[1631] = 768; // IDENTIFIER
+table.fill(768, 1633, 1659); // IDENTIFIER
+table[1659] = 1280; // ACTION
+table[1660] = 4; // PIPE
+table[1837] = 768; // IDENTIFIER
+table.fill(768, 1840, 1850); // IDENTIFIER
+table[1854] = 768; // IDENTIFIER
+table.fill(768, 1857, 1883); // IDENTIFIER
+table[1887] = 768; // IDENTIFIER
+table.fill(768, 1889, 1915); // IDENTIFIER
+table[2109] = 2; // ASSIGN
 
 /**
  * @param {Uint8Array} input
@@ -56,23 +56,42 @@ table.fill(2048, 2174, 2304); // ACTION
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
-  // 4
-  let state = 1024;
+  // 6
+  let state = 1536;
   let successState = 0;
   let successPos = 0;
 
   // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
+  const t = table;
 
-  while (i < l) {
-    while (i < l && (state = table[state + input[i++]]) > 768);
-    if (state <= 8) {
-      break;
-    }
-    if (state <= 768) {
-      successState = state;
-      successPos = i;
+  if (i < l && (state = t[1536 + input[i++]]) > 8) {
+    while (true) {
+      if (state > 1280) {
+        while (i < l && (state = t[state + input[i++]]) > 1280);
+      }
+      if (state === 1024) {
+        while (i < l && (state = t[1024 + input[i++]]) === 1024);
+      }
+      if (state === 1280) {
+        while (i < l && (state = t[1280 + input[i++]]) === 1280);
+      }
+      if (state <= 8) {
+        break;
+      }
+      if (state <= 768) {
+        while (i < l && t[state + input[i]] === state) {
+          i++;
+        }
+
+        successState = state;
+        successPos = i;
+      }
+      if (i >= l) {
+        break;
+      }
+      state = t[state + input[i++]];
     }
   }
 

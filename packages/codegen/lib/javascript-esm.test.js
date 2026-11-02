@@ -375,4 +375,28 @@ describe("JavaScriptModuleCodegen", () => {
     expect(forcedOffLexerCode).not.toContain("const ec = new Uint8Array(256);");
     expect(forcedOffLexerCode).toContain("table[state + input[i++]]");
   });
+
+  it("should emit 1st-byte peeling, constant-base non-final self-loop, and pure self-loop final direct exit", async () => {
+    const grammar = `
+      WS := '[ ]+';
+      NUM := '[0-9]+(\\.[0-9]+)?';
+      STR := '"[^"]*"';
+      PLUS := '\\+';
+      Expr := WS? NUM | WS? STR | Expr PLUS Expr;
+    `;
+
+    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    await codegen.parser(genParser(grammar));
+
+    const lexerCode = await fsp.readFile(lexerStateFile, "utf-8");
+    expect(lexerCode).toContain("const t = table;");
+    expect(lexerCode).toContain(
+      "while (i < l && t[state + input[i]] === state)"
+    );
+    expect(lexerCode).toMatch(
+      /while \(i < l && \(state = t\[\d+ \+ input\[i\+\+\]\]\) === \d+\);/
+    );
+    expect(lexerCode).not.toContain("let successState =");
+    expect(lexerCode).toContain("if (successPos !== 0)");
+  });
 });

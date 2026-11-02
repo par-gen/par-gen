@@ -594,14 +594,19 @@ function parseCold(stream, input, sp, tp, lookahead, lookaheadSpan) {
       sp += 1;
       s[sp] = tp | (actionLookup << 19);
 
-      const res =
-        lexerMode === LexerMode.INITIAL
-          ? nextTokenInitial(stream, lookaheadSpan & 0x3fffff)
-          : lexerMode === LexerMode.CHARACTER_CLASS
-          ? nextTokenCharacterClass(stream, lookaheadSpan & 0x3fffff)
-          : nextTokenHexEscape(stream, lookaheadSpan & 0x3fffff);
-      lookahead = res.state;
-      lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      if (lexerMode === LexerMode.INITIAL) {
+        const res = nextTokenInitial(stream, lookaheadSpan & 0x3fffff);
+        lookahead = res.state;
+        lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      } else if (lexerMode === LexerMode.CHARACTER_CLASS) {
+        const res = nextTokenCharacterClass(stream, lookaheadSpan & 0x3fffff);
+        lookahead = res.state;
+        lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      } else {
+        const res = nextTokenHexEscape(stream, lookaheadSpan & 0x3fffff);
+        lookahead = res.state;
+        lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      }
     } else {
       if (actionLookup === 0xffff) {
         const errStart =
@@ -703,14 +708,19 @@ function parse(input) {
       sp += 1;
       stack[sp] = tp | (actionLookup << 19);
 
-      const res =
-        lexerMode === LexerMode.INITIAL
-          ? nextTokenInitial(stream, lookaheadSpan & 0x3fffff)
-          : lexerMode === LexerMode.CHARACTER_CLASS
-          ? nextTokenCharacterClass(stream, lookaheadSpan & 0x3fffff)
-          : nextTokenHexEscape(stream, lookaheadSpan & 0x3fffff);
-      lookahead = res.state;
-      lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      if (lexerMode === LexerMode.INITIAL) {
+        const res = nextTokenInitial(stream, lookaheadSpan & 0x3fffff);
+        lookahead = res.state;
+        lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      } else if (lexerMode === LexerMode.CHARACTER_CLASS) {
+        const res = nextTokenCharacterClass(stream, lookaheadSpan & 0x3fffff);
+        lookahead = res.state;
+        lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      } else {
+        const res = nextTokenHexEscape(stream, lookaheadSpan & 0x3fffff);
+        lookahead = res.state;
+        lookaheadSpan = res.end | ((res.end - res.start) << 22);
+      }
     } else {
       // reduce
       if (actionLookup === 0xffff) {
