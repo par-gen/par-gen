@@ -152,9 +152,25 @@ export class JavaScriptBaseCodegen {
       deadEndFinals.length > 0 &&
       (useEquivalenceClasses || deadEndFinals.length < columns);
 
+    const skipTokenIds = Array.from(
+      new Set(
+        finals
+          .filter((origState) => {
+            const name = tokenNames[origState / origColumns];
+            return Boolean(name && skipTokenNames.has(name));
+          })
+          .map((origState) => tokenIds[origState / origColumns])
+          .filter(
+            /** @param {number | undefined} id @returns {id is number} */
+            (id) => id !== undefined
+          )
+      )
+    );
+
     const directDeadEndTokenIds =
       compactDeadEndFinals &&
-      skipTokenNames.size === 0 &&
+      (skipTokenNames.size === 0 ||
+        skipTokenIds.length === skipTokenNames.size) &&
       deadEndFinals.every((origState) => {
         const id = tokenIds[origState / origColumns];
         return (
@@ -181,7 +197,13 @@ export class JavaScriptBaseCodegen {
               const tr = transMap.get(s2) || [];
               return (
                 tr.length > 0 &&
-                tr.every(([, to]) => to === s2 || to === errorState)
+                tr.every(([, to]) => to === s2 || to === errorState) &&
+                transitions.every(
+                  ([from, ftr]) =>
+                    from === start ||
+                    from === s2 ||
+                    ftr.every(([, to]) => to !== s2)
+                )
               );
             });
         })
@@ -510,7 +532,47 @@ export class JavaScriptBaseCodegen {
       const next = (input, offset) => {
         ${
           directDeadEndTokenIds && continuableFinals.length === 0
-            ? `// ${remappedStart / columns}
+            ? skipTokenIds.length > 0
+              ? `// ${remappedStart / columns}
+        let i = offset & 0x7fffffff;
+        const l = input.length;
+        let state = 0;
+        while (true) {
+          state = ${remappedStart};
+          ${
+            skipBytes.length > 0
+              ? `while (i < l && skipTable[input[i]] !== 0) {
+            i++;
+          }
+          offset = i;`
+              : ""
+          }
+          while (
+            i < l &&
+            (state = ${stepExpr}) > ${remappedLastFinal}
+          );
+
+          state -= 1;
+          if (state >>> 0 >= ${remappedLastFinal}) {
+            state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                  tokenIds[tokenNames.indexOf(ERROR)]
+                };
+            offset = -1;
+            i = -1;
+          } else if (${skipTokenIds
+            .map((id) => `state === ${id}`)
+            .join(" || ")}) {
+            offset = i;
+            continue;
+          }
+          break;
+        }
+        return {
+          state,
+          start: offset,
+          end: i,
+        };`
+              : `// ${remappedStart / columns}
         let state = ${remappedStart};
 
         // try to find match
@@ -532,8 +594,8 @@ export class JavaScriptBaseCodegen {
         state -= 1;
         if (state >>> 0 >= ${remappedLastFinal}) {
           state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                tokenIds[tokenNames.indexOf(ERROR)]
-              };
+                  tokenIds[tokenNames.indexOf(ERROR)]
+                };
           offset = -1;
           i = -1;
         }
@@ -543,8 +605,160 @@ export class JavaScriptBaseCodegen {
           end: i,
         };`
             : directDeadEndTokenIds && !useEquivalenceClasses
-            ? `// ${remappedStart / columns}
+            ? skipTokenIds.length > 0
+              ? `// ${remappedStart / columns}
+        let i = offset & 0x7fffffff;
+        const l = input.length;
+        const t = table;
         let state = 0;
+        while (true) {
+          state = ${remappedLastDeadEndFinal + 1};
+          ${
+            distinctContinuableTokenIds.length <= 1
+              ? ""
+              : "let successState = 0;"
+          }
+          ${branchingContinuableFinals.length > 0 ? "let successPos = 0;" : ""}
+          ${
+            skipBytes.length > 0
+              ? `while (i < l && skipTable[input[i]]) {
+            i++;
+          }
+          offset = i;`
+              : ""
+          }
+          if (
+            i < l &&
+            (state = t[input[i++] + ${remappedStart}]) > ${remappedLastDeadEndFinal}
+          ) {
+            ${
+              pureSelfLoopFinals.length > 0
+                ? `${pureSelfLoopFinals
+                    .map((origState, idx) => {
+                      const s = remapState(origState);
+                      const id = tokenIds[origState / origColumns] ?? 0;
+                      return `${idx === 0 ? "if" : "else if"} (state === ${s}) {
+              while (i < l && t[input[i] + ${s}]) {
+                i++;
+              }
+              state = ${id + 1};
+            }`;
+                    })
+                    .join("\n")} else `
+                : ""
+            }while (true) {
+              if (state > ${remappedLastSelfLoop}) {
+                while (
+                  i < l &&
+                  (state = t[state + input[i++]]) > ${remappedLastSelfLoop}
+                );
+              }
+              ${selfLoopNonFinals
+                .map((origState) => {
+                  const s = remapState(origState);
+                  return `if (state === ${s}) {
+                while (i < l && (state = t[input[i++] + ${s}]) === ${s});
+              }`;
+                })
+                .join("\n")}
+              if (state <= ${remappedLastDeadEndFinal}) {
+                break;
+              }
+              ${
+                branchingContinuableFinals.length > 0
+                  ? `if (state <= ${remappedLastFinal}) {
+                ${
+                  distinctContinuableTokenIds.length <= 1
+                    ? ""
+                    : "successState = state;"
+                }
+                ${
+                  hasBranchingSelfLoops
+                    ? branchingContinuableFinals.length === 1
+                      ? `while (i < l && (state = t[input[i] + ${remapState(
+                          branchingContinuableFinals[0]
+                        )}]) === ${remapState(
+                          branchingContinuableFinals[0]
+                        )}) {
+                  i++;
+                }`
+                      : `while (i < l && state === (state = t[state + input[i]])) {
+                  i++;
+                }`
+                    : `if (i < l) {
+                  state = t[state + input[i]];
+                }`
+                }
+                if (${
+                  allBranchingContinuationsAboveFinal
+                    ? `state <= ${remappedLastFinal}`
+                    : "state === 0 || i >= l"
+                }) {
+                  state = ${
+                    distinctContinuableTokenIds.length === 1
+                      ? `${distinctContinuableTokenIds[0] + 1}`
+                      : `(${continuableTokenIdExpr}) + 1`
+                  };
+                  break;
+                }
+                successPos = i;
+                i++;
+              }`
+                  : ""
+              }
+              if (i >= l) {
+                break;
+              }
+            }
+          }
+
+          if (--state >>> 0 >= ${remappedLastDeadEndFinal}) {
+            ${
+              branchingContinuableFinals.length > 0
+                ? `if (${
+                    distinctContinuableTokenIds.length <= 1
+                      ? "successPos !== 0"
+                      : needsContinuableTokenIdsTable || skipBytes.length > 0
+                      ? "successState"
+                      : "successState !== 0"
+                  }) {
+              i = successPos;
+              state = ${continuableTokenIdExpr};
+            } else {
+              state = ${
+                tokenIds[tokenNames.indexOf(ERROR)] ===
+                (tokenIds[tokenNames.indexOf(EOF)] ?? 0) + 1
+                  ? `((i - l) >>> 31) + ${tokenIds[tokenNames.indexOf(EOF)]}`
+                  : `i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                      tokenIds[tokenNames.indexOf(ERROR)]
+                    }`
+              };
+              offset = i = -1;
+            }`
+                : `state = ${
+                    tokenIds[tokenNames.indexOf(ERROR)] ===
+                    (tokenIds[tokenNames.indexOf(EOF)] ?? 0) + 1
+                      ? `((i - l) >>> 31) + ${tokenIds[tokenNames.indexOf(EOF)]}`
+                      : `i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                          tokenIds[tokenNames.indexOf(ERROR)]
+                        }`
+                  };
+            offset = i = -1;`
+            }
+          }
+          if (${skipTokenIds.map((id) => `state === ${id}`).join(" || ")}) {
+            offset = i;
+            continue;
+          }
+          break;
+        }
+        return {
+          state,
+          start: offset,
+          end: i,
+        };`
+              : `// ${remappedStart / columns}
+        let state = ${remappedLastDeadEndFinal + 1};
         ${
           distinctContinuableTokenIds.length <= 1
             ? ""
@@ -568,7 +782,22 @@ export class JavaScriptBaseCodegen {
           i < l &&
           (state = t[input[i++] + ${remappedStart}]) > ${remappedLastDeadEndFinal}
         ) {
-          while (true) {
+          ${
+            pureSelfLoopFinals.length > 0
+              ? `${pureSelfLoopFinals
+                  .map((origState, idx) => {
+                    const s = remapState(origState);
+                    const id = tokenIds[origState / origColumns] ?? 0;
+                    return `${idx === 0 ? "if" : "else if"} (state === ${s}) {
+            while (i < l && t[input[i] + ${s}]) {
+              i++;
+            }
+            state = ${id + 1};
+          }`;
+                  })
+                  .join("\n")} else `
+              : ""
+          }while (true) {
             if (state > ${remappedLastSelfLoop}) {
               while (
                 i < l &&
@@ -586,19 +815,6 @@ export class JavaScriptBaseCodegen {
             if (state <= ${remappedLastDeadEndFinal}) {
               break;
             }
-            ${pureSelfLoopFinals
-              .map((origState) => {
-                const s = remapState(origState);
-                const id = tokenIds[origState / origColumns] ?? 0;
-                return `if (state === ${s}) {
-              while (i < l && t[input[i] + ${s}]) {
-                i++;
-              }
-              state = ${id + 1};
-              break;
-            }`;
-              })
-              .join("\n")}
             ${
               branchingContinuableFinals.length > 0
                 ? `if (state <= ${remappedLastFinal}) {
@@ -660,13 +876,23 @@ export class JavaScriptBaseCodegen {
             i = successPos;
             state = ${continuableTokenIdExpr};
           } else {
-            state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                  tokenIds[tokenNames.indexOf(ERROR)]
-                };
+            state = ${
+              tokenIds[tokenNames.indexOf(ERROR)] ===
+              (tokenIds[tokenNames.indexOf(EOF)] ?? 0) + 1
+                ? `((i - l) >>> 31) + ${tokenIds[tokenNames.indexOf(EOF)]}`
+                : `i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                    tokenIds[tokenNames.indexOf(ERROR)]
+                  }`
+            };
             offset = i = -1;
           }`
-              : `state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                  tokenIds[tokenNames.indexOf(ERROR)]
+              : `state = ${
+                  tokenIds[tokenNames.indexOf(ERROR)] ===
+                  (tokenIds[tokenNames.indexOf(EOF)] ?? 0) + 1
+                    ? `((i - l) >>> 31) + ${tokenIds[tokenNames.indexOf(EOF)]}`
+                    : `i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                        tokenIds[tokenNames.indexOf(ERROR)]
+                      }`
                 };
           offset = i = -1;`
           }
@@ -677,7 +903,74 @@ export class JavaScriptBaseCodegen {
           end: i,
         };`
             : directDeadEndTokenIds
-            ? `// ${remappedStart / columns}
+            ? skipTokenIds.length > 0
+              ? `// ${remappedStart / columns}
+        let i = offset & 0x7fffffff;
+        const l = input.length;
+        let state = 0;
+        while (true) {
+          state = ${remappedStart};
+          ${
+            distinctContinuableTokenIds.length <= 1
+              ? ""
+              : "let successState = 0;"
+          }
+          let successPos = 0;
+          ${
+            skipBytes.length > 0
+              ? `while (i < l && skipTable[input[i]] !== 0) {
+            i++;
+          }
+          offset = i;`
+              : ""
+          }
+          while (i < l) {
+            while (
+              i < l &&
+              (state = ${stepExpr}) > ${remappedLastFinal}
+            );
+            if (state <= ${remappedLastDeadEndFinal}) {
+              break;
+            }
+            if (state <= ${remappedLastFinal}) {
+              ${
+                distinctContinuableTokenIds.length <= 1
+                  ? ""
+                  : "successState = state;"
+              }
+              successPos = i;
+            }
+          }
+
+          state -= 1;
+          if (state >>> 0 >= ${remappedLastDeadEndFinal}) {
+            if (${
+              distinctContinuableTokenIds.length <= 1
+                ? "successPos !== 0"
+                : "successState !== 0"
+            }) {
+              state = ${continuableTokenIdExpr};
+              i = successPos;
+            } else {
+              state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
+                  tokenIds[tokenNames.indexOf(ERROR)]
+                };
+              offset = -1;
+              i = -1;
+            }
+          }
+          if (${skipTokenIds.map((id) => `state === ${id}`).join(" || ")}) {
+            offset = i;
+            continue;
+          }
+          break;
+        }
+        return {
+          state,
+          start: offset,
+          end: i,
+        };`
+              : `// ${remappedStart / columns}
         let state = ${remappedStart};
         ${
           distinctContinuableTokenIds.length <= 1
@@ -726,8 +1019,8 @@ export class JavaScriptBaseCodegen {
             i = successPos;
           } else {
             state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                tokenIds[tokenNames.indexOf(ERROR)]
-              };
+                  tokenIds[tokenNames.indexOf(ERROR)]
+                };
             offset = -1;
             i = -1;
           }
@@ -741,6 +1034,14 @@ export class JavaScriptBaseCodegen {
             ? `let i = offset & 0x7fffffff;
         const l = input.length;
         while (true) {
+          ${
+            skipBytes.length > 0
+              ? `while (i < l && skipTable[input[i]] !== 0) {
+            i++;
+          }
+          offset = i;`
+              : ""
+          }
           let state = ${remappedStart};
           let successState = 0;
           let successPos = 0;
@@ -1035,6 +1336,13 @@ export class JavaScriptBaseCodegen {
     const contextualKeywordTokenIds = data.contextualKeywordTokenIds ?? [];
     const hasWordFallback =
       wordTokenId !== undefined && contextualKeywordTokenIds.length > 0;
+    const preserveExtras = Boolean(
+      data.preserveExtras && data.extraTokenId !== undefined
+    );
+    const extraTokenId = data.extraTokenId ?? 0;
+    const hasDfaSkipTokens = Object.values(lexerData).some(
+      (ld) => (ld.skipTokenNames?.length ?? 0) > 0
+    );
 
     if (requiresSemanticActions) {
       for (const state of states) {
@@ -1133,6 +1441,7 @@ export class JavaScriptBaseCodegen {
     const nextTokenUpdateCode = hasSingleLexerMode
       ? `const res = nextToken(stream, lookaheadSpan & 0x3fffff);
             lookahead = res.state;
+            ${preserveExtras ? "lookaheadStart = res.start;" : ""}
             lookaheadSpan = res.end | ((res.end - res.start) << 22);`
       : lexerModes
           .map((name, idx) => {
@@ -1142,6 +1451,7 @@ export class JavaScriptBaseCodegen {
             const body = `{
               const res = ${callExpr};
               lookahead = res.state;
+              ${preserveExtras ? "lookaheadStart = res.start;" : ""}
               lookaheadSpan = res.end | ((res.end - res.start) << 22);
             }`;
             if (idx === 0) {
@@ -1401,12 +1711,16 @@ export class JavaScriptBaseCodegen {
           }
           const span = t[p + 1];
           const end = span & 0x3fffff;
-          let q = p - 3;
+          ${
+            !preserveExtras && hasDfaSkipTokens
+              ? `return end - (span >>> 22);`
+              : `let q = p - 3;
           while (q >= 3 && (t[q] >>> 8) > 0) {
             q -= 3;
           }
           const prevEnd = q >= 3 ? t[q + 1] & 0x3fffff : 0;
-          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
+          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);`
+          }
         }
 
         get end() {
@@ -1506,12 +1820,16 @@ export class JavaScriptBaseCodegen {
           }
           const span = t[p + 1];
           const end = span & 0x3fffff;
-          let q = p - 3;
+          ${
+            !preserveExtras && hasDfaSkipTokens
+              ? `return end - (span >>> 22);`
+              : `let q = p - 3;
           while (q >= 3 && (t[q] >>> 8) > 0) {
             q -= 3;
           }
           const prevEnd = q >= 3 ? t[q + 1] & 0x3fffff : 0;
-          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
+          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);`
+          }
         }
 
         get end() {
@@ -1616,6 +1934,7 @@ export class JavaScriptBaseCodegen {
                     )}(stream, 0)`
               };
         let lookahead = result.state;
+        ${preserveExtras ? "let lookaheadStart = result.start;" : ""}
         let lookaheadSpan = result.end | ((result.end - result.start) << 22);`
             : `const firstRes = ${
                 hasSingleLexerMode
@@ -1625,6 +1944,7 @@ export class JavaScriptBaseCodegen {
                     )}(stream, 0)`
               };
         let lookahead = firstRes.state;
+        ${preserveExtras ? "let lookaheadStart = firstRes.start;" : ""}
         let lookaheadSpan =
           firstRes.end | ((firstRes.end - firstRes.start) << 22);`
         }
@@ -1654,6 +1974,7 @@ export class JavaScriptBaseCodegen {
           // let the tree stack start from offset 3
           // offset 0 means an error occurred and should be used by the parser
           let tp = 3;
+          ${preserveExtras ? "let prevEnd = 0;" : ""}
 
           ${debug(() => `let steps = 0;`)}
           while (true) {
@@ -1664,6 +1985,36 @@ export class JavaScriptBaseCodegen {
             if ((actionLookup & 1) === 0) {
               // shift
               if (actionLookup === 0xfffe) {
+                ${
+                  preserveExtras
+                    ? `if (prevEnd < stream.length) {
+                  const rootPtr = tp - 3;
+                  let remStart = prevEnd;
+                  const endPos = stream.length;
+                  const needed = (Math.ceil((endPos - remStart) / 1023) + 1) * 3;
+                  if (tp + needed >= tree.length - 2) {
+                    break;
+                  }
+                  let prevSibling = rootPtr;
+                  let chunks = 0;
+                  while (remStart < endPos) {
+                    const chunkLen =
+                      endPos - remStart > 1023 ? 1023 : endPos - remStart;
+                    const chunkEnd = remStart + chunkLen;
+                    tree[tp] = ${extraTokenId};
+                    tree[tp + 1] = chunkEnd | (chunkLen << 22);
+                    tree[prevSibling + 2] = tp;
+                    prevSibling = tp;
+                    tp += 3;
+                    remStart = chunkEnd;
+                    chunks++;
+                  }
+                  tree[tp] = (tree[rootPtr] & 0xff) | ((1 + chunks) << 8);
+                  tree[tp + 1] = rootPtr;
+                  tp += 3;
+                }`
+                    : ""
+                }
                 ${debug(() => `console.log('steps', steps);`)}
                 return new CstNode(stream, tree, tp - 3);
               }
@@ -1673,18 +2024,80 @@ export class JavaScriptBaseCodegen {
               )}
               ${shiftActionDispatchCode}
 
-              tree[tp] = lookahead; // name (and nChildren = 0)
+              ${
+                preserveExtras
+                  ? `const tokEnd = lookaheadSpan & 0x3fffff;
+              const tokStart = lookaheadStart;
+              if (tokStart === prevEnd && tokEnd - tokStart <= 1023) {
+                tree[tp] = lookahead;
+                tree[tp + 1] = lookaheadSpan;
+                tree[(top & 0xfffff) + 2] = tp;
+                sp += 1;
+                top = tp | (actionLookup << 19);
+                stack[sp] = top;
+                prevEnd = tokEnd;
+              } else {
+                const triviaChunks =
+                  tokStart > prevEnd
+                    ? Math.ceil((tokStart - prevEnd) / 1023)
+                    : 0;
+                const tokChunks = Math.ceil((tokEnd - tokStart) / 1023) || 1;
+                if (tp + (triviaChunks + tokChunks + 1) * 3 >= tree.length - 2) {
+                  break;
+                }
+                const firstChild = tp;
+                let prevLeaf = 0;
+                let nLeaves = 0;
+                let cur = prevEnd;
+                while (cur < tokStart) {
+                  const cLen = tokStart - cur > 1023 ? 1023 : tokStart - cur;
+                  const cEnd = cur + cLen;
+                  tree[tp] = ${extraTokenId};
+                  tree[tp + 1] = cEnd | (cLen << 22);
+                  if (prevLeaf !== 0) {
+                    tree[prevLeaf + 2] = tp;
+                  }
+                  prevLeaf = tp;
+                  tp += 3;
+                  cur = cEnd;
+                  nLeaves++;
+                }
+                cur = tokStart;
+                do {
+                  const cLen = tokEnd - cur > 1023 ? 1023 : tokEnd - cur;
+                  const cEnd = cur + cLen;
+                  tree[tp] = lookahead;
+                  tree[tp + 1] = cEnd | (cLen << 22);
+                  if (prevLeaf !== 0) {
+                    tree[prevLeaf + 2] = tp;
+                  }
+                  prevLeaf = tp;
+                  tp += 3;
+                  cur = cEnd;
+                  nLeaves++;
+                } while (cur < tokEnd);
+                tree[tp] = lookahead | (nLeaves << 8);
+                tree[tp + 1] = firstChild;
+                tree[(top & 0xfffff) + 2] = tp;
+                sp += 1;
+                top = tp | (actionLookup << 19);
+                stack[sp] = top;
+                prevEnd = tokEnd;
+              }`
+                  : `tree[tp] = lookahead; // name (and nChildren = 0)
               tree[tp + 1] = lookaheadSpan;
               tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
 
               sp += 1;
               top = tp | (actionLookup << 19);
-              stack[sp] = top;
+              stack[sp] = top;`
+              }
 
               ${
                 this.options.debug
                   ? `result = ${nextTokenExpr};
               lookahead = result.state;
+              ${preserveExtras ? "lookaheadStart = result.start;" : ""}
               lookaheadSpan = result.end | ((result.end - result.start) << 22);`
                   : nextTokenUpdateCode
               }

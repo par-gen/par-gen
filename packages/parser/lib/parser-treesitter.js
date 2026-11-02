@@ -830,6 +830,8 @@ export function generate(input, options) {
   const rawProductions = [];
   /** @type {Set<string>} */
   const nullableRules = new Set();
+  /** @type {Map<string, string>} */
+  const repeatRuleBySig = new Map();
   let repeatCounter = 0;
 
   /**
@@ -970,32 +972,50 @@ export function generate(input, options) {
         if (!node.content) {
           return [{ symbols: [] }];
         }
-        const repName = `_${currentRuleName}_repeat${++repeatCounter}`;
         const contentBranches = lowerNode(
           node.content,
           currentRuleName,
           inlineStack
         );
         let hasEmpty = node.type === "REPEAT";
+        /** @type {LoweredBranch[]} */
+        const nonEmptyBranches = [];
         for (const b of contentBranches) {
           if (b.symbols.length === 0) {
             hasEmpty = true;
             continue;
           }
-          rawProductions.push({
-            name: repName,
-            symbols: [...b.symbols],
-            actions: [],
-            precedence: b.precedence,
-            assoc: b.assoc,
-          });
-          rawProductions.push({
-            name: repName,
-            symbols: [repName, ...b.symbols],
-            actions: [],
-            precedence: b.precedence,
-            assoc: b.assoc,
-          });
+          nonEmptyBranches.push(b);
+        }
+        if (nonEmptyBranches.length === 0) {
+          return [{ symbols: [] }];
+        }
+        const sig = nonEmptyBranches
+          .map(
+            (b) =>
+              `${b.symbols.join("\0")}\0${b.precedence ?? ""}\0${b.assoc ?? ""}`
+          )
+          .join("\n");
+        let repName = repeatRuleBySig.get(sig);
+        if (!repName) {
+          repName = `_${currentRuleName}_repeat${++repeatCounter}`;
+          repeatRuleBySig.set(sig, repName);
+          for (const b of nonEmptyBranches) {
+            rawProductions.push({
+              name: repName,
+              symbols: [...b.symbols],
+              actions: [],
+              precedence: b.precedence,
+              assoc: b.assoc,
+            });
+            rawProductions.push({
+              name: repName,
+              symbols: [repName, ...b.symbols],
+              actions: [],
+              precedence: b.precedence,
+              assoc: b.assoc,
+            });
+          }
         }
         return hasEmpty
           ? [{ symbols: [repName] }, { symbols: [] }]
@@ -1121,7 +1141,9 @@ export function generate(input, options) {
       }
     }
     rawProductions.length = 0;
-    rawProductions.push(...expandedProductions);
+    for (const prod of expandedProductions) {
+      rawProductions.push(prod);
+    }
   }
 
   // Detect delimited rules wrapping IMMEDIATE_TOKENs (such as `string` in tree-sitter-json)

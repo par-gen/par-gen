@@ -57,7 +57,7 @@ table[2109] = 2; // ASSIGN
  */
 const next = (input, offset) => {
   // 6
-  let state = 0;
+  let state = 9;
   let successState = 0;
   let successPos = 0;
 
@@ -80,7 +80,6 @@ const next = (input, offset) => {
       if (state <= 8) {
         break;
       }
-
       if (state <= 768) {
         successState = state;
         while (i < l && state === (state = t[state + input[i]])) {
@@ -104,7 +103,7 @@ const next = (input, offset) => {
       i = successPos;
       state = successState === 768 ? 7 : 0;
     } else {
-      state = i === l ? 8 : 9;
+      state = ((i - l) >>> 31) + 8;
       offset = i = -1;
     }
   }

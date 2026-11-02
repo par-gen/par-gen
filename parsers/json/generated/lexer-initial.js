@@ -87,7 +87,7 @@ table.fill(6144, 6753, 6759); // STRING
  */
 const next = (input, offset) => {
   // 7
-  let state = 0;
+  let state = 13;
 
   let successPos = 0;
 
@@ -97,38 +97,37 @@ const next = (input, offset) => {
   const t = table;
 
   if (i < l && (state = t[input[i++] + 1792]) > 12) {
-    while (true) {
-      if (state > 1536) {
-        while (i < l && (state = t[state + input[i++]]) > 1536);
-      }
-      if (state === 1536) {
-        while (i < l && (state = t[input[i++] + 1536]) === 1536);
-      }
-      if (state <= 12) {
-        break;
-      }
-      if (state === 256) {
-        while (i < l && t[input[i] + 256]) {
-          i++;
-        }
-        state = 1;
-        break;
-      }
-      if (state <= 1280) {
-        while (i < l && state === (state = t[state + input[i]])) {
-          i++;
-        }
-        if (state <= 1280) {
-          state = 12;
-          break;
-        }
-        successPos = i;
+    if (state === 256) {
+      while (i < l && t[input[i] + 256]) {
         i++;
       }
-      if (i >= l) {
-        break;
+      state = 1;
+    } else
+      while (true) {
+        if (state > 1536) {
+          while (i < l && (state = t[state + input[i++]]) > 1536);
+        }
+        if (state === 1536) {
+          while (i < l && (state = t[input[i++] + 1536]) === 1536);
+        }
+        if (state <= 12) {
+          break;
+        }
+        if (state <= 1280) {
+          while (i < l && state === (state = t[state + input[i]])) {
+            i++;
+          }
+          if (state <= 1280) {
+            state = 12;
+            break;
+          }
+          successPos = i;
+          i++;
+        }
+        if (i >= l) {
+          break;
+        }
       }
-    }
   }
 
   if (--state >>> 0 >= 12) {
@@ -136,7 +135,7 @@ const next = (input, offset) => {
       i = successPos;
       state = 11;
     } else {
-      state = i === l ? 12 : 13;
+      state = ((i - l) >>> 31) + 12;
       offset = i = -1;
     }
   }

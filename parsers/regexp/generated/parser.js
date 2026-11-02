@@ -554,6 +554,7 @@ function parse(input) {
 
   const firstRes = nextTokenInitial(stream, 0);
   let lookahead = firstRes.state;
+
   let lookaheadSpan = firstRes.end | ((firstRes.end - firstRes.start) << 22);
 
   const stack = arena.stack;
@@ -605,14 +606,17 @@ function parse(input) {
         if (lexerMode === LexerMode.INITIAL) {
           const res = nextTokenInitial(stream, lookaheadSpan & 0x3fffff);
           lookahead = res.state;
+
           lookaheadSpan = res.end | ((res.end - res.start) << 22);
         } else if (lexerMode === LexerMode.CHARACTER_CLASS) {
           const res = nextTokenCharacterClass(stream, lookaheadSpan & 0x3fffff);
           lookahead = res.state;
+
           lookaheadSpan = res.end | ((res.end - res.start) << 22);
         } else {
           const res = nextTokenHexEscape(stream, lookaheadSpan & 0x3fffff);
           lookahead = res.state;
+
           lookaheadSpan = res.end | ((res.end - res.start) << 22);
         }
       } else {

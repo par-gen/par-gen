@@ -458,6 +458,7 @@ function parse(input) {
 
   const firstRes = nextToken(stream, 0);
   let lookahead = firstRes.state;
+
   let lookaheadSpan = firstRes.end | ((firstRes.end - firstRes.start) << 22);
 
   const stack = arena.stack;
@@ -492,6 +493,7 @@ function parse(input) {
 
         const res = nextToken(stream, lookaheadSpan & 0x3fffff);
         lookahead = res.state;
+
         lookaheadSpan = res.end | ((res.end - res.start) << 22);
       } else {
         // reduce
