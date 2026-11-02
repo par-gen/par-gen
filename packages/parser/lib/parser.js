@@ -492,11 +492,20 @@ export function generate(grammar, options) {
         "extras"
       : undefined;
 
+    const ruleNamesSetForSymbols = new Set(["S", ...rules.map((r) => r.name)]);
+    const dfaTerminalSymbols = dfa.description.symbols.filter(
+      (s) => !ruleNamesSetForSymbols.has(s)
+    );
+    const dfaNonTerminalSymbols = dfa.description.symbols.filter((s) =>
+      ruleNamesSetForSymbols.has(s)
+    );
+
     let parserSymbols = Array.from(
       new Set([
-        ...dfa.description.symbols,
+        ...dfaTerminalSymbols,
         ...dfaSkippedTokens,
         ...(extraTokenName ? [extraTokenName] : []),
+        ...dfaNonTerminalSymbols,
       ])
     );
     // add to align to power of 2 when it does not exceed the 11-bit pre-multiplied state budget
