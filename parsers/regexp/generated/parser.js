@@ -78,202 +78,198 @@ const parserSymbols = [
   "CharacterClassRange", // 25
   "Character", // 26
   "HexEscape", // 27
-  "undefined", // 28
-  "undefined", // 29
-  "undefined", // 30
-  "undefined", // 31
 ];
 
-const actionsTable = new Uint16Array(960).fill(0xffff);
-actionsTable[0] = 64; // 'state 0' -> CHARACTER -> shift (target=32, len=0)
-actionsTable[1] = 128; // 'state 0' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[3] = 64; // 'state 0' -> ESCAPED_CHARACTER -> shift (target=32, len=0)
-actionsTable[6] = 192; // 'state 0' -> DOT -> shift (target=96, len=0)
-actionsTable[8] = 256; // 'state 0' -> PAREN_OPEN -> shift (target=128, len=0)
-actionsTable[11] = 320; // 'state 0' -> BRACKET_OPEN -> shift (target=160, len=0)
-actionsTable.fill(565, 32, 34); // 'state 1' -> CHARACTER..HEX_PREFIX -> reduce (target=26, len=1)
-actionsTable[35] = 565; // 'state 1' -> ESCAPED_CHARACTER -> reduce (target=26, len=1)
-actionsTable.fill(565, 38, 44); // 'state 1' -> DOT..BRACKET_OPEN -> reduce (target=26, len=1)
-actionsTable[45] = 565; // 'state 1' -> @par-gen.EOF -> reduce (target=26, len=1)
-actionsTable[66] = 1280; // 'state 2' -> HEX_NUMBER -> shift (target=640, len=0)
-actionsTable.fill(553, 96, 98); // 'state 3' -> CHARACTER..HEX_PREFIX -> reduce (target=20, len=1)
-actionsTable[99] = 553; // 'state 3' -> ESCAPED_CHARACTER -> reduce (target=20, len=1)
-actionsTable.fill(553, 102, 106); // 'state 3' -> DOT..PAREN_CLOSE -> reduce (target=20, len=1)
-actionsTable[106] = 768; // 'state 3' -> QUANTIFIER -> shift (target=384, len=0)
-actionsTable[107] = 553; // 'state 3' -> BRACKET_OPEN -> reduce (target=20, len=1)
-actionsTable[109] = 553; // 'state 3' -> @par-gen.EOF -> reduce (target=20, len=1)
-actionsTable[128] = 64; // 'state 4' -> CHARACTER -> shift (target=32, len=0)
-actionsTable[129] = 128; // 'state 4' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[131] = 64; // 'state 4' -> ESCAPED_CHARACTER -> shift (target=32, len=0)
-actionsTable[134] = 192; // 'state 4' -> DOT -> shift (target=96, len=0)
-actionsTable[136] = 256; // 'state 4' -> PAREN_OPEN -> shift (target=128, len=0)
-actionsTable[139] = 320; // 'state 4' -> BRACKET_OPEN -> shift (target=160, len=0)
-actionsTable[160] = 960; // 'state 5' -> CHARACTER -> shift (target=480, len=0)
-actionsTable[161] = 128; // 'state 5' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[163] = 1024; // 'state 5' -> ESCAPED_CHARACTER -> shift (target=512, len=0)
-actionsTable[164] = 1088; // 'state 5' -> CARET -> shift (target=544, len=0)
-actionsTable[205] = 65534; // 'state 6' -> @par-gen.EOF -> done (target=0, len=0)
-actionsTable[237] = 545; // 'state 7' -> @par-gen.EOF -> reduce (target=16, len=1)
-actionsTable[263] = 640; // 'state 8' -> UNION -> shift (target=320, len=0)
-actionsTable[269] = 547; // 'state 8' -> @par-gen.EOF -> reduce (target=17, len=1)
-actionsTable[288] = 64; // 'state 9' -> CHARACTER -> shift (target=32, len=0)
-actionsTable[289] = 128; // 'state 9' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[291] = 64; // 'state 9' -> ESCAPED_CHARACTER -> shift (target=32, len=0)
-actionsTable[294] = 192; // 'state 9' -> DOT -> shift (target=96, len=0)
-actionsTable[295] = 640; // 'state 9' -> UNION -> shift (target=320, len=0)
-actionsTable[296] = 256; // 'state 9' -> PAREN_OPEN -> shift (target=128, len=0)
-actionsTable[299] = 320; // 'state 9' -> BRACKET_OPEN -> shift (target=160, len=0)
-actionsTable[301] = 547; // 'state 9' -> @par-gen.EOF -> reduce (target=17, len=1)
-actionsTable[320] = 64; // 'state 10' -> CHARACTER -> shift (target=32, len=0)
-actionsTable[321] = 128; // 'state 10' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[323] = 64; // 'state 10' -> ESCAPED_CHARACTER -> shift (target=32, len=0)
-actionsTable[326] = 192; // 'state 10' -> DOT -> shift (target=96, len=0)
-actionsTable[327] = 1061; // 'state 10' -> UNION -> reduce (target=18, len=2)
-actionsTable[328] = 256; // 'state 10' -> PAREN_OPEN -> shift (target=128, len=0)
-actionsTable[329] = 1061; // 'state 10' -> PAREN_CLOSE -> reduce (target=18, len=2)
-actionsTable[331] = 320; // 'state 10' -> BRACKET_OPEN -> shift (target=160, len=0)
-actionsTable[333] = 1061; // 'state 10' -> @par-gen.EOF -> reduce (target=18, len=2)
-actionsTable.fill(1063, 352, 354); // 'state 11' -> CHARACTER..HEX_PREFIX -> reduce (target=19, len=2)
-actionsTable[355] = 1063; // 'state 11' -> ESCAPED_CHARACTER -> reduce (target=19, len=2)
-actionsTable.fill(1063, 358, 362); // 'state 11' -> DOT..PAREN_CLOSE -> reduce (target=19, len=2)
-actionsTable[363] = 1063; // 'state 11' -> BRACKET_OPEN -> reduce (target=19, len=2)
-actionsTable[365] = 1063; // 'state 11' -> @par-gen.EOF -> reduce (target=19, len=2)
-actionsTable.fill(1065, 384, 386); // 'state 12' -> CHARACTER..HEX_PREFIX -> reduce (target=20, len=2)
-actionsTable[387] = 1065; // 'state 12' -> ESCAPED_CHARACTER -> reduce (target=20, len=2)
-actionsTable.fill(1065, 390, 394); // 'state 12' -> DOT..PAREN_CLOSE -> reduce (target=20, len=2)
-actionsTable[395] = 1065; // 'state 12' -> BRACKET_OPEN -> reduce (target=20, len=2)
-actionsTable[397] = 1065; // 'state 12' -> @par-gen.EOF -> reduce (target=20, len=2)
-actionsTable[423] = 640; // 'state 13' -> UNION -> shift (target=320, len=0)
-actionsTable[425] = 1408; // 'state 13' -> PAREN_CLOSE -> shift (target=704, len=0)
-actionsTable[448] = 64; // 'state 14' -> CHARACTER -> shift (target=32, len=0)
-actionsTable[449] = 128; // 'state 14' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[451] = 64; // 'state 14' -> ESCAPED_CHARACTER -> shift (target=32, len=0)
-actionsTable[454] = 192; // 'state 14' -> DOT -> shift (target=96, len=0)
-actionsTable[455] = 640; // 'state 14' -> UNION -> shift (target=320, len=0)
-actionsTable[456] = 256; // 'state 14' -> PAREN_OPEN -> shift (target=128, len=0)
-actionsTable[457] = 1408; // 'state 14' -> PAREN_CLOSE -> shift (target=704, len=0)
-actionsTable[459] = 320; // 'state 14' -> BRACKET_OPEN -> shift (target=160, len=0)
-actionsTable.fill(561, 480, 482); // 'state 15' -> CHARACTER..HEX_PREFIX -> reduce (target=24, len=1)
-actionsTable[483] = 561; // 'state 15' -> ESCAPED_CHARACTER -> reduce (target=24, len=1)
-actionsTable[485] = 1600; // 'state 15' -> DASH -> shift (target=800, len=0)
-actionsTable[492] = 561; // 'state 15' -> BRACKET_CLOSE -> reduce (target=24, len=1)
-actionsTable.fill(561, 512, 514); // 'state 16' -> CHARACTER..HEX_PREFIX -> reduce (target=24, len=1)
-actionsTable[515] = 561; // 'state 16' -> ESCAPED_CHARACTER -> reduce (target=24, len=1)
-actionsTable[524] = 561; // 'state 16' -> BRACKET_CLOSE -> reduce (target=24, len=1)
-actionsTable[544] = 960; // 'state 17' -> CHARACTER -> shift (target=480, len=0)
-actionsTable[545] = 128; // 'state 17' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[547] = 1024; // 'state 17' -> ESCAPED_CHARACTER -> shift (target=512, len=0)
-actionsTable[576] = 960; // 'state 18' -> CHARACTER -> shift (target=480, len=0)
-actionsTable[577] = 128; // 'state 18' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[579] = 1024; // 'state 18' -> ESCAPED_CHARACTER -> shift (target=512, len=0)
-actionsTable[588] = 1472; // 'state 18' -> BRACKET_CLOSE -> shift (target=736, len=0)
-actionsTable.fill(559, 608, 610); // 'state 19' -> CHARACTER..HEX_PREFIX -> reduce (target=23, len=1)
-actionsTable[611] = 559; // 'state 19' -> ESCAPED_CHARACTER -> reduce (target=23, len=1)
-actionsTable[620] = 559; // 'state 19' -> BRACKET_CLOSE -> reduce (target=23, len=1)
-actionsTable[642] = 1728; // 'state 20' -> HEX_NUMBER -> shift (target=864, len=0)
-actionsTable[672] = 64; // 'state 21' -> CHARACTER -> shift (target=32, len=0)
-actionsTable[673] = 128; // 'state 21' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[675] = 64; // 'state 21' -> ESCAPED_CHARACTER -> shift (target=32, len=0)
-actionsTable[678] = 192; // 'state 21' -> DOT -> shift (target=96, len=0)
-actionsTable[679] = 1573; // 'state 21' -> UNION -> reduce (target=18, len=3)
-actionsTable[680] = 256; // 'state 21' -> PAREN_OPEN -> shift (target=128, len=0)
-actionsTable[681] = 1573; // 'state 21' -> PAREN_CLOSE -> reduce (target=18, len=3)
-actionsTable[683] = 320; // 'state 21' -> BRACKET_OPEN -> shift (target=160, len=0)
-actionsTable[685] = 1573; // 'state 21' -> @par-gen.EOF -> reduce (target=18, len=3)
-actionsTable.fill(1579, 704, 706); // 'state 22' -> CHARACTER..HEX_PREFIX -> reduce (target=21, len=3)
-actionsTable[707] = 1579; // 'state 22' -> ESCAPED_CHARACTER -> reduce (target=21, len=3)
-actionsTable.fill(1579, 710, 716); // 'state 22' -> DOT..BRACKET_OPEN -> reduce (target=21, len=3)
-actionsTable[717] = 1579; // 'state 22' -> @par-gen.EOF -> reduce (target=21, len=3)
-actionsTable.fill(1581, 736, 738); // 'state 23' -> CHARACTER..HEX_PREFIX -> reduce (target=22, len=3)
-actionsTable[739] = 1581; // 'state 23' -> ESCAPED_CHARACTER -> reduce (target=22, len=3)
-actionsTable.fill(1581, 742, 748); // 'state 23' -> DOT..BRACKET_OPEN -> reduce (target=22, len=3)
-actionsTable[749] = 1581; // 'state 23' -> @par-gen.EOF -> reduce (target=22, len=3)
-actionsTable.fill(1071, 768, 770); // 'state 24' -> CHARACTER..HEX_PREFIX -> reduce (target=23, len=2)
-actionsTable[771] = 1071; // 'state 24' -> ESCAPED_CHARACTER -> reduce (target=23, len=2)
-actionsTable[780] = 1071; // 'state 24' -> BRACKET_CLOSE -> reduce (target=23, len=2)
-actionsTable[800] = 1792; // 'state 25' -> CHARACTER -> shift (target=896, len=0)
-actionsTable[801] = 128; // 'state 25' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[832] = 960; // 'state 26' -> CHARACTER -> shift (target=480, len=0)
-actionsTable[833] = 128; // 'state 26' -> HEX_PREFIX -> shift (target=64, len=0)
-actionsTable[835] = 1024; // 'state 26' -> ESCAPED_CHARACTER -> shift (target=512, len=0)
-actionsTable[844] = 1856; // 'state 26' -> BRACKET_CLOSE -> shift (target=928, len=0)
-actionsTable.fill(1591, 864, 866); // 'state 27' -> CHARACTER..HEX_PREFIX -> reduce (target=27, len=3)
-actionsTable[867] = 1591; // 'state 27' -> ESCAPED_CHARACTER -> reduce (target=27, len=3)
-actionsTable.fill(1591, 869, 878); // 'state 27' -> DASH..@par-gen.EOF -> reduce (target=27, len=3)
-actionsTable.fill(1587, 896, 898); // 'state 28' -> CHARACTER..HEX_PREFIX -> reduce (target=25, len=3)
-actionsTable[899] = 1587; // 'state 28' -> ESCAPED_CHARACTER -> reduce (target=25, len=3)
-actionsTable[908] = 1587; // 'state 28' -> BRACKET_CLOSE -> reduce (target=25, len=3)
-actionsTable.fill(2093, 928, 930); // 'state 29' -> CHARACTER..HEX_PREFIX -> reduce (target=22, len=4)
-actionsTable[931] = 2093; // 'state 29' -> ESCAPED_CHARACTER -> reduce (target=22, len=4)
-actionsTable.fill(2093, 934, 940); // 'state 29' -> DOT..BRACKET_OPEN -> reduce (target=22, len=4)
-actionsTable[941] = 2093; // 'state 29' -> @par-gen.EOF -> reduce (target=22, len=4)
+const actionsTable = new Uint16Array(480).fill(0xffff);
+actionsTable[0] = 352; // 'state 0' -> CHARACTER -> shift (target=176, len=0)
+actionsTable[1] = 384; // 'state 0' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[3] = 352; // 'state 0' -> ESCAPED_CHARACTER -> shift (target=176, len=0)
+actionsTable[6] = 416; // 'state 0' -> DOT -> shift (target=208, len=0)
+actionsTable[8] = 32; // 'state 0' -> PAREN_OPEN -> shift (target=16, len=0)
+actionsTable[11] = 64; // 'state 0' -> BRACKET_OPEN -> shift (target=32, len=0)
+actionsTable[16] = 352; // 'state 1' -> CHARACTER -> shift (target=176, len=0)
+actionsTable[17] = 384; // 'state 1' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[19] = 352; // 'state 1' -> ESCAPED_CHARACTER -> shift (target=176, len=0)
+actionsTable[22] = 416; // 'state 1' -> DOT -> shift (target=208, len=0)
+actionsTable[24] = 32; // 'state 1' -> PAREN_OPEN -> shift (target=16, len=0)
+actionsTable[27] = 64; // 'state 1' -> BRACKET_OPEN -> shift (target=32, len=0)
+actionsTable[32] = 640; // 'state 2' -> CHARACTER -> shift (target=320, len=0)
+actionsTable[33] = 384; // 'state 2' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[35] = 672; // 'state 2' -> ESCAPED_CHARACTER -> shift (target=336, len=0)
+actionsTable[36] = 192; // 'state 2' -> CARET -> shift (target=96, len=0)
+actionsTable[48] = 352; // 'state 3' -> CHARACTER -> shift (target=176, len=0)
+actionsTable[49] = 384; // 'state 3' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[51] = 352; // 'state 3' -> ESCAPED_CHARACTER -> shift (target=176, len=0)
+actionsTable[54] = 416; // 'state 3' -> DOT -> shift (target=208, len=0)
+actionsTable[55] = 128; // 'state 3' -> UNION -> shift (target=64, len=0)
+actionsTable[56] = 32; // 'state 3' -> PAREN_OPEN -> shift (target=16, len=0)
+actionsTable[59] = 64; // 'state 3' -> BRACKET_OPEN -> shift (target=32, len=0)
+actionsTable[61] = 547; // 'state 3' -> @par-gen.EOF -> reduce (target=17, len=1)
+actionsTable[64] = 352; // 'state 4' -> CHARACTER -> shift (target=176, len=0)
+actionsTable[65] = 384; // 'state 4' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[67] = 352; // 'state 4' -> ESCAPED_CHARACTER -> shift (target=176, len=0)
+actionsTable[70] = 416; // 'state 4' -> DOT -> shift (target=208, len=0)
+actionsTable[71] = 1061; // 'state 4' -> UNION -> reduce (target=18, len=2)
+actionsTable[72] = 32; // 'state 4' -> PAREN_OPEN -> shift (target=16, len=0)
+actionsTable[73] = 1061; // 'state 4' -> PAREN_CLOSE -> reduce (target=18, len=2)
+actionsTable[75] = 64; // 'state 4' -> BRACKET_OPEN -> shift (target=32, len=0)
+actionsTable[77] = 1061; // 'state 4' -> @par-gen.EOF -> reduce (target=18, len=2)
+actionsTable[80] = 352; // 'state 5' -> CHARACTER -> shift (target=176, len=0)
+actionsTable[81] = 384; // 'state 5' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[83] = 352; // 'state 5' -> ESCAPED_CHARACTER -> shift (target=176, len=0)
+actionsTable[86] = 416; // 'state 5' -> DOT -> shift (target=208, len=0)
+actionsTable[87] = 128; // 'state 5' -> UNION -> shift (target=64, len=0)
+actionsTable[88] = 32; // 'state 5' -> PAREN_OPEN -> shift (target=16, len=0)
+actionsTable[89] = 768; // 'state 5' -> PAREN_CLOSE -> shift (target=384, len=0)
+actionsTable[91] = 64; // 'state 5' -> BRACKET_OPEN -> shift (target=32, len=0)
+actionsTable[96] = 640; // 'state 6' -> CHARACTER -> shift (target=320, len=0)
+actionsTable[97] = 384; // 'state 6' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[99] = 672; // 'state 6' -> ESCAPED_CHARACTER -> shift (target=336, len=0)
+actionsTable[112] = 640; // 'state 7' -> CHARACTER -> shift (target=320, len=0)
+actionsTable[113] = 384; // 'state 7' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[115] = 672; // 'state 7' -> ESCAPED_CHARACTER -> shift (target=336, len=0)
+actionsTable[124] = 800; // 'state 7' -> BRACKET_CLOSE -> shift (target=400, len=0)
+actionsTable[128] = 352; // 'state 8' -> CHARACTER -> shift (target=176, len=0)
+actionsTable[129] = 384; // 'state 8' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[131] = 352; // 'state 8' -> ESCAPED_CHARACTER -> shift (target=176, len=0)
+actionsTable[134] = 416; // 'state 8' -> DOT -> shift (target=208, len=0)
+actionsTable[135] = 1573; // 'state 8' -> UNION -> reduce (target=18, len=3)
+actionsTable[136] = 32; // 'state 8' -> PAREN_OPEN -> shift (target=16, len=0)
+actionsTable[137] = 1573; // 'state 8' -> PAREN_CLOSE -> reduce (target=18, len=3)
+actionsTable[139] = 64; // 'state 8' -> BRACKET_OPEN -> shift (target=32, len=0)
+actionsTable[141] = 1573; // 'state 8' -> @par-gen.EOF -> reduce (target=18, len=3)
+actionsTable[144] = 896; // 'state 9' -> CHARACTER -> shift (target=448, len=0)
+actionsTable[145] = 384; // 'state 9' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[160] = 640; // 'state 10' -> CHARACTER -> shift (target=320, len=0)
+actionsTable[161] = 384; // 'state 10' -> HEX_PREFIX -> shift (target=192, len=0)
+actionsTable[163] = 672; // 'state 10' -> ESCAPED_CHARACTER -> shift (target=336, len=0)
+actionsTable[172] = 928; // 'state 10' -> BRACKET_CLOSE -> shift (target=464, len=0)
+actionsTable.fill(565, 176, 178); // 'state 11' -> CHARACTER..HEX_PREFIX -> reduce (target=26, len=1)
+actionsTable[179] = 565; // 'state 11' -> ESCAPED_CHARACTER -> reduce (target=26, len=1)
+actionsTable.fill(565, 182, 188); // 'state 11' -> DOT..BRACKET_OPEN -> reduce (target=26, len=1)
+actionsTable[189] = 565; // 'state 11' -> @par-gen.EOF -> reduce (target=26, len=1)
+actionsTable[194] = 736; // 'state 12' -> HEX_NUMBER -> shift (target=368, len=0)
+actionsTable.fill(553, 208, 210); // 'state 13' -> CHARACTER..HEX_PREFIX -> reduce (target=20, len=1)
+actionsTable[211] = 553; // 'state 13' -> ESCAPED_CHARACTER -> reduce (target=20, len=1)
+actionsTable.fill(553, 214, 218); // 'state 13' -> DOT..PAREN_CLOSE -> reduce (target=20, len=1)
+actionsTable[218] = 576; // 'state 13' -> QUANTIFIER -> shift (target=288, len=0)
+actionsTable[219] = 553; // 'state 13' -> BRACKET_OPEN -> reduce (target=20, len=1)
+actionsTable[221] = 553; // 'state 13' -> @par-gen.EOF -> reduce (target=20, len=1)
+actionsTable[237] = 65534; // 'state 14' -> @par-gen.EOF -> done (target=0, len=0)
+actionsTable[253] = 545; // 'state 15' -> @par-gen.EOF -> reduce (target=16, len=1)
+actionsTable[263] = 128; // 'state 16' -> UNION -> shift (target=64, len=0)
+actionsTable[269] = 547; // 'state 16' -> @par-gen.EOF -> reduce (target=17, len=1)
+actionsTable.fill(1063, 272, 274); // 'state 17' -> CHARACTER..HEX_PREFIX -> reduce (target=19, len=2)
+actionsTable[275] = 1063; // 'state 17' -> ESCAPED_CHARACTER -> reduce (target=19, len=2)
+actionsTable.fill(1063, 278, 282); // 'state 17' -> DOT..PAREN_CLOSE -> reduce (target=19, len=2)
+actionsTable[283] = 1063; // 'state 17' -> BRACKET_OPEN -> reduce (target=19, len=2)
+actionsTable[285] = 1063; // 'state 17' -> @par-gen.EOF -> reduce (target=19, len=2)
+actionsTable.fill(1065, 288, 290); // 'state 18' -> CHARACTER..HEX_PREFIX -> reduce (target=20, len=2)
+actionsTable[291] = 1065; // 'state 18' -> ESCAPED_CHARACTER -> reduce (target=20, len=2)
+actionsTable.fill(1065, 294, 298); // 'state 18' -> DOT..PAREN_CLOSE -> reduce (target=20, len=2)
+actionsTable[299] = 1065; // 'state 18' -> BRACKET_OPEN -> reduce (target=20, len=2)
+actionsTable[301] = 1065; // 'state 18' -> @par-gen.EOF -> reduce (target=20, len=2)
+actionsTable[311] = 128; // 'state 19' -> UNION -> shift (target=64, len=0)
+actionsTable[313] = 768; // 'state 19' -> PAREN_CLOSE -> shift (target=384, len=0)
+actionsTable.fill(561, 320, 322); // 'state 20' -> CHARACTER..HEX_PREFIX -> reduce (target=24, len=1)
+actionsTable[323] = 561; // 'state 20' -> ESCAPED_CHARACTER -> reduce (target=24, len=1)
+actionsTable[325] = 288; // 'state 20' -> DASH -> shift (target=144, len=0)
+actionsTable[332] = 561; // 'state 20' -> BRACKET_CLOSE -> reduce (target=24, len=1)
+actionsTable.fill(561, 336, 338); // 'state 21' -> CHARACTER..HEX_PREFIX -> reduce (target=24, len=1)
+actionsTable[339] = 561; // 'state 21' -> ESCAPED_CHARACTER -> reduce (target=24, len=1)
+actionsTable[348] = 561; // 'state 21' -> BRACKET_CLOSE -> reduce (target=24, len=1)
+actionsTable.fill(559, 352, 354); // 'state 22' -> CHARACTER..HEX_PREFIX -> reduce (target=23, len=1)
+actionsTable[355] = 559; // 'state 22' -> ESCAPED_CHARACTER -> reduce (target=23, len=1)
+actionsTable[364] = 559; // 'state 22' -> BRACKET_CLOSE -> reduce (target=23, len=1)
+actionsTable[370] = 864; // 'state 23' -> HEX_NUMBER -> shift (target=432, len=0)
+actionsTable.fill(1579, 384, 386); // 'state 24' -> CHARACTER..HEX_PREFIX -> reduce (target=21, len=3)
+actionsTable[387] = 1579; // 'state 24' -> ESCAPED_CHARACTER -> reduce (target=21, len=3)
+actionsTable.fill(1579, 390, 396); // 'state 24' -> DOT..BRACKET_OPEN -> reduce (target=21, len=3)
+actionsTable[397] = 1579; // 'state 24' -> @par-gen.EOF -> reduce (target=21, len=3)
+actionsTable.fill(1581, 400, 402); // 'state 25' -> CHARACTER..HEX_PREFIX -> reduce (target=22, len=3)
+actionsTable[403] = 1581; // 'state 25' -> ESCAPED_CHARACTER -> reduce (target=22, len=3)
+actionsTable.fill(1581, 406, 412); // 'state 25' -> DOT..BRACKET_OPEN -> reduce (target=22, len=3)
+actionsTable[413] = 1581; // 'state 25' -> @par-gen.EOF -> reduce (target=22, len=3)
+actionsTable.fill(1071, 416, 418); // 'state 26' -> CHARACTER..HEX_PREFIX -> reduce (target=23, len=2)
+actionsTable[419] = 1071; // 'state 26' -> ESCAPED_CHARACTER -> reduce (target=23, len=2)
+actionsTable[428] = 1071; // 'state 26' -> BRACKET_CLOSE -> reduce (target=23, len=2)
+actionsTable.fill(1591, 432, 434); // 'state 27' -> CHARACTER..HEX_PREFIX -> reduce (target=27, len=3)
+actionsTable[435] = 1591; // 'state 27' -> ESCAPED_CHARACTER -> reduce (target=27, len=3)
+actionsTable.fill(1591, 437, 446); // 'state 27' -> DASH..@par-gen.EOF -> reduce (target=27, len=3)
+actionsTable.fill(1587, 448, 450); // 'state 28' -> CHARACTER..HEX_PREFIX -> reduce (target=25, len=3)
+actionsTable[451] = 1587; // 'state 28' -> ESCAPED_CHARACTER -> reduce (target=25, len=3)
+actionsTable[460] = 1587; // 'state 28' -> BRACKET_CLOSE -> reduce (target=25, len=3)
+actionsTable.fill(2093, 464, 466); // 'state 29' -> CHARACTER..HEX_PREFIX -> reduce (target=22, len=4)
+actionsTable[467] = 2093; // 'state 29' -> ESCAPED_CHARACTER -> reduce (target=22, len=4)
+actionsTable.fill(2093, 470, 476); // 'state 29' -> DOT..BRACKET_OPEN -> reduce (target=22, len=4)
+actionsTable[477] = 2093; // 'state 29' -> @par-gen.EOF -> reduce (target=22, len=4)
 
-const shiftActionsTable = new Uint8Array(960);
+const shiftActionsTable = new Uint8Array(480);
 shiftActionsTable[1] = 1; // 'state 0' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
 shiftActionsTable[11] = 2; // 'state 0' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
-shiftActionsTable[129] = 1; // 'state 4' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[139] = 2; // 'state 4' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
-shiftActionsTable[161] = 1; // 'state 5' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[289] = 1; // 'state 9' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[299] = 2; // 'state 9' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
-shiftActionsTable[321] = 1; // 'state 10' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[331] = 2; // 'state 10' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
-shiftActionsTable[449] = 1; // 'state 14' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[459] = 2; // 'state 14' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
-shiftActionsTable[545] = 1; // 'state 17' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[577] = 1; // 'state 18' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[588] = 3; // 'state 18' -> BRACKET_CLOSE -> lexer.pop()
-shiftActionsTable[642] = 3; // 'state 20' -> HEX_NUMBER -> lexer.pop()
-shiftActionsTable[673] = 1; // 'state 21' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[683] = 2; // 'state 21' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
-shiftActionsTable[801] = 1; // 'state 25' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[833] = 1; // 'state 26' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
-shiftActionsTable[844] = 3; // 'state 26' -> BRACKET_CLOSE -> lexer.pop()
+shiftActionsTable[17] = 1; // 'state 1' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[27] = 2; // 'state 1' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
+shiftActionsTable[33] = 1; // 'state 2' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[49] = 1; // 'state 3' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[59] = 2; // 'state 3' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
+shiftActionsTable[65] = 1; // 'state 4' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[75] = 2; // 'state 4' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
+shiftActionsTable[81] = 1; // 'state 5' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[91] = 2; // 'state 5' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
+shiftActionsTable[97] = 1; // 'state 6' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[113] = 1; // 'state 7' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[124] = 3; // 'state 7' -> BRACKET_CLOSE -> lexer.pop()
+shiftActionsTable[129] = 1; // 'state 8' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[139] = 2; // 'state 8' -> BRACKET_OPEN -> lexer.push(LexerMode.CHARACTER_CLASS)
+shiftActionsTable[145] = 1; // 'state 9' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[161] = 1; // 'state 10' -> HEX_PREFIX -> lexer.push(LexerMode.HEX_ESCAPE)
+shiftActionsTable[172] = 3; // 'state 10' -> BRACKET_CLOSE -> lexer.pop()
+shiftActionsTable[370] = 3; // 'state 23' -> HEX_NUMBER -> lexer.pop()
 
-const gotoTable = new Uint32Array(960);
-gotoTable[16] = 201326592; // 'state 6'
-gotoTable[17] = 234881024; // 'state 7'
-gotoTable[18] = 268435456; // 'state 8'
-gotoTable.fill(301989888, 19, 21); // 'state 9'
-gotoTable.fill(100663296, 21, 23); // 'state 3'
-gotoTable[26] = 100663296; // 'state 3'
-gotoTable[27] = 33554432; // 'state 1'
-gotoTable[146] = 436207616; // 'state 13'
-gotoTable.fill(469762048, 147, 149); // 'state 14'
-gotoTable.fill(100663296, 149, 151); // 'state 3'
-gotoTable[154] = 100663296; // 'state 3'
-gotoTable[155] = 33554432; // 'state 1'
-gotoTable[183] = 603979776; // 'state 18'
-gotoTable[184] = 637534208; // 'state 19'
-gotoTable[185] = 536870912; // 'state 16'
-gotoTable[187] = 503316480; // 'state 15'
-gotoTable[308] = 369098752; // 'state 11'
-gotoTable.fill(100663296, 309, 311); // 'state 3'
-gotoTable[314] = 100663296; // 'state 3'
-gotoTable[315] = 33554432; // 'state 1'
-gotoTable.fill(704643072, 339, 341); // 'state 21'
-gotoTable.fill(100663296, 341, 343); // 'state 3'
-gotoTable[346] = 100663296; // 'state 3'
-gotoTable[347] = 33554432; // 'state 1'
-gotoTable[468] = 369098752; // 'state 11'
-gotoTable.fill(100663296, 469, 471); // 'state 3'
-gotoTable[474] = 100663296; // 'state 3'
-gotoTable[475] = 33554432; // 'state 1'
-gotoTable[567] = 872415232; // 'state 26'
-gotoTable[568] = 637534208; // 'state 19'
-gotoTable[569] = 536870912; // 'state 16'
-gotoTable[571] = 503316480; // 'state 15'
-gotoTable[600] = 805306368; // 'state 24'
-gotoTable[601] = 536870912; // 'state 16'
-gotoTable[603] = 503316480; // 'state 15'
-gotoTable[692] = 369098752; // 'state 11'
-gotoTable.fill(100663296, 693, 695); // 'state 3'
-gotoTable[698] = 100663296; // 'state 3'
-gotoTable[699] = 33554432; // 'state 1'
-gotoTable[827] = 939524096; // 'state 28'
-gotoTable[856] = 805306368; // 'state 24'
-gotoTable[857] = 536870912; // 'state 16'
-gotoTable[859] = 503316480; // 'state 15'
+const gotoTable = new Uint32Array(192);
+gotoTable[16] = 234881024; // 'state 14'
+gotoTable[17] = 251658240; // 'state 15'
+gotoTable[18] = 268435456; // 'state 16'
+gotoTable.fill(50331648, 19, 21); // 'state 3'
+gotoTable.fill(218103808, 21, 23); // 'state 13'
+gotoTable[26] = 218103808; // 'state 13'
+gotoTable[27] = 184549376; // 'state 11'
+gotoTable[34] = 318767104; // 'state 19'
+gotoTable.fill(83886080, 35, 37); // 'state 5'
+gotoTable.fill(218103808, 37, 39); // 'state 13'
+gotoTable[42] = 218103808; // 'state 13'
+gotoTable[43] = 184549376; // 'state 11'
+gotoTable[55] = 117440512; // 'state 7'
+gotoTable[56] = 369098752; // 'state 22'
+gotoTable[57] = 352321536; // 'state 21'
+gotoTable[59] = 335544320; // 'state 20'
+gotoTable[68] = 285212672; // 'state 17'
+gotoTable.fill(218103808, 69, 71); // 'state 13'
+gotoTable[74] = 218103808; // 'state 13'
+gotoTable[75] = 184549376; // 'state 11'
+gotoTable.fill(134217728, 83, 85); // 'state 8'
+gotoTable.fill(218103808, 85, 87); // 'state 13'
+gotoTable[90] = 218103808; // 'state 13'
+gotoTable[91] = 184549376; // 'state 11'
+gotoTable[100] = 285212672; // 'state 17'
+gotoTable.fill(218103808, 101, 103); // 'state 13'
+gotoTable[106] = 218103808; // 'state 13'
+gotoTable[107] = 184549376; // 'state 11'
+gotoTable[119] = 167772160; // 'state 10'
+gotoTable[120] = 369098752; // 'state 22'
+gotoTable[121] = 352321536; // 'state 21'
+gotoTable[123] = 335544320; // 'state 20'
+gotoTable[136] = 436207616; // 'state 26'
+gotoTable[137] = 352321536; // 'state 21'
+gotoTable[139] = 335544320; // 'state 20'
+gotoTable[148] = 285212672; // 'state 17'
+gotoTable.fill(218103808, 149, 151); // 'state 13'
+gotoTable[154] = 218103808; // 'state 13'
+gotoTable[155] = 184549376; // 'state 11'
+gotoTable[171] = 469762048; // 'state 28'
+gotoTable[184] = 436207616; // 'state 26'
+gotoTable[185] = 352321536; // 'state 21'
+gotoTable[187] = 335544320; // 'state 20'
 
 const LexerMode = {
   INITIAL: 0,
@@ -562,6 +558,8 @@ function parse(input) {
 
   const stack = arena.stack;
   const tree = arena.tree;
+  const actions = actionsTable;
+  const goto = gotoTable;
   if (stream.length >>> 1 <= tree.length) {
     let top = 0; // starting state
     stack[0] = top;
@@ -574,7 +572,7 @@ function parse(input) {
       const currentState = top >>> 20;
 
       const actionIndex = currentState + lookahead;
-      const actionLookup = actionsTable[actionIndex];
+      const actionLookup = actions[actionIndex];
       if ((actionLookup & 1) === 0) {
         // shift
         if (actionLookup === 0xfffe) {
@@ -629,15 +627,11 @@ function parse(input) {
             `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
           );
         }
+        sp -= actionLookup >>> 9;
+        const rtop = stack[sp] | 0;
         const word0 = actionLookup >>> 1;
-        const actionSymbol = word0 & 0xff;
-        const stackItemsToReduce = word0 >>> 8;
-
-        sp -= stackItemsToReduce;
         tree[tp] = word0; // name and number of children
-
-        const rtop = stack[sp];
-        const nextState = gotoTable[(rtop >>> 20) + actionSymbol];
+        const nextState = goto[(rtop >>> 20) + (word0 & 0xff)];
         tree[(rtop & 0xfffff) + 2] = tp; // next sibling
 
         sp += 1;
