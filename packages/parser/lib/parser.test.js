@@ -585,4 +585,164 @@ describe("generate", () => {
       ],
     });
   });
+
+  it("should preserve Denny & Malloy (2010) IELR(1) exactness on non-LALR(1) grammars with %left and %nonassoc", () => {
+    // Three prefixes lead to the exact same LR(0) core after shifting ID:
+    //   Core = { B -> ID •, A -> ID • OP ID }
+    // - After P1: S -> P1 B OP ID | P1 A, so B -> ID • has lookahead OP.
+    //   With %left OP (and %left ID at same level), S/R conflict on OP resolves to `reduce B -> ID`.
+    // - After P2: S -> P2 B SEMI | P2 A, so B -> ID • has lookahead SEMI (NOT OP).
+    //   On lookahead OP, there is NO conflict in P2's state: it MUST shift OP to parse A -> ID OP ID!
+    // - After P3: S -> P3 B COMMA | P3 A, so B -> ID • has lookahead COMMA (NOT OP).
+    //   P2 and P3 are IELR(1)-compatible with each other and merge, while P1 is split!
+    const leftData = generate(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      P1 := 'p1';
+      P2 := 'p2';
+      P3 := 'p3';
+      ID := '[a-z]+';
+      OP := '\\+';
+      SEMI := ';';
+      COMMA := ',';
+
+      %left ID OP;
+
+      Start :=
+          P1 B OP ID
+        | P1 A
+        | P2 B SEMI
+        | P2 A
+        | P3 B COMMA
+        | P3 A
+        ;
+      B := ID;
+      A := ID OP ID;
+    `);
+
+    // P1 + "x + y" reduces "x" to B on lookahead "+" and parses Start -> P1 B OP ID
+    expect(runParser(leftData, "p1 x + y")).toEqual({
+      name: "Start",
+      items: [
+        { name: "P1", value: "p1" },
+        { name: "B", items: [{ name: "ID", value: "x" }] },
+        { name: "OP", value: "+" },
+        { name: "ID", value: "y" },
+      ],
+    });
+
+    // P2 + "x + y" shifts "+" (would fail under naive Pager LALR merge!) and parses Start -> P2 A
+    expect(runParser(leftData, "p2 x + y")).toEqual({
+      name: "Start",
+      items: [
+        { name: "P2", value: "p2" },
+        {
+          name: "A",
+          items: [
+            { name: "ID", value: "x" },
+            { name: "OP", value: "+" },
+            { name: "ID", value: "y" },
+          ],
+        },
+      ],
+    });
+
+    // P3 + "x + y" also shifts "+" (merged with P2's core state) and parses Start -> P3 A
+    expect(runParser(leftData, "p3 x + y")).toEqual({
+      name: "Start",
+      items: [
+        { name: "P3", value: "p3" },
+        {
+          name: "A",
+          items: [
+            { name: "ID", value: "x" },
+            { name: "OP", value: "+" },
+            { name: "ID", value: "y" },
+          ],
+        },
+      ],
+    });
+
+    // P2 + "x ;" and P3 + "x ," still reduce B -> ID on SEMI and COMMA
+    expect(runParser(leftData, "p2 x ;")).toEqual({
+      name: "Start",
+      items: [
+        { name: "P2", value: "p2" },
+        { name: "B", items: [{ name: "ID", value: "x" }] },
+        { name: "SEMI", value: ";" },
+      ],
+    });
+    expect(runParser(leftData, "p3 x ,")).toEqual({
+      name: "Start",
+      items: [
+        { name: "P3", value: "p3" },
+        { name: "B", items: [{ name: "ID", value: "x" }] },
+        { name: "COMMA", value: "," },
+      ],
+    });
+
+    // Verify %nonassoc: in P1's state after ID, OP is resolved to `error`,
+    // whereas in P2's state after ID, OP is still shifted!
+    const nonassocData = generate(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      P1 := 'p1';
+      P2 := 'p2';
+      ID := '[a-z]+';
+      OP := '==';
+      SEMI := ';';
+
+      %nonassoc ID OP;
+
+      Start :=
+          P1 B OP ID
+        | P1 A
+        | P2 B SEMI
+        | P2 A
+        ;
+      B := ID;
+      A := ID OP ID;
+    `);
+
+    expect(() => runParser(nonassocData, "p1 x == y")).toThrow(
+      /Unexpected token OP/
+    );
+    expect(runParser(nonassocData, "p2 x == y")).toEqual({
+      name: "Start",
+      items: [
+        { name: "P2", value: "p2" },
+        {
+          name: "A",
+          items: [
+            { name: "ID", value: "x" },
+            { name: "OP", value: "==" },
+            { name: "ID", value: "y" },
+          ],
+        },
+      ],
+    });
+  });
+
+  it("should detect contextual keywords via %word and populate wordTokenId and contextualKeywordTokenIds", () => {
+    const data = generate(`
+      WS := '[ \\t\\r\\n]+' @ skip;
+      LET := 'let';
+      FROM := 'from';
+      GET := 'get';
+      EQ := '=';
+      SEMI := ';';
+      IDENTIFIER := '[a-zA-Z_][a-zA-Z0-9_]*';
+
+      %word IDENTIFIER;
+
+      Stmt := LET IDENTIFIER EQ IDENTIFIER SEMI;
+    `);
+
+    expect(data.wordTokenName).toBe("IDENTIFIER");
+    expect(data.wordTokenId).toBe(data.parserSymbols.indexOf("IDENTIFIER"));
+    expect(data.contextualKeywordTokenNames).toEqual(["LET", "FROM", "GET"]);
+    expect(data.contextualKeywordTokenIds).toEqual([
+      data.parserSymbols.indexOf("LET"),
+      data.parserSymbols.indexOf("FROM"),
+      data.parserSymbols.indexOf("GET"),
+    ]);
+  });
 });

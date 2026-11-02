@@ -427,6 +427,19 @@ export class JavaScriptFunctionCodegen {
     let stateStack = new Int32Array(1024);
     let treeStack = new Array(1024);
 
+    const wordTokenName = data.wordTokenName;
+    const wordTokenIdx =
+      wordTokenName !== undefined ? symbolToIndex.get(wordTokenName) ?? -1 : -1;
+    const wordFallbackTable = new Uint8Array(numSymbols);
+    if (wordTokenIdx >= 0 && Array.isArray(data.contextualKeywordTokenNames)) {
+      for (const kwName of data.contextualKeywordTokenNames) {
+        const kwIdx = symbolToIndex.get(kwName);
+        if (kwIdx !== undefined) {
+          wordFallbackTable[kwIdx] = 1;
+        }
+      }
+    }
+
     /**
      * @param {string | Uint8Array} input
      */
@@ -479,6 +492,16 @@ export class JavaScriptFunctionCodegen {
             : 0;
 
         if (packed === 0) {
+          if (
+            wordTokenIdx >= 0 &&
+            lookaheadId >= 0 &&
+            wordFallbackTable[lookaheadId] !== 0 &&
+            actionTable[currentStateIdx * numSymbols + wordTokenIdx] !== 0
+          ) {
+            lookaheadId = wordTokenIdx;
+            lookahead = /** @type {string} */ (wordTokenName);
+            continue;
+          }
           const currentState = stateList[currentStateIdx];
           if (!actions.get(currentState)) {
             throw new Error(`Invalid state

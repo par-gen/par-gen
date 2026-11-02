@@ -126,4 +126,36 @@ describe("cli", () => {
     });
     expect(executeMock).toHaveBeenCalledWith("grammar", codegen);
   });
+
+  it("should pass --skip tokens and support grammar.json input", async () => {
+    const codegen = {};
+    const createGeneratorMock = jest.fn().mockReturnValue(codegen);
+    const executeMock = jest.fn();
+    const processExit = jest.fn();
+
+    const context = vm.createContext({
+      createGeneratorMock,
+      executeMock,
+      console,
+      process: {
+        argv: [
+          "node",
+          "path",
+          "codegen",
+          "grammar.json",
+          "target",
+          "--skip",
+          "WS, COMMENT",
+        ],
+        exit: processExit,
+      },
+    });
+
+    await runCli(context);
+
+    expect(processExit).not.toHaveBeenCalled();
+    expect(executeMock).toHaveBeenCalledWith("grammar.json", codegen, {
+      skipTokens: ["WS", "COMMENT"],
+    });
+  });
 });

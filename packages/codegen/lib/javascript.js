@@ -670,6 +670,10 @@ export class JavaScriptBaseCodegen {
     const stateMultiplier = canPreMultiplyState ? parserSymbols.length : 1;
     const ruleNamesSet = new Set(["S", ...rules.map((r) => r.name)]);
     const paddedTableSize = Math.max(64, states.length * parserSymbols.length);
+    const wordTokenId = data.wordTokenId;
+    const contextualKeywordTokenIds = data.contextualKeywordTokenIds ?? [];
+    const hasWordFallback =
+      wordTokenId !== undefined && contextualKeywordTokenIds.length > 0;
 
     if (requiresSemanticActions) {
       for (const state of states) {
@@ -891,6 +895,25 @@ export class JavaScriptBaseCodegen {
           });
         })
       )}
+
+      ${
+        hasWordFallback
+          ? `const wordFallbackTable = new Uint8Array(${Math.max(
+              128,
+              parserSymbols.length
+            )});
+      ${this._formatTableRuns(
+        "wordFallbackTable",
+        contextualKeywordTokenIds.map((id) => ({
+          index: id,
+          value: 1,
+          symbol: parserSymbols[id],
+          comment: parserSymbols[id],
+          runComment: (first, last) => `${first.symbol}..${last.symbol}`,
+        }))
+      )}`
+          : ""
+      }
 
       ${
         hasSingleLexerMode
@@ -1217,6 +1240,21 @@ export class JavaScriptBaseCodegen {
             lookaheadSpan = res.end | ((res.end - res.start) << 22);
           } else {
             if (actionLookup === 0xffff) {
+              ${
+                hasWordFallback
+                  ? `if (
+                wordFallbackTable[lookahead] !== 0 &&
+                actionsTable[${
+                  canPreMultiplyState
+                    ? "currentState"
+                    : `currentState * ${parserSymbols.length}`
+                } + ${wordTokenId}] !== 0xffff
+              ) {
+                lookahead = ${wordTokenId};
+                continue;
+              }`
+                  : ""
+              }
               const errStart =
                 (lookaheadSpan & 0x3fffff) === 0x3fffff
                   ? -1
@@ -1387,6 +1425,21 @@ export class JavaScriptBaseCodegen {
           } else {
             // reduce
             if (actionLookup === 0xffff) {
+              ${
+                hasWordFallback
+                  ? `if (
+                wordFallbackTable[lookahead] !== 0 &&
+                actionsTable[${
+                  canPreMultiplyState
+                    ? "currentState"
+                    : `currentState * ${parserSymbols.length}`
+                } + ${wordTokenId}] !== 0xffff
+              ) {
+                lookahead = ${wordTokenId};
+                continue;
+              }`
+                  : ""
+              }
               const errStart =
                 (lookaheadSpan & 0x3fffff) === 0x3fffff
                   ? -1

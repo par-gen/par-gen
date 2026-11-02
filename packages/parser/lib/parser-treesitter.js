@@ -1314,10 +1314,11 @@ export function generate(input, options) {
   }));
 
   return generateParser(
-    { tokens, rules },
+    { tokens, rules, word: grammar.word },
     {
       ...options,
       skipTokens,
+      word: options?.word ?? grammar.word,
     }
   );
 }

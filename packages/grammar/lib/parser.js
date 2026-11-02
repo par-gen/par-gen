@@ -53,6 +53,8 @@ export const ERROR = "@par-gen.ERROR";
  * @typedef {Object} ParseOptions
  * @property {string[]=} skipTokens
  * @property {(PrecedenceRule[] | {[tokenName: string]: PrecedenceSpec})=} precedence
+ * @property {string=} word
+ * @property {string[]=} contextualKeywords
  */
 
 const SYM_WS = 0;
@@ -130,7 +132,7 @@ function extractStateList(tree, sl, stream, grammar, isAscii) {
 /**
  * @param {string} grammar
  * @param {ParseOptions=} options
- * @returns {{tokens: Token[], rules: Rule[], precedence?: {assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[]}}
+ * @returns {{tokens: Token[], rules: Rule[], precedence?: {assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[], word?: string}}
  */
 export function parse(grammar, options) {
   let uid = 0;
@@ -169,6 +171,8 @@ export function parse(grammar, options) {
   const grammarSkipTokens = [];
   /** @type {{assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[]} */
   const precedence = [];
+  /** @type {string | undefined} */
+  let wordToken;
   /** @type {Set<string>} */
   const knownSymbols = new Set();
   let hasCustomState = false;
@@ -186,6 +190,13 @@ export function parse(grammar, options) {
         isAscii
       );
       const directive = items[0];
+      if (directive === "%word") {
+        if (items.length !== 2) {
+          throw new Error("%word directive requires a single token name");
+        }
+        wordToken = items[1];
+        continue;
+      }
       if (
         directive !== "%left" &&
         directive !== "%right" &&
@@ -507,13 +518,16 @@ export function parse(grammar, options) {
     }
   }
 
-  /** @type {{tokens: Token[], rules: Rule[], precedence?: {assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[]}} */
+  /** @type {{tokens: Token[], rules: Rule[], precedence?: {assoc: 'left' | 'right' | 'nonassoc', symbols: string[]}[], word?: string}} */
   const result = {
     tokens,
     rules,
   };
   if (precedence.length > 0) {
     result.precedence = precedence;
+  }
+  if (wordToken !== undefined) {
+    result.word = wordToken;
   }
   return result;
 }

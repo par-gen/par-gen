@@ -47,7 +47,9 @@ export function createGenerator(language, module, options) {
  */
 export async function execute(grammarFile, codegen, options) {
   const source = await fsp.readFile(grammarFile, "utf-8");
-  const data = grammarFile.endsWith(".json")
+  const isTreesitterJson =
+    grammarFile.endsWith(".json") || source.trimStart().startsWith("{");
+  const data = isTreesitterJson
     ? generateFromTreesitter(source, options)
     : generate(source, options);
   await codegen.parser(data);

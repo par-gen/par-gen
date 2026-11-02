@@ -51,6 +51,10 @@ const log = debug("par-gen:parser");
  * @property {Map<Set<Item>, Map<string, Set<Item>>>} goto
  * @property {ItemState} start
  * @property {Lexers} lexerData
+ * @property {number=} wordTokenId
+ * @property {string=} wordTokenName
+ * @property {number[]=} contextualKeywordTokenIds
+ * @property {string[]=} contextualKeywordTokenNames
  */
 
 /**
@@ -62,7 +66,64 @@ const log = debug("par-gen:parser");
  */
 
 /**
- * @param {string | { tokens: Token[], rules: Rule[], precedence?: ParseOptions['precedence'] }} grammar
+ * @param {Token} candidateToken
+ * @param {LexerData} wordDfa
+ * @param {Token[]} specialTokens
+ * @returns {boolean}
+ */
+function isTokenLanguageSubset(candidateToken, wordDfa, specialTokens) {
+  const candDfa = generateFromTokens([candidateToken, ...specialTokens]);
+  if (candDfa.finals.length === 0) {
+    return false;
+  }
+
+  /** @type {Map<number, Map<number, number>>} */
+  const wordTrans = new Map();
+  for (const [from, tr] of wordDfa.transitions) {
+    wordTrans.set(from, new Map(tr));
+  }
+  const wordFinalSet = new Set(wordDfa.finals);
+
+  const candTrans = new Map(candDfa.transitions);
+  const candFinalSet = new Set(candDfa.finals);
+
+  /** @type {Array<[number, number]>} */
+  const queue = [[candDfa.start, wordDfa.start]];
+  /** @type {Set<string>} */
+  const visited = new Set([`${candDfa.start}:${wordDfa.start}`]);
+
+  while (queue.length > 0) {
+    const pair = queue.shift();
+    if (!pair) {
+      continue;
+    }
+    const [sC, sW] = pair;
+    if (candFinalSet.has(sC) && !wordFinalSet.has(sW)) {
+      return false;
+    }
+    const trC = candTrans.get(sC) ?? [];
+    const trW = wordTrans.get(sW);
+    for (const [byte, nextC] of trC) {
+      if (nextC === candDfa.errorState) {
+        continue;
+      }
+      const nextW = trW?.get(byte) ?? wordDfa.errorState;
+      if (nextW === wordDfa.errorState) {
+        return false;
+      }
+      const key = `${nextC}:${nextW}`;
+      if (!visited.has(key)) {
+        visited.add(key);
+        queue.push([nextC, nextW]);
+      }
+    }
+  }
+
+  return true;
+}
+
+/**
+ * @param {string | { tokens: Token[], rules: Rule[], precedence?: ParseOptions['precedence'], word?: string }} grammar
  * @param {ParseOptions=} options
  * @returns {ParserData}
  */
@@ -80,8 +141,13 @@ export function generate(grammar, options) {
       }
     }
     const effectiveOptions =
-      !options?.precedence && parsedGrammar.precedence
-        ? { ...options, precedence: parsedGrammar.precedence }
+      (!options?.precedence && parsedGrammar.precedence) ||
+      (!options?.word && parsedGrammar.word)
+        ? {
+            ...options,
+            precedence: options?.precedence ?? parsedGrammar.precedence,
+            word: options?.word ?? parsedGrammar.word,
+          }
         : options;
 
     const tokenGroups = tokens.reduce((groups, token) => {
@@ -191,7 +257,12 @@ export function generate(grammar, options) {
       ...rules,
     ];
 
-    const dfa = createDFA(parserTokens, EOF, augmentedRules);
+    const dfa = createDFA(
+      parserTokens,
+      EOF,
+      augmentedRules,
+      effectiveOptions
+    );
 
     const actions = createActionTable(
       dfa,
@@ -349,7 +420,62 @@ export function generate(grammar, options) {
       return index;
     });
 
-    return {
+    /** @type {number | undefined} */
+    let wordTokenId;
+    /** @type {string | undefined} */
+    let wordTokenName;
+    /** @type {number[] | undefined} */
+    let contextualKeywordTokenIds;
+    /** @type {string[] | undefined} */
+    let contextualKeywordTokenNames;
+
+    const configuredWord = effectiveOptions?.word;
+    if (configuredWord) {
+      const wordTok = parserTokens.find(
+        (t) => t.name === configuredWord && t.expr !== ""
+      );
+      const wIdx = parserSymbols.indexOf(configuredWord);
+      if (wordTok && wIdx !== -1) {
+        wordTokenId = wIdx;
+        wordTokenName = configuredWord;
+        const explicitContextual = effectiveOptions?.contextualKeywords;
+        if (Array.isArray(explicitContextual)) {
+          const validNames = explicitContextual.filter(
+            (name) =>
+              name !== configuredWord && parserSymbols.indexOf(name) !== -1
+          );
+          contextualKeywordTokenNames = validNames;
+          contextualKeywordTokenIds = validNames.map((name) =>
+            parserSymbols.indexOf(name)
+          );
+        } else {
+          const specialTokens = tokens.filter((t) => t.expr === "");
+          const wordDfa = generateFromTokens([wordTok, ...specialTokens]);
+          contextualKeywordTokenNames = [];
+          contextualKeywordTokenIds = [];
+          for (const tok of parserTokens) {
+            if (
+              tok.name === configuredWord ||
+              tok.expr === "" ||
+              skipTokenSet.has(tok.name)
+            ) {
+              continue;
+            }
+            const tokSymbolIdx = parserSymbols.indexOf(tok.name);
+            if (
+              tokSymbolIdx !== -1 &&
+              isTokenLanguageSubset(tok, wordDfa, specialTokens)
+            ) {
+              contextualKeywordTokenNames.push(tok.name);
+              contextualKeywordTokenIds.push(tokSymbolIdx);
+            }
+          }
+        }
+      }
+    }
+
+    /** @type {ParserData} */
+    const parserData = {
       rules,
       states: Array.from(states),
       parserSymbols,
@@ -360,6 +486,14 @@ export function generate(grammar, options) {
       start: start,
       lexerData: lexers,
     };
+    if (wordTokenId !== undefined) {
+      parserData.wordTokenId = wordTokenId;
+      parserData.wordTokenName = wordTokenName;
+      parserData.contextualKeywordTokenIds = contextualKeywordTokenIds ?? [];
+      parserData.contextualKeywordTokenNames =
+        contextualKeywordTokenNames ?? [];
+    }
+    return parserData;
   } finally {
     const traceEnd = performance.now();
     log("exit generate (took %d ms)", traceEnd - traceStart);
@@ -370,15 +504,16 @@ export function generate(grammar, options) {
  * @param {Token[]} tokens
  * @param {string} EOF
  * @param {Rule[]} rules
+ * @param {ParseOptions=} options
  * @returns {DFA<ItemState, string>}
  */
-function createDFA(tokens, EOF, rules) {
+function createDFA(tokens, EOF, rules, options) {
   const {
     states,
     transitions,
     start,
     finals,
-  } = calculateStatesAndTransitionTable(tokens, EOF, rules);
+  } = calculateStatesAndTransitionTable(tokens, EOF, rules, options);
 
   /** @type {DFADescription<ItemState, string>} */
   const description = {
@@ -1035,15 +1170,272 @@ function getCompletedRuleKey(item) {
 }
 
 /**
+ * @typedef {Object} PrecedenceContext
+ * @property {Set<string>} ruleNamesSet
+ * @property {Map<string, ResolvedPrecedence>} symbolPrecedence
+ * @property {Map<string, { order: number, precedence: ResolvedPrecedence | undefined }>} ruleMetaByKey
+ * @property {boolean} hasExplicitRulePrecedence
+ * @property {boolean} hasAnyPrecedence
+ * @property {(item: Item) => { order: number, precedence: ResolvedPrecedence | undefined } | undefined} getItemMeta
+ * @property {(matchingEnds: Item[]) => Item} pickWinningEnd
+ * @property {(state: ItemState, symbol: string, winningEnd: Item) => 'shift' | 'reduce' | 'error'} resolveShiftReduce
+ */
+
+/**
+ * @param {Rule[]} rules
+ * @param {Token[]} tokens
+ * @param {ParseOptions=} options
+ * @param {Set<string>=} precomputedNullable
+ * @param {Map<string, Set<Token>>=} precomputedFirsts
+ * @returns {PrecedenceContext}
+ */
+function buildPrecedenceContext(
+  rules,
+  tokens,
+  options,
+  precomputedNullable,
+  precomputedFirsts
+) {
+  const ruleNamesSet = new Set(rules.map((r) => r.name));
+  /** @type {Map<string, ResolvedPrecedence>} */
+  const symbolPrecedence = new Map();
+
+  for (const token of tokens) {
+    if (token.precedence !== undefined) {
+      symbolPrecedence.set(token.name, {
+        level: token.precedence,
+        assoc: token.assoc ?? "left",
+      });
+    }
+  }
+
+  if (options?.precedence) {
+    if (Array.isArray(options.precedence)) {
+      options.precedence.forEach((entry, idx) => {
+        const assoc = entry.assoc ?? "left";
+        const level = idx + 1;
+        const tokList = entry.symbols ?? entry.tokens ?? [];
+        for (const tokName of tokList) {
+          symbolPrecedence.set(tokName, { level, assoc });
+        }
+      });
+    } else if (typeof options.precedence === "object") {
+      for (const [tokName, spec] of Object.entries(options.precedence)) {
+        symbolPrecedence.set(tokName, {
+          level: spec.level ?? spec.precedence ?? 0,
+          assoc: spec.assoc ?? "left",
+        });
+      }
+    }
+  }
+
+  let hasExplicitRulePrecedence = false;
+  /** @type {Map<string, { order: number, precedence: ResolvedPrecedence | undefined }>} */
+  const ruleMetaByKey = new Map();
+  rules.forEach((rule, idx) => {
+    const endAction = rule.actions.find(
+      (a) => a.at === rule.symbols.length
+    )?.code;
+    const key = `${rule.name}\0${endAction ?? ""}\0${rule.symbols.join("\0")}`;
+    if (ruleMetaByKey.has(key)) {
+      return;
+    }
+    /** @type {ResolvedPrecedence | undefined} */
+    let prec;
+    if (rule.precedence !== undefined) {
+      hasExplicitRulePrecedence = true;
+      if (typeof rule.precedence === "object" && rule.precedence !== null) {
+        prec = {
+          level: rule.precedence.level,
+          assoc: rule.precedence.assoc ?? rule.assoc ?? "left",
+        };
+      } else {
+        prec = {
+          level: rule.precedence,
+          assoc: rule.assoc ?? "left",
+        };
+      }
+    } else {
+      for (let i = rule.symbols.length - 1; i >= 0; i--) {
+        const sym = rule.symbols[i];
+        if (!ruleNamesSet.has(sym)) {
+          const symPrec = symbolPrecedence.get(sym);
+          if (symPrec) {
+            prec = symPrec;
+          }
+          break;
+        }
+      }
+    }
+    ruleMetaByKey.set(key, { order: idx, precedence: prec });
+  });
+
+  const nullable = hasExplicitRulePrecedence
+    ? precomputedNullable ?? calculateNullable(rules)
+    : undefined;
+  const firsts =
+    hasExplicitRulePrecedence && nullable
+      ? precomputedFirsts ?? calculateFirsts(tokens, rules, nullable)
+      : undefined;
+
+  /**
+   * @param {Item} item
+   */
+  const getItemMeta = (item) => {
+    const key = getCompletedRuleKey(item);
+    return ruleMetaByKey.get(key);
+  };
+
+  /**
+   * @param {Item[]} matchingEnds
+   * @returns {Item}
+   */
+  const pickWinningEnd = (matchingEnds) => {
+    let winningEnd = matchingEnds[0];
+    for (let i = 1; i < matchingEnds.length; i++) {
+      const candidate = matchingEnds[i];
+      const winMeta = getItemMeta(winningEnd);
+      const candMeta = getItemMeta(candidate);
+      const winPrec = winMeta?.precedence?.level;
+      const candPrec = candMeta?.precedence?.level;
+
+      if (
+        (winPrec !== undefined || candPrec !== undefined) &&
+        (winPrec ?? 0) !== (candPrec ?? 0)
+      ) {
+        if ((candPrec ?? 0) > (winPrec ?? 0)) {
+          winningEnd = candidate;
+        }
+      } else if (
+        (candMeta?.order ?? Number.MAX_SAFE_INTEGER) <
+        (winMeta?.order ?? Number.MAX_SAFE_INTEGER)
+      ) {
+        winningEnd = candidate;
+      }
+    }
+    return winningEnd;
+  };
+
+  /**
+   * @param {ItemState} currentState
+   * @param {string} symbol
+   * @param {Item} winningEnd
+   * @returns {'shift' | 'reduce' | 'error'}
+   */
+  const resolveShiftReduce = (currentState, symbol, winningEnd) => {
+    let shiftPrec = symbolPrecedence.get(symbol);
+    if (shiftPrec === undefined && hasExplicitRulePrecedence) {
+      for (const item of currentState.values()) {
+        if (
+          item.marker < item.tokens.length &&
+          item.tokens[item.marker] === symbol
+        ) {
+          const itemPrec = getItemMeta(item)?.precedence;
+          if (
+            itemPrec !== undefined &&
+            (shiftPrec === undefined || itemPrec.level > shiftPrec.level)
+          ) {
+            shiftPrec = itemPrec;
+          }
+        }
+      }
+      if (shiftPrec === undefined && firsts && nullable) {
+        for (const item of currentState.values()) {
+          if (item.marker > 0 && item.marker < item.tokens.length) {
+            const itemPrec = getItemMeta(item)?.precedence;
+            if (itemPrec !== undefined) {
+              const seqFirsts = computeSequenceFirsts(
+                item.tokens,
+                item.marker,
+                "",
+                firsts,
+                nullable,
+                ruleNamesSet
+              );
+              if (
+                seqFirsts.includes(symbol) &&
+                (shiftPrec === undefined || itemPrec.level > shiftPrec.level)
+              ) {
+                shiftPrec = itemPrec;
+              }
+            }
+          }
+        }
+      }
+    }
+    const reducePrec = getItemMeta(winningEnd)?.precedence;
+    const effShiftPrec =
+      shiftPrec ??
+      (hasExplicitRulePrecedence && reducePrec !== undefined
+        ? { level: 0, assoc: /** @type {Associativity} */ ("none") }
+        : undefined);
+    const effReducePrec =
+      reducePrec ??
+      (hasExplicitRulePrecedence && shiftPrec !== undefined
+        ? { level: 0, assoc: /** @type {Associativity} */ ("none") }
+        : undefined);
+
+    /** @type {'shift' | 'reduce' | 'error'} */
+    let resolution = "shift";
+    if (effShiftPrec !== undefined && effReducePrec !== undefined) {
+      if (effReducePrec.level > effShiftPrec.level) {
+        resolution = "reduce";
+      } else if (effShiftPrec.level > effReducePrec.level) {
+        resolution = "shift";
+      } else {
+        const assoc =
+          effShiftPrec.assoc !== "none"
+            ? effShiftPrec.assoc
+            : effReducePrec.assoc;
+        if (assoc === "left") {
+          resolution = "reduce";
+        } else if (assoc === "right") {
+          resolution = "shift";
+        } else if (
+          assoc === "nonassoc" ||
+          (!hasExplicitRulePrecedence && assoc === "none")
+        ) {
+          resolution = "error";
+        }
+      }
+    }
+    return resolution;
+  };
+
+  const hasAnyPrecedence =
+    symbolPrecedence.size > 0 || hasExplicitRulePrecedence;
+
+  return {
+    ruleNamesSet,
+    symbolPrecedence,
+    ruleMetaByKey,
+    hasExplicitRulePrecedence,
+    hasAnyPrecedence,
+    getItemMeta,
+    pickWinningEnd,
+    resolveShiftReduce,
+  };
+}
+
+/**
  * @param {ItemState[]} group
+ * @param {PrecedenceContext=} precContext
  * @returns {boolean}
  */
-function canMergeCoreGroup(group) {
+function canMergeCoreGroup(group, precContext) {
   /** @type {Set<string>} */
   const existingConflicts = new Set();
+  /** @type {Map<string, Set<string>>} */
+  const unionByLa = new Map();
+  /** @type {Map<string, Item[]>[]} */
+  const stateEndsByLa = [];
+
   for (const state of group) {
     /** @type {Map<string, string[]>} */
     const byLa = new Map();
+    /** @type {Map<string, Item[]>} */
+    const endsMap = new Map();
+    stateEndsByLa.push(endsMap);
     for (const item of state) {
       if (item.marker >= item.tokens.length) {
         const key = getCompletedRuleKey(item);
@@ -1055,6 +1447,18 @@ function canMergeCoreGroup(group) {
         if (!list.includes(key)) {
           list.push(key);
         }
+        let endItems = endsMap.get(item.lookahead);
+        if (!endItems) {
+          endItems = [];
+          endsMap.set(item.lookahead, endItems);
+        }
+        endItems.push(item);
+        let set = unionByLa.get(item.lookahead);
+        if (!set) {
+          set = new Set();
+          unionByLa.set(item.lookahead, set);
+        }
+        set.add(key);
       }
     }
     for (const [la, keys] of byLa.entries()) {
@@ -1069,21 +1473,6 @@ function canMergeCoreGroup(group) {
     }
   }
 
-  /** @type {Map<string, Set<string>>} */
-  const unionByLa = new Map();
-  for (const state of group) {
-    for (const item of state) {
-      if (item.marker >= item.tokens.length) {
-        let set = unionByLa.get(item.lookahead);
-        if (!set) {
-          set = new Set();
-          unionByLa.set(item.lookahead, set);
-        }
-        set.add(getCompletedRuleKey(item));
-      }
-    }
-  }
-
   for (const [la, keySet] of unionByLa.entries()) {
     if (keySet.size > 1) {
       const keys = Array.from(keySet).sort();
@@ -1092,6 +1481,69 @@ function canMergeCoreGroup(group) {
           if (!existingConflicts.has(`${la}\0${keys[i]}\0${keys[j]}`)) {
             return false;
           }
+        }
+      }
+      if (precContext) {
+        /** @type {string | undefined} */
+        let expectedWinningKey;
+        for (let sIdx = 0; sIdx < group.length; sIdx++) {
+          const matchingEnds = stateEndsByLa[sIdx].get(la);
+          if (matchingEnds && matchingEnds.length > 0) {
+            const winKey = getCompletedRuleKey(
+              precContext.pickWinningEnd(matchingEnds)
+            );
+            if (expectedWinningKey === undefined) {
+              expectedWinningKey = winKey;
+            } else if (expectedWinningKey !== winKey) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Denny & Malloy (2010) IELR(1) exactness check for Shift/Reduce conflict resolution:
+  // If any state in the core group has a completed item on a shiftable terminal `symbol`
+  // whose S/R conflict resolves to `reduce` or `error` (e.g. via %left, %nonassoc, or rule precedence),
+  // every state in `group` must resolve `symbol` to that exact same action.
+  if (precContext && precContext.hasAnyPrecedence && group.length > 1) {
+    /** @type {Set<string>} */
+    const shiftTerminals = new Set();
+    for (const item of group[0]) {
+      if (item.marker < item.tokens.length) {
+        const sym = item.tokens[item.marker];
+        if (!precContext.ruleNamesSet.has(sym)) {
+          shiftTerminals.add(sym);
+        }
+      }
+    }
+
+    for (const symbol of shiftTerminals) {
+      if (!unionByLa.has(symbol)) {
+        continue;
+      }
+      /** @type {string | undefined} */
+      let expectedResolution;
+      for (let sIdx = 0; sIdx < group.length; sIdx++) {
+        const matchingEnds = stateEndsByLa[sIdx].get(symbol);
+        let stateResolution = "shift";
+        if (matchingEnds && matchingEnds.length > 0) {
+          const winningEnd = precContext.pickWinningEnd(matchingEnds);
+          const sr = precContext.resolveShiftReduce(
+            group[0],
+            symbol,
+            winningEnd
+          );
+          stateResolution =
+            sr === "reduce"
+              ? `reduce:${getCompletedRuleKey(winningEnd)}`
+              : sr;
+        }
+        if (expectedResolution === undefined) {
+          expectedResolution = stateResolution;
+        } else if (expectedResolution !== stateResolution) {
+          return false;
         }
       }
     }
@@ -1104,9 +1556,10 @@ function canMergeCoreGroup(group) {
  * @param {Token[]} tokens
  * @param {string} EOF
  * @param {Rule[]} rules
+ * @param {ParseOptions=} options
  * @returns {{states: ItemState[], transitions: Map<ItemState, Map<string, ItemState>>, start: ItemState, finals: ItemState[]}}
  */
-function calculateStatesAndTransitionTable(tokens, EOF, rules) {
+function calculateStatesAndTransitionTable(tokens, EOF, rules, options) {
   /** @type {Map<ItemState, Map<string, ItemState>>} */
   const transitions = new Map();
 
@@ -1115,14 +1568,30 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
   const nullable = calculateNullable(rules);
   const firsts = calculateFirsts(tokens, rules, nullable);
   const follows = calculateFollows(firsts, tokens, EOF, rules, nullable);
+  const precContext = buildPrecedenceContext(
+    rules,
+    tokens,
+    options,
+    nullable,
+    firsts
+  );
 
   /** @type {ItemState[]} */
   const itemSets = [];
 
+  const initialSet = firstItemSet(
+    rules[0],
+    rules,
+    items,
+    follows,
+    firsts,
+    nullable
+  );
   /** @type {ItemState[]} */
-  const newItemSets = [
-    firstItemSet(rules[0], rules, items, follows, firsts, nullable),
-  ];
+  const newItemSets = [initialSet];
+  /** @type {Map<number, ItemState[]>} */
+  const knownStatesBySize = new Map([[initialSet.size, [initialSet]]]);
+
   while (newItemSets.length > 0) {
     const fromItemSet = newItemSets.shift();
     if (!fromItemSet) {
@@ -1140,12 +1609,14 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
     );
 
     for (const [token, toItemSet] of nextStates.entries()) {
-      const allStates = [...itemSets, ...newItemSets];
-      const existing = allStates.find((exiting) => {
-        return (
-          exiting.size === toItemSet.size &&
-          Array.from(toItemSet.values()).every((item) => exiting.has(item))
-        );
+      const sameSizeBucket = knownStatesBySize.get(toItemSet.size);
+      const existing = sameSizeBucket?.find((exiting) => {
+        for (const item of toItemSet) {
+          if (!exiting.has(item)) {
+            return false;
+          }
+        }
+        return true;
       });
       let stateTransitions = transitions.get(fromItemSet);
       if (!stateTransitions) {
@@ -1155,6 +1626,11 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
       stateTransitions.set(token, existing ?? toItemSet);
       if (!existing) {
         newItemSets.push(toItemSet);
+        if (sameSizeBucket) {
+          sameSizeBucket.push(toItemSet);
+        } else {
+          knownStatesBySize.set(toItemSet.size, [toItemSet]);
+        }
       }
     }
   }
@@ -1174,8 +1650,31 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
   /** @type {ItemState[][]} */
   let mergeableGroups = [];
   for (const group of coreGroups.values()) {
-    if (group.length > 1 && canMergeCoreGroup(group)) {
-      mergeableGroups.push(group);
+    if (group.length > 1) {
+      if (canMergeCoreGroup(group, precContext)) {
+        mergeableGroups.push(group);
+      } else if (group.length > 2) {
+        /** @type {ItemState[][]} */
+        const subgroups = [];
+        for (const st of group) {
+          let placed = false;
+          for (const sub of subgroups) {
+            if (canMergeCoreGroup([...sub, st], precContext)) {
+              sub.push(st);
+              placed = true;
+              break;
+            }
+          }
+          if (!placed) {
+            subgroups.push([st]);
+          }
+        }
+        for (const sub of subgroups) {
+          if (sub.length > 1) {
+            mergeableGroups.push(sub);
+          }
+        }
+      }
     }
   }
 
@@ -1195,27 +1694,51 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules) {
     const nextMergeable = [];
     for (const group of mergeableGroups) {
       const baseTr = transitions.get(group[0]);
-      let consistent = true;
-      if (baseTr) {
-        for (let i = 1; i < group.length && consistent; i++) {
-          const otherTr = transitions.get(group[i]);
-          for (const [sym, baseTo] of baseTr.entries()) {
-            const otherTo = otherTr?.get(sym);
-            const mappedBase = tentativeTarget.get(baseTo) ?? baseTo;
-            const mappedOther = otherTo
-              ? tentativeTarget.get(otherTo) ?? otherTo
-              : undefined;
-            if (mappedBase !== mappedOther) {
-              consistent = false;
-              break;
+      if (!baseTr) {
+        nextMergeable.push(group);
+        continue;
+      }
+      /** @type {ItemState[][]} */
+      const buckets = [[group[0]]];
+      for (let i = 1; i < group.length; i++) {
+        const st = group[i];
+        const stTr = transitions.get(st);
+        let matchedBucket = false;
+        for (const bucket of buckets) {
+          const refTr = transitions.get(bucket[0]);
+          let same = true;
+          if (refTr) {
+            for (const [sym, refTo] of refTr.entries()) {
+              const otherTo = stTr?.get(sym);
+              const mappedRef = tentativeTarget.get(refTo) ?? refTo;
+              const mappedOther = otherTo
+                ? tentativeTarget.get(otherTo) ?? otherTo
+                : undefined;
+              if (mappedRef !== mappedOther) {
+                same = false;
+                break;
+              }
             }
           }
+          if (same) {
+            bucket.push(st);
+            matchedBucket = true;
+            break;
+          }
+        }
+        if (!matchedBucket) {
+          buckets.push([st]);
         }
       }
-      if (consistent) {
+      if (buckets.length === 1) {
         nextMergeable.push(group);
       } else {
         groupChanged = true;
+        for (const bucket of buckets) {
+          if (bucket.length > 1) {
+            nextMergeable.push(bucket);
+          }
+        }
       }
     }
     mergeableGroups = nextMergeable;
@@ -1321,95 +1844,7 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
   /** @type {Map<ItemState, Map<string, Actions>>} */
   const actions = new Map();
 
-  const ruleNamesSet = new Set(rules.map((r) => r.name));
-  /** @type {Map<string, ResolvedPrecedence>} */
-  const symbolPrecedence = new Map();
-
-  for (const token of tokens) {
-    if (token.precedence !== undefined) {
-      symbolPrecedence.set(token.name, {
-        level: token.precedence,
-        assoc: token.assoc ?? "left",
-      });
-    }
-  }
-
-  if (options?.precedence) {
-    if (Array.isArray(options.precedence)) {
-      options.precedence.forEach((entry, idx) => {
-        const assoc = entry.assoc ?? "left";
-        const level = idx + 1;
-        const tokList = entry.symbols ?? entry.tokens ?? [];
-        for (const tokName of tokList) {
-          symbolPrecedence.set(tokName, { level, assoc });
-        }
-      });
-    } else if (typeof options.precedence === "object") {
-      for (const [tokName, spec] of Object.entries(options.precedence)) {
-        symbolPrecedence.set(tokName, {
-          level: spec.level ?? spec.precedence ?? 0,
-          assoc: spec.assoc ?? "left",
-        });
-      }
-    }
-  }
-
-  let hasExplicitRulePrecedence = false;
-  /** @type {Map<string, { order: number, precedence: ResolvedPrecedence | undefined }>} */
-  const ruleMetaByKey = new Map();
-  rules.forEach((rule, idx) => {
-    const endAction = rule.actions.find(
-      (a) => a.at === rule.symbols.length
-    )?.code;
-    const key = `${rule.name}\0${endAction ?? ""}\0${rule.symbols.join("\0")}`;
-    if (ruleMetaByKey.has(key)) {
-      return;
-    }
-    /** @type {ResolvedPrecedence | undefined} */
-    let prec;
-    if (rule.precedence !== undefined) {
-      hasExplicitRulePrecedence = true;
-      if (typeof rule.precedence === "object" && rule.precedence !== null) {
-        prec = {
-          level: rule.precedence.level,
-          assoc: rule.precedence.assoc ?? rule.assoc ?? "left",
-        };
-      } else {
-        prec = {
-          level: rule.precedence,
-          assoc: rule.assoc ?? "left",
-        };
-      }
-    } else {
-      for (let i = rule.symbols.length - 1; i >= 0; i--) {
-        const sym = rule.symbols[i];
-        if (!ruleNamesSet.has(sym)) {
-          const symPrec = symbolPrecedence.get(sym);
-          if (symPrec) {
-            prec = symPrec;
-          }
-          break;
-        }
-      }
-    }
-    ruleMetaByKey.set(key, { order: idx, precedence: prec });
-  });
-
-  const nullable = hasExplicitRulePrecedence
-    ? calculateNullable(rules)
-    : undefined;
-  const firsts =
-    hasExplicitRulePrecedence && nullable
-      ? calculateFirsts(tokens, rules, nullable)
-      : undefined;
-
-  /**
-   * @param {Item} item
-   */
-  const getItemMeta = (item) => {
-    const key = `${item.name}\0${item.semanticAction ?? ""}\0${item.tokens.join("\0")}`;
-    return ruleMetaByKey.get(key);
-  };
+  const precContext = buildPrecedenceContext(rules, tokens, options);
 
   dfa.description.states.forEach((currentState) => {
     const transition = dfa.description.transitions.get(currentState);
@@ -1433,28 +1868,7 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
         return;
       }
 
-      let winningEnd = matchingEnds[0];
-      for (let i = 1; i < matchingEnds.length; i++) {
-        const candidate = matchingEnds[i];
-        const winMeta = getItemMeta(winningEnd);
-        const candMeta = getItemMeta(candidate);
-        const winPrec = winMeta?.precedence?.level;
-        const candPrec = candMeta?.precedence?.level;
-
-        if (
-          (winPrec !== undefined || candPrec !== undefined) &&
-          (winPrec ?? 0) !== (candPrec ?? 0)
-        ) {
-          if ((candPrec ?? 0) > (winPrec ?? 0)) {
-            winningEnd = candidate;
-          }
-        } else if (
-          (candMeta?.order ?? Number.MAX_SAFE_INTEGER) <
-          (winMeta?.order ?? Number.MAX_SAFE_INTEGER)
-        ) {
-          winningEnd = candidate;
-        }
-      }
+      const winningEnd = precContext.pickWinningEnd(matchingEnds);
 
       if (matchingEnds.length > 1) {
         for (const end of matchingEnds) {
@@ -1466,83 +1880,11 @@ function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
 
       const existingShift = stateActions?.get(symbol);
       if (existingShift && existingShift.op === "shift") {
-        let shiftPrec = symbolPrecedence.get(symbol);
-        if (shiftPrec === undefined && hasExplicitRulePrecedence) {
-          for (const item of currentState.values()) {
-            if (
-              item.marker < item.tokens.length &&
-              item.tokens[item.marker] === symbol
-            ) {
-              const itemPrec = getItemMeta(item)?.precedence;
-              if (
-                itemPrec !== undefined &&
-                (shiftPrec === undefined || itemPrec.level > shiftPrec.level)
-              ) {
-                shiftPrec = itemPrec;
-              }
-            }
-          }
-          if (shiftPrec === undefined && firsts && nullable) {
-            for (const item of currentState.values()) {
-              if (item.marker > 0 && item.marker < item.tokens.length) {
-                const itemPrec = getItemMeta(item)?.precedence;
-                if (itemPrec !== undefined) {
-                  const seqFirsts = computeSequenceFirsts(
-                    item.tokens,
-                    item.marker,
-                    "",
-                    firsts,
-                    nullable,
-                    ruleNamesSet
-                  );
-                  if (
-                    seqFirsts.includes(symbol) &&
-                    (shiftPrec === undefined ||
-                      itemPrec.level > shiftPrec.level)
-                  ) {
-                    shiftPrec = itemPrec;
-                  }
-                }
-              }
-            }
-          }
-        }
-        const reducePrec = getItemMeta(winningEnd)?.precedence;
-        const effShiftPrec =
-          shiftPrec ??
-          (hasExplicitRulePrecedence && reducePrec !== undefined
-            ? { level: 0, assoc: /** @type {Associativity} */ ("none") }
-            : undefined);
-        const effReducePrec =
-          reducePrec ??
-          (hasExplicitRulePrecedence && shiftPrec !== undefined
-            ? { level: 0, assoc: /** @type {Associativity} */ ("none") }
-            : undefined);
-
-        /** @type {'shift' | 'reduce' | 'error'} */
-        let resolution = "shift";
-        if (effShiftPrec !== undefined && effReducePrec !== undefined) {
-          if (effReducePrec.level > effShiftPrec.level) {
-            resolution = "reduce";
-          } else if (effShiftPrec.level > effReducePrec.level) {
-            resolution = "shift";
-          } else {
-            const assoc =
-              effShiftPrec.assoc !== "none"
-                ? effShiftPrec.assoc
-                : effReducePrec.assoc;
-            if (assoc === "left") {
-              resolution = "reduce";
-            } else if (assoc === "right") {
-              resolution = "shift";
-            } else if (
-              assoc === "nonassoc" ||
-              (!hasExplicitRulePrecedence && assoc === "none")
-            ) {
-              resolution = "error";
-            }
-          }
-        }
+        const resolution = precContext.resolveShiftReduce(
+          currentState,
+          symbol,
+          winningEnd
+        );
 
         if (resolution === "reduce") {
           stateActions?.set(symbol, {

@@ -1411,5 +1411,188 @@ describe("generateFromTreesitter", () => {
       expect(names).not.toContain("_term");
       expect(names).not.toContain("comment");
     });
+
+    it("disambiguates contextual keywords (from, of, get, set, async, type, let) via zero-overhead word fallback", async () => {
+      const { JavaScriptFunctionCodegen, JavaScriptModuleCodegen } =
+        await import(codegenModuleSpecifier);
+      const { promises: fsp } = await import("fs");
+      const { join } = await import("path");
+      const { tmpdir } = await import("os");
+      const vm = await import("vm");
+
+      const contextualJsGrammar = {
+        ...TREE_SITTER_JS_SUBSET_GRAMMAR,
+        rules: {
+          ...TREE_SITTER_JS_SUBSET_GRAMMAR.rules,
+          _statement: {
+            type: "CHOICE",
+            members: [
+              ...TREE_SITTER_JS_SUBSET_GRAMMAR.rules._statement.members,
+              { type: "SYMBOL", name: "import_statement" },
+              { type: "SYMBOL", name: "for_of_statement" },
+              { type: "SYMBOL", name: "async_function_declaration" },
+              { type: "SYMBOL", name: "type_alias_declaration" },
+              { type: "SYMBOL", name: "class_declaration" },
+            ],
+          },
+          import_statement: {
+            type: "SEQ",
+            members: [
+              { type: "STRING", value: "import" },
+              { type: "SYMBOL", name: "import_clause" },
+              { type: "STRING", value: "from" },
+              { type: "SYMBOL", name: "string" },
+              { type: "STRING", value: ";" },
+            ],
+          },
+          import_clause: {
+            type: "SYMBOL",
+            name: "identifier",
+          },
+          for_of_statement: {
+            type: "SEQ",
+            members: [
+              { type: "STRING", value: "for" },
+              { type: "STRING", value: "(" },
+              { type: "STRING", value: "let" },
+              { type: "SYMBOL", name: "identifier" },
+              { type: "STRING", value: "of" },
+              { type: "SYMBOL", name: "_expression" },
+              { type: "STRING", value: ")" },
+              { type: "SYMBOL", name: "statement_block" },
+            ],
+          },
+          async_function_declaration: {
+            type: "SEQ",
+            members: [
+              { type: "STRING", value: "async" },
+              { type: "STRING", value: "function" },
+              { type: "SYMBOL", name: "identifier" },
+              { type: "SYMBOL", name: "formal_parameters" },
+              { type: "SYMBOL", name: "statement_block" },
+            ],
+          },
+          type_alias_declaration: {
+            type: "SEQ",
+            members: [
+              { type: "STRING", value: "type" },
+              { type: "SYMBOL", name: "identifier" },
+              { type: "STRING", value: "=" },
+              { type: "SYMBOL", name: "identifier" },
+              { type: "STRING", value: ";" },
+            ],
+          },
+          class_declaration: {
+            type: "SEQ",
+            members: [
+              { type: "STRING", value: "class" },
+              { type: "SYMBOL", name: "identifier" },
+              { type: "STRING", value: "{" },
+              {
+                type: "REPEAT",
+                content: { type: "SYMBOL", name: "method_definition" },
+              },
+              { type: "STRING", value: "}" },
+            ],
+          },
+          method_definition: {
+            type: "SEQ",
+            members: [
+              {
+                type: "CHOICE",
+                members: [
+                  { type: "STRING", value: "get" },
+                  { type: "STRING", value: "set" },
+                ],
+              },
+              { type: "SYMBOL", name: "identifier" },
+              { type: "SYMBOL", name: "formal_parameters" },
+              { type: "SYMBOL", name: "statement_block" },
+            ],
+          },
+        },
+      };
+
+      const data = generateFromTreesitter(contextualJsGrammar);
+      expect(data.wordTokenName).toBe("identifier");
+      expect(data.wordTokenId).toBeDefined();
+      expect(data.contextualKeywordTokenNames).toEqual(
+        expect.arrayContaining([
+          "from",
+          "of",
+          "get",
+          "set",
+          "async",
+          "type",
+          "let",
+        ])
+      );
+
+      const fnCodegen = new JavaScriptFunctionCodegen();
+      const { parse: parseFn } = await fnCodegen.parser(data);
+
+      const tmpDir = await fsp.mkdtemp(join(tmpdir(), "pargen-word-test-"));
+      const lexerFile = join(tmpDir, "lexer.js");
+      const lexerStateFile = join(tmpDir, "lexer-initial.js");
+      const parserFile = join(tmpDir, "parser.js");
+      const esmCodegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+      await esmCodegen.parser(data);
+
+      const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+      const context = vm.createContext({ Buffer });
+      const parserMod = new SourceTextModule(
+        await fsp.readFile(parserFile, "utf-8"),
+        { context }
+      );
+      const lexerMod = new SourceTextModule(
+        await fsp.readFile(lexerStateFile, "utf-8"),
+        { context }
+      );
+      await parserMod.link(async () => lexerMod);
+      await parserMod.evaluate();
+      const parseEsm = /** @type {*} */ (parserMod.namespace).parse;
+
+      const sampleCode = `
+        import from from "source-module";
+        type get = set;
+        class Box {
+          get value() { return this.from; }
+          set value(from) { this.from = from; }
+        }
+        async function of(from, get, set, type, async) {
+          let of = from + get * set;
+          let async = {
+            from: type,
+            get: async,
+            set: of
+          };
+          for (let from of [get, set, type, async.from]) {
+            of = of + from.get(set, type, async);
+          }
+          return of;
+        }
+      `;
+
+      const cstFn = parseFn(sampleCode);
+      expect(cstFn.name).toBe("program");
+
+      const cstEsm = parseEsm(sampleCode).toJSON();
+      expect(cstEsm.name).toBe("program");
+      const names = collectNodeNames(cstEsm);
+      expect(names).toContain("import_statement");
+      expect(names).toContain("type_alias_declaration");
+      expect(names).toContain("class_declaration");
+      expect(names).toContain("method_definition");
+      expect(names).toContain("async_function_declaration");
+      expect(names).toContain("for_of_statement");
+
+      // Also verify parseCold path (> 32 KB input) with contextual keywords
+      const largeSample = sampleCode.repeat(120);
+      expect(largeSample.length).toBeGreaterThan(40000);
+      const largeCst = parseEsm(largeSample);
+      expect(largeCst.name).toBe("program");
+
+      await fsp.rm(tmpDir, { recursive: true, force: true });
+    });
   });
 });
