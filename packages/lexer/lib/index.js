@@ -1,1 +1,7 @@
-export { generate, generateFromTokens, EOF, ERROR } from "./lexer.js";
+export {
+  generate,
+  generateFromTokens,
+  computeEquivalenceClasses,
+  EOF,
+  ERROR,
+} from "./lexer.js";

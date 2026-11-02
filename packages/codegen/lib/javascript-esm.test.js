@@ -271,4 +271,108 @@ describe("JavaScriptModuleCodegen", () => {
     expect(lexerCode).toContain("table.fill(");
     expect(parserCode).toContain("actionsTable.fill(");
   });
+
+  it("should support equivalence-class DFA table compression including when maxDeadEndTokenId >= ecColumns and automatic threshold switching", async () => {
+    const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+
+    // 1. Force equivalenceClasses: true on a grammar with 40 dead-end tokens (> ecColumns) + 3 continuable tokens
+    const deadEndRules = Array.from(
+      { length: 40 },
+      (_, i) =>
+        `OP_${i} := '@${String.fromCharCode(65 + Math.floor(i / 10))}${
+          i % 10
+        }';`
+    ).join("\n");
+    const deadEndAlts = Array.from({ length: 40 }, (_, i) => `OP_${i}`).join(
+      " | "
+    );
+    const grammarManyDeadEnds = `
+      WS := '[ ]+';
+      NUM := '[0-9]+';
+      IDENT := '[a-z]+';
+      ${deadEndRules}
+      Expr := Item | Expr Item;
+      Item := WS | NUM | IDENT | ${deadEndAlts};
+    `;
+
+    const codegenEc = new JavaScriptModuleCodegen({
+      lexerFile,
+      parserFile,
+      equivalenceClasses: true,
+    });
+    await codegenEc.parser(genParser(grammarManyDeadEnds, { skipTokens: ["WS"] }));
+
+    const ecLexerCode = await fsp.readFile(lexerStateFile, "utf-8");
+    expect(ecLexerCode).toContain("const ec = new Uint8Array(256);");
+    expect(ecLexerCode).toContain("table[state + ec[input[i++]]]");
+
+    /** @type {*} */
+    let parsedResult;
+    const context = vm.createContext({
+      output: (/** @type {*} */ r) => {
+        parsedResult = r;
+      },
+      Buffer,
+    });
+    const mod = new SourceTextModule(
+      `
+        import { parse } from 'parser-file';
+        output(parse("abc 123 @A0 @D9 xyz").toJSON());
+      `,
+      { context }
+    );
+    await mod.link(
+      /**
+       * @param {string} specifier
+       * @param {*} referencingModule
+       */
+      async (specifier, referencingModule) => {
+        if (specifier === `./${basename(lexerStateFile)}`) {
+          const code = await fsp.readFile(lexerStateFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        } else if (specifier === "parser-file") {
+          const code = await fsp.readFile(parserFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        }
+        throw new Error(`Unable to resolve dependency: ${specifier}`);
+      }
+    );
+    await mod.evaluate();
+    expect(parsedResult.name).toBe("Expr");
+
+    // 2. Automatic threshold switching (> 96 active rows enables equivalenceClasses by default)
+    const keywords = [
+      "select", "from", "where", "insert", "update", "delete", "create", "table",
+      "index", "primary", "foreign", "references", "constraint", "default", "unique",
+      "distinct", "group", "order", "having", "limit", "offset", "inner", "outer",
+    ];
+    const largeGrammar = `
+      WS := '[ ]+';
+      ${keywords.map((kw, i) => `KW_${i} := '${kw}';`).join("\n")}
+      IDENT := '[a-zA-Z_][a-zA-Z0-9_]*';
+      Program := Item | Program Item;
+      Item := ${keywords.map((_, i) => `KW_${i}`).join(" | ")} | IDENT;
+    `;
+    const largeParserData = genParser(largeGrammar, { skipTokens: ["WS"] });
+
+    const codegenAuto = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    await codegenAuto.parser(largeParserData);
+    const autoLexerCode = await fsp.readFile(lexerStateFile, "utf-8");
+    expect(autoLexerCode).toContain("const ec = new Uint8Array(256);");
+    expect(autoLexerCode).toContain("table[state + ec[input[i++]]]");
+
+    const codegenForcedOff = new JavaScriptModuleCodegen({
+      lexerFile,
+      parserFile,
+      equivalenceClasses: false,
+    });
+    await codegenForcedOff.parser(largeParserData);
+    const forcedOffLexerCode = await fsp.readFile(lexerStateFile, "utf-8");
+    expect(forcedOffLexerCode).not.toContain("const ec = new Uint8Array(256);");
+    expect(forcedOffLexerCode).toContain("table[state + input[i++]]");
+  });
 });

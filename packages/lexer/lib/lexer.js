@@ -303,6 +303,124 @@ export function generateFromTokens(tokens) {
 }
 
 /**
+ * @typedef {Object} EquivalenceClasses
+ * @property {Uint8Array} classMap
+ * @property {number[]} classRep
+ * @property {number} numClasses
+ * @property {number} columns
+ * @property {number} shift
+ */
+
+/**
+ * @param {Pick<LexerData, "transitions" | "errorState">} data
+ * @returns {EquivalenceClasses}
+ */
+export function computeEquivalenceClasses(data) {
+  const { transitions, errorState } = data;
+  const numTransRows = transitions.length;
+  const dense = new Int32Array(numTransRows * 256).fill(errorState);
+  for (let r = 0; r < numTransRows; r++) {
+    const [, transition] = transitions[r];
+    const rowOffset = r * 256;
+    for (let i = 0; i < transition.length; i++) {
+      const [symbol, to] = transition[i];
+      dense[rowOffset + symbol] = to;
+    }
+  }
+
+  const rawClassMap = new Uint8Array(256);
+  /** @type {number[]} */
+  const rawClassRep = [];
+  /** @type {number[]} */
+  const rawClassCount = [];
+  let numClasses = 0;
+  let lastMatchedC = 0;
+
+  for (let b = 0; b < 256; b++) {
+    let matchedC = -1;
+    if (numClasses > 0) {
+      const rep0 = rawClassRep[lastMatchedC];
+      let eq0 = true;
+      for (let r = 0; r < numTransRows; r++) {
+        const rowOffset = r * 256;
+        if (dense[rowOffset + b] !== dense[rowOffset + rep0]) {
+          eq0 = false;
+          break;
+        }
+      }
+      if (eq0) {
+        matchedC = lastMatchedC;
+      } else {
+        for (let c = 0; c < numClasses; c++) {
+          if (c === lastMatchedC) {
+            continue;
+          }
+          const rep = rawClassRep[c];
+          let eq = true;
+          for (let r = 0; r < numTransRows; r++) {
+            const rowOffset = r * 256;
+            if (dense[rowOffset + b] !== dense[rowOffset + rep]) {
+              eq = false;
+              break;
+            }
+          }
+          if (eq) {
+            matchedC = c;
+            break;
+          }
+        }
+      }
+    }
+    if (matchedC === -1) {
+      matchedC = numClasses++;
+      rawClassRep.push(b);
+      rawClassCount.push(0);
+    }
+    rawClassMap[b] = matchedC;
+    rawClassCount[matchedC]++;
+    lastMatchedC = matchedC;
+  }
+
+  let maxCountClass = 0;
+  for (let c = 1; c < numClasses; c++) {
+    if (rawClassCount[c] > rawClassCount[maxCountClass]) {
+      maxCountClass = c;
+    }
+  }
+
+  const classMap = new Uint8Array(256);
+  /** @type {number[]} */
+  const classRep = new Array(numClasses);
+  if (maxCountClass === 0) {
+    classMap.set(rawClassMap);
+    for (let c = 0; c < numClasses; c++) {
+      classRep[c] = rawClassRep[c];
+    }
+  } else {
+    for (let c = 0; c < numClasses; c++) {
+      const newC = c === 0 ? maxCountClass : c === maxCountClass ? 0 : c;
+      classRep[newC] = rawClassRep[c];
+    }
+    for (let b = 0; b < 256; b++) {
+      const oldC = rawClassMap[b];
+      classMap[b] =
+        oldC === 0 ? maxCountClass : oldC === maxCountClass ? 0 : oldC;
+    }
+  }
+
+  const shift = Math.ceil(Math.log2(Math.max(2, numClasses)));
+  const columns = 1 << shift;
+
+  return {
+    classMap,
+    classRep,
+    numClasses,
+    columns,
+    shift,
+  };
+}
+
+/**
  * @param {string} grammar
  * @returns {LexerData}
  */

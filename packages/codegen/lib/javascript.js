@@ -1,3 +1,4 @@
+import { computeEquivalenceClasses } from "@par-gen/lexer";
 import { promises as fsp } from "fs";
 import { join, dirname, basename, extname } from "path";
 import prettier from "prettier";
@@ -27,6 +28,7 @@ export class JavaScriptBaseCodegen {
    * @param {string} options.lexerFile
    * @param {string} options.parserFile
    * @param {boolean=} options.debug
+   * @param {boolean=} options.equivalenceClasses
    */
   constructor(options) {
     /** @protected */
@@ -76,16 +78,7 @@ export class JavaScriptBaseCodegen {
       finals,
     } = data;
 
-    const columns = 256;
-
-    const pointerSize = transitions
-      .flatMap(([from, transition]) => [
-        from,
-        ...transition.flatMap(([, to]) => to),
-      ])
-      .every((state) => state <= 0xffff)
-      ? "Uint16Array"
-      : "Uint32Array";
+    const origColumns = 256;
 
     const tokenIdSize = tokenIds.every((id) => id === undefined || id <= 0xff)
       ? "Uint8Array"
@@ -98,7 +91,7 @@ export class JavaScriptBaseCodegen {
     /** @type {number[]} */
     const allOrigStates = [];
     for (let i = 0; i < totalStates; i++) {
-      allOrigStates.push(i * columns);
+      allOrigStates.push(i * origColumns);
     }
 
     const deadEndFinals = finals.filter((s) => {
@@ -116,48 +109,75 @@ export class JavaScriptBaseCodegen {
     const skipBytes = data.skipBytes ?? [];
     const skipTokenNames = new Set(data.skipTokenNames ?? []);
 
-    const compactDeadEndFinals =
-      deadEndFinals.length > 0 && deadEndFinals.length < columns;
+    const activeRowCount = 1 + continuableFinals.length + nonFinals.length;
+    const ecInfo = computeEquivalenceClasses(data);
+    const useEquivalenceClasses =
+      this.options.equivalenceClasses !== undefined
+        ? this.options.equivalenceClasses && ecInfo.columns < origColumns
+        : activeRowCount > 96 && ecInfo.columns < origColumns;
+
+    const columns = useEquivalenceClasses ? ecInfo.columns : origColumns;
+    const columnShift = useEquivalenceClasses ? ecInfo.shift : 8;
 
     const maxDeadEndTokenId = deadEndFinals.reduce((max, origState) => {
-      const id = tokenIds[origState / columns] ?? 0;
+      const id = tokenIds[origState / origColumns] ?? 0;
       return id > max ? id : max;
     }, 0);
+
+    const compactDeadEndFinals =
+      deadEndFinals.length > 0 &&
+      (useEquivalenceClasses || deadEndFinals.length < columns);
 
     const directDeadEndTokenIds =
       compactDeadEndFinals &&
       skipTokenNames.size === 0 &&
       deadEndFinals.every((origState) => {
-        const id = tokenIds[origState / columns];
-        return id !== undefined && id + 1 < columns;
+        const id = tokenIds[origState / origColumns];
+        return (
+          id !== undefined && (useEquivalenceClasses || id + 1 < columns)
+        );
       });
 
     if (directDeadEndTokenIds && continuableFinals.length > 1) {
       continuableFinals.sort(
         (a, b) =>
-          (tokenIds[a / columns] ?? 0) - (tokenIds[b / columns] ?? 0)
+          (tokenIds[a / origColumns] ?? 0) - (tokenIds[b / origColumns] ?? 0)
       );
     }
+
+    const remappedLastDeadEndFinal = directDeadEndTokenIds
+      ? maxDeadEndTokenId + 1
+      : compactDeadEndFinals
+      ? deadEndFinals.length
+      : deadEndFinals.length * columns;
+
+    const firstActiveRow = compactDeadEndFinals
+      ? Math.floor(remappedLastDeadEndFinal / columns) + 1
+      : 1;
 
     const rowStates = compactDeadEndFinals
       ? [errorState, ...continuableFinals, ...nonFinals]
       : [errorState, ...deadEndFinals, ...continuableFinals, ...nonFinals];
+
+    const totalRows = compactDeadEndFinals
+      ? firstActiveRow + continuableFinals.length + nonFinals.length
+      : rowStates.length;
 
     /** @type {Map<number, number>} */
     const stateRemap = new Map();
     if (directDeadEndTokenIds) {
       stateRemap.set(errorState, 0);
       deadEndFinals.forEach((origState) => {
-        const id = tokenIds[origState / columns] ?? 0;
+        const id = tokenIds[origState / origColumns] ?? 0;
         stateRemap.set(origState, id + 1);
       });
       continuableFinals.forEach((origState, idx) => {
-        stateRemap.set(origState, (idx + 1) * columns);
+        stateRemap.set(origState, (firstActiveRow + idx) * columns);
       });
       nonFinals.forEach((origState, idx) => {
         stateRemap.set(
           origState,
-          (continuableFinals.length + 1 + idx) * columns
+          (firstActiveRow + continuableFinals.length + idx) * columns
         );
       });
     } else if (compactDeadEndFinals) {
@@ -166,10 +186,13 @@ export class JavaScriptBaseCodegen {
         stateRemap.set(origState, idx + 1);
       });
       continuableFinals.forEach((origState, idx) => {
-        stateRemap.set(origState, (idx + 1) * columns);
+        stateRemap.set(origState, (firstActiveRow + idx) * columns);
       });
       nonFinals.forEach((origState, idx) => {
-        stateRemap.set(origState, (continuableFinals.length + 1 + idx) * columns);
+        stateRemap.set(
+          origState,
+          (firstActiveRow + continuableFinals.length + idx) * columns
+        );
       });
     } else {
       rowStates.forEach((origState, newIdx) => {
@@ -184,23 +207,25 @@ export class JavaScriptBaseCodegen {
     const remapState = (s) => stateRemap.get(s) ?? 0;
 
     const remappedStart = remapState(start);
-    const remappedLastDeadEndFinal = directDeadEndTokenIds
-      ? maxDeadEndTokenId + 1
-      : compactDeadEndFinals
-      ? deadEndFinals.length
-      : deadEndFinals.length * columns;
     const remappedLastFinal = directDeadEndTokenIds
       ? continuableFinals.length > 0
-        ? continuableFinals.length * columns
+        ? (firstActiveRow + continuableFinals.length - 1) * columns
         : maxDeadEndTokenId + 1
       : compactDeadEndFinals
       ? continuableFinals.length > 0
-        ? continuableFinals.length * columns
+        ? (firstActiveRow + continuableFinals.length - 1) * columns
         : deadEndFinals.length
       : finals.length * columns;
 
+    const maxStateValue = Math.max(
+      (totalRows - 1) * columns,
+      remappedLastFinal,
+      remappedStart
+    );
+    const pointerSize = maxStateValue <= 0xffff ? "Uint16Array" : "Uint32Array";
+
     const continuableTokenIds = continuableFinals.map(
-      (origState) => tokenIds[origState / columns] ?? 0
+      (origState) => tokenIds[origState / origColumns] ?? 0
     );
     const distinctContinuableTokenIds = Array.from(
       new Set(continuableTokenIds)
@@ -208,7 +233,7 @@ export class JavaScriptBaseCodegen {
     const needsContinuableTokenIdsTable =
       directDeadEndTokenIds && distinctContinuableTokenIds.length >= 3;
 
-    let continuableTokenIdExpr = "tokenIds[successState >> 8]";
+    let continuableTokenIdExpr = `tokenIds[successState >> ${columnShift}]`;
     if (directDeadEndTokenIds && continuableFinals.length > 0) {
       if (distinctContinuableTokenIds.length === 1) {
         continuableTokenIdExpr = `${distinctContinuableTokenIds[0]}`;
@@ -218,42 +243,45 @@ export class JavaScriptBaseCodegen {
         const count0 = continuableTokenIds.filter((id) => id === id0).length;
         const count1 = continuableFinals.length - count0;
         if (count0 === 1) {
-          continuableTokenIdExpr = `successState === ${columns} ? ${id0} : ${id1}`;
+          continuableTokenIdExpr = `successState === ${
+            firstActiveRow * columns
+          } ? ${id0} : ${id1}`;
         } else if (count1 === 1) {
           continuableTokenIdExpr = `successState === ${
-            continuableFinals.length * columns
+            (firstActiveRow + continuableFinals.length - 1) * columns
           } ? ${id1} : ${id0}`;
         } else {
           continuableTokenIdExpr = `successState <= ${
-            count0 * columns
+            (firstActiveRow + count0 - 1) * columns
           } ? ${id0} : ${id1}`;
         }
       }
     }
 
     const paddedTokenIdsLength = needsContinuableTokenIdsTable
-      ? continuableFinals.length + 1
+      ? firstActiveRow + continuableFinals.length
       : compactDeadEndFinals
-      ? Math.max(128, (continuableFinals.length + 1) * columns)
-      : Math.max(128, rowStates.length);
+      ? Math.max(128, (firstActiveRow + continuableFinals.length) * columns)
+      : Math.max(128, totalRows);
 
     /** @type {string[]} */
     const tokenIdsAssignments = [];
     if (needsContinuableTokenIdsTable) {
       continuableFinals.forEach((origState, idx) => {
-        const origIdx = origState / columns;
+        const origIdx = origState / origColumns;
         const id = tokenIds[origIdx];
         const name = tokenNames[origIdx];
+        const rowIdx = firstActiveRow + idx;
         if (id !== undefined && id !== 0) {
-          tokenIdsAssignments.push(`tokenIds[${idx + 1}] = ${id}; // ${name}`);
+          tokenIdsAssignments.push(`tokenIds[${rowIdx}] = ${id}; // ${name}`);
         } else {
-          tokenIdsAssignments.push(`// tokenIds[${idx + 1}] = 0; // ${name}`);
+          tokenIdsAssignments.push(`// tokenIds[${rowIdx}] = 0; // ${name}`);
         }
       });
     } else if (!directDeadEndTokenIds) {
       if (compactDeadEndFinals) {
         deadEndFinals.forEach((origState, idx) => {
-          const origIdx = origState / columns;
+          const origIdx = origState / origColumns;
           const id = tokenIds[origIdx];
           const name = tokenNames[origIdx];
           if (id !== undefined && id !== 0) {
@@ -263,10 +291,10 @@ export class JavaScriptBaseCodegen {
           }
         });
         continuableFinals.forEach((origState, idx) => {
-          const origIdx = origState / columns;
+          const origIdx = origState / origColumns;
           const id = tokenIds[origIdx];
           const name = tokenNames[origIdx];
-          const mappedState = (idx + 1) * columns;
+          const mappedState = (firstActiveRow + idx) * columns;
           if (id !== undefined && id !== 0) {
             tokenIdsAssignments.push(
               `tokenIds[${mappedState}] = ${id}; // ${name}`
@@ -279,7 +307,7 @@ export class JavaScriptBaseCodegen {
         });
       } else {
         rowStates.forEach((origState, i) => {
-          const origIdx = origState / columns;
+          const origIdx = origState / origColumns;
           const id = tokenIds[origIdx];
           const name = tokenNames[origIdx];
           if (id !== undefined && id !== 0) {
@@ -296,16 +324,20 @@ export class JavaScriptBaseCodegen {
     allOrigStates.forEach((origState) => {
       mappedStateNames.set(
         remapState(origState),
-        tokenNames[origState / columns]
+        tokenNames[origState / origColumns]
       );
     });
 
     const skipMappedStates = finals
       .filter((origState) => {
-        const name = tokenNames[origState / columns];
+        const name = tokenNames[origState / origColumns];
         return Boolean(name && skipTokenNames.has(name));
       })
       .map((origState) => remapState(origState));
+
+    const stepExpr = useEquivalenceClasses
+      ? "table[state + ec[input[i++]]]"
+      : "table[state + input[i++]]";
 
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
@@ -327,26 +359,52 @@ export class JavaScriptBaseCodegen {
       ${tokenIdsAssignments.join("\n")}`
       }
 
-      const table = new ${pointerSize}(${columns * rowStates.length});
+      ${
+        useEquivalenceClasses
+          ? `const ec = new Uint8Array(256);
+      ${this._formatTableRuns(
+        "ec",
+        Array.from(ecInfo.classMap)
+          .map((c, byte) => ({ index: byte, value: c }))
+          .filter((entry) => entry.value !== 0)
+      )}`
+          : ""
+      }
+
+      const table = new ${pointerSize}(${columns * totalRows});
       ${this._formatTableRuns(
         "table",
-        transitions
-          .flatMap(([from, transition]) => {
-            if (compactDeadEndFinals && deadEndFinals.includes(from)) {
-              return [];
+        transitions.flatMap(([from, transition]) => {
+          if (compactDeadEndFinals && deadEndFinals.includes(from)) {
+            return [];
+          }
+          const mappedFrom = remapState(from);
+          /** @type {Set<number>} */
+          const seenClasses = new Set();
+          /** @type {Array<{ index: number, value: number, comment?: string }>} */
+          const entries = [];
+          for (const [symbol, to] of transition) {
+            if (to === errorState) {
+              continue;
             }
-            const mappedFrom = remapState(from);
-            return transition
-              .filter(([, to]) => to !== errorState)
-              .map(([symbol, to]) => {
-                const mappedTo = remapState(to);
-                return {
-                  index: mappedFrom + symbol,
-                  value: mappedTo,
-                  comment: mappedStateNames.get(mappedTo),
-                };
-              });
-          })
+            const col = useEquivalenceClasses
+              ? ecInfo.classMap[symbol]
+              : symbol;
+            if (useEquivalenceClasses) {
+              if (seenClasses.has(col)) {
+                continue;
+              }
+              seenClasses.add(col);
+            }
+            const mappedTo = remapState(to);
+            entries.push({
+              index: mappedFrom + col,
+              value: mappedTo,
+              comment: mappedStateNames.get(mappedTo),
+            });
+          }
+          return entries;
+        })
       )}
 
       /**
@@ -373,7 +431,7 @@ export class JavaScriptBaseCodegen {
         }
         while (
           i < l &&
-          (state = table[state + input[i++]]) > ${remappedLastFinal}
+          (state = ${stepExpr}) > ${remappedLastFinal}
         );
 
         state -= 1;
@@ -413,7 +471,7 @@ export class JavaScriptBaseCodegen {
         while (i < l) {
           while (
             i < l &&
-            (state = table[state + input[i++]]) > ${remappedLastFinal}
+            (state = ${stepExpr}) > ${remappedLastFinal}
           );
           if (state <= ${remappedLastDeadEndFinal}) {
             break;
@@ -461,7 +519,7 @@ export class JavaScriptBaseCodegen {
             deadEndFinals.length === finals.length
               ? `while (
             i < l &&
-            (state = table[state + input[i++]]) > ${remappedLastFinal}
+            (state = ${stepExpr}) > ${remappedLastFinal}
           );
           if (state <= ${remappedLastFinal} && state !== 0) {
             successState = state;
@@ -470,7 +528,7 @@ export class JavaScriptBaseCodegen {
               : `while (i < l) {
             while (
               i < l &&
-              (state = table[state + input[i++]]) > ${remappedLastFinal}
+              (state = ${stepExpr}) > ${remappedLastFinal}
             );
             ${
               deadEndFinals.length > 0
@@ -506,7 +564,7 @@ export class JavaScriptBaseCodegen {
             state = ${
               compactDeadEndFinals
                 ? "tokenIds[successState]"
-                : "tokenIds[successState >> 8]"
+                : `tokenIds[successState >> ${columnShift}]`
             };
           } else {
             state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
@@ -541,7 +599,7 @@ export class JavaScriptBaseCodegen {
           deadEndFinals.length === finals.length
             ? `while (
           i < l &&
-          (state = table[state + input[i++]]) > ${remappedLastFinal}
+          (state = ${stepExpr}) > ${remappedLastFinal}
         );
         if (state <= ${remappedLastFinal} && state !== 0) {
           successState = state;
@@ -550,7 +608,7 @@ export class JavaScriptBaseCodegen {
             : `while (i < l) {
           while (
             i < l &&
-            (state = table[state + input[i++]]) > ${remappedLastFinal}
+            (state = ${stepExpr}) > ${remappedLastFinal}
           );
           ${
             deadEndFinals.length > 0
@@ -580,7 +638,7 @@ export class JavaScriptBaseCodegen {
           state = ${
             compactDeadEndFinals
               ? "tokenIds[successState]"
-              : "tokenIds[successState >> 8]"
+              : `tokenIds[successState >> ${columnShift}]`
           };
         } else {
           state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
