@@ -472,14 +472,14 @@ function parse(input) {
   const stack = arena.stack;
   const tree = arena.tree;
   if (stream.length >>> 1 <= tree.length) {
-    stack[0] = 0; // starting state
+    let top = 0; // starting state
+    stack[0] = top;
     let sp = 0;
     // let the tree stack start from offset 3
     // offset 0 means an error occurred and should be used by the parser
     let tp = 3;
 
     while (true) {
-      const top = stack[sp];
       const currentState = top >>> 20;
 
       const actionLookup = actionsTable[currentState + lookahead];
@@ -494,7 +494,8 @@ function parse(input) {
         tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
 
         sp += 1;
-        stack[sp] = tp | (actionLookup << 19);
+        top = tp | (actionLookup << 19);
+        stack[sp] = top;
 
         const res = nextToken(stream, lookaheadSpan & 0x3fffff);
         lookahead = res.state;
@@ -524,7 +525,8 @@ function parse(input) {
 
         sp += 1;
         tree[tp + 1] = stack[sp]; // first child
-        stack[sp] = tp | nextState;
+        top = tp | nextState;
+        stack[sp] = top;
       }
 
       tp += 3;

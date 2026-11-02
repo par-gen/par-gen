@@ -399,4 +399,75 @@ describe("JavaScriptModuleCodegen", () => {
     expect(lexerCode).not.toContain("let successState =");
     expect(lexerCode).toContain("if (successPos !== 0)");
   });
+
+  it("should carry top in a register in parse() and cap constant-base non-final self-loops when skipBytes are active", async () => {
+    const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+    const grammar = `
+      WS := '[ ]+';
+      DSTR := '"[^"]*"';
+      SSTR := '\\x27[^\\x27]*\\x27';
+      IDENT := '[a-z]+';
+      SEMI := ';';
+      Program := Stmt | Program Stmt;
+      Stmt := DSTR SEMI | SSTR SEMI | IDENT SEMI;
+    `;
+
+    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    await codegen.parser(genParser(grammar, { skipTokens: ["WS"] }));
+
+    const lexerCode = await fsp.readFile(lexerStateFile, "utf-8");
+    const parserCode = await fsp.readFile(parserFile, "utf-8");
+
+    // 1. Verify top register caching across the parse(input) while(true) loop
+    expect(parserCode).toContain("let top = 0;");
+    expect(parserCode).toContain("stack[0] = top;");
+    expect(parserCode).not.toContain("const top = stack[sp];");
+    expect(parserCode).toContain("top = tp | (actionLookup << 19);");
+    expect(parserCode).toContain("top = tp | nextState;");
+
+    // 2. Verify at most 1 constant-base non-final self-loop is emitted when skipBytes.length > 0
+    const constSelfLoops = lexerCode.match(
+      /while \(i < l && \(state = t\[\d+ \+ input\[i\+\+\]\]\) === \d+\);/g
+    );
+    expect(constSelfLoops ? constSelfLoops.length : 0).toBe(1);
+
+    // 3. Verify both double-quoted and single-quoted strings parse accurately
+    /** @type {*} */
+    let parsedResult;
+    const context = vm.createContext({
+      output: (/** @type {*} */ r) => {
+        parsedResult = r;
+      },
+      Buffer,
+    });
+    const mod = new SourceTextModule(
+      `
+        import { parse } from 'parser-file';
+        output(parse('  "hello world" ; \\'single quoted\\' ; abc ; ').toJSON());
+      `,
+      { context }
+    );
+    await mod.link(
+      /**
+       * @param {string} specifier
+       * @param {*} referencingModule
+       */
+      async (specifier, referencingModule) => {
+        if (specifier === `./${basename(lexerStateFile)}`) {
+          const code = await fsp.readFile(lexerStateFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        } else if (specifier === "parser-file") {
+          const code = await fsp.readFile(parserFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        }
+        throw new Error(`Unable to resolve dependency: ${specifier}`);
+      }
+    );
+    await mod.evaluate();
+    expect(parsedResult.name).toBe("Program");
+  });
 });

@@ -102,25 +102,40 @@ export class JavaScriptBaseCodegen {
       const tr = transMap.get(s) || [];
       return !tr.every(([, to]) => to === errorState);
     });
+    const skipBytes = data.skipBytes ?? [];
+    const skipTokenNames = new Set(data.skipTokenNames ?? []);
+
     const nonFinals = allOrigStates.filter(
       (s) => s !== errorState && !finalSet.has(s)
     );
-    const selfLoopNonFinals = nonFinals.filter((s) => {
-      const tr = transMap.get(s) || [];
-      return tr.some(([, to]) => to === s);
-    });
-    const otherNonFinals = nonFinals.filter((s) => {
-      const tr = transMap.get(s) || [];
-      return !tr.some(([, to]) => to === s);
-    });
+    const maxSelfLoopNonFinals = skipBytes.length > 0 ? 1 : 2;
+    const allSelfLoopNonFinals = nonFinals
+      .filter((s) => {
+        const tr = transMap.get(s) || [];
+        return tr.some(([, to]) => to === s);
+      })
+      .sort((a, b) => {
+        const countA = (transMap.get(a) || []).filter(
+          ([, to]) => to === a
+        ).length;
+        const countB = (transMap.get(b) || []).filter(
+          ([, to]) => to === b
+        ).length;
+        return countB - countA;
+      });
+    const selfLoopNonFinals = allSelfLoopNonFinals.slice(
+      0,
+      maxSelfLoopNonFinals
+    );
+    const selfLoopNonFinalSet = new Set(selfLoopNonFinals);
+    const otherNonFinals = nonFinals.filter(
+      (s) => !selfLoopNonFinalSet.has(s)
+    );
     const orderedNonFinals = [...selfLoopNonFinals, ...otherNonFinals];
     const hasContinuableSelfLoops = continuableFinals.some((s) => {
       const tr = transMap.get(s) || [];
       return tr.some(([, to]) => to === s);
     });
-
-    const skipBytes = data.skipBytes ?? [];
-    const skipTokenNames = new Set(data.skipTokenNames ?? []);
 
     const activeRowCount = 1 + continuableFinals.length + nonFinals.length;
     const ecInfo = computeEquivalenceClasses(data);
@@ -512,7 +527,7 @@ export class JavaScriptBaseCodegen {
         };`
             : directDeadEndTokenIds && !useEquivalenceClasses
             ? `// ${remappedStart / columns}
-        let state = ${remappedStart};
+        let state = 0;
         ${
           distinctContinuableTokenIds.length <= 1
             ? ""
@@ -526,7 +541,7 @@ export class JavaScriptBaseCodegen {
         const t = table;
         ${
           skipBytes.length > 0
-            ? `while (i < l && skipTable[input[i]] !== 0) {
+            ? `while (i < l && skipTable[input[i]]) {
           i++;
         }
         offset = i;`
@@ -536,7 +551,7 @@ export class JavaScriptBaseCodegen {
           i < l &&
           (state = t[${remappedStart} + input[i++]]) > ${remappedLastDeadEndFinal}
         ) {
-          while (true) {
+          do {
             if (state > ${remappedLastSelfLoop}) {
               while (
                 i < l &&
@@ -579,36 +594,31 @@ export class JavaScriptBaseCodegen {
               }
               ${branchingContinuableFinals.length > 0 ? "successPos = i;" : ""}
             }
-            if (i >= l) {
-              break;
-            }
-            state = t[state + input[i++]];
-          }
+          } while (i < l && (state = t[state + input[i++]]));
         }
 
-        state -= 1;
-        if (state >>> 0 >= ${remappedLastDeadEndFinal}) {
+        if (--state >>> 0 >= ${remappedLastDeadEndFinal}) {
           ${
             branchingContinuableFinals.length > 0
               ? `if (${
                   distinctContinuableTokenIds.length <= 1
                     ? "successPos !== 0"
+                    : needsContinuableTokenIdsTable || skipBytes.length > 0
+                    ? "successState"
                     : "successState !== 0"
                 }) {
-            state = ${continuableTokenIdExpr};
             i = successPos;
+            state = ${continuableTokenIdExpr};
           } else {
             state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
                   tokenIds[tokenNames.indexOf(ERROR)]
                 };
-            offset = -1;
-            i = -1;
+            offset = i = -1;
           }`
               : `state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
                   tokenIds[tokenNames.indexOf(ERROR)]
                 };
-          offset = -1;
-          i = -1;`
+          offset = i = -1;`
           }
         }
         return {
@@ -1504,9 +1514,10 @@ export class JavaScriptBaseCodegen {
         const stack = arena.stack;
         const tree = arena.tree;
         if (stream.length >>> 1 <= tree.length) {
-          stack[0] = ${
+          let top = ${
             states.indexOf(start) * stateMultiplier * 1048576
           }; // starting state
+          stack[0] = top;
           let sp = 0;
           // let the tree stack start from offset 3
           // offset 0 means an error occurred and should be used by the parser
@@ -1515,7 +1526,6 @@ export class JavaScriptBaseCodegen {
           ${debug(() => `let steps = 0;`)}
           while (true) {
             ${debug(() => `steps++;`)}
-            const top = stack[sp];
             const currentState = top >>> 20;
 
             ${actionLookupCode}
@@ -1536,7 +1546,8 @@ export class JavaScriptBaseCodegen {
               tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
 
               sp += 1;
-              stack[sp] = tp | (actionLookup << 19);
+              top = tp | (actionLookup << 19);
+              stack[sp] = top;
 
               ${
                 this.options.debug
@@ -1622,7 +1633,8 @@ export class JavaScriptBaseCodegen {
 
               sp += 1;
               tree[tp + 1] = stack[sp]; // first child
-              stack[sp] = tp | nextState;
+              top = tp | nextState;
+              stack[sp] = top;
 
               ${debug(
                 () => `

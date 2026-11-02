@@ -87,7 +87,7 @@ table.fill(6144, 6753, 6759); // STRING
  */
 const next = (input, offset) => {
   // 7
-  let state = 1792;
+  let state = 0;
 
   let successPos = 0;
 
@@ -97,7 +97,7 @@ const next = (input, offset) => {
   const t = table;
 
   if (i < l && (state = t[1792 + input[i++]]) > 12) {
-    while (true) {
+    do {
       if (state > 1536) {
         while (i < l && (state = t[state + input[i++]]) > 1536);
       }
@@ -118,22 +118,16 @@ const next = (input, offset) => {
 
         successPos = i;
       }
-      if (i >= l) {
-        break;
-      }
-      state = t[state + input[i++]];
-    }
+    } while (i < l && (state = t[state + input[i++]]));
   }
 
-  state -= 1;
-  if (state >>> 0 >= 12) {
+  if (--state >>> 0 >= 12) {
     if (successPos !== 0) {
-      state = 11;
       i = successPos;
+      state = 11;
     } else {
       state = i === l ? 12 : 13;
-      offset = -1;
-      i = -1;
+      offset = i = -1;
     }
   }
   return {
