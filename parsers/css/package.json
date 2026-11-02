@@ -1,0 +1,22 @@
+{
+  "name": "@par-gen/css",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./index.js",
+  "scripts": {
+    "start": "node ./build-grammar.mjs"
+  },
+  "dependencies": {
+    "@par-gen/cli": "0.1.0"
+  },
+  "jest": {
+    "displayName": "CSS",
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "devDependencies": {
+    "@jest/globals": "26.6.2"
+  }
+}

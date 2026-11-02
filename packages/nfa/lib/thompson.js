@@ -173,15 +173,21 @@ export function fromRegExpParseTree(tree, { symbolMapper, stateFactory }) {
 
 /**
  * @param {Uint32Array} rawTree
+ * @param {number} c
+ * @returns {number}
+ */
+function prevSibling(rawTree, c) {
+  return rawTree[c] >>> 8 === 0 ? c - 2 : rawTree[c + 1] & 0xfffff;
+}
+
+/**
+ * @param {Uint32Array} rawTree
  * @param {number} ptr
  * @param {string} input
  * @returns {string}
  */
 function extractFlatChar(rawTree, ptr, input) {
-  let p = ptr;
-  while (rawTree[p] >>> 8 > 0) {
-    p = rawTree[p + 1] & 0xfffff;
-  }
+  const p = rawTree[ptr] >>> 8 === 0 ? ptr : (rawTree[ptr + 1] & 0xfffff) + 2;
   const span = rawTree[p + 1];
   const start = (span & 0x3fffff) - (span >>> 22);
   return BYTE_CHARS[input.charCodeAt(start)];
@@ -194,10 +200,7 @@ function extractFlatChar(rawTree, ptr, input) {
  * @returns {number}
  */
 function extractFlatCharCode(rawTree, ptr, input) {
-  let p = ptr;
-  while (rawTree[p] >>> 8 > 0) {
-    p = rawTree[p + 1] & 0xfffff;
-  }
+  const p = rawTree[ptr] >>> 8 === 0 ? ptr : (rawTree[ptr + 1] & 0xfffff) + 2;
   const span = rawTree[p + 1];
   const start = (span & 0x3fffff) - (span >>> 22);
   return input.charCodeAt(start);
@@ -227,18 +230,10 @@ function hexDigitValue(code) {
  * @returns {number}
  */
 function decodeFlatHexEscapeCode(rawTree, hexPtr, input) {
-  const n = rawTree[hexPtr] >>> 8;
-  const c0 = rawTree[hexPtr + 1] & 0xfffff;
-  const c1 = rawTree[c0 + 2];
-  const c2 = rawTree[c1 + 2];
-  if (n === 3) {
-    const d1 = hexDigitValue(extractFlatCharCode(rawTree, c1, input));
-    const d2 = hexDigitValue(extractFlatCharCode(rawTree, c2, input));
-    return (d1 << 4) | d2;
-  }
-  const c3 = rawTree[c2 + 2];
-  const d1 = hexDigitValue(extractFlatCharCode(rawTree, c2, input));
-  const d2 = hexDigitValue(extractFlatCharCode(rawTree, c3, input));
+  const last = hexPtr - 2;
+  const prev = prevSibling(rawTree, last);
+  const d1 = hexDigitValue(extractFlatCharCode(rawTree, prev, input));
+  const d2 = hexDigitValue(extractFlatCharCode(rawTree, last, input));
   return (d1 << 4) | d2;
 }
 
@@ -249,14 +244,21 @@ function decodeFlatHexEscapeCode(rawTree, hexPtr, input) {
  */
 function collectFlatSequenceNodes(rawTree, p, out) {
   const n = rawTree[p] >>> 8;
-  let child = rawTree[p + 1] & 0xfffff;
-  for (let i = 0; i < n; i++) {
-    if ((rawTree[child] & 0xff) === SYM_SEQUENCE) {
-      collectFlatSequenceNodes(rawTree, child, out);
-    } else {
-      out.push(child);
+  const children = new Array(n);
+  let child = p - 2;
+  for (let i = n - 1; i >= 0; i--) {
+    children[i] = child;
+    if (i > 0) {
+      child = prevSibling(rawTree, child);
     }
-    child = rawTree[child + 2];
+  }
+  for (let i = 0; i < n; i++) {
+    const c = children[i];
+    if ((rawTree[c] & 0xff) === SYM_SEQUENCE) {
+      collectFlatSequenceNodes(rawTree, c, out);
+    } else {
+      out.push(c);
+    }
   }
 }
 
@@ -294,9 +296,8 @@ function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
 
   if (symId === SYM_CHARACTER_CLASS_CHARACTER) {
     const nChildren = word0 >>> 8;
-    const c0 = rawTree[p + 1] & 0xfffff;
     if (nChildren === 2) {
-      const c1 = rawTree[c0 + 2];
+      const c1 = p - 2;
       const ch = decodeEscapedChar(extractFlatChar(rawTree, c1, input));
       if (excluded !== null) {
         excluded[ch.charCodeAt(0)] = 1;
@@ -308,11 +309,12 @@ function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
         }
       }
     } else if (nChildren === 1) {
+      const c0 = p - 2;
       const childSym = rawTree[c0] & 0xff;
       if (childSym === SYM_CHARACTER_CLASS_RANGE) {
-        const r0 = rawTree[c0 + 1] & 0xfffff;
-        const r1 = rawTree[r0 + 2];
-        const r2 = rawTree[r1 + 2];
+        const r2 = c0 - 2;
+        const r1 = prevSibling(rawTree, r2);
+        const r0 = prevSibling(rawTree, r1);
         const fromCode =
           (rawTree[r0] & 0xff) === SYM_HEX_ESCAPE
             ? decodeFlatHexEscapeCode(rawTree, r0, input)
@@ -368,10 +370,22 @@ function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
 
   const nChildren = word0 >>> 8;
   if (nChildren > 0) {
-    let child = rawTree[p + 1] & 0xfffff;
+    const children = new Array(nChildren);
+    let child = p - 2;
+    for (let i = nChildren - 1; i >= 0; i--) {
+      children[i] = child;
+      if (i > 0) {
+        child = prevSibling(rawTree, child);
+      }
+    }
     for (let i = 0; i < nChildren; i++) {
-      walkFlatCharacterClass(ctx, child, excluded, transitionMap, finalTarget);
-      child = rawTree[child + 2];
+      walkFlatCharacterClass(
+        ctx,
+        children[i],
+        excluded,
+        transitionMap,
+        finalTarget
+      );
     }
   }
 }
@@ -396,13 +410,14 @@ function visitFlat(ctx, ptr) {
       if (w >>> 8 === 0) {
         throw new Error("Illegal state");
       }
-      currentPtr = rawTree[currentPtr + 1] & 0xfffff;
+      currentPtr -= 2;
     } else if (s === SYM_GROUP) {
-      if (w >>> 8 < 2) {
+      const n = w >>> 8;
+      if (n < 2) {
         throw new Error("Illegal state");
       }
-      const c0 = rawTree[currentPtr + 1] & 0xfffff;
-      currentPtr = rawTree[c0 + 2];
+      currentPtr =
+        n === 2 ? currentPtr - 2 : prevSibling(rawTree, currentPtr - 2);
     } else {
       break;
     }
@@ -437,10 +452,13 @@ function visitFlat(ctx, ptr) {
       if (nChildren === 0) {
         throw new Error("Illegal state");
       }
-      const leftPtr = rawTree[currentPtr + 1] & 0xfffff;
-      const unionTokPtr = rawTree[leftPtr + 2];
       const hasRight = nChildren >= 3;
-      const rightPtr = hasRight ? rawTree[unionTokPtr + 2] : 0;
+      const rightPtr = hasRight ? currentPtr - 2 : 0;
+      const unionTokPtr = hasRight
+        ? prevSibling(rawTree, rightPtr)
+        : currentPtr - 2;
+      const leftPtr =
+        nChildren === 1 ? currentPtr - 2 : prevSibling(rawTree, unionTokPtr);
 
       const start = stateFactory(ctx.counter++, dummyNode);
       const final = stateFactory(ctx.counter++, dummyNode);
@@ -473,12 +491,12 @@ function visitFlat(ctx, ptr) {
       if (nChildren === 0) {
         throw new Error("Illegal state");
       }
-      const c0 = rawTree[currentPtr + 1] & 0xfffff;
+      const last = currentPtr - 2;
+      let c0 = last;
+      for (let i = 1; i < nChildren; i++) {
+        c0 = prevSibling(rawTree, c0);
+      }
       if (nChildren > 1) {
-        let last = c0;
-        for (let i = 1; i < nChildren; i++) {
-          last = rawTree[last + 2];
-        }
         if ((rawTree[last] & 0xff) === SYM_QUANTIFIER) {
           const quantifier = extractFlatChar(rawTree, last, input) || "*";
           const start = stateFactory(ctx.counter++, dummyNode);
@@ -500,23 +518,25 @@ function visitFlat(ctx, ptr) {
     }
 
     case SYM_CHARACTER_RULE: {
-      const c0 = rawTree[currentPtr + 1] & 0xfffff;
-      const childSym = rawTree[c0] & 0xff;
       let decoded = "";
       if (nChildren === 2) {
-        const c1 = rawTree[c0 + 2];
+        const c1 = currentPtr - 2;
         decoded = decodeEscapedChar(extractFlatChar(rawTree, c1, input));
-      } else if (childSym === SYM_ESCAPED_CHARACTER) {
-        const span = rawTree[c0 + 1];
-        const start = (span & 0x3fffff) - (span >>> 22);
-        decoded = decodeEscapedChar(BYTE_CHARS[input.charCodeAt(start + 1)]);
-      } else if (childSym === SYM_HEX_ESCAPE) {
-        decoded = BYTE_CHARS[decodeFlatHexEscapeCode(rawTree, c0, input)];
       } else if (nChildren === 4) {
         decoded =
           BYTE_CHARS[decodeFlatHexEscapeCode(rawTree, currentPtr, input)];
       } else {
-        decoded = extractFlatChar(rawTree, c0, input);
+        const c0 = currentPtr - 2;
+        const childSym = rawTree[c0] & 0xff;
+        if (childSym === SYM_ESCAPED_CHARACTER) {
+          const span = rawTree[c0 + 1];
+          const start = (span & 0x3fffff) - (span >>> 22);
+          decoded = decodeEscapedChar(BYTE_CHARS[input.charCodeAt(start + 1)]);
+        } else if (childSym === SYM_HEX_ESCAPE) {
+          decoded = BYTE_CHARS[decodeFlatHexEscapeCode(rawTree, c0, input)];
+        } else {
+          decoded = extractFlatChar(rawTree, c0, input);
+        }
       }
 
       const sym = mapFlatChar(ctx, decoded);
@@ -529,10 +549,10 @@ function visitFlat(ctx, ptr) {
     }
 
     case SYM_CHARACTER_CLASS: {
-      const c0 = rawTree[currentPtr + 1] & 0xfffff;
-      const c1 = rawTree[c0 + 2];
-      const negative = (rawTree[c1] & 0xff) === SYM_CARET;
-      const charsNode = negative ? rawTree[c1 + 2] : c1;
+      const closeBracket = currentPtr - 2;
+      const charsNode = prevSibling(rawTree, closeBracket);
+      const beforeChars = prevSibling(rawTree, charsNode);
+      const negative = (rawTree[beforeChars] & 0xff) === SYM_CARET;
       if (
         !charsNode ||
         (rawTree[charsNode] & 0xff) !== SYM_CHARACTER_CLASS_CHARACTERS

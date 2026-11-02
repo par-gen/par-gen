@@ -421,12 +421,18 @@ describe("JavaScriptModuleCodegen", () => {
     const lexerCode = await fsp.readFile(lexerStateFile, "utf-8");
     const parserCode = await fsp.readFile(parserFile, "utf-8");
 
-    // 1. Verify top register caching across the parse(input) while(true) loop
+    // 1. Verify top register caching & 2-word postorder CST across the parse(input) while(true) loop
     expect(parserCode).toContain("let top = 0;");
     expect(parserCode).toContain("stack[0] = top;");
     expect(parserCode).not.toContain("const top = stack[sp];");
     expect(parserCode).toContain("top = tp | (actionLookup << 19);");
     expect(parserCode).toContain("top = tp | nextState;");
+    expect(parserCode).toContain("let tp = 2;");
+    expect(parserCode).toContain("tp += 2;");
+    expect(parserCode).not.toContain("tp += 3;");
+    expect(parserCode).not.toContain("+ 2] = tp;");
+    expect(parserCode).not.toContain("tree[tp + 1] = stack[sp];");
+    expect(parserCode).toContain("tree[tp + 1] = rtop;");
 
     // 2. Verify at most 1 constant-base non-final self-loop is emitted when skipBytes.length > 0
     const constSelfLoops = lexerCode.match(
@@ -472,5 +478,178 @@ describe("JavaScriptModuleCodegen", () => {
     );
     await mod.evaluate();
     expect(parsedResult.name).toBe("Program");
+  });
+
+  it("should provide zero-allocation CstNode navigation helpers, toSExpr(), LineIndex, and rich cold-path SyntaxError diagnostics", async () => {
+    const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+    const grammar = `
+      WS := '[ \\t\\r\\n]+' @ skip;
+      IDENT := '[a-z]+';
+      EQ := '=';
+      NUM := '[0-9]+';
+      SEMI := ';';
+
+      Program := Stmt | Program Stmt;
+      Stmt := IDENT EQ NUM SEMI;
+    `;
+
+    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    await codegen.parser(genParser(grammar));
+
+    const parserCode = await fsp.readFile(parserFile, "utf-8");
+    expect(parserCode).toContain("function throwSyntaxError(");
+
+    const dtsCode = await fsp.readFile(
+      join(directory, "parser.d.ts"),
+      "utf-8"
+    );
+    expect(dtsCode).toContain("export type NodeName = SymbolName;");
+    expect(dtsCode).toContain("export interface SourceLocation {");
+    expect(dtsCode).toContain("export interface LineIndex {");
+    expect(dtsCode).toContain("export interface ParseSyntaxError extends SyntaxError {");
+    expect(dtsCode).toContain("readonly firstChild: CstNode | undefined;");
+    expect(dtsCode).toContain("readonly lastChild: CstNode | undefined;");
+    expect(dtsCode).toContain("child(index: number): CstNode | undefined;");
+    expect(dtsCode).toContain("childByName<ChildName extends SymbolName>(");
+    expect(dtsCode).toContain("childrenByName<ChildName extends SymbolName>(");
+    expect(dtsCode).toContain("toSExpr(includeText?: boolean): string;");
+
+    /** @type {*} */
+    let exportsObj;
+    const context = vm.createContext({
+      output: (/** @type {*} */ r) => {
+        exportsObj = r;
+      },
+      Buffer,
+    });
+    const mod = new SourceTextModule(
+      `
+        import * as parserMod from 'parser-file';
+        output(parserMod);
+      `,
+      { context }
+    );
+    await mod.link(
+      /**
+       * @param {string} specifier
+       * @param {*} referencingModule
+       */
+      async (specifier, referencingModule) => {
+        if (specifier === `./${basename(lexerStateFile)}`) {
+          const code = await fsp.readFile(lexerStateFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        } else if (specifier === "parser-file") {
+          const code = await fsp.readFile(parserFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        }
+        throw new Error(`Unable to resolve dependency: ${specifier}`);
+      }
+    );
+    await mod.evaluate();
+
+    const { parse, LineIndex } = exportsObj;
+    const validInput = "foo = 123;\n  bar = 456;\n";
+    const root = parse(validInput);
+
+    expect(root.name).toBe("Program");
+    expect(root.isLeaf).toBe(false);
+    expect(root.childCount).toBe(2);
+    expect(typeof root.symbolId).toBe("number");
+    expect(root.text).toBe("foo = 123;\n  bar = 456;");
+
+    const stmt2 = root.lastChild;
+    expect(stmt2).toBeDefined();
+    expect(stmt2.name).toBe("Stmt");
+    expect(stmt2.childCount).toBe(4);
+    expect(stmt2.firstChild.name).toBe("IDENT");
+    expect(stmt2.firstChild.text).toBe("bar");
+    expect(stmt2.firstChild.isLeaf).toBe(true);
+    expect(stmt2.firstChild.firstChild).toBeUndefined();
+    expect(stmt2.firstChild.lastChild).toBeUndefined();
+    expect(stmt2.lastChild.name).toBe("SEMI");
+    expect(stmt2.lastChild.text).toBe(";");
+    expect(stmt2.child(0).text).toBe("bar");
+    expect(stmt2.child(2).text).toBe("456");
+    expect(stmt2.child(-1).text).toBe(";");
+    expect(stmt2.child(4)).toBeUndefined();
+    expect(stmt2.child(-5)).toBeUndefined();
+
+    expect(stmt2.childByName("NUM").text).toBe("456");
+    expect(stmt2.childByName("UNKNOWN")).toBeUndefined();
+    expect(stmt2.childrenByName("NUM").map((/** @type {*} */ n) => n.text)).toEqual([
+      "456",
+    ]);
+    expect(stmt2.firstChild.childrenByName("NUM")).toEqual([]);
+
+    expect(stmt2.toSExpr()).toBe("(Stmt (IDENT) (EQ) (NUM) (SEMI))");
+    expect(stmt2.toSExpr(true)).toBe(
+      '(Stmt (IDENT "bar") (EQ "=") (NUM "456") (SEMI ";"))'
+    );
+
+    const cursor = stmt2.cursor();
+    expect(cursor.gotoFirstChild()).toBe(true);
+    expect(cursor.text).toBe("bar");
+
+    const lineIdx = new LineIndex(validInput);
+    expect(lineIdx.locationForOffset(stmt2.start)).toEqual({
+      line: 2,
+      column: 3,
+    });
+
+    // 1. Unexpected token on line 2 (SEMI instead of NUM)
+    /** @type {*} */
+    let tokenErr;
+    try {
+      parse("foo = 123;\n  bar = ;");
+    } catch (e) {
+      tokenErr = e;
+    }
+    expect(tokenErr).toBeDefined();
+    expect(tokenErr.name).toBe("SyntaxError");
+    expect(tokenErr.line).toBe(2);
+    expect(tokenErr.column).toBe(9);
+    expect(tokenErr.found).toBe("SEMI");
+    expect(tokenErr.tokenText).toBe(";");
+    expect(tokenErr.expected).toEqual(["NUM"]);
+    expect(tokenErr.message).toContain("line 2, column 9");
+    expect(tokenErr.message).toContain("Expected one of: NUM");
+    expect(tokenErr.message).toContain("2 |   bar = ;");
+
+    // 2. Lexer error (@par-gen.ERROR) on line 2
+    /** @type {*} */
+    let lexErr;
+    try {
+      parse("foo = 123;\n  bar = @invalid;");
+    } catch (e) {
+      lexErr = e;
+    }
+    expect(lexErr).toBeDefined();
+    expect(lexErr.name).toBe("SyntaxError");
+    expect(lexErr.line).toBe(2);
+    expect(lexErr.column).toBe(9);
+    expect(lexErr.found).toBe("@par-gen.ERROR");
+    expect(lexErr.tokenText).toBe("@");
+    expect(lexErr.expected).toEqual(["NUM"]);
+    expect(lexErr.message).toContain('(@par-gen.ERROR ("@"))'.slice(1, -1));
+    expect(lexErr.message).toContain("2 |   bar = @invalid;");
+
+    // 3. Unexpected EOF (@par-gen.EOF)
+    /** @type {*} */
+    let eofErr;
+    try {
+      parse("foo = 123;\n  bar = 456");
+    } catch (e) {
+      eofErr = e;
+    }
+    expect(eofErr).toBeDefined();
+    expect(eofErr.name).toBe("SyntaxError");
+    expect(eofErr.line).toBe(2);
+    expect(eofErr.column).toBe(12);
+    expect(eofErr.found).toBe("@par-gen.EOF");
+    expect(eofErr.expected).toEqual(["SEMI"]);
   });
 });

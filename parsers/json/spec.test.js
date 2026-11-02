@@ -38,7 +38,7 @@ describe("JSON", () => {
     expect(parse(await fsp.readFile("package.json"))).toBeTruthy();
   });
 
-  it("should auto-grow tree arena from 16384 to 524288 and 1048576 words with 100% lossless re-emission while preserving prior CST roots", async () => {
+  it("should auto-grow tree arena from 16384 to 262144 and 1048576 words with 100% lossless re-emission while preserving prior CST roots", async () => {
     /**
      * @param {*} cst
      * @param {Uint8Array} stream
@@ -47,30 +47,20 @@ describe("JSON", () => {
       const tree = cst.__tree;
       const out = Buffer.allocUnsafe(stream.length);
       let offset = 0;
-      const dfsStack = [cst.__pointer];
+      const rootPtr = cst.__pointer;
+      const startPtr =
+        (tree[rootPtr] >>> 8) === 0
+          ? rootPtr
+          : (tree[rootPtr + 1] & 0xfffff) + 2;
 
-      while (dfsStack.length > 0) {
-        const p = /** @type {number} */ (dfsStack.pop());
-        const word0 = tree[p];
-        const nChildren = word0 >>> 8;
-        if (nChildren === 0) {
+      for (let p = startPtr; p <= rootPtr; p += 2) {
+        if ((tree[p] >>> 8) === 0) {
           const span = tree[p + 1];
           const end = span & 0x3fffff;
           const len = span >>> 22;
           const start = end - len;
           out.set(stream.subarray(start, end), offset);
           offset += len;
-        } else {
-          const children = new Array(nChildren);
-          let child = tree[p + 1] & 0xfffff;
-          children[0] = child;
-          for (let i = 1; i < nChildren; i++) {
-            child = tree[child + 2];
-            children[i] = child;
-          }
-          for (let i = nChildren - 1; i >= 0; i--) {
-            dfsStack.push(children[i]);
-          }
         }
       }
 
@@ -85,7 +75,7 @@ describe("JSON", () => {
     expect(cstPkg.end).toBe(pkgBuf.length);
     expect(cstPkg.__tree.length).toBe(16384);
 
-    // 2. package-lock.json (495 KiB, 112,667 CST nodes = 338,001 words)
+    // 2. package-lock.json (~658 KiB, ~143,000 CST nodes = ~286,000 words)
     // Triggers 5 dynamic doublings: 16384 -> 32768 -> 65536 -> 131072 -> 262144 -> 524288
     const lockBuf = await fsp.readFile("package-lock.json");
     const cstLock = /** @type {*} */ (parse(lockBuf));
@@ -95,7 +85,7 @@ describe("JSON", () => {
     expect(cstLock.__tree.length).toBe(524288);
     expect(Buffer.compare(reemitLossless(cstLock, lockBuf), lockBuf)).toBe(0);
 
-    // 3. Synthetic ~1.5 MB JSON document (~265,000 CST nodes = ~795,000 words)
+    // 3. Synthetic ~1.5 MB JSON document (~265,000 CST nodes = ~530,000 words)
     // Triggers dynamic growth to 1,048,576 words (4 MiB)
     const entries = new Array(5300);
     for (let i = 0; i < 5300; i++) {

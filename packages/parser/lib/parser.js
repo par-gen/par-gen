@@ -58,6 +58,7 @@ const log = debug("par-gen:parser");
  * @property {boolean=} preserveExtras
  * @property {number=} extraTokenId
  * @property {string=} extraTokenName
+ * @property {number=} newlineTokenId
  */
 
 /**
@@ -163,7 +164,7 @@ export function generate(grammar, options) {
         list.push(token);
       });
       return groups;
-    }, /** @type {Map<string, Token[]>} */ (new Map()));
+    }, /** @type {Map<string, Token[]>} */ (new Map([["initial", []]])));
 
     /** @type {Lexers} */
     const lexers = {};
@@ -385,6 +386,7 @@ export function generate(grammar, options) {
     while (changed) {
       changed = false;
       const stateList = Array.from(states);
+      const stateIdxMap = new Map(stateList.map((s, idx) => [s, idx]));
       /** @type {Map<string, ItemState>} */
       const sigMap = new Map();
       /** @type {Map<ItemState, ItemState>} */
@@ -392,27 +394,37 @@ export function generate(grammar, options) {
 
       for (const st of stateList) {
         const actMap = actions.get(st);
-        const items = Array.from(st.values());
+        /** @type {Item[]} */
+        const itemsWithSemAct = [];
+        /** @type {Map<string, Item>} */
+        const completedBySymLa = new Map();
+        for (const it of st.values()) {
+          if (it.semanticAction && it.marker < it.tokens.length) {
+            itemsWithSemAct.push(it);
+          }
+          if (it.marker === it.tokens.length) {
+            const cKey = `${it.name}\0${it.lookahead}`;
+            if (!completedBySymLa.has(cKey)) {
+              completedBySymLa.set(cKey, it);
+            }
+          }
+        }
         const actEntries = actMap
           ? Array.from(actMap.entries())
               .map(([sym, act]) => {
                 if (act.op === "shift") {
-                  const semActs = items
-                    .filter(
-                      (it) => it.tokens[it.marker] === sym && it.semanticAction
-                    )
-                    .map((it) => it.semanticAction?.trim())
-                    .filter((v, idx, arr) => arr.indexOf(v) === idx)
-                    .join(",");
-                  return `${sym}:S:${stateList.indexOf(act.state)}:${semActs}`;
+                  const semActs =
+                    itemsWithSemAct.length > 0
+                      ? itemsWithSemAct
+                          .filter((it) => it.tokens[it.marker] === sym)
+                          .map((it) => it.semanticAction?.trim())
+                          .filter((v, idx, arr) => arr.indexOf(v) === idx)
+                          .join(",")
+                      : "";
+                  return `${sym}:S:${stateIdxMap.get(act.state)}:${semActs}`;
                 }
                 if (act.op === "reduce") {
-                  const matched = items.find(
-                    (it) =>
-                      it.name === act.symbol &&
-                      it.marker === it.tokens.length &&
-                      it.lookahead === sym
-                  );
+                  const matched = completedBySymLa.get(`${act.symbol}\0${sym}`);
                   const len = matched ? matched.tokens.length : 0;
                   const semAct = matched?.semanticAction ?? "";
                   return `${sym}:R:${act.symbol}:${len}:${semAct}`;
@@ -426,7 +438,7 @@ export function generate(grammar, options) {
         const gotoMap = goto.get(st);
         const gotoEntries = gotoMap
           ? Array.from(gotoMap.entries())
-              .map(([sym, target]) => `${sym}:G:${stateList.indexOf(target)}`)
+              .map(([sym, target]) => `${sym}:G:${stateIdxMap.get(target)}`)
               .sort()
               .join("|")
           : "";
@@ -610,6 +622,15 @@ export function generate(grammar, options) {
       parserData.contextualKeywordTokenNames =
         contextualKeywordTokenNames ?? [];
     }
+    const newlineTok = parserTokens.find(
+      (t) => t.expr === "\\n" || t.expr === "\\r?\\n"
+    );
+    if (newlineTok) {
+      const nlIdx = parserSymbols.indexOf(newlineTok.name);
+      if (nlIdx !== -1) {
+        parserData.newlineTokenId = nlIdx;
+      }
+    }
     if (preserveExtras && extraTokenName) {
       const extraIdx = parserSymbols.indexOf(extraTokenName);
       if (extraIdx !== -1) {
@@ -677,44 +698,74 @@ function printItem(item) {
  * @returns {Item[]}
  */
 function createItems(tokens, EOF, rules) {
-  return [
-    ...rules.flatMap((rule) => [
-      ...rule.symbols.flatMap((_, i) => [
-        {
+  /** @type {Item[]} */
+  const result = [];
+  /** @type {Map<string, Item>} */
+  const index = new Map();
+  const allLookaheads = [EOF, ...tokens.map((t) => t.name)];
+
+  for (let r = 0; r < rules.length; r++) {
+    const rule = rules[r];
+    const symJoined = rule.symbols.join("\0");
+    const len = rule.symbols.length;
+    /** @type {(string | undefined)[]} */
+    const semByMarker = new Array(len + 1);
+    for (let a = 0; a < rule.actions.length; a++) {
+      const act = rule.actions[a];
+      if (act.at >= 0 && act.at <= len && semByMarker[act.at] === undefined) {
+        semByMarker[act.at] = act.code;
+      }
+    }
+
+    /** @type {Item[][]} */
+    const canonicalByMarker = new Array(len + 1);
+    for (let i = 0; i <= len; i++) {
+      const markerItems = new Array(allLookaheads.length);
+      const sem = semByMarker[i];
+      const prefix = `${rule.name}\0${i}\0`;
+      const suffix = `\0${symJoined}`;
+      for (let l = 0; l < allLookaheads.length; l++) {
+        const la = allLookaheads[l];
+        /** @type {Item} */
+        const item = {
           name: rule.name,
           tokens: rule.symbols,
           marker: i,
-          lookahead: EOF,
-          semanticAction: rule.actions.find((action) => action.at === i)?.code,
-        },
-        ...tokens.map((token) => ({
-          name: rule.name,
-          tokens: rule.symbols,
-          marker: i,
-          lookahead: token.name,
-          semanticAction: rule.actions.find((action) => action.at === i)?.code,
-        })),
-      ]),
-      {
-        name: rule.name,
-        tokens: rule.symbols,
-        marker: rule.symbols.length,
-        lookahead: EOF,
-        semanticAction: rule.actions.find(
-          (action) => action.at === rule.symbols.length
-        )?.code,
-      },
-      ...tokens.map((token) => ({
-        name: rule.name,
-        tokens: rule.symbols,
-        marker: rule.symbols.length,
-        lookahead: token.name,
-        semanticAction: rule.actions.find(
-          (action) => action.at === rule.symbols.length
-        )?.code,
-      })),
-    ]),
-  ];
+          lookahead: la,
+          semanticAction: sem,
+        };
+        result.push(item);
+        const key = `${prefix}${la}${suffix}`;
+        let canon = index.get(key);
+        if (!canon) {
+          canon = item;
+          index.set(key, item);
+        }
+        markerItems[l] = canon;
+      }
+      canonicalByMarker[i] = markerItems;
+    }
+
+    /** @type {Map<string, Item>} */
+    const item0ByLa = new Map();
+    const m0 = canonicalByMarker[0];
+    for (let l = 0; l < allLookaheads.length; l++) {
+      item0ByLa.set(allLookaheads[l], m0[l]);
+    }
+    /** @type {*} */ (rule)._item0ByLa = item0ByLa;
+    /** @type {*} */ (rule)._itemsRef = result;
+
+    for (let i = 0; i <= len; i++) {
+      const curRow = canonicalByMarker[i];
+      const nextRow = canonicalByMarker[Math.min(i + 1, len)];
+      for (let l = 0; l < allLookaheads.length; l++) {
+        /** @type {*} */ (curRow[l])._shifted = nextRow[l];
+      }
+    }
+  }
+
+  itemLookupCache.set(result, index);
+  return result;
 }
 
 /** @type {WeakMap<Item[], Map<string, Item>>} */
@@ -922,7 +973,7 @@ function getNonTermLookaheadClosure(
 
   /** @type {Item[]} */
   const closure = [];
-  /** @type {Set<string>} */
+  /** @type {Set<Item | string>} */
   const seenItems = new Set();
   /** @type {Set<string>} */
   const expandedNonTermLookahead = new Set([cacheKey]);
@@ -930,24 +981,32 @@ function getNonTermLookaheadClosure(
   const open = [];
 
   for (const rule of startRules) {
-    /** @type {Item} */
-    const rawItem = {
-      name: rule.name,
-      tokens: rule.symbols,
-      marker: 0,
-      lookahead,
-      semanticAction: rule.actions.find((action) => action.at === 0)?.code,
-    };
-    const item = items ? getItem(rawItem, items) : rawItem;
-    const key = getItemKey(item);
+    /** @type {Item | undefined} */
+    let item =
+      items && /** @type {*} */ (rule)._itemsRef === items
+        ? /** @type {*} */ (rule)._item0ByLa?.get(lookahead)
+        : undefined;
+    if (!item) {
+      /** @type {Item} */
+      const rawItem = {
+        name: rule.name,
+        tokens: rule.symbols,
+        marker: 0,
+        lookahead,
+        semanticAction: rule.actions.find((action) => action.at === 0)?.code,
+      };
+      item = items ? getItem(rawItem, items) : rawItem;
+    }
+    const key = items ? item : getItemKey(item);
     if (!seenItems.has(key)) {
       seenItems.add(key);
       open.push(item);
     }
   }
 
-  while (open.length > 0) {
-    const current = open.shift();
+  let openIdx = 0;
+  while (openIdx < open.length) {
+    const current = open[openIdx++];
     if (!current) {
       continue;
     }
@@ -980,16 +1039,24 @@ function getNonTermLookaheadClosure(
       expandedNonTermLookahead.add(expKey);
 
       for (const rule of nextRules) {
-        /** @type {Item} */
-        const rawNext = {
-          name: rule.name,
-          tokens: rule.symbols,
-          marker: 0,
-          lookahead: la,
-          semanticAction: rule.actions.find((action) => action.at === 0)?.code,
-        };
-        const nextItem = items ? getItem(rawNext, items) : rawNext;
-        const itemKey = getItemKey(nextItem);
+        /** @type {Item | undefined} */
+        let nextItem =
+          items && /** @type {*} */ (rule)._itemsRef === items
+            ? /** @type {*} */ (rule)._item0ByLa?.get(la)
+            : undefined;
+        if (!nextItem) {
+          /** @type {Item} */
+          const rawNext = {
+            name: rule.name,
+            tokens: rule.symbols,
+            marker: 0,
+            lookahead: la,
+            semanticAction: rule.actions.find((action) => action.at === 0)
+              ?.code,
+          };
+          nextItem = items ? getItem(rawNext, items) : rawNext;
+        }
+        const itemKey = items ? nextItem : getItemKey(nextItem);
         if (!seenItems.has(itemKey)) {
           seenItems.add(itemKey);
           open.push(nextItem);
@@ -1037,13 +1104,17 @@ export function nextItemSets(itemSet, rules, items, follows, firsts, nullable) {
         /** @type {Set<string>} */
         const expandedPairs = new Set();
         for (const item of kernelItems) {
-          const shifted = getItem(
-            {
-              ...item,
-              marker: Math.min(item.marker + 1, item.tokens.length),
-            },
-            items
-          );
+          let shifted = /** @type {*} */ (item)._shifted;
+          if (!shifted) {
+            shifted = getItem(
+              {
+                ...item,
+                marker: Math.min(item.marker + 1, item.tokens.length),
+              },
+              items
+            );
+            /** @type {*} */ (item)._shifted = shifted;
+          }
           resultSet.add(shifted);
           if (shifted.marker < shifted.tokens.length) {
             const nextSym = shifted.tokens[shifted.marker];
@@ -1914,11 +1985,61 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules, options) {
   /** @type {Map<number, ItemState[]>} */
   const knownStatesBySize = new Map([[initialSet.size, [initialSet]]]);
   const useOnTheFlyCoreMerge = rules.length > 64;
+  const hasEmptyRule = rules.some((r) => r.symbols.length === 0);
+  const { rulesNames: metaRulesNames, rulesByName: metaRulesByName } =
+    getRulesMeta(rules);
   /** @type {Map<string, ItemState[]>} */
   const knownStatesByCore = new Map();
   if (useOnTheFlyCoreMerge) {
     knownStatesByCore.set(getCoreSignature(initialSet), [initialSet]);
   }
+
+  /**
+   * @param {Item[]} shiftedKernel
+   * @returns {ItemState}
+   */
+  const closeShiftedKernel = (shiftedKernel) => {
+    /** @type {Set<Item>} */
+    const resultSet = new Set();
+    /** @type {Set<string>} */
+    const expandedPairs = new Set();
+    for (let i = 0; i < shiftedKernel.length; i++) {
+      const shifted = shiftedKernel[i];
+      resultSet.add(shifted);
+      if (shifted.marker < shifted.tokens.length) {
+        const nextSym = shifted.tokens[shifted.marker];
+        if (metaRulesByName.has(nextSym)) {
+          const lookaheads = computeSequenceFirsts(
+            shifted.tokens,
+            shifted.marker + 1,
+            shifted.lookahead,
+            firsts,
+            nullable,
+            metaRulesNames
+          );
+          for (let j = 0; j < lookaheads.length; j++) {
+            const la = lookaheads[j];
+            const pairKey = `${nextSym}\0${la}`;
+            if (!expandedPairs.has(pairKey)) {
+              expandedPairs.add(pairKey);
+              const subClosure = getNonTermLookaheadClosure(
+                nextSym,
+                la,
+                rules,
+                firsts,
+                nullable,
+                items
+              );
+              for (let k = 0; k < subClosure.length; k++) {
+                resultSet.add(subClosure[k]);
+              }
+            }
+          }
+        }
+      }
+    }
+    return resultSet;
+  };
 
   while (newItemSets.length > 0) {
     const fromItemSet = newItemSets.shift();
@@ -1929,6 +2050,128 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules, options) {
     if (!recordedSet.has(fromItemSet)) {
       recordedSet.add(fromItemSet);
       itemSets.push(fromItemSet);
+    }
+
+    if (useOnTheFlyCoreMerge && !hasEmptyRule) {
+      let stateTransitions = transitions.get(fromItemSet);
+      if (!stateTransitions) {
+        stateTransitions = new Map();
+        transitions.set(fromItemSet, stateTransitions);
+      }
+
+      /** @type {Map<string, Item[]>} */
+      const kernelByToken = new Map();
+      for (const item of fromItemSet) {
+        if (item.marker >= item.tokens.length) {
+          continue;
+        }
+        const token = item.tokens[item.marker];
+        let list = kernelByToken.get(token);
+        if (!list) {
+          list = [];
+          kernelByToken.set(token, list);
+        }
+        let shifted = /** @type {*} */ (item)._shifted;
+        if (!shifted) {
+          shifted = getItem(
+            {
+              ...item,
+              marker: Math.min(item.marker + 1, item.tokens.length),
+            },
+            items
+          );
+          /** @type {*} */ (item)._shifted = shifted;
+        }
+        list.push(shifted);
+      }
+
+      for (const [token, shiftedKernel] of kernelByToken.entries()) {
+        const existingTarget = stateTransitions.get(token);
+        if (existingTarget) {
+          /** @type {Item[]} */
+          const missingInExisting = [];
+          for (let i = 0; i < shiftedKernel.length; i++) {
+            if (!existingTarget.has(shiftedKernel[i])) {
+              missingInExisting.push(shiftedKernel[i]);
+            }
+          }
+          if (missingInExisting.length === 0) {
+            continue;
+          }
+          if (
+            canMergeCoreGroup(
+              [existingTarget, new Set(shiftedKernel)],
+              precContext
+            )
+          ) {
+            const deltaSet = closeShiftedKernel(missingInExisting);
+            for (const it of deltaSet) {
+              existingTarget.add(it);
+            }
+            if (!queuedSet.has(existingTarget)) {
+              queuedSet.add(existingTarget);
+              newItemSets.push(existingTarget);
+            }
+            continue;
+          }
+        }
+
+        /** @type {Set<string>} */
+        const coreKeySet = new Set();
+        for (let i = 0; i < shiftedKernel.length; i++) {
+          coreKeySet.add(getCoreItemKey(shiftedKernel[i]));
+        }
+        const coreSig = Array.from(coreKeySet).sort().join("\n");
+        let coreBucket = knownStatesByCore.get(coreSig);
+
+        /** @type {ItemState | undefined} */
+        let mergedTarget;
+        if (coreBucket) {
+          const shiftedKernelSet = new Set(shiftedKernel);
+          for (let c = 0; c < coreBucket.length; c++) {
+            const candidate = coreBucket[c];
+            /** @type {Item[]} */
+            const missingInCand = [];
+            for (let i = 0; i < shiftedKernel.length; i++) {
+              if (!candidate.has(shiftedKernel[i])) {
+                missingInCand.push(shiftedKernel[i]);
+              }
+            }
+            if (missingInCand.length === 0) {
+              mergedTarget = candidate;
+              break;
+            }
+            if (canMergeCoreGroup([candidate, shiftedKernelSet], precContext)) {
+              const deltaSet = closeShiftedKernel(missingInCand);
+              for (const it of deltaSet) {
+                candidate.add(it);
+              }
+              mergedTarget = candidate;
+              if (!queuedSet.has(candidate)) {
+                queuedSet.add(candidate);
+                newItemSets.push(candidate);
+              }
+              break;
+            }
+          }
+        }
+        if (mergedTarget) {
+          stateTransitions.set(token, mergedTarget);
+        } else {
+          const toItemSet = closeShiftedKernel(shiftedKernel);
+          stateTransitions.set(token, toItemSet);
+          if (!coreBucket) {
+            coreBucket = [];
+            knownStatesByCore.set(coreSig, coreBucket);
+          }
+          coreBucket.push(toItemSet);
+          recordedSet.add(toItemSet);
+          itemSets.push(toItemSet);
+          queuedSet.add(toItemSet);
+          newItemSets.push(toItemSet);
+        }
+      }
+      continue;
     }
 
     const nextStates = nextItemSets(

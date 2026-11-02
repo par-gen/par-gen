@@ -57,7 +57,6 @@ export const ERROR = "@par-gen.ERROR";
  * @property {string[]=} contextualKeywords
  */
 
-const SYM_WS = 0;
 const SYM_ACTION = 6;
 const SYM_IDENTIFIER = 7;
 const SYM_EXPR_RULE = 15;
@@ -70,15 +69,24 @@ const itemScratch = new Uint32Array(256);
 
 /**
  * @param {Uint32Array} tree
+ * @param {number} c
+ * @returns {number}
+ */
+function prevSibling(tree, c) {
+  return tree[c] >>> 8 === 0 ? c - 2 : tree[c + 1] & 0xfffff;
+}
+
+/**
+ * @param {Uint32Array} tree
  * @param {number} p
  * @returns {number}
  */
 function getLeafStart(tree, p) {
-  let q = p - 3;
-  while (q >= 3 && tree[q] >>> 8 > 0) {
-    q -= 3;
+  let q = p - 2;
+  while (q >= 2 && tree[q] >>> 8 > 0) {
+    q -= 2;
   }
-  const prevEnd = q >= 3 ? tree[q + 1] & 0x3fffff : 0;
+  const prevEnd = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
   const span = tree[p + 1];
   const end = span & 0x3fffff;
   return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
@@ -96,9 +104,8 @@ function extractStateList(tree, sl, stream, grammar, isAscii) {
   /** @type {string[]} */
   const list = [];
   while (tree[sl] >>> 8 === 2) {
-    const first = tree[sl + 1] & 0xfffff;
-    const stateItem = tree[first + 2];
-    const stLeaf = tree[stateItem + 1] & 0xfffff;
+    const stateItem = sl - 2;
+    const stLeaf = (tree[stateItem + 1] & 0xfffff) + 2;
     const stSpan = tree[stLeaf + 1];
     let stEnd = stSpan & 0x3fffff;
     const stStart = getLeafStart(tree, stLeaf);
@@ -110,10 +117,10 @@ function extractStateList(tree, sl, stream, grammar, isAscii) {
         ? grammar.slice(stStart, stEnd)
         : stream.toString("utf-8", stStart, stEnd)
     );
-    sl = first;
+    sl = prevSibling(tree, stateItem);
   }
-  const firstStateItem = tree[sl + 1] & 0xfffff;
-  const stLeaf = tree[firstStateItem + 1] & 0xfffff;
+  const firstStateItem = sl - 2;
+  const stLeaf = (tree[firstStateItem + 1] & 0xfffff) + 2;
   const stSpan = tree[stLeaf + 1];
   let stEnd = stSpan & 0x3fffff;
   const stStart = getLeafStart(tree, stLeaf);
@@ -152,18 +159,15 @@ export function parse(grammar, options) {
   /** @type {number} */
   const rootPtr = root.__pointer;
 
-  let stmts = tree[rootPtr + 1] & 0xfffff;
-  if ((tree[stmts] & 0xff) === SYM_WS) {
-    stmts = tree[stmts + 2];
-  }
+  let stmts = rootPtr - 2;
 
   let stmtCount = 0;
   while (tree[stmts] >>> 8 === 2) {
-    const first = tree[stmts + 1] & 0xfffff;
-    stmtScratch[stmtCount++] = tree[first + 2];
-    stmts = first;
+    const stmt = stmts - 2;
+    stmtScratch[stmtCount++] = stmt;
+    stmts = prevSibling(tree, stmt);
   }
-  stmtScratch[stmtCount++] = tree[stmts + 1] & 0xfffff;
+  stmtScratch[stmtCount++] = stmts - 2;
 
   /** @type {Token[]} */
   const tokens = [];
@@ -181,10 +185,12 @@ export function parse(grammar, options) {
   for (let s = stmtCount - 1; s >= 0; s--) {
     const stmtPtr = stmtScratch[s];
     const nChildren = tree[stmtPtr] >>> 8;
+    const semiPtr = stmtPtr - 2;
+    const beforeSemi = prevSibling(tree, semiPtr);
     if (nChildren === 2) {
       const items = extractStateList(
         tree,
-        tree[stmtPtr + 1] & 0xfffff,
+        beforeSemi,
         stream,
         grammar,
         isAscii
@@ -214,20 +220,18 @@ export function parse(grammar, options) {
       continue;
     }
 
-    const assignPtr = tree[stmtPtr + 1] & 0xfffff;
-    const nameIdPtr = tree[assignPtr + 1] & 0xfffff;
-    const c1 = tree[assignPtr + 2];
+    const c1 = nChildren === 4 ? prevSibling(tree, beforeSemi) : beforeSemi;
+    const assignPtr = prevSibling(tree, c1);
+    const nameIdPtr = (tree[assignPtr + 1] & 0xfffff) + 2;
 
     if ((tree[c1] & 0xff) === SYM_EXPR_RULE) {
-      const exprLeafPtr = tree[c1 + 1] & 0xfffff;
+      const exprLeafPtr = (tree[c1 + 1] & 0xfffff) + 2;
       /** @type {string[]} */
       let state = ["initial"];
       let isSkip = false;
       if (nChildren === 4) {
-        const scPtr = tree[c1 + 2];
-        const scFirst = tree[scPtr + 1] & 0xfffff;
-        const scSecond = tree[scFirst + 2];
-        const sl = tree[scPtr] >>> 8 === 2 ? scSecond : tree[scSecond + 2];
+        const scPtr = beforeSemi;
+        const sl = scPtr - 2;
         const rawStates = extractStateList(tree, sl, stream, grammar, isAscii);
         state = [];
         for (let i = 0; i < rawStates.length; i++) {
@@ -351,8 +355,11 @@ export function parse(grammar, options) {
   for (let s = 0; s < ruleStmtCount; s++) {
     const stmtPtr = ruleStmtScratch[s];
     const nChildren = tree[stmtPtr] >>> 8;
-    const assignPtr = tree[stmtPtr + 1] & 0xfffff;
-    const nameIdPtr = tree[assignPtr + 1] & 0xfffff;
+    const semiPtr = stmtPtr - 2;
+    let alts = prevSibling(tree, semiPtr);
+    const c1 = nChildren === 4 ? prevSibling(tree, alts) : alts;
+    const assignPtr = prevSibling(tree, c1);
+    const nameIdPtr = (tree[assignPtr + 1] & 0xfffff) + 2;
     const nameSpan = tree[nameIdPtr + 1];
     const nameEnd = nameSpan & 0x3fffff;
     const nameStart = getLeafStart(tree, nameIdPtr);
@@ -363,30 +370,28 @@ export function parse(grammar, options) {
     if (knownSymbols.has(ruleName)) {
       continue;
     }
-    const c1 = tree[assignPtr + 2];
     const hasLeadingPipe = nChildren === 4;
     if (hasLeadingPipe) {
       uid++;
     }
-    let alts = hasLeadingPipe ? tree[c1 + 2] : c1;
     let altCount = 0;
     while (tree[alts] >>> 8 === 3) {
-      const first = tree[alts + 1] & 0xfffff;
-      const pipe = tree[first + 2];
-      altScratch[altCount++] = tree[pipe + 2];
-      alts = first;
+      const alt = alts - 2;
+      altScratch[altCount++] = alt;
+      const pipe = prevSibling(tree, alt);
+      alts = prevSibling(tree, pipe);
     }
-    altScratch[altCount++] = tree[alts + 1] & 0xfffff;
+    altScratch[altCount++] = alts - 2;
 
     for (let a = altCount - 1; a >= 0; a--) {
       let alt = altScratch[a];
       let itemCount = 0;
       while (tree[alt] >>> 8 === 2) {
-        const first = tree[alt + 1] & 0xfffff;
-        itemScratch[itemCount++] = tree[first + 2];
-        alt = first;
+        const item = alt - 2;
+        itemScratch[itemCount++] = item;
+        alt = prevSibling(tree, item);
       }
-      itemScratch[itemCount++] = tree[alt + 1] & 0xfffff;
+      itemScratch[itemCount++] = alt - 2;
 
       /** @type {string[]} */
       let symbols = [];
@@ -395,7 +400,7 @@ export function parse(grammar, options) {
 
       for (let it = itemCount - 1; it >= 0; it--) {
         const ruleItem = itemScratch[it];
-        const leaf = tree[ruleItem + 1] & 0xfffff;
+        const leaf = (tree[ruleItem + 1] & 0xfffff) + 2;
         const leafSym = tree[leaf] & 0xff;
         const leafSpan = tree[leaf + 1];
         const leafEnd = leafSpan & 0x3fffff;

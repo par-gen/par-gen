@@ -1076,6 +1076,9 @@ describe("generateFromTreesitter", () => {
       expect(normalizePattern("a{3}")).toBe("(aaa)");
       expect(normalizePattern("a{2,4}")).toBe("(aaa?a?)");
       expect(normalizePattern("\\u0041")).toBe("A");
+      expect(normalizePattern(".*")).toBe("[^\\x0a]*");
+      expect(normalizePattern("[\\p{XID_Start}_]")).toBe("[a-zA-Z\\x80-\\xff_]");
+      expect(normalizePattern("\\p{XID_Continue}+")).toBe("[a-zA-Z0-9_\\x80-\\xff]+");
     });
 
     it("compiles complex TOKEN AST subtrees via ruleToRegex", () => {
@@ -1593,6 +1596,98 @@ describe("generateFromTreesitter", () => {
       expect(largeCst.name).toBe("program");
 
       await fsp.rm(tmpDir, { recursive: true, force: true });
+    });
+
+    it("resolves multi-array precedences DAG, SYMBOL precedences, STRING/rule name collisions, and externals lowering", async () => {
+      const { JavaScriptFunctionCodegen } = await import(
+        codegenModuleSpecifier
+      );
+      const grammar = {
+        name: "universal_lowering_test",
+        word: "identifier",
+        precedences: [
+          ["call", "binary"],
+          ["binary", { type: "SYMBOL", name: "low_expr" }],
+        ],
+        externals: [
+          { type: "SYMBOL", name: "_implicit_sep" },
+          { type: "SYMBOL", name: "_aliased_colon" },
+          { type: "SYMBOL", name: "_custom_ext" },
+        ],
+        rules: {
+          source_file: {
+            type: "REPEAT1",
+            content: {
+              type: "SEQ",
+              members: [
+                { type: "SYMBOL", name: "type" },
+                { type: "SYMBOL", name: "_implicit_sep" },
+              ],
+            },
+          },
+          // Rule named `type` that ALSO uses literal STRING `"type"` inside it
+          type: {
+            type: "SEQ",
+            members: [
+              { type: "STRING", value: "type" },
+              { type: "SYMBOL", name: "identifier" },
+              {
+                type: "ALIAS",
+                value: ":",
+                named: false,
+                content: { type: "SYMBOL", name: "_aliased_colon" },
+              },
+              { type: "SYMBOL", name: "expr" },
+              { type: "SYMBOL", name: "_custom_ext" },
+            ],
+          },
+          expr: {
+            type: "CHOICE",
+            members: [
+              {
+                type: "PREC_LEFT",
+                value: "binary",
+                content: {
+                  type: "SEQ",
+                  members: [
+                    { type: "SYMBOL", name: "expr" },
+                    { type: "STRING", value: "+" },
+                    { type: "SYMBOL", name: "expr" },
+                  ],
+                },
+              },
+              { type: "SYMBOL", name: "low_expr" },
+              { type: "SYMBOL", name: "identifier" },
+            ],
+          },
+          low_expr: {
+            type: "SEQ",
+            members: [
+              { type: "STRING", value: "~" },
+              { type: "SYMBOL", name: "expr" },
+            ],
+          },
+          identifier: {
+            type: "PATTERN",
+            value: "[a-zA-Z_][a-zA-Z0-9_]*",
+          },
+        },
+        extras: [{ type: "PATTERN", value: "\\s" }],
+      };
+
+      const data = generateFromTreesitter(grammar, {
+        externals: {
+          _custom_ext: { type: "STRING", value: ";" },
+        },
+      });
+      const codegen = new JavaScriptFunctionCodegen();
+      const { parse } = await codegen.parser(data);
+
+      const cst = parse("type foo : ~a + b; type type : c;");
+      expect(cst.name).toBe("source_file");
+      const names = collectNodeNames(cst);
+      expect(names).toContain("type");
+      expect(names).toContain("'type'");
     });
   });
 });

@@ -113,7 +113,31 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
       export type TokenName = ${tokenUnion};
       export type RuleName = ${ruleUnion};
       export type SymbolName = TokenName | RuleName;
+      export type NodeName = SymbolName;
       export type StartRuleName = ${startRuleType};
+
+      export interface SourceLocation {
+        readonly line: number;
+        readonly column: number;
+      }
+
+      export interface LineIndex {
+        locationForOffset(offset: number): SourceLocation;
+      }
+
+      export declare const LineIndex: {
+        new (input: Uint8Array | string): LineIndex;
+      };
+
+      export interface ParseSyntaxError extends SyntaxError {
+        readonly line: number;
+        readonly column: number;
+        readonly offset: number;
+        readonly endOffset: number;
+        readonly found: SymbolName | string;
+        readonly tokenText: string;
+        readonly expected: TokenName[];
+      }
 
       export interface TreeCursor {
         readonly name: SymbolName;
@@ -123,6 +147,7 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
         readonly start: number;
         readonly end: number;
         readonly value: Uint8Array;
+        readonly text: string;
         readonly pointer: number;
         readonly depth: number;
         reset(): boolean;
@@ -142,13 +167,27 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
 
       export interface CstNode<Name extends SymbolName = SymbolName> {
         readonly name: Name;
+        readonly symbolId: number;
+        readonly childCount: number;
+        readonly isLeaf: boolean;
         readonly start: number;
         readonly end: number;
         readonly value: Uint8Array;
+        readonly text: string;
+        readonly firstChild: CstNode | undefined;
+        readonly lastChild: CstNode | undefined;
         readonly items: CstNode[] | undefined;
         readonly __tree: Uint32Array;
         readonly __pointer: number;
+        child(index: number): CstNode | undefined;
+        childByName<ChildName extends SymbolName>(
+          name: ChildName
+        ): CstNode<ChildName> | undefined;
+        childrenByName<ChildName extends SymbolName>(
+          name: ChildName
+        ): CstNode<ChildName>[];
         cursor(): TreeCursor;
+        toSExpr(includeText?: boolean): string;
         toJSON(): {
           name: Name;
           start: number;
@@ -219,7 +258,7 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
 
   _parserExports() {
     return `
-      export { parse, CstNode, TreeCursor };
+      export { parse, CstNode, TreeCursor, LineIndex };
     `;
   }
 }

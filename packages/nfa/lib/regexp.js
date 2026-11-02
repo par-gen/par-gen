@@ -66,14 +66,14 @@ class FlatCstNode {
   get start() {
     const rawTree = this.__tree;
     let p = this.__pointer;
-    while (rawTree[p] >>> 8 > 0) {
-      p = rawTree[p + 1] & 0xfffff;
+    if (rawTree[p] >>> 8 > 0) {
+      p = (rawTree[p + 1] & 0xfffff) + 2;
     }
-    let q = p - 3;
-    while (q >= 3 && rawTree[q] >>> 8 > 0) {
-      q -= 3;
+    let q = p - 2;
+    while (q >= 2 && rawTree[q] >>> 8 > 0) {
+      q -= 2;
     }
-    const prevEnd = q >= 3 ? rawTree[q + 1] & 0x3fffff : 0;
+    const prevEnd = q >= 2 ? rawTree[q + 1] & 0x3fffff : 0;
     const span = rawTree[p + 1];
     const end = span & 0x3fffff;
     return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
@@ -83,7 +83,7 @@ class FlatCstNode {
     const rawTree = this.__tree;
     let p = this.__pointer;
     while (rawTree[p] >>> 8 > 0) {
-      p -= 3;
+      p -= 2;
     }
     return rawTree[p + 1] & 0x3fffff;
   }
@@ -94,18 +94,20 @@ class FlatCstNode {
 
   get items() {
     const rawTree = this.__tree;
-    const nChildren = rawTree[this.__pointer] >>> 8;
+    const pointer = this.__pointer;
+    const nChildren = rawTree[pointer] >>> 8;
     if (nChildren === 0) {
       return undefined;
     }
     /** @type {ParseTree<string>[]} */
     const children = new Array(nChildren);
-    let child = rawTree[this.__pointer + 1] & 0xfffff;
-    children[0] = new FlatCstNode(rawTree, child, this.__input);
-    for (let i = 1; i < nChildren; i++) {
-      child = rawTree[child + 2];
+    let child = pointer - 2;
+    for (let i = nChildren - 1; i > 0; i--) {
       children[i] = new FlatCstNode(rawTree, child, this.__input);
+      child =
+        rawTree[child] >>> 8 === 0 ? child - 2 : rawTree[child + 1] & 0xfffff;
     }
+    children[0] = new FlatCstNode(rawTree, child, this.__input);
     return children;
   }
 }
@@ -124,11 +126,11 @@ function convertFlatNode(rawTree, ptr, input, mapper) {
   const nChildren = word0 >>> 8;
 
   if (nChildren === 0) {
-    let q = ptr - 3;
-    while (q >= 3 && rawTree[q] >>> 8 > 0) {
-      q -= 3;
+    let q = ptr - 2;
+    while (q >= 2 && rawTree[q] >>> 8 > 0) {
+      q -= 2;
     }
-    const prevEnd = q >= 3 ? rawTree[q + 1] & 0x3fffff : 0;
+    const prevEnd = q >= 2 ? rawTree[q + 1] & 0x3fffff : 0;
     const span = rawTree[ptr + 1];
     const end = span & 0x3fffff;
     const start = prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
@@ -145,12 +147,13 @@ function convertFlatNode(rawTree, ptr, input, mapper) {
 
   /** @type {ParseTree<V>[]} */
   const items = new Array(nChildren);
-  let child = rawTree[ptr + 1] & 0xfffff;
-  items[0] = convertFlatNode(rawTree, child, input, mapper);
-  for (let i = 1; i < nChildren; i++) {
-    child = rawTree[child + 2];
+  let child = ptr - 2;
+  for (let i = nChildren - 1; i > 0; i--) {
     items[i] = convertFlatNode(rawTree, child, input, mapper);
+    child =
+      rawTree[child] >>> 8 === 0 ? child - 2 : rawTree[child + 1] & 0xfffff;
   }
+  items[0] = convertFlatNode(rawTree, child, input, mapper);
 
   const start = items[0].start;
   const end = items[nChildren - 1].end;
@@ -225,12 +228,12 @@ export function parseRegExp(expression) {
         (symId === SYM_REGEXP || symId === SYM_EXPRESSION) &&
         word0 >>> 8 > 0
       ) {
-        ptr = rawTree[ptr + 1] & 0xfffff;
+        ptr -= 2;
       } else {
         break;
       }
     }
-    return new FlatCstNode(rawTree.slice(0, rootPtr + 3), ptr, expression);
+    return new FlatCstNode(rawTree.slice(0, rootPtr + 2), ptr, expression);
   }
 
   /**

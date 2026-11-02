@@ -309,10 +309,9 @@ const lexer = {
  * - low 20 bits: tree pointer (tp) of the shifted/reduced CST node (up to 1,048,575 words)
  * - high 12 bits: parser state
  *
- * Each CST node in tree occupies 3 uint32 words:
+ * Each CST node in tree occupies 2 uint32 words (postorder layout):
  * - word 0 (tp + 0): name | (numChildren << 8)
- * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or firstChild (internal)
- * - word 2 (tp + 2): nextSibling
+ * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or rtop (internal: low 20 bits = prevSibling / subtreeStart - 2)
  */
 const arena = {
   stack: new Uint32Array(16384),
@@ -324,8 +323,10 @@ class TreeCursor {
   #tree;
   #rootPointer;
   #pointer;
-  #parentStack = new Uint32Array(256);
+  #parentStack = new Uint32Array(64);
+  #siblingStack = new Uint32Array(128);
   #depth = 0;
+  #siblingSp = 0;
 
   constructor(stream, tree, pointer) {
     this.#stream = stream;
@@ -353,16 +354,16 @@ class TreeCursor {
   get start() {
     const t = this.#tree;
     let p = this.#pointer;
-    while (t[p] >>> 8 > 0) {
-      p = t[p + 1] & 0xfffff;
+    if (t[p] >>> 8 > 0) {
+      p = (t[p + 1] & 0xfffff) + 2;
     }
     const span = t[p + 1];
     const end = span & 0x3fffff;
-    let q = p - 3;
-    while (q >= 3 && t[q] >>> 8 > 0) {
-      q -= 3;
+    let q = p - 2;
+    while (q >= 2 && t[q] >>> 8 > 0) {
+      q -= 2;
     }
-    const prevEnd = q >= 3 ? t[q + 1] & 0x3fffff : 0;
+    const prevEnd = q >= 2 ? t[q + 1] & 0x3fffff : 0;
     return prevEnd + ((end - prevEnd - (span >>> 22)) & 0x3ff);
   }
 
@@ -370,13 +371,19 @@ class TreeCursor {
     const t = this.#tree;
     let p = this.#pointer;
     while (t[p] >>> 8 > 0) {
-      p -= 3;
+      p -= 2;
     }
     return t[p + 1] & 0x3fffff;
   }
 
   get value() {
     return this.#stream.subarray(this.start, this.end);
+  }
+
+  get text() {
+    return Buffer.from(this.#stream.subarray(this.start, this.end)).toString(
+      "utf-8"
+    );
   }
 
   get pointer() {
@@ -390,6 +397,7 @@ class TreeCursor {
   reset() {
     this.#pointer = this.#rootPointer;
     this.#depth = 0;
+    this.#siblingSp = 0;
     return true;
   }
 
@@ -409,7 +417,22 @@ class TreeCursor {
     }
     stack[d] = p | ((n - 1) << 20);
     this.#depth = d;
-    this.#pointer = t[p + 1] & 0xfffff;
+    let c = p - 2;
+    if (n > 1) {
+      let sp = this.#siblingSp;
+      let sStack = this.#siblingStack;
+      if (sp + n >= sStack.length) {
+        const next = new Uint32Array((sStack.length + n) << 1);
+        next.set(sStack);
+        sStack = this.#siblingStack = next;
+      }
+      for (let k = 1; k < n; k++) {
+        sStack[++sp] = c;
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+      }
+      this.#siblingSp = sp;
+    }
+    this.#pointer = c;
     return true;
   }
 
@@ -421,7 +444,9 @@ class TreeCursor {
       return false;
     }
     stack[d] = entry - 0x100000;
-    this.#pointer = this.#tree[this.#pointer + 2];
+    const sp = this.#siblingSp;
+    this.#pointer = this.#siblingStack[sp];
+    this.#siblingSp = sp - 1;
     return true;
   }
 
@@ -430,8 +455,10 @@ class TreeCursor {
     if (d === 0) {
       return false;
     }
+    const entry = this.#parentStack[d];
+    this.#siblingSp -= entry >>> 20;
     this.#depth = d - 1;
-    this.#pointer = this.#parentStack[d] & 0xfffff;
+    this.#pointer = entry & 0xfffff;
     return true;
   }
 
@@ -455,19 +482,31 @@ class CstNode {
     return parserSymbols[this.#tree[this.#pointer] & 0xff];
   }
 
+  get symbolId() {
+    return this.#tree[this.#pointer] & 0xff;
+  }
+
+  get childCount() {
+    return this.#tree[this.#pointer] >>> 8;
+  }
+
+  get isLeaf() {
+    return this.#tree[this.#pointer] >>> 8 === 0;
+  }
+
   get start() {
     const t = this.#tree;
     let p = this.#pointer;
-    while (t[p] >>> 8 > 0) {
-      p = t[p + 1] & 0xfffff;
+    if (t[p] >>> 8 > 0) {
+      p = (t[p + 1] & 0xfffff) + 2;
     }
     const span = t[p + 1];
     const end = span & 0x3fffff;
-    let q = p - 3;
-    while (q >= 3 && t[q] >>> 8 > 0) {
-      q -= 3;
+    let q = p - 2;
+    while (q >= 2 && t[q] >>> 8 > 0) {
+      q -= 2;
     }
-    const prevEnd = q >= 3 ? t[q + 1] & 0x3fffff : 0;
+    const prevEnd = q >= 2 ? t[q + 1] & 0x3fffff : 0;
     return prevEnd + ((end - prevEnd - (span >>> 22)) & 0x3ff);
   }
 
@@ -475,13 +514,99 @@ class CstNode {
     const t = this.#tree;
     let p = this.#pointer;
     while (t[p] >>> 8 > 0) {
-      p -= 3;
+      p -= 2;
     }
     return t[p + 1] & 0x3fffff;
   }
 
   get value() {
     return this.#stream.subarray(this.start, this.end);
+  }
+
+  get text() {
+    return Buffer.from(this.#stream.subarray(this.start, this.end)).toString(
+      "utf-8"
+    );
+  }
+
+  get firstChild() {
+    const t = this.#tree;
+    const pointer = this.#pointer;
+    const nChildren = t[pointer] >>> 8;
+    if (nChildren === 0) {
+      return undefined;
+    }
+    let c = pointer - 2;
+    for (let i = 1; i < nChildren; i++) {
+      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+    }
+    return new CstNode(this.#stream, t, c);
+  }
+
+  get lastChild() {
+    const t = this.#tree;
+    const pointer = this.#pointer;
+    if (t[pointer] >>> 8 === 0) {
+      return undefined;
+    }
+    return new CstNode(this.#stream, t, pointer - 2);
+  }
+
+  child(index) {
+    const t = this.#tree;
+    const pointer = this.#pointer;
+    const nChildren = t[pointer] >>> 8;
+    const idx = index < 0 ? nChildren + index : index;
+    if (idx < 0 || idx >= nChildren) {
+      return undefined;
+    }
+    let c = pointer - 2;
+    for (let i = nChildren - 1; i > idx; i--) {
+      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+    }
+    return new CstNode(this.#stream, t, c);
+  }
+
+  childByName(name) {
+    const t = this.#tree;
+    const pointer = this.#pointer;
+    const nChildren = t[pointer] >>> 8;
+    if (nChildren === 0) {
+      return undefined;
+    }
+    let match = -1;
+    let c = pointer - 2;
+    for (let i = 0; i < nChildren; i++) {
+      if (parserSymbols[t[c] & 0xff] === name) {
+        match = c;
+      }
+      if (i + 1 < nChildren) {
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+      }
+    }
+    return match === -1 ? undefined : new CstNode(this.#stream, t, match);
+  }
+
+  childrenByName(name) {
+    const t = this.#tree;
+    const pointer = this.#pointer;
+    const nChildren = t[pointer] >>> 8;
+    const result = [];
+    if (nChildren === 0) {
+      return result;
+    }
+    const stream = this.#stream;
+    let c = pointer - 2;
+    for (let i = 0; i < nChildren; i++) {
+      if (parserSymbols[t[c] & 0xff] === name) {
+        result.push(new CstNode(stream, t, c));
+      }
+      if (i + 1 < nChildren) {
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+      }
+    }
+    result.reverse();
+    return result;
   }
 
   get items() {
@@ -494,13 +619,12 @@ class CstNode {
 
     const stream = this.#stream;
     const children = new Array(nChildren);
-    let child = t[pointer + 1] & 0xfffff;
-    children[0] = new CstNode(stream, t, child);
-
-    for (let i = 1; i < nChildren; i++) {
-      child = t[child + 2];
+    let child = pointer - 2;
+    for (let i = nChildren - 1; i > 0; i--) {
       children[i] = new CstNode(stream, t, child);
+      child = t[child] >>> 8 === 0 ? child - 2 : t[child + 1] & 0xfffff;
     }
+    children[0] = new CstNode(stream, t, child);
 
     return children;
   }
@@ -517,6 +641,37 @@ class CstNode {
     return new TreeCursor(this.#stream, this.#tree, this.#pointer);
   }
 
+  toSExpr(includeText = false) {
+    const t = this.#tree;
+    const stream = this.#stream;
+    const formatNode = (p) => {
+      const w0 = t[p];
+      const name = parserSymbols[w0 & 0xff];
+      const n = w0 >>> 8;
+      if (n === 0) {
+        if (!includeText) {
+          return "(" + name + ")";
+        }
+        const node = new CstNode(stream, t, p);
+        return "(" + name + " " + JSON.stringify(node.text) + ")";
+      }
+      const childPtrs = new Uint32Array(n);
+      let c = p - 2;
+      for (let i = n - 1; i >= 0; i--) {
+        childPtrs[i] = c;
+        if (i > 0) {
+          c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+        }
+      }
+      let out = "(" + name;
+      for (let i = 0; i < n; i++) {
+        out += " " + formatNode(childPtrs[i]);
+      }
+      return out + ")";
+    };
+    return formatNode(this.#pointer);
+  }
+
   toJSON() {
     return {
       name: this.name,
@@ -530,6 +685,160 @@ class CstNode {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON();
   }
+}
+
+class LineIndex {
+  #lineStarts;
+
+  constructor(input) {
+    const stream = typeof input === "string" ? Buffer.from(input) : input;
+    let count = 1;
+    for (let i = 0; i < stream.length; i++) {
+      if (stream[i] === 10) {
+        count++;
+      }
+    }
+    const starts = new Uint32Array(count);
+    starts[0] = 0;
+    let idx = 1;
+    for (let i = 0; i < stream.length; i++) {
+      if (stream[i] === 10) {
+        starts[idx++] = i + 1;
+      }
+    }
+    this.#lineStarts = starts;
+  }
+
+  locationForOffset(offset) {
+    const starts = this.#lineStarts;
+    let low = 0;
+    let high = starts.length - 1;
+    while (low <= high) {
+      const mid = (low + high) >>> 1;
+      if (starts[mid] <= offset) {
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    return {
+      line: high + 1,
+      column: offset - starts[high] + 1,
+    };
+  }
+}
+
+function throwSyntaxError(
+  stream,
+  tree,
+  tp,
+  lookahead,
+  lookaheadSpan,
+  stateOffset
+) {
+  const symName = parserSymbols[lookahead] ?? String(lookahead);
+  const rawEnd = lookaheadSpan & 0x3fffff;
+  let offset = 0;
+  let endOffset = 0;
+  if (rawEnd !== 0x3fffff) {
+    endOffset = rawEnd;
+    offset = endOffset - (lookaheadSpan >>> 22);
+  } else if (symName === "@par-gen.EOF") {
+    offset = stream.length;
+    endOffset = stream.length;
+  } else {
+    let q = tp - 2;
+    while (q >= 2 && (tree[q] >>> 8 > 0 || (tree[q] & 0xff) > 14)) {
+      q -= 2;
+    }
+    offset = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
+    while (
+      offset < stream.length &&
+      (stream[offset] === 32 ||
+        stream[offset] === 9 ||
+        stream[offset] === 10 ||
+        stream[offset] === 13)
+    ) {
+      offset++;
+    }
+    endOffset = offset < stream.length ? offset + 1 : offset;
+  }
+
+  let line = 1;
+  let lineStart = 0;
+  for (let i = 0; i < offset && i < stream.length; i++) {
+    if (stream[i] === 10) {
+      line++;
+      lineStart = i + 1;
+    }
+  }
+  const column = offset - lineStart + 1;
+
+  let lineEnd = offset;
+  while (
+    lineEnd < stream.length &&
+    stream[lineEnd] !== 10 &&
+    stream[lineEnd] !== 13
+  ) {
+    lineEnd++;
+  }
+
+  const expected = [];
+  for (let t = 0; t <= 14; t++) {
+    if (actionsTable[stateOffset + t] !== 0xffff) {
+      const name = parserSymbols[t];
+      if (name && name !== "@par-gen.ERROR") {
+        expected.push(name);
+      }
+    }
+  }
+
+  const tokenText =
+    endOffset > offset
+      ? Buffer.from(stream.subarray(offset, endOffset)).toString("utf-8")
+      : "";
+  const foundDesc =
+    symName === "@par-gen.EOF"
+      ? "@par-gen.EOF (end of input)"
+      : tokenText && tokenText !== symName
+      ? `${symName} (${JSON.stringify(tokenText)})`
+      : symName;
+  const expectedDesc =
+    expected.length > 0 ? `. Expected one of: ${expected.join(", ")}` : "";
+
+  let winStart = lineStart;
+  let winEnd = lineEnd;
+  let prefix = "";
+  let suffix = "";
+  if (lineEnd - lineStart > 120) {
+    winStart = Math.max(lineStart, offset - 40);
+    winEnd = Math.min(lineEnd, offset + 60);
+    if (winStart > lineStart) prefix = "...";
+    if (winEnd < lineEnd) suffix = "...";
+  }
+  const lineStr =
+    prefix +
+    Buffer.from(stream.subarray(winStart, winEnd)).toString("utf-8") +
+    suffix;
+  const lineNumStr = String(line);
+  const gutterPad = " ".repeat(lineNumStr.length);
+  const caretCol = Math.max(0, offset - winStart + prefix.length);
+  const caretLen = Math.max(1, Math.min(endOffset - offset, winEnd - offset));
+  const frame = `${gutterPad} |\n${lineNumStr} | ${lineStr}\n${gutterPad} | ${" ".repeat(
+    caretCol
+  )}${"^".repeat(caretLen)}`;
+
+  const err = new SyntaxError(
+    `Unexpected lookahead ${foundDesc} at line ${line}, column ${column}${expectedDesc}\n${frame}`
+  );
+  err.line = line;
+  err.column = column;
+  err.offset = offset;
+  err.endOffset = endOffset;
+  err.found = symName;
+  err.tokenText = tokenText;
+  err.expected = expected;
+  throw err;
 }
 
 /**
@@ -565,9 +874,9 @@ function parse(input) {
     let top = 0; // starting state
     stack[0] = top;
     let sp = 0;
-    // let the tree stack start from offset 3
+    // let the tree stack start from offset 2
     // offset 0 means an error occurred and should be used by the parser
-    let tp = 3;
+    let tp = 2;
 
     while (true) {
       const currentState = top >>> 20;
@@ -577,7 +886,7 @@ function parse(input) {
       if ((actionLookup & 1) === 0) {
         // shift
         if (actionLookup === 0xfffe) {
-          return new CstNode(stream, tree, tp - 3);
+          return new CstNode(stream, tree, tp - 2);
         }
 
         const shiftAction = shiftActionsTable[actionIndex];
@@ -597,7 +906,6 @@ function parse(input) {
 
         tree[tp] = lookahead; // name (and nChildren = 0)
         tree[tp + 1] = lookaheadSpan;
-        tree[(top & 0xfffff) + 2] = tp; // write the current address to the previous item as next sibling
 
         sp += 1;
         top = tp | (actionLookup << 19);
@@ -622,13 +930,13 @@ function parse(input) {
       } else {
         // reduce
         if (actionLookup === 0xffff) {
-          const errStart =
-            (lookaheadSpan & 0x3fffff) === 0x3fffff
-              ? -1
-              : (lookaheadSpan & 0x3fffff) - (lookaheadSpan >>> 22);
-          const context = input.toString().substr(errStart, 10);
-          throw new Error(
-            `Unexpected lookahead ${parserSymbols[lookahead]} at '${context}'`
+          throwSyntaxError(
+            stream,
+            tree,
+            tp,
+            lookahead,
+            lookaheadSpan,
+            currentState
           );
         }
         sp -= actionLookup >>> 9;
@@ -636,16 +944,15 @@ function parse(input) {
         const word0 = actionLookup >>> 1;
         tree[tp] = word0; // name and number of children
         const nextState = goto[(rtop >>> 20) + (word0 & 0xff)];
-        tree[(rtop & 0xfffff) + 2] = tp; // next sibling
+        tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
 
         sp += 1;
-        tree[tp + 1] = stack[sp]; // first child
         top = tp | nextState;
         stack[sp] = top;
       }
 
-      tp += 3;
-      if (tp >= tree.length - 2) {
+      tp += 2;
+      if (tp >= tree.length - 1) {
         break;
       }
     }
@@ -665,4 +972,4 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor };
+export { parse, CstNode, TreeCursor, LineIndex };

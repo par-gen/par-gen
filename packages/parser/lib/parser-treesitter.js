@@ -42,7 +42,7 @@ import { generate as generateParser } from "./parser.js";
  * @property {{ [ruleName: string]: TreeSitterNode }} rules
  * @property {TreeSitterNode[]} [extras]
  * @property {string[]} [inline]
- * @property {Array<Array<string | { type: string, value: string }>>} [precedences]
+ * @property {Array<Array<string | { type: string, value?: string, name?: string }>>} [precedences]
  * @property {string[][]} [conflicts]
  * @property {TreeSitterNode[]} [externals]
  * @property {string[]} [supertypes]
@@ -134,6 +134,42 @@ export function escapeStringToRegex(str) {
 }
 
 /**
+ * @param {string} prop
+ * @param {boolean} isNegatedProp
+ * @returns {string}
+ */
+function unicodePropertyClassRange(prop, isNegatedProp) {
+  const p = prop.trim();
+  if (
+    p === "XID_Start" ||
+    p === "ID_Start" ||
+    p === "L" ||
+    p === "Letter" ||
+    p === "Alpha" ||
+    p === "Alphabetic" ||
+    p === "Ll" ||
+    p === "Lu" ||
+    p === "Lt" ||
+    p === "Lm" ||
+    p === "Lo"
+  ) {
+    return isNegatedProp ? "\\x00-\\x40\\x5b-\\x60\\x7b-\\x7f" : "a-zA-Z\\x80-\\xff";
+  }
+  if (p === "XID_Continue" || p === "ID_Continue" || p === "Alnum") {
+    return isNegatedProp
+      ? "\\x00-\\x2f\\x3a-\\x40\\x5b-\\x5e\\x60\\x7b-\\x7f"
+      : "a-zA-Z0-9_\\x80-\\xff";
+  }
+  if (p === "Nd" || p === "Digit" || p === "Decimal_Number") {
+    return isNegatedProp ? "\\x00-\\x2f\\x3a-\\xff" : "0-9";
+  }
+  if (p === "Zs" || p === "Space_Separator" || p === "White_Space") {
+    return isNegatedProp ? "\\x00-\\x1f\\x21-\\xff" : " ";
+  }
+  return isNegatedProp ? "\\x00-\\x7f" : "a-zA-Z0-9_\\x80-\\xff";
+}
+
+/**
  * @param {string} pattern
  * @param {number} startIdx
  * @returns {{ expr: string, nextIdx: number }}
@@ -147,7 +183,7 @@ function normalizeCharClass(pattern, startIdx) {
     i++;
   }
 
-  /** @type {Array<{ type: 'byte', value: number } | { type: 'dash' } | { type: 'raw', value: string }>} */
+  /** @type {Array<{ type: 'byte', value: number, isUnicodeCp?: boolean } | { type: 'dash' } | { type: 'raw', value: string }>} */
   const items = [];
   let first = true;
 
@@ -184,6 +220,18 @@ function normalizeCharClass(pattern, startIdx) {
           type: "raw",
           value: "\\x00-\\x08\\x0e-\\x1f\\x21-\\xff",
         });
+      } else if ((esc === "p" || esc === "P") && pattern[i] === "{") {
+        const closeBrace = pattern.indexOf("}", i + 1);
+        if (closeBrace !== -1) {
+          const prop = pattern.slice(i + 1, closeBrace);
+          items.push({
+            type: "raw",
+            value: unicodePropertyClassRange(prop, esc === "P"),
+          });
+          i = closeBrace + 1;
+        } else {
+          items.push({ type: "byte", value: esc.charCodeAt(0) });
+        }
       } else if (esc === "x" && i + 2 <= len) {
         const hex = pattern.slice(i, i + 2);
         if (/^[0-9a-fA-F]{2}$/.test(hex)) {
@@ -200,7 +248,8 @@ function normalizeCharClass(pattern, startIdx) {
             const cp = parseInt(hex, 16);
             items.push({
               type: "byte",
-              value: Number.isNaN(cp) ? 0 : Math.min(0xff, cp),
+              value: Number.isNaN(cp) ? 0 : cp,
+              isUnicodeCp: true,
             });
             i = closeBrace + 1;
           } else {
@@ -211,7 +260,8 @@ function normalizeCharClass(pattern, startIdx) {
           if (/^[0-9a-fA-F]{4}$/.test(hex)) {
             items.push({
               type: "byte",
-              value: Math.min(0xff, parseInt(hex, 16)),
+              value: parseInt(hex, 16),
+              isUnicodeCp: true,
             });
             i += 4;
           } else {
@@ -242,7 +292,7 @@ function normalizeCharClass(pattern, startIdx) {
       i++;
     } else {
       const code = pattern.codePointAt(i) ?? 0;
-      items.push({ type: "byte", value: Math.min(0xff, code) });
+      items.push({ type: "byte", value: code, isUnicodeCp: code > 0x7f });
       i += code > 0xffff ? 2 : 1;
     }
   }
@@ -262,13 +312,19 @@ function normalizeCharClass(pattern, startIdx) {
     ) {
       const lo = Math.min(cur.value, next2.value);
       const hi = Math.max(cur.value, next2.value);
-      body += `${formatClassByte(lo)}-${formatClassByte(hi)}`;
+      if (lo <= 0xff) {
+        const clampedLo = Math.min(0xff, lo);
+        const clampedHi = Math.min(0xff, hi);
+        body += `${formatClassByte(clampedLo)}-${formatClassByte(clampedHi)}`;
+      }
       k += 3;
     } else if (cur.type === "dash") {
       body += "\\x2d";
       k += 1;
     } else if (cur.type === "byte") {
-      body += formatClassByte(cur.value);
+      if (cur.value <= 0x7f || (!cur.isUnicodeCp && cur.value <= 0xff)) {
+        body += formatClassByte(cur.value);
+      }
       k += 1;
     } else {
       body += cur.value;
@@ -367,7 +423,7 @@ function parseSubPattern(pattern, startIdx, stopOnCloseParen) {
     }
 
     if (ch === ".") {
-      currentAlt.push(".");
+      currentAlt.push("[^\\x0a]");
       i++;
       continue;
     }
@@ -440,6 +496,17 @@ function parseSubPattern(pattern, startIdx, stopOnCloseParen) {
         currentAlt.push("[a-zA-Z0-9_]");
       } else if (esc === "W") {
         currentAlt.push("[^a-zA-Z0-9_]");
+      } else if ((esc === "p" || esc === "P") && pattern[i] === "{") {
+        const closeBrace = pattern.indexOf("}", i + 1);
+        if (closeBrace !== -1) {
+          const prop = pattern.slice(i + 1, closeBrace);
+          currentAlt.push(
+            `[${unicodePropertyClassRange(prop, esc === "P")}]`
+          );
+          i = closeBrace + 1;
+        } else {
+          currentAlt.push(escapeStringToRegex(esc));
+        }
       } else if (esc === "x" && i + 2 <= len) {
         const hex = pattern.slice(i, i + 2);
         if (/^[0-9a-fA-F]{2}$/.test(hex)) {
@@ -568,7 +635,41 @@ export function ruleToRegex(node, grammarRules = {}) {
       if (parts.length === 1) {
         return parts[0];
       }
-      return `(${parts.join("")})`;
+      const safeParts = parts.map((p) => {
+        let inEscape = false;
+        let inClass = false;
+        let depth = 0;
+        for (let i = 0; i < p.length; i++) {
+          const ch = p[i];
+          if (inEscape) {
+            inEscape = false;
+            continue;
+          }
+          if (ch === "\\") {
+            inEscape = true;
+            continue;
+          }
+          if (inClass) {
+            if (ch === "]") {
+              inClass = false;
+            }
+            continue;
+          }
+          if (ch === "[") {
+            inClass = true;
+            continue;
+          }
+          if (ch === "(") {
+            depth++;
+          } else if (ch === ")") {
+            depth--;
+          } else if (ch === "|" && depth === 0) {
+            return `(${p})`;
+          }
+        }
+        return p;
+      });
+      return `(${safeParts.join("")})`;
     }
     case "CHOICE": {
       const members = node.members ?? [];
@@ -676,41 +777,323 @@ function resolvePrecedenceLevel(val, namedPrecMap) {
 }
 
 /**
+ * Checks whether a Tree-sitter node is a contiguous sequence of terminal tokens
+ * where every subsequent token after the first is an `IMMEDIATE_TOKEN` (or optional
+ * immediate token). Examples in `tree-sitter-css`:
+ * - `color_value`: `seq('#', token.immediate(/[0-9a-fA-F]{3,8}/))`
+ * - `integer_value`: `seq(token(...), optional($.unit))` where `unit` is `token.immediate(...)`
+ *
+ * @param {TreeSitterNode} node
+ * @param {{ [ruleName: string]: TreeSitterNode }} rules
+ * @param {Set<string>=} visited
+ * @returns {boolean}
+ */
+function isContiguousImmediateTokenSeq(node, rules, visited = new Set()) {
+  const unwrapped = unwrapMeta(node);
+  if (unwrapped.type !== "SEQ" || !Array.isArray(unwrapped.members) || unwrapped.members.length < 2) {
+    return false;
+  }
+
+  /**
+   * @param {TreeSitterNode} m
+   * @param {boolean} requireImmediate
+   * @returns {boolean}
+   */
+  const checkMember = (m, requireImmediate) => {
+    const u = unwrapMeta(m);
+    if (u.type === "BLANK") {
+      return true;
+    }
+    if (u.type === "CHOICE" && Array.isArray(u.members)) {
+      return u.members.every((sub) => checkMember(sub, requireImmediate));
+    }
+    if (u.type === "IMMEDIATE_TOKEN") {
+      return ruleToRegex(u, rules) !== "";
+    }
+    if (!requireImmediate && (u.type === "STRING" || u.type === "PATTERN" || u.type === "TOKEN" || u.type === "CHARACTER_SET")) {
+      return ruleToRegex(u, rules) !== "";
+    }
+    if (u.type === "SYMBOL" && u.name && rules[u.name] && !visited.has(u.name)) {
+      const nextVisited = new Set(visited);
+      nextVisited.add(u.name);
+      return checkMember(rules[u.name], requireImmediate);
+    }
+    return false;
+  };
+
+  if (!checkMember(unwrapped.members[0], false)) {
+    return false;
+  }
+  for (let i = 1; i < unwrapped.members.length; i++) {
+    if (!checkMember(unwrapped.members[i], true)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Collects all unnamed ALIAS mappings (`alias($.sym, "literal")`) in the grammar.
+ * Used to infer literal fallbacks for external scanner symbols (e.g. `_pseudo_class_selector_colon` -> `":"` in CSS).
+ *
+ * @param {{ [ruleName: string]: TreeSitterNode }} rules
+ * @returns {Map<string, Set<string>>}
+ */
+function collectUnnamedSymbolAliases(rules) {
+  /** @type {Map<string, Set<string>>} */
+  const aliasMap = new Map();
+  /**
+   * @param {TreeSitterNode | undefined} node
+   */
+  const walk = (node) => {
+    if (!node || typeof node !== "object") {
+      return;
+    }
+    if (
+      node.type === "ALIAS" &&
+      node.named === false &&
+      typeof node.value === "string" &&
+      node.content?.type === "SYMBOL" &&
+      typeof node.content.name === "string"
+    ) {
+      let set = aliasMap.get(node.content.name);
+      if (!set) {
+        set = new Set();
+        aliasMap.set(node.content.name, set);
+      }
+      set.add(node.value);
+    }
+    if (node.content) {
+      walk(node.content);
+    }
+    if (Array.isArray(node.members)) {
+      for (const m of node.members) {
+        walk(m);
+      }
+    }
+  };
+  for (const r of Object.values(rules)) {
+    walk(r);
+  }
+  return aliasMap;
+}
+
+/**
+ * Built-in declarative fallbacks for common stateless external scanner tokens
+ * in popular Tree-sitter grammars (e.g. `tree-sitter-toml`, `tree-sitter-css`).
+ * Can also be overridden or extended via `options.externals`.
+ *
+ * @type {Record<string, Record<string, TreeSitterNode>>}
+ */
+const BUILTIN_EXTERNAL_OVERRIDES = {
+  toml: {
+    _line_ending_or_eof: {
+      type: "CHOICE",
+      members: [
+        { type: "PATTERN", value: "\\r?\\n" },
+        { type: "BLANK" },
+      ],
+    },
+    _multiline_basic_string_content: {
+      type: "IMMEDIATE_TOKEN",
+      content: { type: "PATTERN", value: '""?[^"\\\\]' },
+    },
+    _multiline_basic_string_end: {
+      type: "STRING",
+      value: '"""',
+    },
+    _multiline_literal_string_content: {
+      type: "IMMEDIATE_TOKEN",
+      content: { type: "PATTERN", value: "''?[^']" },
+    },
+    _multiline_literal_string_end: {
+      type: "STRING",
+      value: "'''",
+    },
+  },
+  css: {
+    _descendant_operator: {
+      type: "BLANK",
+    },
+    _pseudo_class_selector_colon: {
+      type: "STRING",
+      value: ":",
+    },
+    __error_recovery: {
+      type: "BLANK",
+    },
+    plain_value: {
+      type: "PATTERN",
+      value: "[-_a-zA-Z][a-zA-Z0-9-_]*",
+    },
+  },
+};
+
+/**
+ * @typedef {ParseOptions & { externals?: Record<string, TreeSitterNode> }} TreeSitterParseOptions
+ */
+
+/**
  * @param {string | TreeSitterGrammar} input
- * @param {ParseOptions=} options
+ * @param {TreeSitterParseOptions=} options
  * @returns {ParserData}
  */
 export function generate(input, options) {
   /** @type {TreeSitterGrammar} */
   const grammar = typeof input === "string" ? JSON.parse(input) : input;
-  const grammarRules = grammar.rules ?? {};
+  const grammarRules = { ...(grammar.rules ?? {}) };
   const ruleNames = Object.keys(grammarRules);
   if (ruleNames.length === 0) {
     throw new Error("Tree-sitter grammar contains no rules");
   }
   const startRuleName = ruleNames[0];
+  const effectiveWord =
+    options?.word ??
+    grammar.word ??
+    (Object.prototype.hasOwnProperty.call(grammarRules, "identifier")
+      ? "identifier"
+      : Object.prototype.hasOwnProperty.call(grammarRules, "bare_key")
+      ? "bare_key"
+      : undefined);
 
+  // Handle `externals` and built-in/user rule overrides: apply options.externals, built-in overrides, or automatic alias/blank inference
+  const builtinMap = (grammar.name && BUILTIN_EXTERNAL_OVERRIDES[grammar.name]) || {};
+  const userExternals = options?.externals ?? {};
+  for (const [overrideName, overrideNode] of Object.entries({ ...builtinMap, ...userExternals })) {
+    grammarRules[overrideName] = overrideNode;
+    if (!ruleNames.includes(overrideName)) {
+      ruleNames.push(overrideName);
+    }
+  }
+  if (Array.isArray(grammar.externals) && grammar.externals.length > 0) {
+    const unnamedAliases = collectUnnamedSymbolAliases(grammarRules);
+
+    for (const ext of grammar.externals) {
+      if (ext.type === "SYMBOL" && typeof ext.name === "string") {
+        const extName = ext.name;
+        if (grammarRules[extName] !== undefined) {
+          continue;
+        }
+        const aliases = unnamedAliases.get(extName);
+        if (aliases && aliases.size === 1) {
+          const [literalVal] = aliases;
+          grammarRules[extName] = { type: "STRING", value: literalVal };
+        } else {
+          grammarRules[extName] = { type: "BLANK" };
+        }
+        if (!ruleNames.includes(extName)) {
+          ruleNames.push(extName);
+        }
+      }
+    }
+  }
+
+  // Resolve named `precedences` (which may form a DAG across multiple sub-arrays and include SYMBOL entries)
   /** @type {Map<string, number>} */
   const namedPrecMap = new Map();
+  /** @type {Map<string, number>} */
+  const symbolDefaultPrecMap = new Map();
   if (Array.isArray(grammar.precedences)) {
+    /** @type {Array<{ key: string, isSymbol: boolean }[]>} */
+    const groups = [];
+    /** @type {Set<string>} */
+    const allKeys = new Set();
+    /** @type {Map<string, Set<string>>} */
+    const lowerNeighbors = new Map();
+
     for (const group of grammar.precedences) {
-      const total = group.length;
-      group.forEach((entry, idx) => {
-        const name = typeof entry === "string" ? entry : entry?.value;
-        if (name) {
-          namedPrecMap.set(name, (total - idx) * 10);
+      if (!Array.isArray(group)) {
+        continue;
+      }
+      /** @type {{ key: string, isSymbol: boolean }[]} */
+      const parsedGroup = [];
+      for (const entry of group) {
+        if (typeof entry === "string") {
+          parsedGroup.push({ key: `S:${entry}`, isSymbol: false });
+        } else if (entry && typeof entry === "object") {
+          if (entry.type === "SYMBOL" && typeof entry.name === "string") {
+            parsedGroup.push({ key: `R:${entry.name}`, isSymbol: true });
+          } else if (typeof entry.value === "string") {
+            parsedGroup.push({ key: `S:${entry.value}`, isSymbol: false });
+          }
         }
-      });
+      }
+      for (const item of parsedGroup) {
+        allKeys.add(item.key);
+        if (!lowerNeighbors.has(item.key)) {
+          lowerNeighbors.set(item.key, new Set());
+        }
+      }
+      for (let i = 0; i < parsedGroup.length; i++) {
+        for (let j = i + 1; j < parsedGroup.length; j++) {
+          if (parsedGroup[i].key !== parsedGroup[j].key) {
+            lowerNeighbors.get(parsedGroup[i].key)?.add(parsedGroup[j].key);
+          }
+        }
+      }
+      groups.push(parsedGroup);
+    }
+
+    // Compute longest path in DAG so if A appears before B in any precedence list, rank(A) > rank(B)
+    /** @type {Map<string, number>} */
+    const rankMemo = new Map();
+    /** @type {Set<string>} */
+    const visiting = new Set();
+    /**
+     * @param {string} key
+     * @returns {number}
+     */
+    const getRank = (key) => {
+      if (rankMemo.has(key)) {
+        return /** @type {number} */ (rankMemo.get(key));
+      }
+      if (visiting.has(key)) {
+        return 1;
+      }
+      visiting.add(key);
+      let maxChild = 0;
+      for (const lower of lowerNeighbors.get(key) ?? []) {
+        const r = getRank(lower);
+        if (r > maxChild) {
+          maxChild = r;
+        }
+      }
+      visiting.delete(key);
+      const rank = maxChild + 1;
+      rankMemo.set(key, rank);
+      return rank;
+    };
+
+    for (const key of allKeys) {
+      const score = getRank(key) * 10;
+      if (key.startsWith("S:")) {
+        namedPrecMap.set(key.slice(2), score);
+      } else if (key.startsWith("R:")) {
+        symbolDefaultPrecMap.set(key.slice(2), score);
+      }
     }
   }
 
   const inlineSet = new Set(grammar.inline ?? []);
   inlineSet.delete(startRuleName);
 
+  // Identify rules referenced directly as SYMBOL in `extras`
+  /** @type {Set<string>} */
+  const extraSymbolNames = new Set();
+  if (Array.isArray(grammar.extras)) {
+    for (const extra of grammar.extras) {
+      if (extra.type === "SYMBOL" && typeof extra.name === "string") {
+        extraSymbolNames.add(extra.name);
+      }
+    }
+  }
+
   /** @type {Map<string, ExtractedToken>} */
   const tokenByName = new Map();
   /** @type {Map<string, string>} */
   const stringValToTokenName = new Map();
+  /** @type {Map<string, string>} */
+  const inlinePatternToTokenName = new Map();
   let tokenOrder = 0;
   let anonTokenCounter = 0;
 
@@ -728,7 +1111,12 @@ export function generate(input, options) {
       }
       return existingName;
     }
-    const name = value;
+    // Avoid colliding with a non-terminal rule that has the exact same name as the string literal
+    // (e.g., `permits` or `throws` in tree-sitter-java, `import` in tree-sitter-javascript, `type` in tree-sitter-python)
+    const collidesWithRule =
+      Object.prototype.hasOwnProperty.call(grammarRules, value) &&
+      (value === startRuleName || unwrapMeta(grammarRules[value]).type !== "STRING");
+    const name = collidesWithRule ? `'${value}'` : value;
     const expr = escapeStringToRegex(value);
     stringValToTokenName.set(value, name);
     tokenByName.set(name, {
@@ -737,7 +1125,7 @@ export function generate(input, options) {
       state: ["initial"],
       isString: true,
       isImmediate: false,
-      isWord: grammar.word === name,
+      isWord: effectiveWord === name,
       isExtra: false,
       lexPrec,
       order: tokenOrder++,
@@ -760,28 +1148,49 @@ export function generate(input, options) {
       if (rName === strVal) {
         ensureStringToken(strVal, lexPrec);
         terminalRuleNames.add(rName);
+      } else if (extraSymbolNames.has(rName)) {
+        const expr = escapeStringToRegex(strVal);
+        tokenByName.set(rName, {
+          name: rName,
+          expr,
+          state: ["initial"],
+          isString: true,
+          isImmediate: false,
+          isWord: effectiveWord === rName,
+          isExtra: true,
+          lexPrec,
+          order: tokenOrder++,
+        });
+        terminalRuleNames.add(rName);
+      } else if (rName.startsWith("_")) {
+        ensureStringToken(strVal, lexPrec);
+        inlineSet.add(rName);
       }
     } else if (
       unwrapped.type === "PATTERN" ||
       unwrapped.type === "TOKEN" ||
       unwrapped.type === "IMMEDIATE_TOKEN" ||
-      unwrapped.type === "CHARACTER_SET"
+      unwrapped.type === "CHARACTER_SET" ||
+      extraSymbolNames.has(rName) ||
+      isContiguousImmediateTokenSeq(rawRule, grammarRules, new Set([rName]))
     ) {
       const expr = ruleToRegex(rawRule, grammarRules);
-      const isImmediate = unwrapped.type === "IMMEDIATE_TOKEN";
-      const lexPrec = extractLexicalPrecedence(rawRule, namedPrecMap);
-      tokenByName.set(rName, {
-        name: rName,
-        expr,
-        state: ["initial"],
-        isString: false,
-        isImmediate,
-        isWord: grammar.word === rName,
-        isExtra: false,
-        lexPrec,
-        order: tokenOrder++,
-      });
-      terminalRuleNames.add(rName);
+      if (expr !== "") {
+        const isImmediate = unwrapped.type === "IMMEDIATE_TOKEN";
+        const lexPrec = extractLexicalPrecedence(rawRule, namedPrecMap);
+        tokenByName.set(rName, {
+          name: rName,
+          expr,
+          state: ["initial"],
+          isString: false,
+          isImmediate,
+          isWord: effectiveWord === rName,
+          isExtra: extraSymbolNames.has(rName),
+          lexPrec,
+          order: tokenOrder++,
+        });
+        terminalRuleNames.add(rName);
+      }
     }
   }
 
@@ -793,9 +1202,9 @@ export function generate(input, options) {
         const targetTok = tokenByName.get(extra.name);
         if (targetTok) {
           targetTok.isExtra = true;
-        }
-        if (!skipTokens.includes(extra.name)) {
-          skipTokens.push(extra.name);
+          if (!skipTokens.includes(extra.name)) {
+            skipTokens.push(extra.name);
+          }
         }
       } else {
         const rawExpr = ruleToRegex(extra, grammarRules);
@@ -835,6 +1244,83 @@ export function generate(input, options) {
   let repeatCounter = 0;
 
   /**
+   * If a regex pattern is a single atom/class with a trailing `*` (0-or-more quantifier,
+   * such as `[^"\\\n]*` in GraphQL or `[^`]*` in Go), convert the outer `*` to `+` so
+   * the lexer token never matches 0 bytes, and return `{ nonEmptyExpr, isNullable: true }`.
+   *
+   * @param {string} expr
+   * @returns {{ nonEmptyExpr: string, isNullable: boolean }}
+   */
+  function splitNullableRegexQuantifier(expr) {
+    if (!expr.endsWith("*") || expr.endsWith("\\*")) {
+      return { nonEmptyExpr: expr, isNullable: false };
+    }
+    const body = expr.slice(0, -1);
+    if (body.startsWith("[") && body.endsWith("]")) {
+      // Check that the opening `[` matches the closing `]` without closing early
+      let inEscape = false;
+      let closedEarly = false;
+      for (let i = 1; i < body.length - 1; i++) {
+        if (inEscape) {
+          inEscape = false;
+          continue;
+        }
+        if (body[i] === "\\") {
+          inEscape = true;
+          continue;
+        }
+        if (body[i] === "]") {
+          closedEarly = true;
+          break;
+        }
+      }
+      if (!closedEarly) {
+        return { nonEmptyExpr: `${body}+`, isNullable: true };
+      }
+    }
+    if (body.startsWith("(") && body.endsWith(")")) {
+      let inEscape = false;
+      let inClass = false;
+      let depth = 0;
+      let closedEarly = false;
+      for (let i = 0; i < body.length; i++) {
+        const ch = body[i];
+        if (inEscape) {
+          inEscape = false;
+          continue;
+        }
+        if (ch === "\\") {
+          inEscape = true;
+          continue;
+        }
+        if (inClass) {
+          if (ch === "]") {
+            inClass = false;
+          }
+          continue;
+        }
+        if (ch === "[") {
+          inClass = true;
+          continue;
+        }
+        if (ch === "(") {
+          depth++;
+        } else if (ch === ")") {
+          depth--;
+          if (depth === 0 && i < body.length - 1) {
+            closedEarly = true;
+            break;
+          }
+        }
+      }
+      if (!closedEarly && depth === 0) {
+        return { nonEmptyExpr: `${body}+`, isNullable: true };
+      }
+    }
+    return { nonEmptyExpr: expr, isNullable: false };
+  }
+
+  /**
    * @param {TreeSitterNode} node
    * @param {string} currentRuleName
    * @param {Set<string>} inlineStack
@@ -854,10 +1340,42 @@ export function generate(input, options) {
       case "CHARACTER_SET":
       case "TOKEN":
       case "IMMEDIATE_TOKEN": {
-        const isImmediate = node.type === "IMMEDIATE_TOKEN";
-        const expr = ruleToRegex(node, grammarRules);
+        // If TOKEN or IMMEDIATE_TOKEN wraps a single STRING literal (e.g. `token.immediate('(')` in C/CSS
+        // or `token(prec(1, '['))` in CSS), reuse the canonical string token so it isn't shadowed in the DFA!
+        const innerUnwrapped =
+          (node.type === "TOKEN" || node.type === "IMMEDIATE_TOKEN") && node.content
+            ? unwrapMeta(node.content)
+            : null;
         const lexPrec = extractLexicalPrecedence(node, namedPrecMap);
+        if (innerUnwrapped && innerUnwrapped.type === "STRING") {
+          const tokName = ensureStringToken(String(innerUnwrapped.value ?? ""), lexPrec);
+          return [{ symbols: [tokName] }];
+        }
+
+        const rawExpr = ruleToRegex(node, grammarRules);
+        if (rawExpr === "") {
+          return [{ symbols: [] }];
+        }
+        const { nonEmptyExpr: expr, isNullable } = splitNullableRegexQuantifier(rawExpr);
+        // Treat inline negated character class patterns (like `[^"\\\n]+` inside string rules) as immediate-eligible
+        const isNegatedCharClass = expr.includes("[^");
+        const isImmediate = node.type === "IMMEDIATE_TOKEN" || isNegatedCharClass;
+        if (!isImmediate) {
+          const existingPatTok = inlinePatternToTokenName.get(expr);
+          if (existingPatTok !== undefined) {
+            const tok = tokenByName.get(existingPatTok);
+            if (tok && lexPrec > tok.lexPrec) {
+              tok.lexPrec = lexPrec;
+            }
+            return isNullable
+              ? [{ symbols: [existingPatTok] }, { symbols: [] }]
+              : [{ symbols: [existingPatTok] }];
+          }
+        }
         const tokName = `_${currentRuleName}_token${++anonTokenCounter}`;
+        if (!isImmediate) {
+          inlinePatternToTokenName.set(expr, tokName);
+        }
         tokenByName.set(tokName, {
           name: tokName,
           expr,
@@ -869,7 +1387,9 @@ export function generate(input, options) {
           lexPrec,
           order: tokenOrder++,
         });
-        return [{ symbols: [tokName] }];
+        return isNullable
+          ? [{ symbols: [tokName] }, { symbols: [] }]
+          : [{ symbols: [tokName] }];
       }
 
       case "SYMBOL": {
@@ -1033,6 +1553,7 @@ export function generate(input, options) {
     }
     const ruleNode = grammarRules[rName];
     const unwrapped = unwrapMeta(ruleNode);
+    const defaultPrec = symbolDefaultPrecMap.get(rName);
 
     if (
       (unwrapped.type === "REPEAT1" || unwrapped.type === "REPEAT") &&
@@ -1056,14 +1577,14 @@ export function generate(input, options) {
           name: rName,
           symbols: [...b.symbols],
           actions: [],
-          precedence: b.precedence,
+          precedence: b.precedence ?? defaultPrec,
           assoc: b.assoc,
         });
         rawProductions.push({
           name: rName,
           symbols: [rName, ...b.symbols],
           actions: [],
-          precedence: b.precedence,
+          precedence: b.precedence ?? defaultPrec,
           assoc: b.assoc,
         });
       }
@@ -1080,7 +1601,7 @@ export function generate(input, options) {
         name: rName,
         symbols: b.symbols,
         actions: [],
-        precedence: b.precedence,
+        precedence: b.precedence ?? defaultPrec,
         assoc: b.assoc,
       });
     }
@@ -1101,6 +1622,28 @@ export function generate(input, options) {
       }
     }
 
+    // Track which rules actually have at least one non-empty production
+    /** @type {Set<string>} */
+    const nonEmptyRuleNames = new Set();
+    for (const prod of rawProductions) {
+      if (prod.symbols.some((s) => !nullableRules.has(s) || tokenByName.has(s))) {
+        nonEmptyRuleNames.add(prod.name);
+      }
+    }
+    let nonEmptyChanged = true;
+    while (nonEmptyChanged) {
+      nonEmptyChanged = false;
+      for (const prod of rawProductions) {
+        if (
+          !nonEmptyRuleNames.has(prod.name) &&
+          prod.symbols.some((s) => nonEmptyRuleNames.has(s) || tokenByName.has(s))
+        ) {
+          nonEmptyRuleNames.add(prod.name);
+          nonEmptyChanged = true;
+        }
+      }
+    }
+
     /** @type {typeof rawProductions} */
     const expandedProductions = [];
     /** @type {Set<string>} */
@@ -1112,8 +1655,14 @@ export function generate(input, options) {
       for (const sym of prod.symbols) {
         /** @type {string[][]} */
         const nextCombos = [];
+        const isPurelyEmpty =
+          nullableRules.has(sym) &&
+          !nonEmptyRuleNames.has(sym) &&
+          !tokenByName.has(sym);
         for (const prefix of symbolCombinations) {
-          nextCombos.push([...prefix, sym]);
+          if (!isPurelyEmpty) {
+            nextCombos.push([...prefix, sym]);
+          }
           if (nullableRules.has(sym) && sym !== prod.name) {
             nextCombos.push([...prefix]);
           }
@@ -1122,7 +1671,10 @@ export function generate(input, options) {
       }
 
       for (const syms of symbolCombinations) {
-        if (syms.length === 0) {
+        if (
+          syms.length === 0 ||
+          (syms.length === 1 && syms[0] === prod.name)
+        ) {
           continue;
         }
         const key = `${prod.name}\0${syms.join("\0")}\0${
@@ -1146,7 +1698,8 @@ export function generate(input, options) {
     }
   }
 
-  // Detect delimited rules wrapping IMMEDIATE_TOKENs (such as `string` in tree-sitter-json)
+  // Detect delimited rules wrapping IMMEDIATE_TOKENs (such as `string` in tree-sitter-json,
+  // `StringValue` in tree-sitter-graphql, `string_value` in tree-sitter-css, or `basic_string` in tree-sitter-toml)
   const immediateTokenNames = new Set(
     Array.from(tokenByName.values())
       .filter((t) => t.isImmediate)
@@ -1166,38 +1719,56 @@ export function generate(input, options) {
     }
 
     /** @type {Set<string>} */
-    const immediateOnlyRules = new Set();
+    const terminalHelperRules = new Set();
+    /** @type {Set<string>} */
+    const rulesUsingImmediate = new Set();
     let immChanged = true;
     while (immChanged) {
       immChanged = false;
       for (const [rName, prods] of prodsByName.entries()) {
-        if (immediateOnlyRules.has(rName) || rName === startRuleName) {
+        if (
+          rName === startRuleName ||
+          (!rName.includes("_repeat") && !rName.endsWith("_content"))
+        ) {
           continue;
         }
-        const allImm = prods.every(
-          (p) =>
-            p.symbols.length > 0 &&
-            p.symbols.every(
-              (s) =>
-                s === rName ||
-                immediateTokenNames.has(s) ||
-                immediateOnlyRules.has(s)
+        if (!terminalHelperRules.has(rName)) {
+          const allTerm = prods.every(
+            (p) =>
+              p.symbols.length > 0 &&
+              p.symbols.every(
+                (s) =>
+                  s === rName ||
+                  tokenByName.has(s) ||
+                  terminalHelperRules.has(s)
+              )
+          );
+          if (allTerm) {
+            terminalHelperRules.add(rName);
+            immChanged = true;
+          }
+        }
+        if (!rulesUsingImmediate.has(rName)) {
+          const usesImm = prods.some((p) =>
+            p.symbols.some(
+              (s) => immediateTokenNames.has(s) || rulesUsingImmediate.has(s)
             )
-        );
-        if (allImm) {
-          immediateOnlyRules.add(rName);
-          immChanged = true;
+          );
+          if (usesImm) {
+            rulesUsingImmediate.add(rName);
+            immChanged = true;
+          }
         }
       }
     }
 
     for (const [rName, prods] of prodsByName.entries()) {
-      if (immediateOnlyRules.has(rName)) {
+      if (terminalHelperRules.has(rName)) {
         continue;
       }
       const usesImmediate = prods.some((p) =>
         p.symbols.some(
-          (s) => immediateTokenNames.has(s) || immediateOnlyRules.has(s)
+          (s) => immediateTokenNames.has(s) || rulesUsingImmediate.has(s)
         )
       );
       if (!usesImmediate) {
@@ -1215,7 +1786,7 @@ export function generate(input, options) {
         }
         for (let i = 1; i < p.symbols.length - 1; i++) {
           const mid = p.symbols[i];
-          if (!immediateTokenNames.has(mid) && !immediateOnlyRules.has(mid)) {
+          if (!tokenByName.has(mid) && !terminalHelperRules.has(mid)) {
             return false;
           }
         }
@@ -1223,54 +1794,96 @@ export function generate(input, options) {
       });
 
       if (isDelimited) {
-        const modeName = `imm_${rName}`;
-        /** @type {Set<string>} */
-        const visitedRules = new Set();
-        /** @type {Set<string>} */
-        const reachableImmTokens = new Set();
-
-        /**
-         * @param {string} sym
-         */
-        const collectImmTokens = (sym) => {
-          if (immediateTokenNames.has(sym)) {
-            reachableImmTokens.add(sym);
-            return;
-          }
-          if (immediateOnlyRules.has(sym) && !visitedRules.has(sym)) {
-            visitedRules.add(sym);
-            for (const subProd of prodsByName.get(sym) ?? []) {
-              for (const s of subProd.symbols) {
-                collectImmTokens(s);
-              }
-            }
-          }
-        };
-
+        // Group delimited productions by closing delimiter token so rules with multiple
+        // quote types (e.g. `'` and `"` in CSS `string_value`) get dedicated lexer modes per quote!
+        /** @type {Map<string, typeof prods>} */
+        const prodsByCloseSym = new Map();
         for (const p of prods) {
           const closeSym = p.symbols[p.symbols.length - 1];
+          let group = prodsByCloseSym.get(closeSym);
+          if (!group) {
+            group = [];
+            prodsByCloseSym.set(closeSym, group);
+          }
+          group.push(p);
+        }
+
+        let groupIdx = 0;
+        for (const [closeSym, groupProds] of prodsByCloseSym.entries()) {
+          const modeName =
+            prodsByCloseSym.size === 1
+              ? `imm_${rName}`
+              : `imm_${rName}_${groupIdx++}`;
+          /** @type {Set<string>} */
+          const visitedRules = new Set();
+          /** @type {Set<string>} */
+          const reachableMidTokens = new Set();
+
+          /**
+           * @param {string} sym
+           */
+          const collectMidTokens = (sym) => {
+            if (tokenByName.has(sym)) {
+              reachableMidTokens.add(sym);
+              return;
+            }
+            if (terminalHelperRules.has(sym) && !visitedRules.has(sym)) {
+              visitedRules.add(sym);
+              for (const subProd of prodsByName.get(sym) ?? []) {
+                for (const s of subProd.symbols) {
+                  collectMidTokens(s);
+                }
+              }
+            }
+          };
+
           const closeTok = tokenByName.get(closeSym);
           if (closeTok && !closeTok.state.includes(modeName)) {
             closeTok.state.push(modeName);
           }
-          for (let i = 1; i < p.symbols.length - 1; i++) {
-            collectImmTokens(p.symbols[i]);
+          for (const p of groupProds) {
+            for (let i = 1; i < p.symbols.length - 1; i++) {
+              collectMidTokens(p.symbols[i]);
+            }
+            p.actions = [
+              { at: 0, code: `lexer.push('${modeName}')` },
+              { at: p.symbols.length - 1, code: "lexer.pop()" },
+            ];
           }
-          p.actions = [
-            { at: 0, code: `lexer.push('${modeName}')` },
-            { at: p.symbols.length - 1, code: "lexer.pop()" },
-          ];
-        }
 
-        for (const immTokName of reachableImmTokens) {
-          const immTok = tokenByName.get(immTokName);
-          if (immTok) {
-            immTok.state = immTok.state.filter((s) => s !== "initial");
-            if (!immTok.state.includes(modeName)) {
-              immTok.state.push(modeName);
+          for (const midTokName of reachableMidTokens) {
+            const midTok = tokenByName.get(midTokName);
+            if (midTok) {
+              if (midTok.isImmediate) {
+                midTok.state = midTok.state.filter((s) => s !== "initial");
+              }
+              if (!midTok.state.includes(modeName)) {
+                midTok.state.push(modeName);
+              }
             }
           }
         }
+      }
+    }
+  }
+
+  // If the grammar defines an explicit newline token (\n or \r?\n) in `"initial"`,
+  // remove \x0a from whitespace `_extra_*` tokens so multi-char sequences like `\n\t` or `\n\n`
+  // do not swallow statement-terminating newlines via maximal munch, and so horizontal whitespace
+  // can be accelerated via `skipBytes`.
+  const hasExplicitNewlineToken = Array.from(tokenByName.values()).some(
+    (t) =>
+      !t.isExtra &&
+      t.state.includes("initial") &&
+      (t.expr === "\\n" || t.expr === "\\r?\\n")
+  );
+  if (hasExplicitNewlineToken) {
+    for (const t of tokenByName.values()) {
+      if (t.isExtra && t.expr.includes("\\x09\\x0a\\x0b\\x0c\\x0d ")) {
+        t.expr = t.expr.replace(
+          /\\x09\\x0a\\x0b\\x0c\\x0d /g,
+          "\\x09\\x0b\\x0c\\x0d "
+        );
       }
     }
   }
@@ -1280,22 +1893,34 @@ export function generate(input, options) {
   const otherProds = rawProductions.filter((p) => p.name !== startRuleName);
   const orderedProds = [...startProds, ...otherProds];
 
+  // Filter out any non-extra tokens that are never referenced in any production
+  // (e.g., helper immediate tokens like `unit` in CSS that were folded into `integer_value` / `float_value`)
+  /** @type {Set<string>} */
+  const referencedSymbols = new Set();
+  for (const p of orderedProds) {
+    for (const s of p.symbols) {
+      referencedSymbols.add(s);
+    }
+  }
+
   // Sort tokens: higher lexPrec first, then STRING literals before PATTERN/TOKEN, then non-word before word, then extras last
-  const sortedTokens = Array.from(tokenByName.values()).sort((a, b) => {
-    if (a.isExtra !== b.isExtra) {
-      return a.isExtra ? 1 : -1;
-    }
-    if (a.lexPrec !== b.lexPrec) {
-      return b.lexPrec - a.lexPrec;
-    }
-    if (a.isString !== b.isString) {
-      return a.isString ? -1 : 1;
-    }
-    if (a.isWord !== b.isWord) {
-      return a.isWord ? 1 : -1;
-    }
-    return a.order - b.order;
-  });
+  const sortedTokens = Array.from(tokenByName.values())
+    .filter((t) => t.isExtra || referencedSymbols.has(t.name))
+    .sort((a, b) => {
+      if (a.isExtra !== b.isExtra) {
+        return a.isExtra ? 1 : -1;
+      }
+      if (a.lexPrec !== b.lexPrec) {
+        return b.lexPrec - a.lexPrec;
+      }
+      if (a.isString !== b.isString) {
+        return a.isString ? -1 : 1;
+      }
+      if (a.isWord !== b.isWord && (a.name === "bare_key" || b.name === "bare_key")) {
+        return a.isWord ? 1 : -1;
+      }
+      return a.order - b.order;
+    });
 
   const allLexerStates = Array.from(
     new Set(["initial", ...sortedTokens.flatMap((t) => t.state)])
@@ -1336,11 +1961,11 @@ export function generate(input, options) {
   }));
 
   return generateParser(
-    { tokens, rules, word: grammar.word },
+    { tokens, rules, word: effectiveWord },
     {
       ...options,
       skipTokens,
-      word: options?.word ?? grammar.word,
+      word: effectiveWord,
     }
   );
 }
