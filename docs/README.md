@@ -10,16 +10,7 @@
   - [(side-quest) porting the parser to C](#side-quest-porting-the-parser-to-c)
   - [(side-quest) porting the parser to bison](#side-quest-porting-the-parser-to-bison)
   - [(side-quest) directly executable LR parser](#side-quest-directly-executable-lr-parser)
-- [Part II: From 2x Slower than C++ to Matching `JSON.parse`, Beating V8's `new RegExp` by 2.5x, and 100% Self-Hosting](#part-ii-from-2x-slower-than-c-to-matching-jsonparse-beating-v8s-new-regexp-by-25x-and-100-self-hosting)
-  - [1. Eliminating V8's `vcvtqsi2sd xmm0` Float64 Trap & `REX.W movsxlq` Sign Extensions](#1-eliminating-v8s-vcvtqsi2sd-xmm0-float64-trap--rexw-movsxlq-sign-extensions)
-  - [2. Dead-End Final States First & Eliding Dead-End Rows from the Lexer Table](#2-dead-end-final-states-first--eliding-dead-end-rows-from-the-lexer-table)
-  - [3. Fitting the Entire Working Set into the 32 KiB L1d Cache](#3-fitting-the-entire-working-set-into-the-32-kib-l1d-cache)
-  - [4. Breaking the 64 KiB Barrier: 3-Word `Uint32Array` CST & `end22_len10` Packed Spans (409–443 MB/s)](#4-breaking-the-64-kib-barrier-3-word-uint32array-cst--end22_len10-packed-spans-409443-mbs)
-  - [5. Solving V8's `ModuleContext` & `Phi` De-Optimization Puzzle for Auto-Growing Arenas](#5-solving-v8s-modulecontext--phi-de-optimization-puzzle-for-auto-growing-arenas)
-  - [6. Replacing `new Proxy` with Monomorphic `class CstNode` (13.2x Faster CST Walks)](#6-replacing-new-proxy-with-monomorphic-class-cstnode-132x-faster-cst-walks)
-  - [7. Multi-Mode Lexers at Single-Mode Speed: Beating V8's Native C++ `new RegExp` by 2.0x–2.6x](#7-multi-mode-lexers-at-single-mode-speed-beating-v8s-native-c-new-regexp-by-20x26x)
-  - [8. 100% Compiler Self-Hosting & 15x–1,315x Faster Compilation](#8-100-compiler-self-hosting--15x1315x-faster-compilation)
-  - [9. Summary of Verified Benchmarks & Hardware Performance Counters](#9-summary-of-verified-benchmarks--hardware-performance-counters)
+- [How we slopped the rest of the way to the top](#how-we-slopped-the-rest-of-the-way-to-the-top)
 
 ## Intro
 
@@ -1044,357 +1035,160 @@ _Todo:_ using our own lexer, comparing performance to our parser ported to C (8s
 
 _Todo:_ https://link.springer.com/content/pdf/10.1007/3-540-53669-8_82.pdf - "readable parser" (a function for each shift/reduce action), "executable parser" (single function with nested switch/case instructions)
 
----
+## How we slopped the rest of the way to the top
 
-## Part II: From 2x Slower than C++ to Matching `JSON.parse`, Beating V8's `new RegExp` by 2.5x, and 100% Self-Hosting
+A story of using an LLM agent to optimize our generated parsers to surpass every other parser (except highly optimized SIMD parsers).
 
-At the end of Part I, our generated JSON parser had come a long way from its initial 45x deficit against `JSON.parse`, reaching ~1.85x–2.06x slower than V8's hand-written C++ `JSON.parse` on `package.json` (`964.93 ms` for 100k iterations on our isolated AMD EPYC 9R14 / Zen 4 benchmark core). Yet major architectural ceilings remained:
+The LLM agent was able to profile the jitted code with more patience and find and fix several small issues, continuing to write our code in such a way that V8 emits fewer checks and more streamlined code.
 
-1. **Still 2x slower than C++ `JSON.parse`**, executing over `100,000` instructions per `package.json` parse and thrashing the 32 KiB L1 data cache with a **143.6 KiB** table footprint.
-2. **Hard 64 KiB document limit:** The 6-word `Uint16Array` CST stored `start` and `end` byte offsets as 16-bit unsigned integers (`0..65,535`), overflowing on any real-world file larger than 64 KiB (such as `package-lock.json` at `494,990` bytes).
-3. **Slow `Proxy`-backed CST traversal** and a multi-mode lexer bottleneck that made `@par-gen/regexp` (`130.84 ms` for 8,000 regexes) **17x slower** than V8's `new RegExp`.
-4. **Hand-rolled bootstrap compilers** and an $O(N^2)$ NFA/DFA/LR(1) construction pipeline that took **~90 seconds** to compile `regexp.pargen`.
+For example, in the lexer's main loop (`state = table[state + input[i++]]`), every iteration depends on the `state` loaded by the previous one. Even an L1 cache hit takes ~4 cycles, so this data-load dependency stalls the CPU's load ports and caps instructions per cycle (IPC) at one byte every 4+ cycles.
 
-To cross the chasm from "fast for JavaScript" to **matching native C++ `JSON.parse` within 1.002x–1.03x** and **beating V8's C++ `RegExpParser` by 2.04x–2.58x**, we stopped treating V8 and the CPU as a black box. Every change was verified on an isolated physical core of an AWS EC2 `c7a.large` instance (AMD EPYC 9R14 Zen 4, 3.7 GHz, `ThreadsPerCore: 1`, 32 KiB L1d / 32 KiB L1i / 1 MiB L2, ASLR disabled, Node.js `v26.13.0` / V8 `14.6.202.34` with Turboshaft) by inspecting `--print-opt-code --code-comments` x86-64 disassembly and Linux `perf stat` hardware counters.
+To break that dependency chain, our generator now detects states that loop on themselves (like whitespace, identifiers, or numbers) and emits an inner loop for them inside the main lexer loop. Because `state` is known to be constant inside that inner loop, we can hardcode it in the index so out-of-order execution can overlap loads across iterations (increasing instruction-level parallelism):
 
----
+```diff
+   while (i < l) {
+     state = table[state + input[i++]];
++    // state 1536 loops on itself (e.g. whitespace or numbers):
++    // indexing by the constant 1536 instead of `state` lets the CPU
++    // load the next bytes without waiting for the previous load
++    if (state === 1536) {
++      while (i < l && (state = table[input[i++] + 1536]) === 1536);
++    }
+   }
+```
 
-### 1. Eliminating V8's `vcvtqsi2sd xmm0` Float64 Trap & `REX.W movsxlq` Sign Extensions
+This sped up larger files by ~40% (along with smaller tweaks like replacing `/ 256` with `>> 8` to avoid floating-point conversion, padding small `TypedArray`s past 64 bytes so V8 moves them off the JS heap, and masking `offset & 0x7fffffff` so V8 knows the index isn't negative).
 
-When we inspected the TurboFan/Turboshaft x86-64 disassembly (`node --print-opt-code --code-comments`) of the Part I lexer, we discovered three silent instruction-level taxes in the hot tokenizing path:
+The agent also did more research and found further algorithmic and data-structural improvements in literature.
 
-#### A. The `successState / 256` Float64 (`xmm0`) Induction Trap
-In JavaScript, `/` is IEEE-754 floating-point division. Even when `successState` is always a multiple of `256`, writing `tokenIds[successState / 256 + 2]` forced V8 to convert the 32-bit integer register into a 64-bit float (`vcvtqsi2sd xmm0`), divide by `256.0`, and convert back to an integer with a deoptimization check for `-0.0` or fractional remainder (`vcvttsd2si` + `ucomisd`). Furthermore, `tokenIds` was a JS array literal (`PACKED_SMI_ELEMENTS`), emitting `Smi` tag checks and `sarq 32` untagging shifts.
-
-Replacing `successState / 256` with a bitwise shift `successState >> 8` and storing `tokenIds` in a `Uint8Array` (and later indexing `tokenIds[successState]` directly on compact dead-end states `< 256`) eliminated every `xmm0` instruction from `parse()`.
-
-#### B. Eliminating `REX.W movsxlq` via `offset & 0x7fffffff` (`Unsigned31` Range Proof)
-In the 4x-unrolled inner lexer loop:
+While V8 doesn't expose SIMD intrinsics to pure JS, we can still do SWAR (SIMD Within A Register) on DFA states that scan runs of characters like string literals. Loading 4 bytes at a time via `DataView.prototype.getUint32`, XORing with a broadcast byte (like `0x22222222` for `"`) turns matching bytes into `0x00`, and subtracting `0x01010101` underflows any `0x00` byte so its high bit (`0x80`) is set. Masking with `0x80808080` then tests all 4 bytes at once for quotes, backslashes, control chars (`< 0x20`), or non-ASCII bytes (~35% faster on JSON):
 
 ```javascript
-while (i < l) {
-  state = table[state + input[i]];
-  i++;
-  // ...
-}
+const w0 = dv.getUint32(i, true);
+if (
+  (((w0 - 0x20202020) |
+    ((w0 ^ 0x22222222) - 0x01010101) |
+    ((w0 ^ 0x5c5c5c5c) - 0x01010101) |
+    w0) &
+    0x80808080) !==
+  0
+)
+  break;
 ```
 
-Because `offset` is passed as a parameter `next(input, offset)`, V8's range analysis only knows `i` is a `Signed32` (`[-2^31, 2^31 - 1]`). To check `i < input.length` (`Unsigned31`) and index `input[i]`, Turboshaft emitted a 64-bit sign-extension instruction (`REX.W movsxlq rbx, rbx`) on **every single byte** of the 4x-unrolled loop so negative numbers would wrap to huge unsigned 64-bit indices and trigger the unsigned bounds check (`jae`).
+Next, remember how our lexer recorded every state into a `visited` array and then walked it backwards to find the last final state? We don't actually need an array for that, because only the *last* final state matters, which just takes two variables (`lastMatchState` and `lastMatchEnd`). Better yet, most tokens (`{`, `}`, `:`, `,`, `"..."`, `true`) end in a final state that has no outgoing transitions and can never match a longer token. Sorting those final states to the front (`state <= 2560`) lets the lexer return immediately as soon as it enters one (~37% faster):
 
-Adding a single bitwise mask at the function prologue:
-
-```javascript
-let i = offset & 0x7fffffff;
+```diff
+   while (i < l) {
+     state = table[state + input[i++]];
+-    visited[++j] = state;
++    if (state <= 2560) {
++      // final state with no outgoing transitions -> return immediately
++      return { state: tokenIds[state >> 8], start: offset, end: i };
++    }
++    if (state <= 3584) {
++      // final state that can still continue (e.g. numbers) -> remember it
++      lastMatchState = state;
++      lastMatchEnd = i;
++    }
+   }
+-  while (!success && n > 0) {
+-    success = visited[n] <= 12800;
+-    n--;
+-  }
 ```
 
-proves to Turboshaft's range analysis that `i >= 0` (`Unsigned31`) at loop entry and across `i++`, completely eliminating `REX.W movsxlq` across all 4 unrolled byte iterations.
+And in the parser, packing the rule length and the shift/reduce bit directly into `actionsTable` let us delete the `reducerStates` lookup table entirely (~31% faster).
 
-#### C. Scalar Replacement of `{ state, start, end }` via Escape Analysis & Packed `lookaheadSpan`
-In Part I, we reused a module-scoped `const lexeme = { state: -1, start: -1, end: -1 }` singleton to avoid GC allocations. However, because `lexeme` escaped to module scope, V8 had to materialize stores and loads to memory on every token. Conversely, when returning a fresh `{ state, start, end }` object literal, if `result` remained live across the `while (true)` parser loop (because `result.start` and `result.end` were read inside `case 0: // shift` after arbitrary `reduce` iterations), `result` became a loop-header `Phi(result_entry, result_shift)`—defeating V8's `EscapeAnalysis`!
+We also shrank our syntax tree from 6 words per node down to 2 words (~20% faster parsing, and >40x faster tree walking after replacing `new Proxy` with a `CstNode` class). Because an LR parser always builds children before reducing their parent, appending nodes to `tree` naturally writes them in postorder. A node's last child is always right before it at `tp - 2`, and storing the previous `tp` on the stack tells us where its first child starts, so we don't need `nextSibling` pointers, and parent nodes can derive `start` and `end` from their first and last child:
 
-By returning a fresh `{ state, start, end }` from the inlined `nextTokenInitial` **and immediately destructuring and packing** the token span into a single 32-bit integer register before any loop merge:
+```diff
+-  // previous tree layout (6 x uint16 per node)
+-  //  _________________________________________________________________
+-  // |_name_|_start_|_end_|_numChildren_|_firstChild_|_nextSibling_|...
++  // new packed tree layout (2 x uint32 per node)
++  //  _____________________________________________________
++  // |_name_+_numChildren_|_end_+_len_(leaf)_/_firstChild_|...
++  // | bits 0..7:  name   | leaf:   bits 0..21: end, bits 22..31: length
++  // | bits 8..31: count  | parent: firstChild (last child is at tp - 2)
 
-```javascript
-let result = nextTokenInitial(stream, 0);
-let lookahead = result.state;
-let lookaheadSpan = result.end | ((result.end - result.start) << 22);
+-        tree[tp] = lookahead;              // name
+-        tree[tp + 1] = result.start;       // start
+-        tree[tp + 2] = result.end;         // end
+-        tree[tp + 3] = 0;                  // numChildren
+-        tree[tp + 4] = 0;                  // firstChild
+-        tree[stack[sp - 1] + 5] = tp;      // nextSibling
+-        tp += 6;
++        tree[tp] = lookahead;              // or for reduce: action.symbol | (numChildren << 8)
++        tree[tp + 1] = result.end | ((result.end - result.start) << 22); // or for reduce: stack[sp + 1] (firstChild)
++        tp += 2;
 ```
 
-`result` never enters a loop `Phi`. Turboshaft scalar-replaces `{ state, start, end }` completely into CPU registers (`rcx`, `rsi`) with **zero heap allocations, zero memory stores, and one fewer live register across the parser loop** (`-470M` instructions across 200k `package.json` parses).
+In most grammars, nearly half of all reductions just wrap a single child in a parent rule (like `STRING -> Value -> Element`). Normally, shifting `STRING` pushes a state onto the stack, only for the very next loop iteration to pop it right back off and reduce `Value`. When a target state only ever reduces a single child, we set a flag bit (`0x8000`) and pack the parent symbol into `actionsTable` so the shift step writes both nodes and jumps straight to the state after the reduction (~15% faster):
 
-#### D. Defeating V8's `64B` On-Heap `TypedArray` Threshold (`--typed-array-max-size-in-heap=64`)
-While auditing `opt-parse.asm`, we noticed a striking anomaly: `table`, `actionsTable`, `gotoTable`, `stack`, and `tree` compiled to 1-instruction constant-address loads (`movzxwl r14, [r14*2 + 0x75e3b80]`), whereas `tokenIds[successState >> 8]` compiled to **8 instructions and 3 dependent memory loads** (`movq r9, [rdi+0x4f]`, `movq rsi, [rdi+0x47]`, `movq rdi, [rdi+0x37]`) that clobbered `r9` (`input.length`) and forced `input.length` to spill to `[rbp-0x70]` inside the 4x-unrolled lexer loop!
+```diff
+       // shift leaf node (e.g. STRING)
+       tree[tp] = lookahead;
+       tree[tp + 1] = lookaheadSpan;
+       tp += 2;
 
-**Why?** V8 defaults to `--typed-array-max-size-in-heap=64`. Because `tokenIds` had 40 entries (`40 bytes <= 64 bytes`), V8 allocated its backing store **on the movable V8 JS heap**, preventing JIT constant-folding of the base pointer. Padding static lookup tables (`tokenIds`, `actionsTable`, `gotoTable`, `shiftActionsTable`) to `>= 128` bytes forces an **off-heap non-moving allocation**, compiling `tokenIds[...]` to a single instruction:
-
-```nasm
-movzxbl rcx, [rdi + 0x75ee710] ; 1-instruction constant-folded off-heap load!
+-      stack[sp + 1] = tp - 2;
+-      sp += 2;
+-      stack[sp] = action.state; // next iteration will immediately reduce Value
++      if (action & 0x8000) {
++        // target state only ever reduces 1 child (e.g. STRING -> Value):
++        // write the parent node right here and skip the reduce iteration
++        const symbol = (action >> 10) & 0x1f;
++        tree[tp] = symbol | (1 << 8);      // name = Value, numChildren = 1
++        tree[tp + 1] = tp - 2;             // firstChild points to STRING above
++        tp += 2;
++
++        stack[sp + 1] = tp - 2;
++        sp += 2;
++        stack[sp] = gotoTable[currentState * 32 + symbol];
++      } else {
++        stack[sp + 1] = tp - 2;
++        sp += 2;
++        stack[sp] = action & 0x3ff;
++      }
 ```
 
-This kept `input.length` in register `r9` across the entire function and eliminated **368 million L1d loads** (`-1,841` loads/parse) on 200k `package.json` parses.
+Finally, canonical LR(1) duplicates states whenever the same grammar rule is reached with different lookahead tokens, which explodes into thousands of states on larger grammars like JS/TS and blows out the CPU's L1/L2 caches. Implementing IELR (merging states with identical rules whenever combining their lookaheads doesn't cause a conflict) and bisimilarity (merging states with identical action and goto rows), along with lexer character equivalence classes, shrank our tables by ~80%:
 
----
-
-### 2. Dead-End Final States First & Eliding Dead-End Rows from the Lexer Table
-
-In `json.pargen`, `11` of the `16` accepting DFA states (`{`, `}`, `[`, `]`, `:`, `,`, `"..."`, `true`, `false`, `null`—accounting for **`211` out of `347` tokens** in `package.json`, or `60.8%` of all tokens) are **dead-end final states**: they have **zero outgoing non-error transitions**.
-
-Previously, on every single one of those `211` tokens, the lexer recorded `successState = state; successPos = i;` and then had to loop around, bounds-check `i < l`, read the *next* byte from `input`, look up `table[state + nextByte]` (always `0`), and only then `break`. Worse still, allocating 256-column transition rows filled with `0` for those 11 dead-end final states wasted `11 * 512 = 5.5 KiB` of the 32 KiB L1d cache!
-
-We partitioned all DFA states into four contiguous bands:
-
-```text
-[ errorState (0) | deadEndFinals (1 .. D) | continuableFinals (256 .. F*256) | nonFinals (> F*256) ]
+```
+State 42:  Value -> NUMBER .  lookahead: [","]
+State 87:  Value -> NUMBER .  lookahead: ["}"]
+-> Merged: Value -> NUMBER .  lookahead: [",", "}"]
 ```
 
-1. **Zero `table` rows for dead-end final states (`1 .. D`):** Because the lexer exits the `while (i < l)` loop immediately whenever `state <= D`, dead-end final states never index into `table[state + input[i]]`. Thus we assign them compact IDs `1 .. D` (`< 256`) and **completely elide their 256-column rows from `table`**—shrinking the JSON lexer `table` by **-27.5%** (`20.0 KiB -> 14.5 KiB`) and the RegExp initial lexer `table` by **-88.9%** (`4,608 -> 512` entries = `1.0 KiB`)!
-2. **Unshifted `tokenIds[successState]` lookup:** For single-mode lexers where every dead-end final state corresponds to a unique token and no two tokens share the same dead-end state, `state` (`1 .. D`) is already a compact index, compiling `tokenIds[successState]` to a single unshifted `movzxbl` load.
-3. **Why checking `state <= remappedLastDeadEndFinal` *first* unlocks V8's peeled 1st-byte fast path:**
-   In V8 `v26.13.0` Turboshaft (`opt-parse.asm`), V8 **peels the 1st iteration** of `while (i < l)` where `state` is the constant start state:
+That kept our tables small enough to fit in cache even for large grammars, letting us self-host our regex and grammar parsers and compile full Tree-sitter grammars to pure JS.
 
-```nasm
-0x7fffc8006621  movzxwl rdi, [rdi*2 + 0x7634f30] ; 1st byte transition from start state
-0x7fffc8006629  addl rbx, 0x1                    ; i++
-0x7fffc800662c  cmpl rdi, 0x600                  ; state <= remappedLastFinal?
-0x7fffc8006632  jna 0x7fffc8006645
-...
-0x7fffc8006645  cmpl rdi, 0xb                    ; state <= remappedLastDeadEndFinal (11)?
-0x7fffc800664b  jna 0x7fffc800689d               ; IMMEDIATE EXIT before unrolled loop & StackGuard!
-```
+On `package.json`, 1 million iterations went from ~14,335ms (`7,767ms` for `JSON.parse`) down to ~3,000ms (`4,600ms` for `JSON.parse`).
 
-Because `state <= 11` is checked first, all `143` single-character punctuation tokens (`{`, `}`, `[`, `]`, `:`, `,`) jump directly to the token return block on the peeled 1st byte **before** V8's register spills (`movq [rbp-0x28], r12`), **before** the V8 `StackGuard` interrupt check (`cmpb [r13-0x4f]`), and **without ever entering the 4x-unrolled loop**! Across 200k `package.json` parses, this eliminated **810 million instructions** (`-4,051` insns/parse) and cut branch mispredictions by **-23.8%**.
+On larger JSON files like `package-lock.json`, our generated parser now beats `JSON.parse` as well as standard native parsers in Rust, Zig, and Go, only trailing dedicated SIMD parsers:
 
----
+| JSON parser | Time |
+| :--- | ---: |
+| `simdjson` (C++ SIMD) | 0.15 ms |
+| `sonic-rs` (Rust SIMD) | 0.46 ms |
+| **`par-gen` (JS)** | **0.79 ms** |
+| `V8 JSON.parse` (C++) | 1.36 ms |
+| `std.json` (Zig) | 2.28 ms |
+| `serde_json` (Rust) | 2.83 ms |
+| `encoding/json` (Go) | 4.49 ms |
+| `acorn` / `@babel/parser` (JS) | 5.88 - 9.48 ms |
 
-### 3. Fitting the Entire Working Set into the 32 KiB L1d Cache
+And for JavaScript and TypeScript, our generated parser is several times faster than handwritten JS parsers and even edges out native Rust and Go parsers:
 
-An AMD Zen 4 (or Intel Golden Cove) physical core has a **32 KiB L1 data cache** (~4–5 cycle latency) vs. a 1 MiB L2 cache (~12–14 cycle latency). At the end of Part I, our tables totaled **143.6 KiB**:
-- `table` (Lexer DFA): `52.2 KiB` (`102` states × `256` columns × `2` bytes)
-- `reducerStates`: `86.0 KiB` (`3D` lookup table `lookahead * 2688 + currentState * 32 + action.symbol`)
-- `actionsTable` + `gotoTable`: `5.4 KiB`
+| JS / TS parser | Time |
+| :--- | ---: |
+| **`par-gen` (JS)** | **1.59 ms** |
+| `oxc` (Rust) | 1.68 ms |
+| `swc` (Rust) | 4.60 ms |
+| `meriyah` (JS) | 7.47 ms |
+| `biome` (Rust) | 10.64 ms |
+| `esbuild` (Go) | 12.88 ms |
+| `@babel/parser` / `typescript` (JS) | 28.57 - 42.35 ms |
 
-We attacked all three sources of table bloat:
 
-1. **Grouping Hopcroft `initialPartitions` by Winning Token UID (`102 -> 39` DFA states):**
-   In `packages/lexer/lib/lexer.js`, Hopcroft DFA minimization previously placed every accepting NFA subset state into a singleton initial partition `[final]` so different tokens wouldn't merge. However, that *also* prevented Hopcroft's algorithm from merging equivalent accepting states belonging to the **same** token (such as hex-escape and number states in JSON)! Grouping `initialPartitions` by `final.uids[0]` (and by `(final.uids[0], canContinue)` when dead-end row elision is active) shrank the JSON lexer DFA from **102 states (52.2 KiB) to 39 states (and `14.5 KiB` after dead-end row elision)**.
-2. **BFS Queue Deduplication & Fixpoint Bisimilar LR(1) State Merging (`84 -> 36` JSON states, `297 -> 30` RegExp states):**
-   During LR(1) canonical collection construction (`calculateStatesAndTransitionTable` in `packages/parser/lib/parser.js`), `existing` previously checked only `itemSets` (visited states) and missed `newItemSets` (states queued in the BFS frontier). Fixing BFS frontier deduplication and adding **fixpoint bisimilar LR(1) state merging**—which iteratively merges states whose `actions`, `goto`, and normalized shift semantic action rows are identical (such as completed unit productions `Value -> Object •`, `Value -> Array •`, `Value -> String •`)—shrank `json.pargen` from **84 to 36 states (`-57.1%`)** (and **22 states** in `SkipWS` mode) and `regexp.pargen` from **297 to 30 states (`-89.9%`)**.
-3. **Deleting the 86 KiB `reducerStates` Table via 1-Bit `shift`/`reduce` Action Tagging & Direct `word0` Shift:**
-   In a deterministic LR(1) automaton, every `(state, lookahead)` entry in `actionsTable` already uniquely determines the reduction rule—and therefore both the LHS `actionSymbol` and the RHS length `stackItemsToReduce`! The 86 KiB 3D `reducerStates` table was 100% redundant.
-   Better still, we designed the 16-bit `actionsTable` encoding so that its bit layout matches the CST `tree[tp]` node header `word0` (`symbol | (nChildren << 8)`):
-   - **Bit 0 = `0` (`shift`):** `targetState << 1`
-   - **Bit 0 = `1` (`reduce`):** `(stackItemsToReduce << 9) | (actionSymbol << 1) | 1`
-   - **`0xfffe` (`done`) & `0xffff` (`error`):** Merged into a single unsigned `>= 0xfffe` exit check!
-
-Look at what V8 Turboshaft emits for the entire parser loop dispatch and `reduce` header in `opt-parse.asm`:
-
-```nasm
-; 1. Single unsigned compare handles both done (0xfffe) and error (0xffff)!
-cmpl r14, 0xfffe
-jnc 0x7fffc8006a19                 ; predicted not-taken exit
-
-; 2. 1-bit test dispatches shift (0) vs reduce (1)
-testb r14, 0x1
-jnz 0x7fffc8006919                 ; 0 = shift (fallthrough), 1 = reduce
-
-; 3. Inside reduce: word0 = actionLookup >>> 1 is ALREADY actionSymbol | (nChildren << 8)!
-shrl r14, 1                        ; word0 = actionLookup >>> 1
-movl [r12*4 + 0x7649f50], r14      ; tree[tp] = word0 (zero re-packing!)
-```
-
-By also pre-multiplying state indices by the power-of-two table stride (`32`) and storing pre-shifted `(nextState * 32) << 20` values in a `Uint32Array` `gotoTable`, the entire JSON lexer + parser table footprint dropped from **143.6 KiB to 22.8 KiB** (`17.3 KiB` in `SkipWS` mode)—fitting inside the **32 KiB L1d cache** with room to spare for the active `stack` and `tree` prefix!
-
----
-
-### 4. Breaking the 64 KiB Barrier: 3-Word `Uint32Array` CST & `end22_len10` Packed Spans (409–443 MB/s)
-
-In Part I, each CST node in `tree = new Uint16Array(8192)` occupied **6 `uint16` words (12 bytes)** (`name`, `start`, `end`, `numChildren`, `firstChild`, `nextSibling`), and `stack = new Uint8Array(512)` interleaved 8-bit states and 8-bit tree pointers. That design had two fatal flaws:
-1. Writing 6 separate 16-bit stores on every `shift` and `reduce` executed 6 bounds checks and 6 `movw` instructions per node.
-2. Storing `start` and `end` as 16-bit integers (`Uint16Array`) overflowed at **65,535 bytes (64 KiB)**!
-
-First, we coalesced the 6 `uint16` stores into **3 `uint32` words (still 12 bytes/node!)** in `Uint32Array` and packed `(tp, state)` into a single 32-bit `stack` word (`tp | (state << 20)`):
-- **`word0` (`tree[tp]`):** `symbol | (nChildren << 8)` (`nChildren === 0` for leaves, `> 0` for internal nodes)
-- **`word1` (`tree[tp + 1]`):** Packed token span for leaves, or `firstChild` pointer for internal nodes (since internal nodes derive their `.start` and `.end` lazily from their first and last leaf descendants!)
-- **`word2` (`tree[tp + 2]`):** `nextSibling` pointer
-
-Next, how do we represent byte offsets beyond 64 KiB in `word1` without expanding `tree` to 4 words (16 bytes/node) and without spilling an extra register across the parser loop?
-- If we packed `start | (len << 22)` (`start22_len10`), then calling `nextToken(stream, end)` on every `shift` required reconstructing `end` via `(lookaheadSpan & 0x3fffff) + (lookaheadSpan >>> 22)` (a mask, a shift, and an add on the critical path).
-- **The `end22_len10` Insight:** Instead, we pack **`end` in the low 22 bits (`0 .. 4,194,303` = `4.19 MiB`)** and **`len = end - start` in the high 10 bits (`<< 22`)** (with a fallback sentinel `0x3ff` for the rare token `>= 1,023` bytes):
-
-```javascript
-let lookaheadSpan =
-  result.end |
-  ((result.end - result.start < 1023 ? result.end - result.start : 1023) << 22);
-```
-
-Look at what happens on every `shift` in `opt-parse.asm`:
-1. `tree[tp + 1] = lookaheadSpan` is a single register store: `movl [rdi*4 + disp32], rsi`.
-2. Passing `end` to `nextToken(stream, lookaheadSpan & 0x3fffff)` is a **single `andl r12, 0x3fffff` instruction**!
-3. When reading `.start` or `.end` on a `CstNode` during CST traversal, `end = span & 0x3fffff` and `start = end - (span >>> 22)`.
-
-With `end22_len10` and 20-bit tree pointers (`tp`), `par-gen` parses `package-lock.json` (`494,990` bytes, `67,034` tokens, `112,667` CST nodes) in **`242.10 ms` (`409 MB/s`) in lossless `PreserveWS` mode** and **`223.41 ms` (`443 MB/s`) in `SkipWS` mode**—within **`1.03x` of V8's native C++ `JSON.parse` (`216.54 ms`, `457 MB/s`)** while constructing a full Concrete Syntax Tree!
-
----
-
-### 5. Solving V8's `ModuleContext` & `Phi` De-Optimization Puzzle for Auto-Growing Arenas
-
-To support documents of arbitrary size (even multi-megabyte JSON files with `> 1,000,000` `tree` words) without pre-allocating a massive fixed `Uint32Array`, `stack` and `tree` must dynamically grow when `sp` or `tp` reaches capacity.
-
-However, when we naively changed `const tree = new Uint32Array(...)` to `let tree = new Uint32Array(...)` at ES module scope and added a growth check inside `parse()`, performance on `package.json` **regressed by +17% (`469 ms -> 550+ ms`)**! Inspecting V8's C++ source code (`src/objects/contexts.cc:154`) and Turboshaft disassembly revealed two subtle V8 JIT invariants:
-
-1. **Why `let tree` at ES Module Scope De-optimizes Constant Folding:**
-   In V8, ES module top-level bindings live in a `SourceTextModule` (`ModuleContext`). Unlike `ScriptContext`, V8's `Context::Lookup` for `ModuleContext` **does not track mutable `ContextSidePropertyCell::kConst`**! Thus, `const tree` is folded by Turboshaft as a `HeapConstant`, whereas `let tree` is loaded from the `ModuleContext` slot on every access. Worse, reassigning a local `let currentTree` inside the `while (true)` loop creates a loop-header `Phi` node, preventing Turboshaft from constant-folding the `TypedArray` backing-store address into `movl [rbx*4 + disp32], rsi`.
-2. **Why `64 KiB` (`16,384` words) vs. `2 MiB` (`524,288` words) Matters for glibc `MMAP_THRESHOLD`:**
-   When `new Uint32Array(16384)` (`64 KiB`) is allocated at startup, glibc `malloc` places it in the low 32-bit `brk` heap (`< 0x7fffffff`, e.g., `0x0762...`), allowing x86-64 `[r15*4 + disp32]` scaled-index addressing with **zero base register**. When a `2 MiB` (`524,288`-word) buffer is allocated up front, glibc `malloc` uses `mmap` (`0x7ffff43d9010`), forcing V8 to burn a 64-bit register (`REX.W movq rdi, 0x7ffff43d9010`) on every `tree` store!
-
-#### The Solution: `const arena = { stack, tree }` + Cold-Path `Object.create(arena)` (`MigrateSlowToFast`)
-We store `stack` and `tree` on a `const arena` object initialized with `16,384`-word (`64 KiB`) buffers in the 32-bit `brk` heap:
-
-```javascript
-const arena = {
-  stack: new Uint32Array(16384),
-  tree: new Uint32Array(16384),
-};
-```
-
-In V8, properties on a `const` object literal start with descriptor constness `PropertyConstness::kConst`. In the hot `parse()` function, we read `const stack = arena.stack; const tree = arena.tree;` once before the loop. Because `arena` is a `HeapConstant` and its `.stack` and `.tree` descriptors are `kConst`, Turboshaft constant-folds both `TypedArray` pointers identically to top-level `const` bindings!
-
-If a large input ever reaches the arena boundary (`tp + 3 >= tree.length`), `parse()` bails out to a non-inlined `parseCold()` function that doubles `arena.tree` (copying existing words so any previously returned `CstNode` references remain 100% valid) and then **restores `PropertyConstness::kConst` on `arena`'s hidden class**:
-
-```javascript
-function growTree(minLength) {
-  let newLength = arena.tree.length;
-  while (newLength <= minLength) newLength <<= 1;
-  const next = new Uint32Array(newLength);
-  next.set(arena.tree);
-  // Deleting and re-adding the property transitions `arena` to dictionary mode;
-  // Object.create(arena) triggers V8's MakePrototypesFast -> MigrateSlowToFast,
-  // which creates a fresh fast Map with PropertyConstness::kConst!
-  delete arena.tree;
-  arena.tree = next;
-  Object.create(arena);
-  return next;
-}
-```
-
-As a result:
-- Small inputs (`Short JSON`, `package.json`) execute in the 32-bit `brk` heap at full speed (`297.64 ms` for 1M Short JSON, `469.80 ms` for 100k `package.json`, IPC `4.80`).
-- Large inputs (`package-lock.json` at `495 KB`, or a `1.53 MB` JSON document with `291,506` CST nodes = `874,521` `tree` words) seamlessly grow `arena.tree` and re-tier to `kConst` in **`4.78 ms` (`320–443 MB/s`)**!
-
----
-
-### 6. Replacing `new Proxy` with Monomorphic `class CstNode` (13.2x Faster CST Walks)
-
-Once parsing `package.json` dropped below `4.7 µs`, walking the resulting CST became the next bottleneck. Originally, `createProxy` wrapped `{ stream, tree, pointer }` in a JavaScript `new Proxy(target, proxyHandler)`. Even after hoisting `proxyHandler` to module scope and replacing recursive `.start`/`.end` child-array allocations with an $O(\text{depth})$ integer pointer walk (`while ((tree[p] >>> 8) > 0) p = tree[p + 1] & 0xfffff;`—which sped up 2,000 CST walks from `305.50 ms` to `143.01 ms`), every property access (`node.name`, `node.start`, `node.end`, `node.items`) still had to cross V8's `ProxyGetProperty` runtime stub, which cannot be inlined by Turboshaft.
-
-An earlier experiment on `origin/replace-tree-proxy` tried returning object literals with closures `{ get value() { ... }, get items() { ... } }`, which was **7.68x slower than `Proxy` (`1,039 ms`)** because V8 had to allocate a `FunctionContext`, `JSFunction` closures, and `AccessorPair` descriptors per node.
-
-Instead, we replaced `new Proxy` with a **monomorphic `class CstNode`** holding private fields (`#stream`, `#tree`, `#pointer`), prototype getters (`name`, `start`, `end`, `value`, `items`, `children`), `toJSON()`, and `[Symbol.for("nodejs.util.inspect.custom")]()`:
-
-```javascript
-class CstNode {
-  #stream;
-  #tree;
-  #pointer;
-  constructor(stream, tree, pointer) {
-    this.#stream = stream;
-    this.#tree = tree;
-    this.#pointer = pointer;
-  }
-  get name() {
-    return parserSymbols[this.#tree[this.#pointer] & 0xff];
-  }
-  // ...
-}
-```
-
-Because `CstNode` has a single fixed hidden class (`Map`) and zero per-instance closures, allocating a `new CstNode(stream, tree, tp)` is a fast 24-byte bump-pointer allocation in V8's nursery, and Turboshaft **inlines `node.name`, `node.start`, `node.end`, and `node.items` directly into the caller**!
-
-| CST Access Architecture | 2,000 Full CST Walks of `package.json` (`694,000` Nodes Visited) | Retired Instructions (`20k` Walks) | Speedup |
-| :--- | ---: | ---: | :--- |
-| Object-Literal Getters (`origin/replace-tree-proxy`) | `1,039.00 ms` | — | `0.29x` (3.4x slower) |
-| Initial `new Proxy` (Recursive `.start`/`.end` via `.items`) | `305.50 ms` | — | `1.00x` (Baseline) |
-| Optimized `new Proxy` (Iterative `tree` Span Walk) | `135.23 ms`–`143.01 ms` | `25.05B` (`1,252.5M`/2k) | `2.14x`–`2.26x` faster |
-| **Monomorphic `class CstNode` (`HEAD`)** | **`23.15 ms` *(min `22.90 ms`)*** | **`4.49B` (`224.5M`/2k)** | **`13.20x` faster (`5.84x` faster than `Proxy`, `44.9x` faster than object literals!)** |
-
----
-
-### 7. Multi-Mode Lexers at Single-Mode Speed: Beating V8's Native C++ `new RegExp` by 2.0x–2.6x
-
-While JSON uses a single lexer mode (`initial`), regular expressions (`parsers/regexp/regexp.pargen`) require a **3-mode stateful lexer** (`initial`, `character-class`, and `hex-escape`) driven by parser semantic actions (`lexer.push("character-class")` on `[`, `lexer.pop()` on `]`, `lexer.push("hex-escape")` on `\x`).
-
-Originally, multi-mode parsers suffered from three catastrophic performance cliffs in `packages/codegen/lib/javascript.js`:
-1. The lexer mode stack was a JS array of strings (`let states = ["initial"]`), and every token called `nextToken[states[0]](stream, offset)`—a megamorphic dynamic property lookup by string name!
-2. Whenever a grammar had *any* semantic action (`hasSemanticActions`), **every single `shift`** iterated over a `Set` of LR(1) items (`states[currentState / N].forEach(...)`) searching for matching semantic actions!
-3. Multi-mode lexers could not use direct dead-end token ID encoding (`tokenIds[successState]`).
-
-We eliminated all three bottlenecks:
-1. **Readable `LexerMode` Integer Enum & `Uint8Array` Mode Stack:** We emit a readable enum (`const LexerMode = { INITIAL: 0, CHARACTER_CLASS: 1, HEX_ESCAPE: 2 }`) and a flat `const lexerStack = new Uint8Array(64)` with integer `lexerMode` and `lexerSp` variables. Dispatching `nextToken` uses an inlineable integer ternary chain (`lexerMode === 0 ? nextTokenInitial(...) : ...`) so Turboshaft inlines every mode's lexer directly into `parse()`!
-2. **$O(1)$ Pre-Computed `shiftActionsTable`:** At codegen time, we pre-compute `const shiftActionsTable = new Uint8Array(...)` indexed by `actionIndex = currentState + lookahead` (`0` = no action, `1..K` = semantic action ID), completely deleting the `states` `Set` array from the generated parser and turning shift semantic actions into a single `movzxbl` load and integer switch.
-3. **Multi-Mode Dead-End Token IDs & 30-State Bisimilar Merge:** Because `tokenIds` is per-mode while `parserSymbols` token indices are global across modes, direct dead-end token ID encoding works identically in multi-mode lexers. Combined with semantic-action-aware bisimilar LR(1) state merging, `regexp.pargen` shrank to **30 LR(1) states** with a `1.0 KiB` initial lexer table.
-
-#### Benchmark: `@par-gen/regexp` vs. V8 Native C++ `new RegExp` & Hand-Written JS Parsers
-To benchmark against V8's C++ `v8::internal::RegExpParser::VerifyRegExpSyntax` fairly, note that calling `new RegExp(pattern)` repeatedly with the *exact same string pointer* hits V8's per-isolate `CompilationCacheRegExp` hash table (`69–89 ns` cache lookup without invoking the C++ parser). When given unseen pattern strings (`8,000` regex parses per trial across `8` patterns from `json.pargen`, `regexp.pargen`, and the test suite), V8 executes its C++ syntax parser on every pattern:
-
-| Parser | Implementation | 8,000 RegExp Parses (Median / Min) | Per-Regex Latency | `perf stat` Instructions (`80k` Parses) | Relative Speed |
-| :--- | :--- | ---: | ---: | ---: | :--- |
-| **`@par-gen/regexp` (`Buffer`, `HEAD`)** | **Self-bootstrapped LR(1) (`30` states, `LexerMode` enum + `shiftActionsTable`)** | **`3.63 ms`** *(min **`3.58 ms`**)* | **`454 ns` / regex (`2.20M`/sec)** | **`939.5M` (`11,744` insn/regex)** | **`1.00x` (Fastest — 100% Lossless CST)** |
-| **`@par-gen/regexp` (`Buffer`, Round 5)** | Self-bootstrapped LR(1) (`49` states, 2-mode lexer) | `4.61 ms` *(min `4.52 ms`)* | `576 ns` / regex (`1.74M`/sec) | `4,803.3M` (`60,042` insn/regex) | `1.27x slower` |
-| **`V8 Native new RegExp` (Uncached C++)** | **V8 C++ `RegExpParser::VerifyRegExpSyntax` (`80k` unseen strings)** | **`7.42 ms`–`9.38 ms`** *(min **`7.06 ms`**)* | **`928`–`1,173 ns` / regex** | **`4,843.3M` (`60,542` insn/regex)** | **`2.04x`–`2.58x` slower than `@par-gen/regexp`!** |
-| `@babel/parser` (`/regex/`) | Hand-written JS AST parser | `13.89 ms` *(min `13.62 ms`)* | `1.74 µs` / regex | — | **3.83x slower** |
-| `typescript` (`ts.createSourceFile`) | Hand-written JS CST parser | `22.86 ms` *(min `22.83 ms`)* | `2.86 µs` / regex | — | **6.30x slower** |
-| `acorn` (`v8.2.4`, `/regex/`) | Hand-written JS + `RegExpValidationState` | `61.88 ms` *(min `61.77 ms`)* | `7.74 µs` / regex | — | **17.05x slower** |
-| `V8 Native new RegExp + .test("")` (Uncached) | V8 C++ `ParseRegExp` + Irregexp Bytecode/JIT | `115.97 ms`–`136.56 ms` *(min `110.42 ms`)* | `14.50`–`17.07 µs` / regex | — | **31.95x–37.62x slower** |
-| Legacy Multi-Mode `@par-gen/regexp` (`Set` + `Proxy`) | Generated LR(1) before `LexerMode` enum & `shiftActionsTable` | `130.84 ms` | `16.36 µs` / regex | `24,264.9M` (`303,312` insn/regex) | **36.04x slower** |
-| Legacy `@par-gen/nfa` (Hand-rolled `origin/main`) | Hand-rolled recursive `seq()` / `next()` | `240.51 ms`–`1,209.82 ms` | `30.06`–`151.23 µs` / regex | — | **66.26x–333.28x slower** |
-
-`@par-gen/regexp` in pure JavaScript (`3.63 ms`, `11,744` instructions/regex) beats V8's native C++ `new RegExp` (`7.42–9.38 ms`, `60,542` instructions/regex) by **`2.04x–2.58x` in wall-clock time and `5.15x` in retired CPU instructions**, while producing a full lossless Concrete Syntax Tree!
-
----
-
-### 8. 100% Compiler Self-Hosting & 15x–1,315x Faster Compilation
-
-Finally, we turned `par-gen` upon itself—replacing every hand-written parser in the compiler toolchain with a self-generated `@par-gen` LR(1) parser and overhauling the NFA, DFA, and LR(1) construction algorithms:
-
-1. **Self-Hosting `@par-gen/nfa` via `@par-gen/regexp` + Direct 2-State Character-Class & Flat-Tree Thompson NFAs (`packages/nfa/lib/thompson.js`):**
-   - Replaced the slow, buggy hand-written recursive regex parser in `@par-gen/nfa` with `@par-gen/regexp`.
-   - Instead of expanding character classes (`[...]`) and `.` (`DOT`) into 255-branch alternation strings (`a|b|c|...`) that produced **~1,020 Thompson $\varepsilon$-states** per character class, `thompson.js` walks `@par-gen/regexp`'s flat `Uint32Array` CST buffer directly (`buildFromFlatTree`, zero `CstNode` allocations) using a single shared `BuildContext` accumulator and emits a **2-state `[start, final]` PartialNFA with a single multi-symbol transition `[start, symbols, final]`** for `CharacterClass` and `DOT`.
-2. **Self-Hosting `@par-gen/grammar` via `packages/grammar/grammar.pargen` (`packages/grammar/lib/parser.js`):**
-   - Authored [`packages/grammar/grammar.pargen`](../packages/grammar/grammar.pargen) (`12` tokens, `23` grammar rules, `42` LR(1) states) and replaced the hand-written `.pargen` parser with a self-generated `@par-gen` parser + flat `Uint32Array` CST extractor (`extractFromFlatTree`), accelerating `.pargen` grammar parsing by **4.60x** (`1,676.49 ms -> 363.87 ms` for 30,000 grammars).
-   - Verified **100% byte-for-byte fixed-point convergence**: regenerating `@par-gen/grammar`, `@par-gen/regexp`, and `@par-gen/json` from their `.pargen` grammars produces the exact same bytes on disk.
-3. **`BigInt` Bitmask Powerset Construction (`30x–71x` faster) & `BigInt` Hopcroft Minimization (`7.3x–16x` faster):**
-   - In [`packages/dfa/lib/powerset.js`](../packages/dfa/lib/powerset.js), replaced recursive `calculateEpsilonClosure` Set/Array allocations with precomputed `BigInt` $\varepsilon$-closure bitmasks (using transitive closure propagation) and dense integer symbol-transition tables, cutting NFA-to-DFA powerset construction on `json.pargen` from **`106.56 ms` to `1.45–3.50 ms` (`30.4x–71.1x` faster)**.
-   - In [`packages/dfa/lib/hopcroft.js`](../packages/dfa/lib/hopcroft.js), replaced string keys (`partition.join(",")`) and $O(|P| \cdot |\Sigma| \cdot |S|)$ `Array.includes` scans with `BigInt` partition bitmasks and precomputed inverse transition bitmasks `inv[symbol][target]`, cutting Hopcroft minimization on `json.pargen` from **`28.97 ms` to `3.97 ms` (`7.3x` faster)**.
-4. **$O(1)$ Indexed LR(1) Item Lookup (`itemLookupCache` in `packages/parser/lib/parser.js`):**
-   - During LR(1) closure/goto construction, `getItem(items, rule, dotPosition, lookahead)` previously ran an $O(|items|)$ linear `.find()` scan across all existing LR(1) items (`~20,000+` items for `regexp.pargen`), taking **`17,748 ms`** (`96%` of `regexp.pargen` compile time). Indexing items in an $O(1)$ lookup table (`itemLookupCache`) and fixing multi-occurrence `calculateFollows` cut `regexp.pargen` compilation from **`~90,000 ms` (`origin/main`) to `66.01 ms` (`1,315x` faster!)**.
-
-| Stage | Grammar Parser & Compiler Architecture | `json.pargen` Lexer (`generateFromTokens`) | `json.pargen` Full (`generateParser`) | `regexp.pargen` Full (`generateParser`) | `grammar.pargen` Full (`generateParser`) | `.pargen` Parsing (`30k` grammars) |
-| :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| **`origin/main` (Initial Baseline)** | Hand-rolled `@par-gen/grammar` + hand-rolled `@par-gen/nfa` (`1,020`-state `[...]`) | ~310 ms | ~501 ms (`84` states) | ~90,000 ms (`297` states) | — | 1,676.49 ms |
-| **Round 4 (`085df29`, Bisimilar Merge)** | Hand-rolled `@par-gen/grammar` + linear `getItem` | ~140 ms | 155 ms (`36` states) | 18,539 ms (`38` states) | — | 1,676.49 ms |
-| **Round 5 (`0f05059`, `@par-gen/regexp` Bootstrap)** | Hand-rolled `@par-gen/grammar` + `@par-gen/regexp` + $O(1)$ `itemLookupCache` | 138.70 ms | 148.39 ms (`36` states) | 252.40 ms (`49` states) | — | 1,676.49 ms |
-| **Round 6 (`HEAD`, 100% Self-Hosted + `BigInt` Powerset/Hopcroft + Flat-Tree NFA)** | **Self-hosted `@par-gen/grammar` + `@par-gen/regexp` + `BigInt` DFA + Flat-Tree Thompson** | **`3.94`–`8.58 ms` (`35x` faster!)** | **`10.93`–`34.43 ms` (`14.6x`–`45.8x` faster!)** | **`66.01`–`68.41 ms` (`30` states, `1,315x` faster!)** | **`4.24`–`9.36 ms` (`42` states)** | **`363.87`–`391.36 ms` (`4.60x` faster!)** |
-
----
-
-### 9. Summary of Verified Benchmarks & Hardware Performance Counters
-
-All measurements below were recorded on an isolated physical CPU core (CPU 1) of an AWS EC2 `c7a.large` instance (AMD EPYC 9R14 Zen 4, 3.7 GHz, `ThreadsPerCore: 1`, ASLR disabled, Node.js `v26.13.0` / V8 `14.6.202.34`):
-
-#### A. End-to-End JSON Optimization Progression (`origin/main` to `HEAD`)
-
-| Configuration | Mode | Full Parse (`package.json`, 100k) | Short JSON (`67B`, 1M) | Large File (`package-lock.json` `495 KB`, 200 iter) | CST Walk (`package.json`, 2k walks) | Parser States / Tables |
-| :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| **`origin/main` (Part I Baseline)** | `PreserveWS` | 964.93 ms | 1,008.72 ms | *Overflow (> 64 KiB)* | — | 84 states / 143.6 KiB |
-| **Round 2 (`7f611fe`, Bit-Packed + L1d Fit)** | `PreserveWS` | 601.85 ms | 537.70 ms | *Overflow (> 64 KiB)* | — | 84 states / 30.8 KiB |
-| **Track 1 (`c910fc6`, 3-Word `Uint32` CST + `Unsigned31`)** | `PreserveWS` | 510.36 ms *(min 508.55)* | 477.35 ms *(min 476.13)* | *Overflow (> 64 KiB)* | — | 84 states / 30.8 KiB |
-| **+ Tracks A + B + C (`65144e6`, Dead-End First + 1-Bit Action + 36 States)** | `PreserveWS` | 467.93 ms *(min 465.85)* | 330.99 ms *(min 328.65)* | *Overflow (> 64 KiB)* | 305.50 ms | 36 states / 26.9 KiB |
-| **+ Track D (`b3611d3`, Compact Dead-End Lexer Rows)** | `PreserveWS` | 465.33 ms *(min 463.55)* | 302.22 ms *(min 300.69)* | *Overflow (> 64 KiB)* | 305.50 ms | 36 states / 22.8 KiB |
-| **+ Track G + H (`81e26c5`, `end22_len10` 4 MB Spans + Iterative Span Walk)** | `PreserveWS` | 474.39 ms *(min 473.94)* | 328.98 ms *(min 326.92)* | 242.92 ms *(min 242.62, 408 MB/s)* | 143.01 ms *(2.14x faster)* | 36 states / 22.8 KiB |
-| **+ Round 6 (`HEAD`, `CstNode` + Low-Heap `arena` Auto-Grow)** | **`PreserveWS` (Default)** | **469.80 ms** *(min **468.90**)* | **297.64 ms** *(min **296.40**)* | **242.10 ms** *(min **241.80**, **409 MB/s**, auto-grows > 4 MB)* | **23.15 ms** *(min **22.90**, **13.20x faster**)* | **36 states / 22.8 KiB** |
-| **+ Track W (`SkipWS`, 16-bit span)** | `SkipWS` (<= 64 KB) | **412.58 ms** *(min **410.64**)* | **273.95 ms** *(min **270.97**)* | *Overflow (> 64 KiB)* | — | 22 states / 17.3 KiB |
-| **+ Track W + G (`SkipWS` + `end22_len10`)** | **`SkipWS` (`--skip WS`)** | **428.86 ms** *(min **428.68**)* | **343.68 ms** *(min **341.69**)* | **223.41 ms** *(min **222.68**, **443 MB/s**)* | **18.40 ms** *(with `CstNode`)* | **22 states / 17.3 KiB** |
-
-#### B. Competitor Comparison (`package.json` 10k Iterations & `package-lock.json` `495 KB` 200 Iterations)
-
-| Parser | Implementation Type | CST / Trivia Fidelity | `package.json` (10k iter) | `package-lock.json` (`495 KB`, 200 iter = `99 MB`) | Relative on `package-lock.json` |
-| :--- | :--- | :--- | ---: | ---: | :--- |
-| `JSON.parse` (V8 Native C++) | Hand-written C++ | Lossy (JS Value Only, No AST/CST) | 40.97 ms | **216.54 ms** *(min 216.09 ms, **457 MB/s**)* | **0.89x** (`SkipWS` is within **1.03x**!) |
-| **`par-gen` (`SkipWS`, `--skip WS`)** | **Generated JS LR(1) + CST** | **Syntactic CST (`72,633` nodes)** | **41.26 ms** *(min **41.06 ms**, **1.002x** of C++!)* | **223.41 ms** *(min **222.68 ms**, **443 MB/s**)* | **0.92x (`1.03x` of native C++!)** |
-| **`par-gen` (`PreserveWS` `HEAD`, Default)** | **Generated JS LR(1) + Lossless CST** | **100% Lossless CST (`112,667` nodes)** | **46.53 ms** *(46.98 ms w/ auto-grow)* | **242.10 ms** *(min **241.80 ms**, **409 MB/s**)* | **1.00x (Baseline Lossless Reference)** |
-| `@babel/parser` (`v7.17.3`) | Hand-written JS | AST (No `WS` Trivia Nodes) | 246.32 ms | 1,233.39 ms *(min 1,226.58 ms)* | **5.08x slower** |
-| `typescript` (`ts.parseJsonText`) | Hand-written JS | CST with Trivia Accessors | 485.27 ms | 1,937.27 ms *(min 1,932.81 ms)* | **7.97x slower** |
-| `acorn` (`v8.2.4`) | Hand-written JS | AST (No `WS` Trivia Nodes) | 240.70 ms | 2,081.57 ms *(min 2,040.37 ms)* | **8.57x slower** |
-| `json5` (`v2.2.0`) | Hand-written JS | Lossy (JS Value Only) | 952.29 ms | 4,604.20 ms *(460.42 ms / 20 iter)* | **18.95x slower** |
-
-#### C. Linux `perf stat` Hardware Counters (`package.json` 200k Parses & `package-lock.json` 500 Parses)
-
-| Workload & Variant | Mode | CPU Cycles (Per Parse) | Instructions Retired (Per Parse) | IPC | Branches Executed (Per Parse) | Branch Misses |
-| :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| `package.json` (`1,841 B`, 200k): **Round 2 (`7f611fe`)** | `PreserveWS` | `4,404.5M` (`22,023`) | `20,158.4M` (`100,792`) | `4.58` | `5,007.6M` (`25,038`) | `2,002,760` (`0.04%`) |
-| `package.json` (`1,841 B`, 200k): **Track 1 (`c910fc6`)** | `PreserveWS` | `3,908.3M` (`19,542`) | `18,593.7M` (`92,969`) | `4.76` | `4,490.9M` (`22,454`) | `2,080,683` (`0.05%`) |
-| `package.json` (`1,841 B`, 200k): **`HEAD` (`PreserveWS`)** | **`PreserveWS`** | **`3,655.1M` (`18,276`)** | **`16,153.4M` (`80,767`)** | **`4.42`** | **`4,053.1M` (`20,266`)** | **`1,944,800` (`0.05%`)** |
-| `package.json` (`1,841 B`, 200k): **`HEAD` (`SkipWS`)** | **`SkipWS`** | **`3,332.9M` (`16,665`)** | **`13,729.0M` (`68,645`)** | **`4.12`** | **`3,624.7M` (`18,123`)** | **`2,200,199` (`0.06%`)** |
-| `package-lock.json` (`495 KB`, 500): **`HEAD` (`PreserveWS`)** | **`PreserveWS`** | **`2,417.6M` (`4.84M` / `9.77` cyc/B)** | **`8,589.0M` (`17.18M` / `34.7` insn/B)** | **`3.55`** | **`2,258.1M` (`4.52M`)** | **`7,469,323` (`0.33%`)** |
-| `package-lock.json` (`495 KB`, 500): **`HEAD` (`SkipWS`)** | **`SkipWS`** | **`2,223.3M` (`4.45M` / `8.98` cyc/B)** | **`7,471.5M` (`14.94M` / `30.2` insn/B)** | **`3.36`** | **`2,064.1M` (`4.13M`)** | **`6,877,992` (`0.33%`)** |
 
