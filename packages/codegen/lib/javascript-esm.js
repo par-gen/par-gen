@@ -187,6 +187,7 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
           name: ChildName
         ): CstNode<ChildName>[];
         cursor(): TreeCursor;
+        reemitLossless(input?: Uint8Array | string): Uint8Array;
         toSExpr(includeText?: boolean): string;
         toJSON(): {
           name: Name;
@@ -204,6 +205,13 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
           pointer: number
         ): CstNode<Name>;
       };
+
+      export declare const SymbolIds: { readonly [key: string]: number };
+
+      export function reemitLossless(
+        cst: CstNode,
+        input?: Uint8Array | string
+      ): Uint8Array;
 
       export type TokenNode<Name extends TokenName = TokenName> = CstNode<Name> & {
         readonly items: undefined;
@@ -258,7 +266,7 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
 
   _parserExports() {
     return `
-      export { parse, CstNode, TreeCursor, LineIndex };
+      export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
     `;
   }
 }

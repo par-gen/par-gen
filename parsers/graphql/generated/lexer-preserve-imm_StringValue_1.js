@@ -20,6 +20,8 @@ table.fill(256, 1117, 1280); // _StringValue_token2
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+
   // 4
   let state = 59;
 
@@ -28,7 +30,6 @@ const next = (input, offset) => {
   // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
-  const t = table;
 
   if (i < l && (state = t[input[i++] + 1024]) > 58) {
     while (true) {

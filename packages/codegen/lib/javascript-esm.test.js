@@ -250,7 +250,7 @@ describe("JavaScriptModuleCodegen", () => {
     );
     const code3 = await fsp.readFile(lexerStateFile, "utf-8");
     expect(code3).toContain("const tokenIds = new Uint8Array(4);");
-    expect(code3).toContain("tokenIds[successState >> 8]");
+    expect(code3).toContain("ti[successState >> 8]");
   });
 
   it("should coalesce contiguous lexer and parser table runs using .fill()", async () => {
@@ -304,7 +304,7 @@ describe("JavaScriptModuleCodegen", () => {
 
     const ecLexerCode = await fsp.readFile(lexerStateFile, "utf-8");
     expect(ecLexerCode).toContain("const ec = new Uint8Array(256);");
-    expect(ecLexerCode).toContain("table[state + ec[input[i++]]]");
+    expect(ecLexerCode).toContain("t[state + e[input[i++]]]");
 
     /** @type {*} */
     let parsedResult;
@@ -363,7 +363,7 @@ describe("JavaScriptModuleCodegen", () => {
     await codegenAuto.parser(largeParserData);
     const autoLexerCode = await fsp.readFile(lexerStateFile, "utf-8");
     expect(autoLexerCode).toContain("const ec = new Uint8Array(256);");
-    expect(autoLexerCode).toContain("table[state + ec[input[i++]]]");
+    expect(autoLexerCode).toContain("t[state + e[input[i++]]]");
 
     const codegenForcedOff = new JavaScriptModuleCodegen({
       lexerFile,
@@ -373,7 +373,7 @@ describe("JavaScriptModuleCodegen", () => {
     await codegenForcedOff.parser(largeParserData);
     const forcedOffLexerCode = await fsp.readFile(lexerStateFile, "utf-8");
     expect(forcedOffLexerCode).not.toContain("const ec = new Uint8Array(256);");
-    expect(forcedOffLexerCode).toContain("table[state + input[i++]]");
+    expect(forcedOffLexerCode).toContain("t[state + input[i++]]");
   });
 
   it("should emit 1st-byte peeling, constant-base non-final self-loop, and pure self-loop final direct exit", async () => {
@@ -425,7 +425,7 @@ describe("JavaScriptModuleCodegen", () => {
     expect(parserCode).toContain("let top = 0;");
     expect(parserCode).toContain("stack[0] = top;");
     expect(parserCode).not.toContain("const top = stack[sp];");
-    expect(parserCode).toContain("top = tp | (actionLookup << 19);");
+    expect(parserCode).toContain("top = tp | (actionLookup << 23);");
     expect(parserCode).toContain("top = tp | nextState;");
     expect(parserCode).toContain("let tp = 2;");
     expect(parserCode).toContain("tp += 2;");
@@ -651,5 +651,279 @@ describe("JavaScriptModuleCodegen", () => {
     expect(eofErr.column).toBe(12);
     expect(eofErr.found).toBe("@par-gen.EOF");
     expect(eofErr.expected).toEqual(["SEMI"]);
+  });
+
+  it("should support exact .start/.end/.text on >=10KB tokens preceded by whitespace/comments, epsilon rules, >4096 children, deep stack growth, >64 lexerStack, >256 symbols, >4MB inputs, SymbolIds, and reemitLossless()", async () => {
+    const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+
+    // 1. SkipWS + SkipComment grammar with 10KB token preceded by spaces and 2KB comment,
+    //    2-byte token preceded by 2KB comment, and >5000 children in a flat/nested tree
+    const grammar = `
+      WS := '[ \\t\\r\\n]+' @ skip;
+      COMMENT := '/\\*[^*]*\\*/' @ skip;
+      STR := '"[^"]*"';
+      IDENT := '[a-z]+';
+      LPAREN := '\\(';
+      RPAREN := '\\)';
+      SEMI := ';';
+
+      Program := Stmt | Program Stmt;
+      Stmt := IDENT STR SEMI | LPAREN Stmt RPAREN;
+    `;
+
+    const pData = genParser(grammar);
+    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    await codegen.parser(pData);
+
+    /** @type {*} */
+    let modExports;
+    const context = vm.createContext({
+      output: (/** @type {*} */ r) => {
+        modExports = r;
+      },
+      Buffer,
+    });
+    const mod = new SourceTextModule(
+      `
+        import * as m from 'parser-file';
+        output(m);
+      `,
+      { context }
+    );
+    await mod.link(
+      /**
+       * @param {string} specifier
+       * @param {*} referencingModule
+       */
+      async (specifier, referencingModule) => {
+        if (specifier === `./${basename(lexerStateFile)}`) {
+          const code = await fsp.readFile(lexerStateFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        } else if (specifier === "parser-file") {
+          const code = await fsp.readFile(parserFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        }
+        throw new Error(`Unable to resolve: ${specifier}`);
+      }
+    );
+    await mod.evaluate();
+
+    const { parse, SymbolIds, reemitLossless } = modExports;
+    expect(Object.isFrozen(SymbolIds)).toBe(true);
+    expect(typeof SymbolIds.Program).toBe("number");
+    expect(typeof SymbolIds.STR).toBe("number");
+
+    const longComment = `/*${"c".repeat(2500)}*/`;
+    const longStr = `"${"s".repeat(10240)}"`;
+    const input = `   ${longComment}  ab     ${longComment}   ${longStr}   ${longComment}  ;  `;
+    const root = parse(input);
+
+    expect(root.symbolId).toBe(SymbolIds[root.name]);
+    expect(Buffer.from(root.reemitLossless()).toString("utf-8")).toBe(input);
+    expect(Buffer.from(reemitLossless(root)).toString("utf-8")).toBe(input);
+
+    const stmt = root.firstChild;
+    const identNode = stmt.child(0);
+    const strNode = stmt.child(1);
+    const semiNode = stmt.child(2);
+
+    const expectedIdentStart = 3 + longComment.length + 2;
+    expect(identNode.start).toBe(expectedIdentStart);
+    expect(identNode.end).toBe(expectedIdentStart + 2);
+    expect(identNode.text).toBe("ab");
+
+    const expectedStrStart = expectedIdentStart + 2 + 5 + longComment.length + 3;
+    expect(strNode.start).toBe(expectedStrStart);
+    expect(strNode.end).toBe(expectedStrStart + longStr.length);
+    expect(strNode.text).toBe(longStr);
+
+    const expectedSemiStart =
+      expectedStrStart + longStr.length + 3 + longComment.length + 2;
+    expect(semiNode.start).toBe(expectedSemiStart);
+    expect(semiNode.end).toBe(expectedSemiStart + 1);
+    expect(semiNode.text).toBe(";");
+
+    // Verify TreeCursor returns identical .start, .end, .text
+    const cursor = stmt.cursor();
+    expect(cursor.gotoFirstChild()).toBe(true);
+    expect(cursor.start).toBe(identNode.start);
+    expect(cursor.end).toBe(identNode.end);
+    expect(cursor.text).toBe("ab");
+    expect(cursor.gotoNextSibling()).toBe(true);
+    expect(cursor.start).toBe(strNode.start);
+    expect(cursor.end).toBe(strNode.end);
+    expect(cursor.text).toBe(longStr);
+    expect(cursor.gotoNextSibling()).toBe(true);
+    expect(cursor.start).toBe(semiNode.start);
+    expect(cursor.end).toBe(semiNode.end);
+    expect(cursor.text).toBe(";");
+    expect(cursor.gotoNextSibling()).toBe(false);
+    expect(cursor.gotoParent()).toBe(true);
+
+    // 2. Deeply nested recursion (> 18,000 levels on a tiny ~40KB input) to test independent arena.stack growth
+    const depth = 18000;
+    const deepInput = `${"(".repeat(depth)}x "y";${")".repeat(depth)}`;
+    const deepRoot = parse(deepInput);
+    expect(deepRoot.name).toBe("Program");
+    expect(deepRoot.start).toBe(0);
+    expect(deepRoot.end).toBe(deepInput.length);
+    expect(Buffer.from(deepRoot.reemitLossless()).toString("utf-8")).toBe(
+      deepInput
+    );
+
+    // 3. Giant input (> 4.2 MB, exceeding 0x3fffff 22-bit offset limit -> triggers parseLarge)
+    const bigChunk = `foo "${"z".repeat(1000)}";\n`;
+    const repeatCount = Math.ceil(4300000 / bigChunk.length);
+    const giantBuf = Buffer.from(bigChunk.repeat(repeatCount));
+    expect(giantBuf.length).toBeGreaterThan(0x3fffff);
+    const giantRoot = parse(giantBuf);
+    expect(giantRoot.name).toBe("Program");
+    expect(giantRoot.start).toBe(0);
+    expect(giantRoot.end).toBe(giantBuf.length - 1);
+    const lastStmt = giantRoot.lastChild;
+    expect(lastStmt.end).toBe(giantBuf.length - 1);
+    expect(lastStmt.start).toBe(giantBuf.length - bigChunk.length);
+    expect(lastStmt.text).toBe(bigChunk.trim());
+    expect(Buffer.compare(giantRoot.reemitLossless(), giantBuf)).toBe(0);
+  });
+
+  it("should support epsilon (reduceLen === 0) rules, >4096 children in TreeCursor, and >256 grammar symbols", async () => {
+    const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+
+    // Construct a grammar with an explicit epsilon rule (OptTag := ε | IDENT) and >260 symbols
+    const baseGrammar = `
+      WS := '[ ]+' @ skip;
+      SEMI := ';';
+      IDENT := '[a-z]+';
+      Program := Opt item SEMI;
+      Opt := IDENT;
+      item := IDENT;
+    `;
+    const pData = /** @type {*} */ (genParser(baseGrammar));
+    // Add an explicit epsilon rule Opt := [] and pad parserSymbols past 260 symbols
+    pData.rules.push({ uid: 9999, name: "Opt", symbols: [], actions: [] });
+    for (const [state, actMap] of pData.actions.entries()) {
+      for (const item of state.values()) {
+        if (item.name === "Program" && item.marker === 0) {
+          state.add({
+            name: "Opt",
+            tokens: [],
+            marker: 0,
+            lookahead: "IDENT",
+          });
+          if (!actMap.has("IDENT")) {
+            actMap.set("IDENT", { op: "reduce", symbol: "Opt" });
+          }
+        }
+      }
+    }
+    while (pData.parserSymbols.length < 270) {
+      pData.parserSymbols.push(`EXTRA_SYM_${pData.parserSymbols.length}`);
+    }
+
+    const dir2 = await fsp.mkdtemp(join(tmpdir(), "eps-"));
+    const lFile = join(dir2, "lexer.js");
+    const lStateFile = join(dir2, "lexer-initial.js");
+    const pFile = join(dir2, "parser.js");
+    try {
+      const codegen = new JavaScriptModuleCodegen({
+        lexerFile: lFile,
+        parserFile: pFile,
+      });
+      await codegen.parser(pData);
+
+      const pCode = await fsp.readFile(pFile, "utf-8");
+      // With >256 symbols, symMask should be 0x1ff and actionsTable should be Uint32Array
+      expect(pCode).toContain("0x1ff");
+      expect(pCode).toContain("new Uint32Array(");
+      expect(pCode).toContain("if (reduceLen === 0)");
+
+      /** @type {*} */
+      let modExports;
+      const context = vm.createContext({
+        output: (/** @type {*} */ r) => {
+          modExports = r;
+        },
+        Buffer,
+      });
+      const mod = new SourceTextModule(
+        `
+          import * as m from 'parser-file';
+          output(m);
+        `,
+        { context }
+      );
+      await mod.link(
+        /**
+         * @param {string} specifier
+         * @param {*} referencingModule
+         */
+        async (specifier, referencingModule) => {
+          if (specifier === `./${basename(lStateFile)}`) {
+            const code = await fsp.readFile(lStateFile, "utf-8");
+            return new SourceTextModule(code, {
+              context: referencingModule.context,
+            });
+          } else if (specifier === "parser-file") {
+            return new SourceTextModule(pCode, {
+              context: referencingModule.context,
+            });
+          }
+          throw new Error(`Unable to resolve: ${specifier}`);
+        }
+      );
+      await mod.evaluate();
+
+      const { CstNode, TreeCursor, SymbolIds } = modExports;
+      expect(SymbolIds.EXTRA_SYM_265).toBe(265);
+
+      // Construct asynthetic tree tape with an epsilon node (0 children at offset 5) and a parent node with 5000 children
+      const stream = Buffer.from("hello world");
+      const nChildren = 5000;
+      const tree = new Uint32Array((nChildren + 4) * 2);
+      let tp = 2;
+      // First child is an epsilon node at byte offset 0
+      tree[tp] = SymbolIds.Opt;
+      tree[tp + 1] = 0; // byte offset 0, len 0
+      tp += 2;
+      for (let i = 1; i < nChildren; i++) {
+        tree[tp] = SymbolIds.IDENT;
+        tree[tp + 1] = 5 | (5 << 22);
+        tp += 2;
+      }
+      const rootPtr = tp;
+      tree[rootPtr] = SymbolIds.Program | (nChildren << 9);
+      tree[rootPtr + 1] = 0; // subtreeStart - 2 = 0
+
+      const rootNode = new CstNode(stream, tree, rootPtr);
+      expect(rootNode.name).toBe("Program");
+      expect(rootNode.childCount).toBe(5000);
+      const epsChild = rootNode.firstChild;
+      expect(epsChild.name).toBe("Opt");
+      expect(epsChild.childCount).toBe(0);
+      expect(epsChild.start).toBe(0);
+      expect(epsChild.end).toBe(0);
+      expect(epsChild.text).toBe("");
+
+      const cursor = new TreeCursor(stream, tree, rootPtr);
+      expect(cursor.childCount).toBe(5000);
+      expect(cursor.gotoFirstChild()).toBe(true);
+      expect(cursor.name).toBe("Opt");
+      expect(cursor.start).toBe(0);
+      expect(cursor.end).toBe(0);
+      let count = 1;
+      while (cursor.gotoNextSibling()) {
+        count++;
+      }
+      expect(count).toBe(5000);
+      expect(cursor.gotoParent()).toBe(true);
+      expect(cursor.name).toBe("Program");
+    } finally {
+      await fsp.rm(dir2, { recursive: true, force: true });
+    }
   });
 });

@@ -13,6 +13,8 @@ table.fill(3, 353, 359); // HEX_NUMBER
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+
   // 1
   let state = 256;
 
@@ -20,7 +22,7 @@ const next = (input, offset) => {
   let i = offset & 0x7fffffff;
   const l = input.length;
 
-  while (i < l && (state = table[state + input[i++]]) > 3);
+  while (i < l && (state = t[state + input[i++]]) > 3);
 
   state -= 1;
   if (state >>> 0 >= 3) {

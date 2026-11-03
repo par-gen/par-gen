@@ -56,6 +56,8 @@ table.fill(256, 3456, 3584); // __basic_string_token2
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+
   // 13
   let state = 25;
 
@@ -64,7 +66,6 @@ const next = (input, offset) => {
   // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
-  const t = table;
 
   if (i < l && (state = t[input[i++] + 3328]) > 24) {
     while (true) {

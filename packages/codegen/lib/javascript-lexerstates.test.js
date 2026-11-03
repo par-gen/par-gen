@@ -195,7 +195,7 @@ describe("Lexer States", () => {
     expect(generatedParserCode).toContain("INITIAL: 0");
     expect(generatedParserCode).toContain("CHARACTER_CLASS: 1");
     expect(generatedParserCode).toContain("HEX_ESCAPE: 2");
-    expect(generatedParserCode).toContain("const lexerStack = new Uint8Array(64)");
+    expect(generatedParserCode).toContain("let lexerStack = new Uint8Array(64)");
     expect(generatedParserCode).toContain("const shiftActionsTable = new Uint8Array(");
     expect(generatedParserCode).toContain("lexer.push(LexerMode.CHARACTER_CLASS)");
     expect(generatedParserCode).toContain("lexer.push(LexerMode.HEX_ESCAPE)");

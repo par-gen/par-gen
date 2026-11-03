@@ -56,6 +56,8 @@ table[2684] = 4; // PIPE
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+
   // 10
   let state = 9;
   let successState = 0;
@@ -64,7 +66,6 @@ const next = (input, offset) => {
   // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
-  const t = table;
 
   if (i < l && (state = t[input[i++] + 2560]) > 8) {
     while (true) {

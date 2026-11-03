@@ -1098,6 +1098,10 @@ table.fill(6912, 12896, 12992); // identifier
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+  const s = skipTable;
+  const e = ec;
+  const ti = tokenIds;
   // 199
   let i = offset | 0;
   const l = input.length;
@@ -1105,32 +1109,32 @@ const next = (input, offset) => {
     let state = 0;
     let successState = 0;
     let successPos = 0;
-    while (i < l && skipTable[input[i]]) {
+    while (i < l && s[input[i]]) {
       i++;
     }
     offset = i;
-    if (i < l && (state = table[input[i++] + 12736]) > 69) {
+    if (i < l && (state = t[input[i++] + 12736]) > 69) {
       do {
         if (state <= 11712) {
           if (state > 1088) {
             do {
               successState = state;
               successPos = i;
-            } while (i < l && (state = table[state + ec[input[i++]]]) > 1088);
+            } while (i < l && (state = t[state + e[input[i++]]]) > 1088);
             break;
           }
           successState = state;
           successPos = i;
           if (i >= l) break;
         }
-        while (i < l && (state = table[state + ec[input[i++]]]) > 11712);
+        while (i < l && (state = t[state + e[input[i++]]]) > 11712);
       } while ((state - 70) >>> 0 < 11643);
     }
 
     if (--state >>> 0 >= 69) {
       if (successState) {
         i = successPos;
-        state = tokenIds[successState >> 6];
+        state = ti[successState >> 6];
       } else {
         state = ((i - l) >>> 31) + 66;
         offset = i = -1;

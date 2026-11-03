@@ -1008,6 +1008,10 @@ table[19453] = 5; // }
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+  const s = skipTable;
+  const e = ec;
+  const ti = tokenIds;
   // 302
   let i = offset | 0;
   const l = input.length;
@@ -1015,32 +1019,32 @@ const next = (input, offset) => {
     let state = 0;
     let successState = 0;
     let successPos = 0;
-    while (i < l && skipTable[input[i]]) {
+    while (i < l && s[input[i]]) {
       i++;
     }
     offset = i;
-    if (i < l && (state = table[input[i++] + 19328]) > 61) {
+    if (i < l && (state = t[input[i++] + 19328]) > 61) {
       do {
         if (state <= 18624) {
           if (state > 256) {
             do {
               successState = state;
               successPos = i;
-            } while (i < l && (state = table[state + ec[input[i++]]]) > 256);
+            } while (i < l && (state = t[state + e[input[i++]]]) > 256);
             break;
           }
           successState = state;
           successPos = i;
           if (i >= l) break;
         }
-        while (i < l && (state = table[state + ec[input[i++]]]) > 18624);
+        while (i < l && (state = t[state + e[input[i++]]]) > 18624);
       } while ((state - 62) >>> 0 < 18563);
     }
 
     if (--state >>> 0 >= 61) {
       if (successState) {
         i = successPos;
-        state = tokenIds[successState >> 6];
+        state = ti[successState >> 6];
       } else {
         state = ((i - l) >>> 31) + 58;
         offset = i = -1;

@@ -426,6 +426,144 @@ const parserSymbols = [
   "class_name", // 134
 ];
 
+const SymbolIds = Object.freeze({
+  "[": 0,
+  from: 1,
+  to: 2,
+  ":": 3,
+  "@import": 4,
+  ",": 5,
+  ";": 6,
+  "@media": 7,
+  "@charset": 8,
+  "@namespace": 9,
+  "@keyframes": 10,
+  "{": 11,
+  "}": 12,
+  "@supports": 13,
+  "@scope": 14,
+  "(": 15,
+  ")": 16,
+  "&": 17,
+  "*": 18,
+  ".": 19,
+  has: 20,
+  not: 21,
+  is: 22,
+  where: 23,
+  host: 24,
+  "host-context": 25,
+  "nth-child": 26,
+  "nth-last-child": 27,
+  "::": 28,
+  "#": 29,
+  "=": 30,
+  "~=": 31,
+  "^=": 32,
+  "|=": 33,
+  "*=": 34,
+  "$=": 35,
+  "]": 36,
+  ">": 37,
+  "~": 38,
+  "+": 39,
+  "|": 40,
+  even: 41,
+  odd: 42,
+  of: 43,
+  "!important": 44,
+  and: 45,
+  or: 46,
+  only: 47,
+  selector: 48,
+  "'": 49,
+  '"': 50,
+  "-": 51,
+  "/": 52,
+  _nth_functional_notation: 53,
+  color_value: 54,
+  escape_sequence: 55,
+  integer_value: 56,
+  float_value: 57,
+  identifier: 58,
+  at_keyword: 59,
+  plain_value: 60,
+  important_value: 61,
+  _keyframes_statement_token1: 62,
+  _string_value_token2: 63,
+  _string_value_token3: 64,
+  _class_name_token4: 65,
+  "@par-gen.EOF": 66,
+  "@par-gen.ERROR": 67,
+  comment: 68,
+  js_comment: 69,
+  S: 70,
+  stylesheet: 71,
+  _import_statement_repeat1: 72,
+  import_statement: 73,
+  media_statement: 74,
+  charset_statement: 75,
+  namespace_statement: 76,
+  keyframes_statement: 77,
+  _keyframe_block_list_repeat2: 78,
+  keyframe_block_list: 79,
+  _keyframe_block_repeat3: 80,
+  keyframe_block: 81,
+  supports_statement: 82,
+  scope_statement: 83,
+  _postcss_statement_repeat4: 84,
+  postcss_statement: 85,
+  at_rule: 86,
+  rule_set: 87,
+  _selectors_repeat5: 88,
+  selectors: 89,
+  _block_repeat6: 90,
+  block: 91,
+  _selector: 92,
+  nesting_selector: 93,
+  universal_selector: 94,
+  class_selector: 95,
+  pseudo_class_selector: 96,
+  _nth_child_pseudo_class_selector: 97,
+  pseudo_element_selector: 98,
+  id_selector: 99,
+  attribute_selector: 100,
+  child_selector: 101,
+  descendant_selector: 102,
+  sibling_selector: 103,
+  adjacent_sibling_selector: 104,
+  namespace_selector: 105,
+  _pseudo_class_arguments_repeat7: 106,
+  _pseudo_class_arguments_repeat8: 107,
+  pseudo_class_arguments: 108,
+  pseudo_class_with_selector_arguments: 109,
+  pseudo_class_nth_child_arguments: 110,
+  pseudo_element_arguments: 111,
+  _declaration_repeat9: 112,
+  declaration: 113,
+  last_declaration: 114,
+  important: 115,
+  _query: 116,
+  feature_query: 117,
+  parenthesized_query: 118,
+  binary_query: 119,
+  unary_query: 120,
+  selector_query: 121,
+  _value: 122,
+  parenthesized_value: 123,
+  _string_value_repeat10: 124,
+  _string_value_repeat11: 125,
+  string_value: 126,
+  _grid_value_repeat12: 127,
+  grid_value: 128,
+  call_expression: 129,
+  binary_expression: 130,
+  _arguments_repeat13: 131,
+  arguments: 132,
+  _class_name_repeat14: 133,
+  class_name: 134,
+});
+
 const actionsTable = new Uint16Array(34896).fill(0xffff);
 actionsTable[0] = 2; // 'state 0' -> [ -> shift (target=1, len=0)
 actionsTable[3] = 4; // 'state 0' -> : -> shift (target=2, len=0)
@@ -3470,14 +3608,19 @@ const lexerModeNames = {
   imm_string_value_1: 2,
 };
 
-const lexerStack = new Uint8Array(64);
+let lexerStack = new Uint8Array(64);
 let lexerSp = 0;
 let lexerMode = LexerMode.INITIAL;
 
 const lexer = {
   push(mode) {
     const modeId = typeof mode === "number" ? mode : lexerModeNames[mode];
-    lexerStack[++lexerSp] = modeId;
+    if (++lexerSp >= lexerStack.length) {
+      const next = new Uint8Array(lexerStack.length << 1);
+      next.set(lexerStack);
+      lexerStack = next;
+    }
+    lexerStack[lexerSp] = modeId;
     lexerMode = modeId;
   },
   pop() {
@@ -3501,7 +3644,7 @@ const lexer = {
  * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or rtop (internal: low 20 bits = prevSibling / subtreeStart - 2)
  */
 const arena = {
-  stack: new Uint32Array(16384),
+  stack: new Uint32Array(262144),
   tree: new Uint32Array(524288),
 };
 
@@ -3510,7 +3653,7 @@ class TreeCursor {
   #tree;
   #rootPointer;
   #pointer;
-  #parentStack = new Uint32Array(64);
+  #parentStack = new Uint32Array(128);
   #siblingStack = new Uint32Array(128);
   #depth = 0;
   #siblingSp = 0;
@@ -3538,15 +3681,59 @@ class TreeCursor {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
+  #exactLeafStart(p, end) {
+    const t = this.#tree;
+    let q = p - 2;
+    while (q >= 2 && t[q] >>> 8 > 0) {
+      q -= 2;
+    }
+    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+    if (prevEnd >= end) {
+      return end;
+    }
+    const sym = t[p] & 0xff;
+    let fallbackStart = prevEnd;
+    {
+      const r = nextTokenInitial(this.#stream, prevEnd);
+      if (r.end === end) {
+        if (r.state === sym) return r.start;
+        fallbackStart = r.start;
+      }
+    }
+    {
+      const r = nextTokenImmStringValue0(this.#stream, prevEnd);
+      if (r.end === end) {
+        if (r.state === sym) return r.start;
+        fallbackStart = r.start;
+      }
+    }
+    {
+      const r = nextTokenImmStringValue1(this.#stream, prevEnd);
+      if (r.end === end) {
+        if (r.state === sym) return r.start;
+        fallbackStart = r.start;
+      }
+    }
+    return fallbackStart;
+  }
+
   get start() {
     const t = this.#tree;
     let p = this.#pointer;
     if (t[p] >>> 8 > 0) {
-      p = (t[p + 1] & 0xfffff) + 2;
+      const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
+      p = (t[p + 1] & mask) + 2;
+    }
+    if (t[0] !== 0) {
+      return this.#exactLeafStart(p, t[p + 1]);
     }
     const span = t[p + 1];
     const end = span & 0x3fffff;
-    return end - (span >>> 22);
+    const len = span >>> 22;
+    if (len < 1023) {
+      return end - len;
+    }
+    return this.#exactLeafStart(p, end);
   }
 
   get end() {
@@ -3555,7 +3742,7 @@ class TreeCursor {
     while (t[p] >>> 8 > 0) {
       p -= 2;
     }
-    return t[p + 1] & 0x3fffff;
+    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
   }
 
   get value() {
@@ -3592,15 +3779,18 @@ class TreeCursor {
     }
     const d = this.#depth + 1;
     let stack = this.#parentStack;
-    if (d >= stack.length) {
+    if ((d << 1) + 1 >= stack.length) {
       const next = new Uint32Array(stack.length << 1);
       next.set(stack);
       stack = this.#parentStack = next;
     }
-    stack[d] = p | ((n - 1) << 20);
+    const idx = d << 1;
+    stack[idx] = p;
+    stack[idx + 1] = n - 1;
     this.#depth = d;
     let c = p - 2;
     if (n > 1) {
+      const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
       let sp = this.#siblingSp;
       let sStack = this.#siblingStack;
       if (sp + n >= sStack.length) {
@@ -3610,7 +3800,7 @@ class TreeCursor {
       }
       for (let k = 1; k < n; k++) {
         sStack[++sp] = c;
-        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
       }
       this.#siblingSp = sp;
     }
@@ -3620,12 +3810,16 @@ class TreeCursor {
 
   gotoNextSibling() {
     const d = this.#depth;
-    const stack = this.#parentStack;
-    const entry = stack[d];
-    if (entry < 0x100000) {
+    if (d === 0) {
       return false;
     }
-    stack[d] = entry - 0x100000;
+    const stack = this.#parentStack;
+    const remIdx = (d << 1) + 1;
+    const rem = stack[remIdx];
+    if (rem === 0) {
+      return false;
+    }
+    stack[remIdx] = rem - 1;
     const sp = this.#siblingSp;
     this.#pointer = this.#siblingStack[sp];
     this.#siblingSp = sp - 1;
@@ -3637,10 +3831,11 @@ class TreeCursor {
     if (d === 0) {
       return false;
     }
-    const entry = this.#parentStack[d];
-    this.#siblingSp -= entry >>> 20;
+    const stack = this.#parentStack;
+    const idx = d << 1;
+    this.#siblingSp -= stack[idx + 1];
     this.#depth = d - 1;
-    this.#pointer = entry & 0xfffff;
+    this.#pointer = stack[idx];
     return true;
   }
 
@@ -3676,15 +3871,59 @@ class CstNode {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
+  #exactLeafStart(p, end) {
+    const t = this.#tree;
+    let q = p - 2;
+    while (q >= 2 && t[q] >>> 8 > 0) {
+      q -= 2;
+    }
+    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+    if (prevEnd >= end) {
+      return end;
+    }
+    const sym = t[p] & 0xff;
+    let fallbackStart = prevEnd;
+    {
+      const r = nextTokenInitial(this.#stream, prevEnd);
+      if (r.end === end) {
+        if (r.state === sym) return r.start;
+        fallbackStart = r.start;
+      }
+    }
+    {
+      const r = nextTokenImmStringValue0(this.#stream, prevEnd);
+      if (r.end === end) {
+        if (r.state === sym) return r.start;
+        fallbackStart = r.start;
+      }
+    }
+    {
+      const r = nextTokenImmStringValue1(this.#stream, prevEnd);
+      if (r.end === end) {
+        if (r.state === sym) return r.start;
+        fallbackStart = r.start;
+      }
+    }
+    return fallbackStart;
+  }
+
   get start() {
     const t = this.#tree;
     let p = this.#pointer;
     if (t[p] >>> 8 > 0) {
-      p = (t[p + 1] & 0xfffff) + 2;
+      const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
+      p = (t[p + 1] & mask) + 2;
+    }
+    if (t[0] !== 0) {
+      return this.#exactLeafStart(p, t[p + 1]);
     }
     const span = t[p + 1];
     const end = span & 0x3fffff;
-    return end - (span >>> 22);
+    const len = span >>> 22;
+    if (len < 1023) {
+      return end - len;
+    }
+    return this.#exactLeafStart(p, end);
   }
 
   get end() {
@@ -3693,7 +3932,7 @@ class CstNode {
     while (t[p] >>> 8 > 0) {
       p -= 2;
     }
-    return t[p + 1] & 0x3fffff;
+    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
   }
 
   get value() {
@@ -3713,9 +3952,10 @@ class CstNode {
     if (nChildren === 0) {
       return undefined;
     }
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
     let c = pointer - 2;
     for (let i = 1; i < nChildren; i++) {
-      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
     }
     return new CstNode(this.#stream, t, c);
   }
@@ -3737,9 +3977,10 @@ class CstNode {
     if (idx < 0 || idx >= nChildren) {
       return undefined;
     }
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
     let c = pointer - 2;
     for (let i = nChildren - 1; i > idx; i--) {
-      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
     }
     return new CstNode(this.#stream, t, c);
   }
@@ -3751,6 +3992,7 @@ class CstNode {
     if (nChildren === 0) {
       return undefined;
     }
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
     let match = -1;
     let c = pointer - 2;
     for (let i = 0; i < nChildren; i++) {
@@ -3758,7 +4000,7 @@ class CstNode {
         match = c;
       }
       if (i + 1 < nChildren) {
-        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
       }
     }
     return match === -1 ? undefined : new CstNode(this.#stream, t, match);
@@ -3772,6 +4014,7 @@ class CstNode {
     if (nChildren === 0) {
       return result;
     }
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
     const stream = this.#stream;
     let c = pointer - 2;
     for (let i = 0; i < nChildren; i++) {
@@ -3779,7 +4022,7 @@ class CstNode {
         result.push(new CstNode(stream, t, c));
       }
       if (i + 1 < nChildren) {
-        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
       }
     }
     result.reverse();
@@ -3794,12 +4037,13 @@ class CstNode {
       return undefined;
     }
 
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
     const stream = this.#stream;
     const children = new Array(nChildren);
     let child = pointer - 2;
     for (let i = nChildren - 1; i > 0; i--) {
       children[i] = new CstNode(stream, t, child);
-      child = t[child] >>> 8 === 0 ? child - 2 : t[child + 1] & 0xfffff;
+      child = t[child] >>> 8 === 0 ? child - 2 : t[child + 1] & mask;
     }
     children[0] = new CstNode(stream, t, child);
 
@@ -3818,9 +4062,45 @@ class CstNode {
     return new TreeCursor(this.#stream, this.#tree, this.#pointer);
   }
 
+  reemitLossless(input) {
+    const stream =
+      input === undefined
+        ? this.#stream
+        : typeof input === "string"
+        ? Buffer.from(input)
+        : input;
+    const t = this.#tree;
+    const rootPtr = this.#pointer;
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
+    const startPtr =
+      t[rootPtr] >>> 8 === 0 ? rootPtr : (t[rootPtr + 1] & mask) + 2;
+    const isRoot = startPtr === 2 && (t[1] === 0 || rootPtr === t[1]);
+    const outLen = isRoot ? stream.length : this.end - this.start;
+    const out = Buffer.allocUnsafe(outLen);
+    let offset = 0;
+    let prevEnd = isRoot ? 0 : this.start;
+
+    for (let p = startPtr; p <= rootPtr; p += 2) {
+      if (t[p] >>> 8 === 0) {
+        const end = t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+        if (end > prevEnd) {
+          out.set(stream.subarray(prevEnd, end), offset);
+          offset += end - prevEnd;
+          prevEnd = end;
+        }
+      }
+    }
+    if (isRoot && prevEnd < stream.length) {
+      out.set(stream.subarray(prevEnd, stream.length), offset);
+      offset += stream.length - prevEnd;
+    }
+    return out.subarray(0, offset);
+  }
+
   toSExpr(includeText = false) {
     const t = this.#tree;
     const stream = this.#stream;
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
     const formatNode = (p) => {
       const w0 = t[p];
       const name = parserSymbols[w0 & 0xff];
@@ -3837,7 +4117,7 @@ class CstNode {
       for (let i = n - 1; i >= 0; i--) {
         childPtrs[i] = c;
         if (i > 0) {
-          c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+          c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
         }
       }
       let out = "(" + name;
@@ -3928,7 +4208,8 @@ function throwSyntaxError(
     while (q >= 2 && (tree[q] >>> 8 > 0 || (tree[q] & 0xff) > 69)) {
       q -= 2;
     }
-    offset = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
+    offset =
+      q >= 2 ? (tree[0] === 0 ? tree[q + 1] & 0x3fffff : tree[q + 1]) : 0;
     while (
       offset < stream.length &&
       (stream[offset] === 32 ||
@@ -4018,6 +4299,143 @@ function throwSyntaxError(
   throw err;
 }
 
+function reemitLossless(cst, input) {
+  return cst.reemitLossless(input);
+}
+
+function parseLarge(stream) {
+  lexerSp = 0;
+  lexerStack[0] = LexerMode.INITIAL;
+  lexerMode = LexerMode.INITIAL;
+  const firstRes = nextTokenInitial(stream, 0);
+  let lookahead = firstRes.state;
+  let lookaheadStart = firstRes.start;
+  let lookaheadEnd = firstRes.end;
+
+  let stackCap = 65536;
+  let stackStates = new Uint32Array(stackCap);
+  let stackTps = new Uint32Array(stackCap);
+  let treeCap = 1048576;
+  while (treeCap <= stream.length) {
+    treeCap <<= 1;
+  }
+  let tree = new Uint32Array(treeCap);
+  tree[0] = 1;
+  const actions = actionsTable;
+  const goto = gotoTable;
+  const sa = shiftActionsTable;
+  const wf = wordFallbackTable;
+
+  let topState = 0;
+  stackStates[0] = topState;
+  stackTps[0] = 0;
+  let sp = 0;
+  let tp = 2;
+
+  while (true) {
+    const currentState = topState;
+    const actionIndex = (currentState << 7) + lookahead;
+    const actionLookup = actions[actionIndex];
+    if ((actionLookup & 1) === 0) {
+      if (actionLookup === 0xfffe) {
+        tree[1] = tp - 2;
+        return new CstNode(stream, tree, tp - 2);
+      }
+      const shiftAction = sa[actionIndex];
+      if (shiftAction !== 0) {
+        switch (shiftAction) {
+          case 1:
+            lexer.push(LexerMode.IMM_STRING_VALUE_0);
+            break;
+          case 2:
+            lexer.push(LexerMode.IMM_STRING_VALUE_1);
+            break;
+          case 3:
+            lexer.pop();
+            break;
+        }
+      }
+      if (sp + 2 >= stackCap) {
+        stackCap <<= 1;
+        const nextS = new Uint32Array(stackCap);
+        nextS.set(stackStates);
+        stackStates = nextS;
+        const nextT = new Uint32Array(stackCap);
+        nextT.set(stackTps);
+        stackTps = nextT;
+      }
+      tree[tp] = lookahead;
+      tree[tp + 1] = lookaheadEnd;
+      sp += 1;
+      topState = actionLookup >>> 1;
+      stackStates[sp] = topState;
+      stackTps[sp] = tp;
+      const res =
+        lexerMode === LexerMode.INITIAL
+          ? nextTokenInitial(stream, lookaheadEnd)
+          : lexerMode === LexerMode.IMM_STRING_VALUE_0
+          ? nextTokenImmStringValue0(stream, lookaheadEnd)
+          : nextTokenImmStringValue1(stream, lookaheadEnd);
+      lookahead = res.state;
+      lookaheadStart = res.start;
+      lookaheadEnd = res.end;
+    } else {
+      if (actionLookup === 0xffff) {
+        if (
+          wf[lookahead] !== 0 &&
+          actions[(currentState << 7) + 58] !== 0xffff
+        ) {
+          lookahead = 58;
+          continue;
+        }
+
+        const errLen = lookaheadEnd - lookaheadStart;
+        const errSpan =
+          lookaheadEnd === -1
+            ? -1
+            : (lookaheadEnd & 0x3fffff) |
+              ((errLen < 1023 ? errLen : 1023) << 22);
+        throwSyntaxError(
+          stream,
+          tree,
+          tp,
+          lookahead,
+          errSpan,
+          currentState << 7
+        );
+      }
+      const reduceLen = actionLookup >>> 9;
+      sp -= reduceLen;
+      const rtopState = stackStates[sp];
+      const rtopTp = stackTps[sp];
+      const word0 = actionLookup >>> 1;
+      tree[tp] = word0;
+      tree[tp + 1] = rtopTp;
+      const rawNextState = goto[(rtopState << 7) + (word0 & 0xff)];
+      topState = rawNextState;
+      sp += 1;
+      if (sp >= stackCap) {
+        stackCap <<= 1;
+        const nextS = new Uint32Array(stackCap);
+        nextS.set(stackStates);
+        stackStates = nextS;
+        const nextT = new Uint32Array(stackCap);
+        nextT.set(stackTps);
+        stackTps = nextT;
+      }
+      stackStates[sp] = topState;
+      stackTps[sp] = tp;
+    }
+    tp += 2;
+    if (tp >= treeCap - 2) {
+      treeCap <<= 1;
+      const nextTree = new Uint32Array(treeCap);
+      nextTree.set(tree);
+      tree = nextTree;
+    }
+  }
+}
+
 /**
  * @typedef {Object} Node
  * @property {string} name
@@ -4032,21 +4450,25 @@ function throwSyntaxError(
  * @returns {Node}
  */
 function parse(input) {
+  const stream = typeof input === "string" ? Buffer.from(input) : input;
+
   lexerSp = 0;
   lexerStack[0] = LexerMode.INITIAL;
   lexerMode = LexerMode.INITIAL;
 
-  const stream = typeof input === "string" ? Buffer.from(input) : input;
-
   const firstRes = nextTokenInitial(stream, 0);
   let lookahead = firstRes.state;
 
-  let lookaheadSpan = firstRes.end | ((firstRes.end - firstRes.start) << 22);
+  const firstLen = firstRes.end - firstRes.start;
+  let lookaheadSpan =
+    firstRes.end | ((firstLen < 1023 ? firstLen : 1023) << 22);
 
   const stack = arena.stack;
   const tree = arena.tree;
   const actions = actionsTable;
   const goto = gotoTable;
+  const sa = shiftActionsTable;
+  const wf = wordFallbackTable;
   if (stream.length >>> 1 <= tree.length) {
     let top = 0; // starting state
     stack[0] = top;
@@ -4056,17 +4478,18 @@ function parse(input) {
     let tp = 2;
 
     while (true) {
-      const currentState = top >>> 20;
+      const currentState = top >>> 23;
 
       const actionIndex = (currentState << 7) + lookahead;
       const actionLookup = actions[actionIndex];
       if ((actionLookup & 1) === 0) {
         // shift
         if (actionLookup === 0xfffe) {
+          tree[1] = tp - 2;
           return new CstNode(stream, tree, tp - 2);
         }
 
-        const shiftAction = shiftActionsTable[actionIndex];
+        const shiftAction = sa[actionIndex];
         if (shiftAction !== 0) {
           switch (shiftAction) {
             case 1:
@@ -4085,14 +4508,15 @@ function parse(input) {
         tree[tp + 1] = lookaheadSpan;
 
         sp += 1;
-        top = tp | (actionLookup << 19);
+        top = tp | (actionLookup << 22);
         stack[sp] = top;
 
         if (lexerMode === LexerMode.INITIAL) {
           const res = nextTokenInitial(stream, lookaheadSpan & 0x3fffff);
           lookahead = res.state;
 
-          lookaheadSpan = res.end | ((res.end - res.start) << 22);
+          const tokLen = res.end - res.start;
+          lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
         } else if (lexerMode === LexerMode.IMM_STRING_VALUE_0) {
           const res = nextTokenImmStringValue0(
             stream,
@@ -4100,7 +4524,8 @@ function parse(input) {
           );
           lookahead = res.state;
 
-          lookaheadSpan = res.end | ((res.end - res.start) << 22);
+          const tokLen = res.end - res.start;
+          lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
         } else {
           const res = nextTokenImmStringValue1(
             stream,
@@ -4108,13 +4533,14 @@ function parse(input) {
           );
           lookahead = res.state;
 
-          lookaheadSpan = res.end | ((res.end - res.start) << 22);
+          const tokLen = res.end - res.start;
+          lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
         }
       } else {
         // reduce
         if (actionLookup === 0xffff) {
           if (
-            wordFallbackTable[lookahead] !== 0 &&
+            wf[lookahead] !== 0 &&
             actions[(currentState << 7) + 58] !== 0xffff
           ) {
             lookahead = 58;
@@ -4134,11 +4560,11 @@ function parse(input) {
         const rtop = stack[sp] | 0;
         const word0 = actionLookup >>> 1;
         tree[tp] = word0; // name and number of children
-        const nextState = goto[((rtop >>> 20) << 7) + (word0 & 0xff)];
+        const nextState = goto[((rtop >>> 23) << 7) + (word0 & 0xff)];
         tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
 
         sp += 1;
-        top = tp | (nextState << 20);
+        top = tp | (nextState << 23);
         stack[sp] = top;
       }
 
@@ -4149,11 +4575,17 @@ function parse(input) {
     }
   }
 
+  if (stream.length >= 0x3fffff) {
+    return parseLarge(stream);
+  }
   let len = tree.length << 1;
   while (len < stream.length >>> 1) {
     len <<= 1;
   }
-  const nextStack = new Uint32Array(len);
+  if (len > 8388608) {
+    return parseLarge(stream);
+  }
+  const nextStack = new Uint32Array(Math.max(stack.length, len >>> 1));
   const nextTree = new Uint32Array(len);
   delete arena.stack;
   delete arena.tree;
@@ -4163,4 +4595,4 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor, LineIndex };
+export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };

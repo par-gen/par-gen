@@ -1,3 +1,33 @@
+declare const SymbolIds: Readonly<{
+    CHARACTER: 0;
+    HEX_PREFIX: 1;
+    HEX_NUMBER: 2;
+    ESCAPED_CHARACTER: 3;
+    CARET: 4;
+    DASH: 5;
+    DOT: 6;
+    UNION: 7;
+    PAREN_OPEN: 8;
+    PAREN_CLOSE: 9;
+    QUANTIFIER: 10;
+    BRACKET_OPEN: 11;
+    BRACKET_CLOSE: 12;
+    "@par-gen.EOF": 13;
+    "@par-gen.ERROR": 14;
+    S: 15;
+    RegExp: 16;
+    Expression: 17;
+    Union: 18;
+    Sequence: 19;
+    Atom: 20;
+    Group: 21;
+    CharacterClass: 22;
+    CharacterClassCharacters: 23;
+    CharacterClassCharacter: 24;
+    CharacterClassRange: 25;
+    Character: 26;
+    HexEscape: 27;
+}>;
 declare class TreeCursor {
     #private;
     constructor(stream: any, tree: any, pointer: any);
@@ -5,8 +35,8 @@ declare class TreeCursor {
     get symbolId(): number;
     get childCount(): number;
     get isLeaf(): boolean;
-    get start(): number;
-    get end(): number;
+    get start(): any;
+    get end(): any;
     get value(): any;
     get text(): string;
     get pointer(): any;
@@ -24,8 +54,8 @@ declare class CstNode {
     get symbolId(): number;
     get childCount(): number;
     get isLeaf(): boolean;
-    get start(): number;
-    get end(): number;
+    get start(): any;
+    get end(): any;
     get value(): any;
     get text(): string;
     get firstChild(): CstNode | undefined;
@@ -37,11 +67,12 @@ declare class CstNode {
     get __tree(): any;
     get __pointer(): any;
     cursor(): TreeCursor;
+    reemitLossless(input: any): Buffer<ArrayBuffer>;
     toSExpr(includeText?: boolean): string;
     toJSON(): {
         name: string;
-        start: number;
-        end: number;
+        start: any;
+        end: any;
         value: any;
         items: any[] | undefined;
     };
@@ -54,6 +85,7 @@ declare class LineIndex {
         column: number;
     };
 }
+declare function reemitLossless(cst: any, input: any): any;
 export type Node = {
     name: string;
     start: number;
@@ -74,4 +106,4 @@ export type Node = {
  * @returns {Node}
  */
 declare function parse(input: Uint8Array | string): Node;
-export { parse, CstNode, TreeCursor, LineIndex };
+export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };

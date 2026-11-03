@@ -1,3 +1,28 @@
+declare const SymbolIds: Readonly<{
+    WS: 0;
+    TRUE: 1;
+    FALSE: 2;
+    NULL: 3;
+    CURLY_OPEN: 4;
+    CURLY_CLOSE: 5;
+    COMMA: 6;
+    COLON: 7;
+    STRING: 8;
+    BRACKET_OPEN: 9;
+    BRACKET_CLOSE: 10;
+    NUMBER: 11;
+    "@par-gen.EOF": 12;
+    "@par-gen.ERROR": 13;
+    S: 14;
+    Json: 15;
+    Element: 16;
+    Value: 17;
+    Object: 18;
+    Members: 19;
+    Member: 20;
+    Array: 21;
+    Elements: 22;
+}>;
 declare class TreeCursor {
     #private;
     constructor(stream: any, tree: any, pointer: any);
@@ -5,8 +30,8 @@ declare class TreeCursor {
     get symbolId(): number;
     get childCount(): number;
     get isLeaf(): boolean;
-    get start(): number;
-    get end(): number;
+    get start(): any;
+    get end(): any;
     get value(): any;
     get text(): string;
     get pointer(): any;
@@ -24,8 +49,8 @@ declare class CstNode {
     get symbolId(): number;
     get childCount(): number;
     get isLeaf(): boolean;
-    get start(): number;
-    get end(): number;
+    get start(): any;
+    get end(): any;
     get value(): any;
     get text(): string;
     get firstChild(): CstNode | undefined;
@@ -37,11 +62,12 @@ declare class CstNode {
     get __tree(): any;
     get __pointer(): any;
     cursor(): TreeCursor;
+    reemitLossless(input: any): Buffer<ArrayBuffer>;
     toSExpr(includeText?: boolean): string;
     toJSON(): {
         name: string;
-        start: number;
-        end: number;
+        start: any;
+        end: any;
         value: any;
         items: any[] | undefined;
     };
@@ -54,6 +80,7 @@ declare class LineIndex {
         column: number;
     };
 }
+declare function reemitLossless(cst: any, input: any): any;
 export type Node = {
     name: string;
     start: number;
@@ -74,4 +101,4 @@ export type Node = {
  * @returns {Node}
  */
 declare function parse(input: Uint8Array | string): Node;
-export { parse, CstNode, TreeCursor, LineIndex };
+export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };

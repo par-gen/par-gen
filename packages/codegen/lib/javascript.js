@@ -406,8 +406,10 @@ export class JavaScriptBaseCodegen {
     );
     const needsContinuableTokenIdsTable =
       directDeadEndTokenIds && distinctContinuableTokenIds.length >= 3;
+    const hasTokenIdsTable =
+      !directDeadEndTokenIds || needsContinuableTokenIdsTable;
 
-    let continuableTokenIdExpr = `tokenIds[successState >> ${columnShift}]`;
+    let continuableTokenIdExpr = `ti[successState >> ${columnShift}]`;
     if (directDeadEndTokenIds && branchingContinuableFinals.length > 0) {
       if (distinctContinuableTokenIds.length === 1) {
         continuableTokenIdExpr = `${distinctContinuableTokenIds[0]}`;
@@ -521,8 +523,8 @@ export class JavaScriptBaseCodegen {
       .map((origState) => remapState(origState));
 
     const stepExpr = useEquivalenceClasses
-      ? "table[state + ec[input[i++]]]"
-      : "table[state + input[i++]]";
+      ? "t[state + e[input[i++]]]"
+      : "t[state + input[i++]]";
 
     const tableLength = directStartRow
       ? (totalRows - 1) * columns + origColumns
@@ -611,6 +613,10 @@ export class JavaScriptBaseCodegen {
        * @returns {{ state: number, start: number, end: number }}
        */
       const next = (input, offset) => {
+        const t = table;
+        ${skipBytes.length > 0 ? "const s = skipTable;" : ""}
+        ${useEquivalenceClasses ? "const e = ec;" : ""}
+        ${hasTokenIdsTable ? "const ti = tokenIds;" : ""}
         ${
           directDeadEndTokenIds && continuableFinals.length === 0
             ? skipTokenIds.length > 0
@@ -622,7 +628,7 @@ export class JavaScriptBaseCodegen {
           state = ${remappedStart};
           ${
             skipBytes.length > 0
-              ? `while (i < l && skipTable[input[i]] !== 0) {
+              ? `while (i < l && s[input[i]] !== 0) {
             i++;
           }
           offset = i;`
@@ -661,7 +667,7 @@ export class JavaScriptBaseCodegen {
         const l = input.length;
         ${
           skipBytes.length > 0
-            ? `while (i < l && skipTable[input[i]] !== 0) {
+            ? `while (i < l && s[input[i]] !== 0) {
           i++;
         }
         offset = i;`
@@ -690,7 +696,6 @@ export class JavaScriptBaseCodegen {
               ? `// ${remappedStart / columns}
         let i = offset & 0x7fffffff;
         const l = input.length;
-        const t = table;
         let state = 0;
         while (true) {
           state = ${remappedLastDeadEndFinal + 1};
@@ -702,7 +707,7 @@ export class JavaScriptBaseCodegen {
           ${branchingContinuableFinals.length > 0 ? "let successPos = 0;" : ""}
           ${
             skipBytes.length > 0
-              ? `while (i < l && skipTable[input[i]]) {
+              ? `while (i < l && s[input[i]]) {
             i++;
           }
           offset = i;`
@@ -849,10 +854,9 @@ export class JavaScriptBaseCodegen {
         // try to find match
         let i = offset & 0x7fffffff;
         const l = input.length;
-        const t = table;
         ${
           skipBytes.length > 0
-            ? `while (i < l && skipTable[input[i]]) {
+            ? `while (i < l && s[input[i]]) {
           i++;
         }
         offset = i;`
@@ -993,7 +997,7 @@ export class JavaScriptBaseCodegen {
           let successPos = 0;
           ${
             skipBytes.length > 0
-              ? `while (i < l && skipTable[input[i]]) {
+              ? `while (i < l && s[input[i]]) {
             i++;
           }
           offset = i;`
@@ -1001,8 +1005,10 @@ export class JavaScriptBaseCodegen {
           }
           if (
             i < l &&
-            (state = table[${
-              directStartRow ? `input[i++] + ${remappedStart}` : `ec[input[i++]] + ${remappedStart}`
+            (state = t[${
+              directStartRow
+                ? `input[i++] + ${remappedStart}`
+                : `e[input[i++]] + ${remappedStart}`
             }]) > ${remappedLastDeadEndFinal}
           ) {
             do {
@@ -1065,7 +1071,7 @@ export class JavaScriptBaseCodegen {
         const l = input.length;
         ${
           skipBytes.length > 0
-            ? `while (i < l && skipTable[input[i]]) {
+            ? `while (i < l && s[input[i]]) {
           i++;
         }
         offset = i;`
@@ -1073,8 +1079,10 @@ export class JavaScriptBaseCodegen {
         }
         if (
           i < l &&
-          (state = table[${
-            directStartRow ? `input[i++] + ${remappedStart}` : `ec[input[i++]] + ${remappedStart}`
+          (state = t[${
+            directStartRow
+              ? `input[i++] + ${remappedStart}`
+              : `e[input[i++]] + ${remappedStart}`
           }]) > ${remappedLastDeadEndFinal}
         ) {
           do {
@@ -1130,7 +1138,7 @@ export class JavaScriptBaseCodegen {
         while (true) {
           ${
             skipBytes.length > 0
-              ? `while (i < l && skipTable[input[i]] !== 0) {
+              ? `while (i < l && s[input[i]] !== 0) {
             i++;
           }
           offset = i;`
@@ -1187,8 +1195,8 @@ export class JavaScriptBaseCodegen {
             }
             state = ${
               compactDeadEndFinals
-                ? "tokenIds[successState]"
-                : `tokenIds[successState >> ${columnShift}]`
+                ? "ti[successState]"
+                : `ti[successState >> ${columnShift}]`
             };
           } else {
             state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
@@ -1213,7 +1221,7 @@ export class JavaScriptBaseCodegen {
         const l = input.length;
         ${
           skipBytes.length > 0
-            ? `while (i < l && skipTable[input[i]] !== 0) {
+            ? `while (i < l && s[input[i]] !== 0) {
           i++;
         }
         offset = i;`
@@ -1261,8 +1269,8 @@ export class JavaScriptBaseCodegen {
         if (successState !== 0) {
           state = ${
             compactDeadEndFinals
-              ? "tokenIds[successState]"
-              : `tokenIds[successState >> ${columnShift}]`
+              ? "ti[successState]"
+              : `ti[successState >> ${columnShift}]`
           };
         } else {
           state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
@@ -1438,11 +1446,6 @@ export class JavaScriptBaseCodegen {
     );
     const extraTokenId = data.extraTokenId ?? 0;
     const newlineTokenId = /** @type {*} */ (data).newlineTokenId;
-    const hasDfaSkipTokens =
-      newlineTokenId !== undefined ||
-      Object.values(lexerData).some(
-        (ld) => (ld.skipTokenNames?.length ?? 0) > 0
-      );
 
     if (requiresSemanticActions) {
       for (const state of states) {
@@ -1521,6 +1524,55 @@ export class JavaScriptBaseCodegen {
     }
     const hasShiftSemanticActions = shiftActionEntries.length > 0;
 
+    const numSymbols = trimmedParserSymbols.length;
+    const symBits = Math.max(
+      8,
+      Math.ceil(Math.log2(Math.max(2, numSymbols + 1)))
+    );
+    const symMask = (1 << symBits) - 1;
+    const symMaskHex = `0x${symMask.toString(16)}`;
+    const maxReduceLen = rules.reduce(
+      (max, r) => Math.max(max, r.symbols.length),
+      0
+    );
+    const hasEpsilonRules = rules.some((r) => r.symbols.length === 0);
+
+    const maxStateVal = Math.max(
+      1,
+      (orderedStates.length - 1) * stateMultiplier
+    );
+    const stateBits = Math.max(
+      8,
+      Math.ceil(Math.log2(Math.max(2, maxStateVal + 1)))
+    );
+    const useSplitStack = stateBits > 12;
+    const tpBits = useSplitStack ? 20 : 32 - stateBits;
+    const tpMask = (1 << tpBits) - 1;
+    const tpMaskHex = `0x${tpMask.toString(16)}`;
+    const tpShiftMul = 2 ** tpBits;
+
+    const maxShiftAction = maxStateVal * 2;
+    const maxReduceAction =
+      maxReduceLen * 2 ** (symBits + 1) +
+      Math.max(0, numSymbols - 1) * 2 +
+      1;
+    const useUint32Actions =
+      maxShiftAction >= 0xfffe || maxReduceAction >= 0xfffe;
+    const actionsArrayType = useUint32Actions ? "Uint32Array" : "Uint16Array";
+    const ACTION_DONE = useUint32Actions ? 0xfffffffe : 0xfffe;
+    const ACTION_ERROR = useUint32Actions ? 0xffffffff : 0xffff;
+    const ACTION_DONE_HEX = useUint32Actions ? "0xfffffffe" : "0xfffe";
+    const ACTION_ERROR_HEX = useUint32Actions ? "0xffffffff" : "0xffff";
+
+    const compactGoto = gotoTableSize > 4096;
+    const gotoArrayType = compactGoto
+      ? maxStateVal <= 0xff
+        ? "Uint8Array"
+        : maxStateVal <= 0xffff
+        ? "Uint16Array"
+        : "Uint32Array"
+      : "Uint32Array";
+
     const nextTokenExpr = hasSingleLexerMode
       ? "nextToken(stream, lookaheadSpan & 0x3fffff)"
       : lexerModes
@@ -1538,11 +1590,29 @@ export class JavaScriptBaseCodegen {
           lexerModes[lexerModes.length - 1]
         )}(stream, lookaheadSpan & 0x3fffff)`;
 
+    const nextTokenLargeExpr = hasSingleLexerMode
+      ? "nextToken(stream, lookaheadEnd)"
+      : lexerModes
+          .slice(0, -1)
+          .map(
+            (name) =>
+              `lexerMode === LexerMode.${this._lexerModeEnumKey(
+                name
+              )} ? nextToken${this._lexerModePascalCase(
+                name
+              )}(stream, lookaheadEnd) : `
+          )
+          .join("") +
+        `nextToken${this._lexerModePascalCase(
+          lexerModes[lexerModes.length - 1]
+        )}(stream, lookaheadEnd)`;
+
     const nextTokenUpdateCode = hasSingleLexerMode
       ? `const res = nextToken(stream, lookaheadSpan & 0x3fffff);
             lookahead = res.state;
             ${preserveExtras ? "lookaheadStart = res.start;" : ""}
-            lookaheadSpan = res.end | ((res.end - res.start) << 22);`
+            const tokLen = res.end - res.start;
+            lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);`
       : lexerModes
           .map((name, idx) => {
             const callExpr = `nextToken${this._lexerModePascalCase(
@@ -1552,7 +1622,8 @@ export class JavaScriptBaseCodegen {
               const res = ${callExpr};
               lookahead = res.state;
               ${preserveExtras ? "lookaheadStart = res.start;" : ""}
-              lookaheadSpan = res.end | ((res.end - res.start) << 22);
+              const tokLen = res.end - res.start;
+              lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
             }`;
             if (idx === 0) {
               return `if (lexerMode === LexerMode.${this._lexerModeEnumKey(
@@ -1570,10 +1641,10 @@ export class JavaScriptBaseCodegen {
 
     const shiftActionDispatchCode = hasShiftSemanticActions
       ? shiftActionBodies.length === 1
-        ? `if (shiftActionsTable[actionIndex] !== 0) {
+        ? `if (sa[actionIndex] !== 0) {
               ${shiftActionBodies[0]};
             }`
-        : `const shiftAction = shiftActionsTable[actionIndex];
+        : `const shiftAction = sa[actionIndex];
             if (shiftAction !== 0) {
               switch (shiftAction) {
                 ${shiftActionBodies
@@ -1593,10 +1664,10 @@ export class JavaScriptBaseCodegen {
       ? `(currentState << ${tableStrideShift})`
       : `currentState * ${tableStride}`;
     const gotoStateOffsetExpr = canPreMultiplyState
-      ? "(rtop >>> 20)"
+      ? `(rtop >>> ${tpBits})`
       : tableStrideShift > 0
-      ? `((rtop >>> 20) << ${tableStrideShift})`
-      : `(rtop >>> 20) * ${tableStride}`;
+      ? `((rtop >>> ${tpBits}) << ${tableStrideShift})`
+      : `(rtop >>> ${tpBits}) * ${tableStride}`;
 
     const actionLookupCode = hasShiftSemanticActions
       ? `const actionIndex = ${stateOffsetExpr} + lookahead;
@@ -1604,9 +1675,9 @@ export class JavaScriptBaseCodegen {
       : `const actionLookup = actions[${stateOffsetExpr} + lookahead];`;
 
     const isNonTerminalLeafCheck = hasDisjointSymbolRanges
-      ? `(tree[q] & 0xff) > ${maxTerminalIndex}`
+      ? `(tree[q] & ${symMaskHex}) > ${maxTerminalIndex}`
       : minNonTerminalIndex <= maxNonTerminalIndex
-      ? `(tree[q] & 0xff) >= ${minNonTerminalIndex} && (tree[q] & 0xff) <= ${maxNonTerminalIndex}`
+      ? `(tree[q] & ${symMaskHex}) >= ${minNonTerminalIndex} && (tree[q] & ${symMaskHex}) <= ${maxNonTerminalIndex}`
       : "false";
 
     const code = `// @ts-nocheck
@@ -1631,7 +1702,16 @@ export class JavaScriptBaseCodegen {
           .join("\n")}
       ];
 
-      const actionsTable = new Uint16Array(${actionsTableSize}).fill(0xffff);
+      const SymbolIds = Object.freeze({
+        ${trimmedParserSymbols
+          .map((symbol, i) =>
+            symbol !== undefined ? `${JSON.stringify(symbol)}: ${i},` : ""
+          )
+          .filter(Boolean)
+          .join("\n")}
+      });
+
+      const actionsTable = new ${actionsArrayType}(${actionsTableSize}).fill(${ACTION_ERROR_HEX});
       ${this._formatTableRuns(
         "actionsTable",
         Array.from(actions.entries()).flatMap(([from, action]) => {
@@ -1641,14 +1721,14 @@ export class JavaScriptBaseCodegen {
             .filter(([symbol]) => !ruleNamesSet.has(symbol))
             .map(([symbol, to]) => {
               const lookaheadIndex = parserSymbols.indexOf(symbol);
-              let packedAction = 0xffff;
+              let packedAction = ACTION_ERROR;
               let target = 0;
               let reduceLen = 0;
               if (to.op === "shift" && to.state) {
                 target =
                   /** @type {number} */ (stateToIndex.get(to.state)) *
                   stateMultiplier;
-                packedAction = target << 1;
+                packedAction = target * 2;
               } else if (to.op === "reduce" && to.symbol) {
                 target = parserSymbols.indexOf(to.symbol);
                 const matchedItem = items.find(
@@ -1658,9 +1738,10 @@ export class JavaScriptBaseCodegen {
                     item.lookahead === symbol
                 );
                 reduceLen = matchedItem ? matchedItem.tokens.length : 0;
-                packedAction = (reduceLen << 9) | (target << 1) | 1;
+                packedAction =
+                  reduceLen * 2 ** (symBits + 1) + target * 2 + 1;
               } else if (to.op === "done") {
-                packedAction = 0xfffe;
+                packedAction = ACTION_DONE;
               }
               return {
                 index: stateIndex * tableStride + lookaheadIndex,
@@ -1693,18 +1774,11 @@ export class JavaScriptBaseCodegen {
           : ""
       }
 
-      const gotoTable = new ${
-        gotoTableSize > 4096 && (states.length - 1) * stateMultiplier <= 0xffff
-          ? "Uint16Array"
-          : "Uint32Array"
-      }(${gotoTableSize});
+      const gotoTable = new ${gotoArrayType}(${gotoTableSize});
       ${this._formatTableRuns(
         "gotoTable",
         Array.from(goto.entries()).flatMap(([from, target]) => {
           const fromIndex = /** @type {number} */ (stateToIndex.get(from));
-          const compactGoto =
-            gotoTableSize > 4096 &&
-            (states.length - 1) * stateMultiplier <= 0xffff;
           return Array.from(target.entries()).map(([symbol, to]) => {
             const toIndex = /** @type {number} */ (stateToIndex.get(to));
             return {
@@ -1712,7 +1786,7 @@ export class JavaScriptBaseCodegen {
                 fromIndex * tableStride + parserSymbols.indexOf(symbol),
               value: compactGoto
                 ? toIndex * stateMultiplier
-                : toIndex * stateMultiplier * 1048576,
+                : toIndex * stateMultiplier * tpShiftMul,
               comment: `'state ${toIndex}'`,
             };
           });
@@ -1755,14 +1829,19 @@ export class JavaScriptBaseCodegen {
           .join("\n")}
       };
 
-      const lexerStack = new Uint8Array(64);
+      let lexerStack = new Uint8Array(64);
       let lexerSp = 0;
       let lexerMode = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};
 
       const lexer = {
         push(mode) {
           const modeId = typeof mode === "number" ? mode : lexerModeNames[mode];
-          lexerStack[++lexerSp] = modeId;
+          if (++lexerSp >= lexerStack.length) {
+            const next = new Uint8Array(lexerStack.length << 1);
+            next.set(lexerStack);
+            lexerStack = next;
+          }
+          lexerStack[lexerSp] = modeId;
           lexerMode = modeId;
         },
         pop() {
@@ -1787,7 +1866,7 @@ export class JavaScriptBaseCodegen {
        * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or rtop (internal: low 20 bits = prevSibling / subtreeStart - 2)
        */
       const arena = {
-        stack: new Uint32Array(16384),
+        stack: new Uint32Array(${states.length > 64 ? 262144 : 16384}),
         tree: new Uint32Array(${states.length > 64 ? 524288 : 16384}),
       };
 
@@ -1796,7 +1875,7 @@ export class JavaScriptBaseCodegen {
         #tree;
         #rootPointer;
         #pointer;
-        #parentStack = new Uint32Array(64);
+        #parentStack = new Uint32Array(128);
         #siblingStack = new Uint32Array(128);
         #depth = 0;
         #siblingSp = 0;
@@ -1809,48 +1888,82 @@ export class JavaScriptBaseCodegen {
         }
 
         get name() {
-          return parserSymbols[this.#tree[this.#pointer] & 0xff];
+          return parserSymbols[this.#tree[this.#pointer] & ${symMaskHex}];
         }
 
         get symbolId() {
-          return this.#tree[this.#pointer] & 0xff;
+          return this.#tree[this.#pointer] & ${symMaskHex};
         }
 
         get childCount() {
-          return this.#tree[this.#pointer] >>> 8;
+          return this.#tree[this.#pointer] >>> ${symBits};
         }
 
         get isLeaf() {
-          return (this.#tree[this.#pointer] >>> 8) === 0;
+          return (this.#tree[this.#pointer] >>> ${symBits}) === 0;
+        }
+
+        #exactLeafStart(p, end) {
+          const t = this.#tree;
+          let q = p - 2;
+          while (q >= 2 && (t[q] >>> ${symBits}) > 0) {
+            q -= 2;
+          }
+          const prevEnd =
+            q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+          if (prevEnd >= end) {
+            return end;
+          }
+          ${
+            preserveExtras
+              ? "return prevEnd;"
+              : hasSingleLexerMode
+              ? "return nextToken(this.#stream, prevEnd).start;"
+              : `const sym = t[p] & ${symMaskHex};
+          let fallbackStart = prevEnd;
+          ${lexerModes
+            .map(
+              (name) => `{
+            const r = nextToken${this._lexerModePascalCase(
+              name
+            )}(this.#stream, prevEnd);
+            if (r.end === end) {
+              if (r.state === sym) return r.start;
+              fallbackStart = r.start;
+            }
+          }`
+            )
+            .join("\n")}
+          return fallbackStart;`
+          }
         }
 
         get start() {
           const t = this.#tree;
           let p = this.#pointer;
-          if ((t[p] >>> 8) > 0) {
-            p = (t[p + 1] & 0xfffff) + 2;
+          if ((t[p] >>> ${symBits}) > 0) {
+            const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
+            p = (t[p + 1] & mask) + 2;
+          }
+          if (t[0] !== 0) {
+            return this.#exactLeafStart(p, t[p + 1]);
           }
           const span = t[p + 1];
           const end = span & 0x3fffff;
-          ${
-            preserveExtras || hasDfaSkipTokens
-              ? `return end - (span >>> 22);`
-              : `let q = p - 2;
-          while (q >= 2 && (t[q] >>> 8) > 0) {
-            q -= 2;
+          const len = span >>> 22;
+          if (len < 1023) {
+            return end - len;
           }
-          const prevEnd = q >= 2 ? t[q + 1] & 0x3fffff : 0;
-          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);`
-          }
+          return this.#exactLeafStart(p, end);
         }
 
         get end() {
           const t = this.#tree;
           let p = this.#pointer;
-          while ((t[p] >>> 8) > 0) {
+          while ((t[p] >>> ${symBits}) > 0) {
             p -= 2;
           }
-          return t[p + 1] & 0x3fffff;
+          return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
         }
 
         get value() {
@@ -1881,21 +1994,24 @@ export class JavaScriptBaseCodegen {
         gotoFirstChild() {
           const t = this.#tree;
           const p = this.#pointer;
-          const n = t[p] >>> 8;
+          const n = t[p] >>> ${symBits};
           if (n === 0) {
             return false;
           }
           const d = this.#depth + 1;
           let stack = this.#parentStack;
-          if (d >= stack.length) {
+          if ((d << 1) + 1 >= stack.length) {
             const next = new Uint32Array(stack.length << 1);
             next.set(stack);
             stack = this.#parentStack = next;
           }
-          stack[d] = p | ((n - 1) << 20);
+          const idx = d << 1;
+          stack[idx] = p;
+          stack[idx + 1] = n - 1;
           this.#depth = d;
           let c = p - 2;
           if (n > 1) {
+            const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
             let sp = this.#siblingSp;
             let sStack = this.#siblingStack;
             if (sp + n >= sStack.length) {
@@ -1905,7 +2021,7 @@ export class JavaScriptBaseCodegen {
             }
             for (let k = 1; k < n; k++) {
               sStack[++sp] = c;
-              c = (t[c] >>> 8) === 0 ? c - 2 : t[c + 1] & 0xfffff;
+              c = (t[c] >>> ${symBits}) === 0 ? c - 2 : t[c + 1] & mask;
             }
             this.#siblingSp = sp;
           }
@@ -1915,12 +2031,16 @@ export class JavaScriptBaseCodegen {
 
         gotoNextSibling() {
           const d = this.#depth;
-          const stack = this.#parentStack;
-          const entry = stack[d];
-          if (entry < 0x100000) {
+          if (d === 0) {
             return false;
           }
-          stack[d] = entry - 0x100000;
+          const stack = this.#parentStack;
+          const remIdx = (d << 1) + 1;
+          const rem = stack[remIdx];
+          if (rem === 0) {
+            return false;
+          }
+          stack[remIdx] = rem - 1;
           const sp = this.#siblingSp;
           this.#pointer = this.#siblingStack[sp];
           this.#siblingSp = sp - 1;
@@ -1932,10 +2052,11 @@ export class JavaScriptBaseCodegen {
           if (d === 0) {
             return false;
           }
-          const entry = this.#parentStack[d];
-          this.#siblingSp -= entry >>> 20;
+          const stack = this.#parentStack;
+          const idx = d << 1;
+          this.#siblingSp -= stack[idx + 1];
           this.#depth = d - 1;
-          this.#pointer = entry & 0xfffff;
+          this.#pointer = stack[idx];
           return true;
         }
 
@@ -1956,48 +2077,82 @@ export class JavaScriptBaseCodegen {
         }
 
         get name() {
-          return parserSymbols[this.#tree[this.#pointer] & 0xff];
+          return parserSymbols[this.#tree[this.#pointer] & ${symMaskHex}];
         }
 
         get symbolId() {
-          return this.#tree[this.#pointer] & 0xff;
+          return this.#tree[this.#pointer] & ${symMaskHex};
         }
 
         get childCount() {
-          return this.#tree[this.#pointer] >>> 8;
+          return this.#tree[this.#pointer] >>> ${symBits};
         }
 
         get isLeaf() {
-          return (this.#tree[this.#pointer] >>> 8) === 0;
+          return (this.#tree[this.#pointer] >>> ${symBits}) === 0;
+        }
+
+        #exactLeafStart(p, end) {
+          const t = this.#tree;
+          let q = p - 2;
+          while (q >= 2 && (t[q] >>> ${symBits}) > 0) {
+            q -= 2;
+          }
+          const prevEnd =
+            q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+          if (prevEnd >= end) {
+            return end;
+          }
+          ${
+            preserveExtras
+              ? "return prevEnd;"
+              : hasSingleLexerMode
+              ? "return nextToken(this.#stream, prevEnd).start;"
+              : `const sym = t[p] & ${symMaskHex};
+          let fallbackStart = prevEnd;
+          ${lexerModes
+            .map(
+              (name) => `{
+            const r = nextToken${this._lexerModePascalCase(
+              name
+            )}(this.#stream, prevEnd);
+            if (r.end === end) {
+              if (r.state === sym) return r.start;
+              fallbackStart = r.start;
+            }
+          }`
+            )
+            .join("\n")}
+          return fallbackStart;`
+          }
         }
 
         get start() {
           const t = this.#tree;
           let p = this.#pointer;
-          if ((t[p] >>> 8) > 0) {
-            p = (t[p + 1] & 0xfffff) + 2;
+          if ((t[p] >>> ${symBits}) > 0) {
+            const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
+            p = (t[p + 1] & mask) + 2;
+          }
+          if (t[0] !== 0) {
+            return this.#exactLeafStart(p, t[p + 1]);
           }
           const span = t[p + 1];
           const end = span & 0x3fffff;
-          ${
-            preserveExtras || hasDfaSkipTokens
-              ? `return end - (span >>> 22);`
-              : `let q = p - 2;
-          while (q >= 2 && (t[q] >>> 8) > 0) {
-            q -= 2;
+          const len = span >>> 22;
+          if (len < 1023) {
+            return end - len;
           }
-          const prevEnd = q >= 2 ? t[q + 1] & 0x3fffff : 0;
-          return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);`
-          }
+          return this.#exactLeafStart(p, end);
         }
 
         get end() {
           const t = this.#tree;
           let p = this.#pointer;
-          while ((t[p] >>> 8) > 0) {
+          while ((t[p] >>> ${symBits}) > 0) {
             p -= 2;
           }
-          return t[p + 1] & 0x3fffff;
+          return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
         }
 
         get value() {
@@ -2013,13 +2168,14 @@ export class JavaScriptBaseCodegen {
         get firstChild() {
           const t = this.#tree;
           const pointer = this.#pointer;
-          const nChildren = t[pointer] >>> 8;
+          const nChildren = t[pointer] >>> ${symBits};
           if (nChildren === 0) {
             return undefined;
           }
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
           let c = pointer - 2;
           for (let i = 1; i < nChildren; i++) {
-            c = (t[c] >>> 8) === 0 ? c - 2 : t[c + 1] & 0xfffff;
+            c = (t[c] >>> ${symBits}) === 0 ? c - 2 : t[c + 1] & mask;
           }
           return new CstNode(this.#stream, t, c);
         }
@@ -2027,7 +2183,7 @@ export class JavaScriptBaseCodegen {
         get lastChild() {
           const t = this.#tree;
           const pointer = this.#pointer;
-          if ((t[pointer] >>> 8) === 0) {
+          if ((t[pointer] >>> ${symBits}) === 0) {
             return undefined;
           }
           return new CstNode(this.#stream, t, pointer - 2);
@@ -2036,14 +2192,15 @@ export class JavaScriptBaseCodegen {
         child(index) {
           const t = this.#tree;
           const pointer = this.#pointer;
-          const nChildren = t[pointer] >>> 8;
+          const nChildren = t[pointer] >>> ${symBits};
           const idx = index < 0 ? nChildren + index : index;
           if (idx < 0 || idx >= nChildren) {
             return undefined;
           }
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
           let c = pointer - 2;
           for (let i = nChildren - 1; i > idx; i--) {
-            c = (t[c] >>> 8) === 0 ? c - 2 : t[c + 1] & 0xfffff;
+            c = (t[c] >>> ${symBits}) === 0 ? c - 2 : t[c + 1] & mask;
           }
           return new CstNode(this.#stream, t, c);
         }
@@ -2051,18 +2208,19 @@ export class JavaScriptBaseCodegen {
         childByName(name) {
           const t = this.#tree;
           const pointer = this.#pointer;
-          const nChildren = t[pointer] >>> 8;
+          const nChildren = t[pointer] >>> ${symBits};
           if (nChildren === 0) {
             return undefined;
           }
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
           let match = -1;
           let c = pointer - 2;
           for (let i = 0; i < nChildren; i++) {
-            if (parserSymbols[t[c] & 0xff] === name) {
+            if (parserSymbols[t[c] & ${symMaskHex}] === name) {
               match = c;
             }
             if (i + 1 < nChildren) {
-              c = (t[c] >>> 8) === 0 ? c - 2 : t[c + 1] & 0xfffff;
+              c = (t[c] >>> ${symBits}) === 0 ? c - 2 : t[c + 1] & mask;
             }
           }
           return match === -1 ? undefined : new CstNode(this.#stream, t, match);
@@ -2071,19 +2229,20 @@ export class JavaScriptBaseCodegen {
         childrenByName(name) {
           const t = this.#tree;
           const pointer = this.#pointer;
-          const nChildren = t[pointer] >>> 8;
+          const nChildren = t[pointer] >>> ${symBits};
           const result = [];
           if (nChildren === 0) {
             return result;
           }
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
           const stream = this.#stream;
           let c = pointer - 2;
           for (let i = 0; i < nChildren; i++) {
-            if (parserSymbols[t[c] & 0xff] === name) {
+            if (parserSymbols[t[c] & ${symMaskHex}] === name) {
               result.push(new CstNode(stream, t, c));
             }
             if (i + 1 < nChildren) {
-              c = (t[c] >>> 8) === 0 ? c - 2 : t[c + 1] & 0xfffff;
+              c = (t[c] >>> ${symBits}) === 0 ? c - 2 : t[c + 1] & mask;
             }
           }
           result.reverse();
@@ -2093,17 +2252,19 @@ export class JavaScriptBaseCodegen {
         get items() {
           const t = this.#tree;
           const pointer = this.#pointer;
-          const nChildren = t[pointer] >>> 8;
+          const nChildren = t[pointer] >>> ${symBits};
           if (nChildren === 0) {
             return undefined;
           }
 
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
           const stream = this.#stream;
           const children = new Array(nChildren);
           let child = pointer - 2;
           for (let i = nChildren - 1; i > 0; i--) {
             children[i] = new CstNode(stream, t, child);
-            child = (t[child] >>> 8) === 0 ? child - 2 : t[child + 1] & 0xfffff;
+            child =
+              (t[child] >>> ${symBits}) === 0 ? child - 2 : t[child + 1] & mask;
           }
           children[0] = new CstNode(stream, t, child);
 
@@ -2122,13 +2283,51 @@ export class JavaScriptBaseCodegen {
           return new TreeCursor(this.#stream, this.#tree, this.#pointer);
         }
 
+        reemitLossless(input) {
+          const stream =
+            input === undefined
+              ? this.#stream
+              : typeof input === "string"
+              ? Buffer.from(input)
+              : input;
+          const t = this.#tree;
+          const rootPtr = this.#pointer;
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
+          const startPtr =
+            (t[rootPtr] >>> ${symBits}) === 0
+              ? rootPtr
+              : (t[rootPtr + 1] & mask) + 2;
+          const isRoot = startPtr === 2 && (t[1] === 0 || rootPtr === t[1]);
+          const outLen = isRoot ? stream.length : this.end - this.start;
+          const out = Buffer.allocUnsafe(outLen);
+          let offset = 0;
+          let prevEnd = isRoot ? 0 : this.start;
+
+          for (let p = startPtr; p <= rootPtr; p += 2) {
+            if ((t[p] >>> ${symBits}) === 0) {
+              const end = t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+              if (end > prevEnd) {
+                out.set(stream.subarray(prevEnd, end), offset);
+                offset += end - prevEnd;
+                prevEnd = end;
+              }
+            }
+          }
+          if (isRoot && prevEnd < stream.length) {
+            out.set(stream.subarray(prevEnd, stream.length), offset);
+            offset += stream.length - prevEnd;
+          }
+          return out.subarray(0, offset);
+        }
+
         toSExpr(includeText = false) {
           const t = this.#tree;
           const stream = this.#stream;
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
           const formatNode = (p) => {
             const w0 = t[p];
-            const name = parserSymbols[w0 & 0xff];
-            const n = w0 >>> 8;
+            const name = parserSymbols[w0 & ${symMaskHex}];
+            const n = w0 >>> ${symBits};
             if (n === 0) {
               if (!includeText) {
                 return "(" + name + ")";
@@ -2141,7 +2340,7 @@ export class JavaScriptBaseCodegen {
             for (let i = n - 1; i >= 0; i--) {
               childPtrs[i] = c;
               if (i > 0) {
-                c = (t[c] >>> 8) === 0 ? c - 2 : t[c + 1] & 0xfffff;
+                c = (t[c] >>> ${symBits}) === 0 ? c - 2 : t[c + 1] & mask;
               }
             }
             let out = "(" + name;
@@ -2231,11 +2430,12 @@ export class JavaScriptBaseCodegen {
           let q = tp - 2;
           while (
             q >= 2 &&
-            ((tree[q] >>> 8) > 0 || ${isNonTerminalLeafCheck})
+            ((tree[q] >>> ${symBits}) > 0 || ${isNonTerminalLeafCheck})
           ) {
             q -= 2;
           }
-          offset = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
+          offset =
+            q >= 2 ? (tree[0] === 0 ? tree[q + 1] & 0x3fffff : tree[q + 1]) : 0;
           while (
             offset < stream.length &&
             (stream[offset] === 32 ||
@@ -2269,7 +2469,7 @@ export class JavaScriptBaseCodegen {
 
         const expected = [];
         for (let t = 0; t <= ${maxTerminalIndex}; t++) {
-          if (actionsTable[stateOffset + t] !== 0xffff) {
+          if (actionsTable[stateOffset + t] !== ${ACTION_ERROR_HEX}) {
             const name = parserSymbols[t];
             if (name && name !== "@par-gen.ERROR") {
               expected.push(name);
@@ -2330,6 +2530,219 @@ export class JavaScriptBaseCodegen {
         throw err;
       }
 
+      function reemitLossless(cst, input) {
+        return cst.reemitLossless(input);
+      }
+
+      function parseLarge(stream) {
+        ${
+          hasSingleLexerMode
+            ? ""
+            : `lexerSp = 0;
+        lexerStack[0] = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};
+        lexerMode = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};`
+        }
+        const firstRes = ${
+          hasSingleLexerMode
+            ? "nextToken(stream, 0)"
+            : `nextToken${this._lexerModePascalCase(lexerModes[0])}(stream, 0)`
+        };
+        let lookahead = firstRes.state;
+        let lookaheadStart = firstRes.start;
+        let lookaheadEnd = firstRes.end;
+
+        let stackCap = 65536;
+        let stackStates = new Uint32Array(stackCap);
+        let stackTps = new Uint32Array(stackCap);
+        let treeCap = 1048576;
+        while (treeCap <= stream.length) {
+          treeCap <<= 1;
+        }
+        let tree = new Uint32Array(treeCap);
+        tree[0] = 1;
+        const actions = actionsTable;
+        const goto = gotoTable;
+        ${hasShiftSemanticActions ? "const sa = shiftActionsTable;" : ""}
+        ${hasWordFallback ? "const wf = wordFallbackTable;" : ""}
+
+        let topState = ${
+          /** @type {number} */ (stateToIndex.get(start)) * stateMultiplier
+        };
+        stackStates[0] = topState;
+        stackTps[0] = 0;
+        let sp = 0;
+        let tp = 2;
+        ${preserveExtras ? "let prevEnd = 0;" : ""}
+
+        while (true) {
+          const currentState = topState;
+          ${actionLookupCode}
+          if ((actionLookup & 1) === 0) {
+            if (actionLookup === ${ACTION_DONE_HEX}) {
+              ${
+                preserveExtras
+                  ? `if (prevEnd < stream.length) {
+                const rootPtr = tp - 2;
+                if (tp + 4 >= treeCap) {
+                  treeCap <<= 1;
+                  const nextTree = new Uint32Array(treeCap);
+                  nextTree.set(tree);
+                  tree = nextTree;
+                }
+                tree[tp] = ${extraTokenId};
+                tree[tp + 1] = stream.length;
+                tp += 2;
+                tree[tp] = (tree[rootPtr] & ${symMaskHex}) | (2 << ${symBits});
+                tree[tp + 1] = 0;
+                tp += 2;
+              }`
+                  : ""
+              }
+              tree[1] = tp - 2;
+              return new CstNode(stream, tree, tp - 2);
+            }
+            ${shiftActionDispatchCode}
+            if (sp + 2 >= stackCap) {
+              stackCap <<= 1;
+              const nextS = new Uint32Array(stackCap);
+              nextS.set(stackStates);
+              stackStates = nextS;
+              const nextT = new Uint32Array(stackCap);
+              nextT.set(stackTps);
+              stackTps = nextT;
+            }
+            ${
+              preserveExtras
+                ? `if (lookaheadStart === prevEnd) {
+              tree[tp] = lookahead;
+              tree[tp + 1] = lookaheadEnd;
+              sp += 1;
+              topState = actionLookup >>> 1;
+              stackStates[sp] = topState;
+              stackTps[sp] = tp;
+              prevEnd = lookaheadEnd;
+            } else {
+              if (tp + 6 >= treeCap) {
+                treeCap <<= 1;
+                const nextTree = new Uint32Array(treeCap);
+                nextTree.set(tree);
+                tree = nextTree;
+              }
+              const prevTp = stackTps[sp];
+              tree[tp] = ${extraTokenId};
+              tree[tp + 1] = lookaheadStart;
+              tp += 2;
+              tree[tp] = lookahead;
+              tree[tp + 1] = lookaheadEnd;
+              tp += 2;
+              tree[tp] = lookahead | (2 << ${symBits});
+              tree[tp + 1] = prevTp;
+              sp += 1;
+              topState = actionLookup >>> 1;
+              stackStates[sp] = topState;
+              stackTps[sp] = tp;
+              prevEnd = lookaheadEnd;
+            }`
+                : `tree[tp] = lookahead;
+            tree[tp + 1] = lookaheadEnd;
+            sp += 1;
+            topState = actionLookup >>> 1;
+            stackStates[sp] = topState;
+            stackTps[sp] = tp;`
+            }
+            const res = ${nextTokenLargeExpr};
+            lookahead = res.state;
+            lookaheadStart = res.start;
+            lookaheadEnd = res.end;
+          } else {
+            if (actionLookup === ${ACTION_ERROR_HEX}) {
+              ${
+                hasWordFallback
+                  ? `if (
+                wf[lookahead] !== 0 &&
+                actions[${stateOffsetExpr} + ${wordTokenId}] !== ${ACTION_ERROR_HEX}
+              ) {
+                lookahead = ${wordTokenId};
+                continue;
+              }`
+                  : ""
+              }
+              ${
+                newlineTokenId !== undefined
+                  ? `if (lookahead === ${newlineTokenId}) {
+                const res = ${nextTokenLargeExpr};
+                lookahead = res.state;
+                lookaheadStart = res.start;
+                lookaheadEnd = res.end;
+                continue;
+              }`
+                  : ""
+              }
+              const errLen = lookaheadEnd - lookaheadStart;
+              const errSpan =
+                lookaheadEnd === -1
+                  ? -1
+                  : (lookaheadEnd & 0x3fffff) |
+                    ((errLen < 1023 ? errLen : 1023) << 22);
+              throwSyntaxError(
+                stream,
+                tree,
+                tp,
+                lookahead,
+                errSpan,
+                ${stateOffsetExpr}
+              );
+            }
+            const reduceLen = actionLookup >>> ${symBits + 1};
+            sp -= reduceLen;
+            const rtopState = stackStates[sp];
+            const rtopTp = stackTps[sp];
+            const word0 = actionLookup >>> 1;
+            tree[tp] = word0;
+            ${
+              hasEpsilonRules
+                ? `if (reduceLen === 0) {
+              let q = tp - 2;
+              while (q >= 2 && (tree[q] >>> ${symBits}) > 0) q -= 2;
+              tree[tp + 1] = q >= 2 ? tree[q + 1] : 0;
+            } else {
+              tree[tp + 1] = rtopTp;
+            }`
+                : `tree[tp + 1] = rtopTp;`
+            }
+            const rawNextState = goto[${
+              canPreMultiplyState
+                ? "rtopState"
+                : tableStrideShift > 0
+                ? `(rtopState << ${tableStrideShift})`
+                : `rtopState * ${tableStride}`
+            } + (word0 & ${symMaskHex})];
+            topState = ${
+              compactGoto ? "rawNextState" : `rawNextState >>> ${tpBits}`
+            };
+            sp += 1;
+            if (sp >= stackCap) {
+              stackCap <<= 1;
+              const nextS = new Uint32Array(stackCap);
+              nextS.set(stackStates);
+              stackStates = nextS;
+              const nextT = new Uint32Array(stackCap);
+              nextT.set(stackTps);
+              stackTps = nextT;
+            }
+            stackStates[sp] = topState;
+            stackTps[sp] = tp;
+          }
+          tp += 2;
+          if (tp >= treeCap - 2) {
+            treeCap <<= 1;
+            const nextTree = new Uint32Array(treeCap);
+            nextTree.set(tree);
+            tree = nextTree;
+          }
+        }
+      }
+
       /**
        * @typedef {Object} Node
        * @property {string} name
@@ -2351,6 +2764,8 @@ export class JavaScriptBaseCodegen {
           console.log('---');
           `
         )}
+        const stream = typeof input === "string" ? Buffer.from(input) : input;
+        ${useSplitStack ? "return parseLarge(stream);" : ""}
         ${
           hasSingleLexerMode
             ? ""
@@ -2358,8 +2773,6 @@ export class JavaScriptBaseCodegen {
         lexerStack[0] = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};
         lexerMode = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};`
         }
-
-        const stream = typeof input === "string" ? Buffer.from(input) : input;
 
         ${
           this.options.debug
@@ -2372,7 +2785,9 @@ export class JavaScriptBaseCodegen {
               };
         let lookahead = result.state;
         ${preserveExtras ? "let lookaheadStart = result.start;" : ""}
-        let lookaheadSpan = result.end | ((result.end - result.start) << 22);`
+        const firstLen = result.end - result.start;
+        let lookaheadSpan =
+          result.end | ((firstLen < 1023 ? firstLen : 1023) << 22);`
             : `const firstRes = ${
                 hasSingleLexerMode
                   ? "nextToken(stream, 0)"
@@ -2382,8 +2797,9 @@ export class JavaScriptBaseCodegen {
               };
         let lookahead = firstRes.state;
         ${preserveExtras ? "let lookaheadStart = firstRes.start;" : ""}
+        const firstLen = firstRes.end - firstRes.start;
         let lookaheadSpan =
-          firstRes.end | ((firstRes.end - firstRes.start) << 22);`
+          firstRes.end | ((firstLen < 1023 ? firstLen : 1023) << 22);`
         }
 
         ${debug(
@@ -2400,11 +2816,13 @@ export class JavaScriptBaseCodegen {
         const tree = arena.tree;
         const actions = actionsTable;
         const goto = gotoTable;
+        ${hasShiftSemanticActions ? "const sa = shiftActionsTable;" : ""}
+        ${hasWordFallback ? "const wf = wordFallbackTable;" : ""}
         if (stream.length >>> 1 <= tree.length) {
           let top = ${
             /** @type {number} */ (stateToIndex.get(start)) *
             stateMultiplier *
-            1048576
+            tpShiftMul
           }; // starting state
           stack[0] = top;
           let sp = 0;
@@ -2416,12 +2834,12 @@ export class JavaScriptBaseCodegen {
           ${debug(() => `let steps = 0;`)}
           while (true) {
             ${debug(() => `steps++;`)}
-            const currentState = top >>> 20;
+            const currentState = top >>> ${tpBits};
 
             ${actionLookupCode}
             if ((actionLookup & 1) === 0) {
               // shift
-              if (actionLookup === 0xfffe) {
+              if (actionLookup === ${ACTION_DONE_HEX}) {
                 ${
                   preserveExtras
                     ? `if (prevEnd < stream.length) {
@@ -2443,13 +2861,14 @@ export class JavaScriptBaseCodegen {
                     remStart = chunkEnd;
                     chunks++;
                   }
-                  tree[tp] = (tree[rootPtr] & 0xff) | ((1 + chunks) << 8);
+                  tree[tp] = (tree[rootPtr] & ${symMaskHex}) | ((1 + chunks) << ${symBits});
                   tree[tp + 1] = 0;
                   tp += 2;
                 }`
                     : ""
                 }
                 ${debug(() => `console.log('steps', steps);`)}
+                tree[1] = tp - 2;
                 return new CstNode(stream, tree, tp - 2);
               }
               ${debug(
@@ -2466,7 +2885,7 @@ export class JavaScriptBaseCodegen {
                 tree[tp] = lookahead;
                 tree[tp + 1] = lookaheadSpan;
                 sp += 1;
-                top = tp | (actionLookup << 19);
+                top = tp | (actionLookup << ${tpBits - 1});
                 stack[sp] = top;
                 prevEnd = tokEnd;
               } else {
@@ -2499,10 +2918,10 @@ export class JavaScriptBaseCodegen {
                   cur = cEnd;
                   nLeaves++;
                 } while (cur < tokEnd);
-                tree[tp] = lookahead | (nLeaves << 8);
+                tree[tp] = lookahead | (nLeaves << ${symBits});
                 tree[tp + 1] = top;
                 sp += 1;
-                top = tp | (actionLookup << 19);
+                top = tp | (actionLookup << ${tpBits - 1});
                 stack[sp] = top;
                 prevEnd = tokEnd;
               }`
@@ -2510,7 +2929,7 @@ export class JavaScriptBaseCodegen {
               tree[tp + 1] = lookaheadSpan;
 
               sp += 1;
-              top = tp | (actionLookup << 19);
+              top = tp | (actionLookup << ${tpBits - 1});
               stack[sp] = top;`
               }
 
@@ -2519,7 +2938,9 @@ export class JavaScriptBaseCodegen {
                   ? `result = ${nextTokenExpr};
               lookahead = result.state;
               ${preserveExtras ? "lookaheadStart = result.start;" : ""}
-              lookaheadSpan = result.end | ((result.end - result.start) << 22);`
+              const tokLen = result.end - result.start;
+              lookaheadSpan =
+                result.end | ((tokLen < 1023 ? tokLen : 1023) << 22);`
                   : nextTokenUpdateCode
               }
               ${debug(
@@ -2534,18 +2955,18 @@ export class JavaScriptBaseCodegen {
 
               ${debug(
                 () => `
-                console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
+                console.log('  next state', (stack[sp] >>> ${tpBits}) / ${stateMultiplier});
                 console.log('');
                 `
               )}
             } else {
               // reduce
-              if (actionLookup === 0xffff) {
+              if (actionLookup === ${ACTION_ERROR_HEX}) {
                 ${
                   hasWordFallback
                     ? `if (
-                  wordFallbackTable[lookahead] !== 0 &&
-                  actions[${stateOffsetExpr} + ${wordTokenId}] !== 0xffff
+                  wf[lookahead] !== 0 &&
+                  actions[${stateOffsetExpr} + ${wordTokenId}] !== ${ACTION_ERROR_HEX}
                 ) {
                   lookahead = ${wordTokenId};
                   continue;
@@ -2560,7 +2981,9 @@ export class JavaScriptBaseCodegen {
                       ? `result = ${nextTokenExpr};
                   lookahead = result.state;
                   ${preserveExtras ? "lookaheadStart = result.start;" : ""}
-                  lookaheadSpan = result.end | ((result.end - result.start) << 22);`
+                  const tokLen = result.end - result.start;
+                  lookaheadSpan =
+                    result.end | ((tokLen < 1023 ? tokLen : 1023) << 22);`
                       : nextTokenUpdateCode
                   }
                   continue;
@@ -2579,13 +3002,13 @@ export class JavaScriptBaseCodegen {
               ${
                 this.options.debug
                   ? `const word0 = actionLookup >>> 1;
-              const actionSymbol = word0 & 0xff;
-              const stackItemsToReduce = word0 >>> 8;
+              const actionSymbol = word0 & ${symMaskHex};
+              const stackItemsToReduce = word0 >>> ${symBits};
 
               console.log('action: reduce', actionSymbol,
                 parserSymbols[actionSymbol],
                 Array.from({ length: stackItemsToReduce })
-                  .map((_, i) => parserSymbols[tree[stack[sp - i] & 0xfffff] & 0xff])
+                  .map((_, i) => parserSymbols[tree[stack[sp - i] & ${tpMaskHex}] & ${symMaskHex}])
                   .reverse()
               );
               console.log('  lookahead', lookahead, parserSymbols[lookahead], '(' + result.start + ',' + result.end + ')');
@@ -2597,28 +3020,43 @@ export class JavaScriptBaseCodegen {
               sp -= stackItemsToReduce;
               const rtop = stack[sp] | 0;
               tree[tp] = word0; // name and number of children
-              tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
+              if (stackItemsToReduce === 0) {
+                let q = tp - 2;
+                while (q >= 2 && (tree[q] >>> ${symBits}) > 0) q -= 2;
+                tree[tp + 1] = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
+              } else {
+                tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
+              }
               const nextState = goto[${gotoStateOffsetExpr} + actionSymbol];`
-                  : `sp -= actionLookup >>> 9;
+                  : hasEpsilonRules
+                  ? `const reduceLen = actionLookup >>> ${symBits + 1};
+              sp -= reduceLen;
               const rtop = stack[sp] | 0;
               const word0 = actionLookup >>> 1;
               tree[tp] = word0; // name and number of children
-              const nextState = goto[${gotoStateOffsetExpr} + (word0 & 0xff)];
+              const nextState = goto[${gotoStateOffsetExpr} + (word0 & ${symMaskHex})];
+              if (reduceLen === 0) {
+                let q = tp - 2;
+                while (q >= 2 && (tree[q] >>> ${symBits}) > 0) q -= 2;
+                tree[tp + 1] = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
+              } else {
+                tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
+              }`
+                  : `sp -= actionLookup >>> ${symBits + 1};
+              const rtop = stack[sp] | 0;
+              const word0 = actionLookup >>> 1;
+              tree[tp] = word0; // name and number of children
+              const nextState = goto[${gotoStateOffsetExpr} + (word0 & ${symMaskHex})];
               tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2`
               }
 
               sp += 1;
-              top = tp | ${
-                gotoTableSize > 4096 &&
-                (states.length - 1) * stateMultiplier <= 0xffff
-                  ? "(nextState << 20)"
-                  : "nextState"
-              };
+              top = tp | ${compactGoto ? `(nextState << ${tpBits})` : "nextState"};
               stack[sp] = top;
 
               ${debug(
                 () => `
-                console.log('  next state', (stack[sp] >>> 20) / ${stateMultiplier});
+                console.log('  next state', (stack[sp] >>> ${tpBits}) / ${stateMultiplier});
                 console.log('');
                 `
               )}
@@ -2631,11 +3069,17 @@ export class JavaScriptBaseCodegen {
           }
         }
 
+        if (stream.length >= 0x3fffff) {
+          return parseLarge(stream);
+        }
         let len = tree.length << 1;
         while (len < stream.length >>> 1) {
           len <<= 1;
         }
-        const nextStack = new Uint32Array(len);
+        if (len > ${tpMask + 1}) {
+          return parseLarge(stream);
+        }
+        const nextStack = new Uint32Array(Math.max(stack.length, len >>> 1));
         const nextTree = new Uint32Array(len);
         delete arena.stack;
         delete arena.tree;

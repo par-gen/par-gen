@@ -86,6 +86,8 @@ table[7293] = 6; // CURLY_CLOSE
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+
   // 28
   let state = 13;
 
@@ -94,7 +96,6 @@ const next = (input, offset) => {
   // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
-  const t = table;
 
   if (i < l && (state = t[input[i++] + 7168]) > 12) {
     if (state === 256) {

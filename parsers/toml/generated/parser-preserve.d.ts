@@ -135,6 +135,7 @@ export interface CstNode<Name extends SymbolName = SymbolName> {
     name: ChildName
   ): CstNode<ChildName>[];
   cursor(): TreeCursor;
+  reemitLossless(input?: Uint8Array | string): Uint8Array;
   toSExpr(includeText?: boolean): string;
   toJSON(): {
     name: Name;
@@ -152,6 +153,13 @@ export declare const CstNode: {
     pointer: number
   ): CstNode<Name>;
 };
+
+export declare const SymbolIds: { readonly [key: string]: number };
+
+export function reemitLossless(
+  cst: CstNode,
+  input?: Uint8Array | string
+): Uint8Array;
 
 export type TokenNode<Name extends TokenName = TokenName> = CstNode<Name> & {
   readonly items: undefined;

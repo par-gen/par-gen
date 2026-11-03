@@ -358,5 +358,52 @@ describe("JavaScript / TypeScript Parser (@par-gen/javascript)", () => {
         expect(preserveStats.nodeCount).toBeGreaterThan(skipStats.nodeCount);
       });
     }
+
+    it("preserves exact .start, .end, .text, SymbolIds, and cst.reemitLossless() on 10KB strings, 2KB comments, and >64 nested template literals", async () => {
+      const { SymbolIds } = await import("./generated/parser.js");
+      expect(Object.isFrozen(SymbolIds)).toBe(true);
+      expect(typeof SymbolIds.program).toBe("number");
+      expect(typeof SymbolIds.string).toBe("number");
+
+      const comment2KB = `/*${"c".repeat(2048)}*/`;
+      const str10KB = `"${"x".repeat(10240)}"`;
+      const src = `   ${comment2KB}   const a =    ${comment2KB}   ${str10KB}  ;  \n`;
+      const buf = Buffer.from(src);
+
+      const cst = parse(buf);
+      expect(cst.symbolId).toBe(SymbolIds.program);
+      expect(Buffer.compare(cst.reemitLossless(), buf)).toBe(0);
+
+      const findStr = (/** @type {*} */ n) => {
+        if (n.name === "string") return n;
+        for (const c of n.items || []) {
+          const f = findStr(c);
+          if (f) return f;
+        }
+        return null;
+      };
+      const strNode = findStr(cst);
+      expect(strNode).toBeTruthy();
+      const expectedStart = src.indexOf(str10KB);
+      expect(strNode.start).toBe(expectedStart);
+      expect(strNode.end).toBe(expectedStart + str10KB.length);
+      expect(strNode.text).toBe(str10KB);
+
+      // Verify TreeCursor on the 10KB string node as well
+      const stats = walkWithCursor(cst, buf);
+      expect(stats.leafCount).toBeGreaterThan(3);
+
+      // Verify >64 nested template literals (growing lexerStack dynamically past 64)
+      let nestedTpl = "1";
+      for (let i = 0; i < 80; i++) {
+        nestedTpl = "`a${" + nestedTpl + "}b`";
+      }
+      const tplSrc = `const t = ${nestedTpl};`;
+      const tplCst = parse(tplSrc);
+      expect(tplCst.name).toBe("program");
+      expect(Buffer.from(tplCst.reemitLossless()).toString("utf-8")).toBe(
+        tplSrc
+      );
+    });
   });
 });

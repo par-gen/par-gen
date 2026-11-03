@@ -201,6 +201,74 @@ const parserSymbols = [
   "_line_ending_or_eof", // 64
 ];
 
+const SymbolIds = Object.freeze({
+  '"""': 0,
+  "'''": 1,
+  "[": 2,
+  "]": 3,
+  "[[": 4,
+  "]]": 5,
+  "=": 6,
+  ".": 7,
+  '"': 8,
+  ",": 9,
+  "{": 10,
+  "}": 11,
+  escape_sequence: 12,
+  _escape_line_ending: 13,
+  _literal_string: 14,
+  boolean: 15,
+  offset_date_time: 16,
+  local_date_time: 17,
+  local_date: 18,
+  local_time: 19,
+  _multiline_basic_string_content: 20,
+  _multiline_literal_string_content: 21,
+  _document_token1: 22,
+  __basic_string_token2: 23,
+  __multiline_basic_string_token3: 24,
+  __multiline_basic_string_token4: 25,
+  __multiline_literal_string_token5: 26,
+  __multiline_literal_string_token6: 27,
+  _integer_token7: 28,
+  _integer_token8: 29,
+  _integer_token9: 30,
+  _integer_token10: 31,
+  _float_token11: 32,
+  _float_token12: 33,
+  bare_key: 34,
+  "@par-gen.EOF": 35,
+  "@par-gen.ERROR": 36,
+  comment: 37,
+  S: 38,
+  document: 39,
+  _document_repeat1: 40,
+  _document_repeat2: 41,
+  table: 42,
+  table_array_element: 43,
+  pair: 44,
+  _inline_pair: 45,
+  _key: 46,
+  dotted_key: 47,
+  quoted_key: 48,
+  _inline_value: 49,
+  string: 50,
+  __basic_string_repeat3: 51,
+  _basic_string: 52,
+  __multiline_basic_string_repeat4: 53,
+  _multiline_basic_string: 54,
+  __multiline_literal_string_repeat5: 55,
+  _multiline_literal_string: 56,
+  integer: 57,
+  float: 58,
+  _array_repeat6: 59,
+  _array_repeat7: 60,
+  array: 61,
+  _inline_table_repeat8: 62,
+  inline_table: 63,
+  _line_ending_or_eof: 64,
+});
+
 const actionsTable = new Uint16Array(6320).fill(0xffff);
 actionsTable[2] = 2; // 'state 0' -> [ -> shift (target=1, len=0)
 actionsTable[4] = 4; // 'state 0' -> [[ -> shift (target=2, len=0)
@@ -798,232 +866,232 @@ shiftActionsTable[4672] = 2; // 'state 73' -> """ -> lexer.pop()
 shiftActionsTable[4865] = 2; // 'state 76' -> ''' -> lexer.pop()
 
 const gotoTable = new Uint32Array(2896);
-gotoTable[39] = 50331648; // 'state 48'
-gotoTable[40] = 4194304; // 'state 4'
-gotoTable[41] = 5242880; // 'state 5'
-gotoTable.fill(51380224, 42, 44); // 'state 49'
-gotoTable[44] = 48234496; // 'state 46'
-gotoTable[45] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 46, 48); // 'state 50'
-gotoTable[48] = 49283072; // 'state 47'
-gotoTable[52] = 47185920; // 'state 45'
-gotoTable.fill(57671680, 110, 112); // 'state 55'
-gotoTable[112] = 49283072; // 'state 47'
-gotoTable[116] = 47185920; // 'state 45'
-gotoTable.fill(58720256, 174, 176); // 'state 56'
-gotoTable[176] = 49283072; // 'state 47'
-gotoTable[180] = 47185920; // 'state 45'
-gotoTable[243] = 61865984; // 'state 59'
-gotoTable[297] = 7340032; // 'state 7'
-gotoTable.fill(51380224, 298, 300); // 'state 49'
-gotoTable[300] = 53477376; // 'state 51'
-gotoTable[301] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 302, 304); // 'state 50'
-gotoTable[304] = 49283072; // 'state 47'
-gotoTable[308] = 47185920; // 'state 45'
-gotoTable.fill(54525952, 362, 364); // 'state 52'
-gotoTable[448] = 56623104; // 'state 54'
-gotoTable.fill(54525952, 490, 492); // 'state 52'
-gotoTable[561] = 67108864; // 'state 64'
-gotoTable[562] = 63963136; // 'state 61'
-gotoTable[564] = 62914560; // 'state 60'
-gotoTable[566] = 62914560; // 'state 60'
-gotoTable[568] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 569, 571); // 'state 61'
-gotoTable[573] = 63963136; // 'state 61'
-gotoTable[575] = 63963136; // 'state 61'
-gotoTable[622] = 68157440; // 'state 65'
-gotoTable[624] = 49283072; // 'state 47'
-gotoTable[628] = 47185920; // 'state 45'
-gotoTable[680] = 16777216; // 'state 16'
-gotoTable[684] = 48234496; // 'state 46'
-gotoTable[685] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 686, 688); // 'state 50'
-gotoTable[688] = 49283072; // 'state 47'
-gotoTable[692] = 47185920; // 'state 45'
-gotoTable[704] = 17825792; // 'state 17'
-gotoTable[744] = 18874368; // 'state 18'
-gotoTable[748] = 48234496; // 'state 46'
-gotoTable[749] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 750, 752); // 'state 50'
-gotoTable[752] = 49283072; // 'state 47'
-gotoTable[756] = 47185920; // 'state 45'
-gotoTable[768] = 19922944; // 'state 19'
-gotoTable[821] = 76546048; // 'state 73'
-gotoTable[887] = 79691776; // 'state 76'
-gotoTable[945] = 20971520; // 'state 20'
-gotoTable[946] = 63963136; // 'state 61'
-gotoTable[948] = 62914560; // 'state 60'
-gotoTable[950] = 62914560; // 'state 60'
-gotoTable[952] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 953, 955); // 'state 61'
-gotoTable[955] = 22020096; // 'state 21'
-gotoTable[957] = 63963136; // 'state 61'
-gotoTable[959] = 63963136; // 'state 61'
-gotoTable[1005] = 23068672; // 'state 22'
-gotoTable.fill(52428800, 1006, 1008); // 'state 50'
-gotoTable[1008] = 49283072; // 'state 47'
-gotoTable[1012] = 47185920; // 'state 45'
-gotoTable[1068] = 53477376; // 'state 51'
-gotoTable[1069] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 1070, 1072); // 'state 50'
-gotoTable[1072] = 49283072; // 'state 47'
-gotoTable[1076] = 47185920; // 'state 45'
-gotoTable[1128] = 24117248; // 'state 23'
-gotoTable[1132] = 48234496; // 'state 46'
-gotoTable[1133] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 1134, 1136); // 'state 50'
-gotoTable[1136] = 49283072; // 'state 47'
-gotoTable[1140] = 47185920; // 'state 45'
-gotoTable[1196] = 53477376; // 'state 51'
-gotoTable[1197] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 1198, 1200); // 'state 50'
-gotoTable[1200] = 49283072; // 'state 47'
-gotoTable[1204] = 47185920; // 'state 45'
-gotoTable[1256] = 25165824; // 'state 24'
-gotoTable[1260] = 48234496; // 'state 46'
-gotoTable[1261] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 1262, 1264); // 'state 50'
-gotoTable[1264] = 49283072; // 'state 47'
-gotoTable[1268] = 47185920; // 'state 45'
-gotoTable[1339] = 28311552; // 'state 27'
-gotoTable[1340] = 82837504; // 'state 79'
-gotoTable[1393] = 26214400; // 'state 25'
-gotoTable[1394] = 63963136; // 'state 61'
-gotoTable[1396] = 62914560; // 'state 60'
-gotoTable[1398] = 62914560; // 'state 60'
-gotoTable[1400] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 1401, 1403); // 'state 61'
-gotoTable[1405] = 63963136; // 'state 61'
-gotoTable[1407] = 63963136; // 'state 61'
-gotoTable[1470] = 84934656; // 'state 81'
-gotoTable[1516] = 53477376; // 'state 51'
-gotoTable[1517] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 1518, 1520); // 'state 50'
-gotoTable[1520] = 49283072; // 'state 47'
-gotoTable[1524] = 47185920; // 'state 45'
-gotoTable[1580] = 53477376; // 'state 51'
-gotoTable[1581] = 6291456; // 'state 6'
-gotoTable.fill(52428800, 1582, 1584); // 'state 50'
-gotoTable[1584] = 49283072; // 'state 47'
-gotoTable[1588] = 47185920; // 'state 45'
-gotoTable[1659] = 31457280; // 'state 30'
-gotoTable[1660] = 91226112; // 'state 87'
-gotoTable[1713] = 33554432; // 'state 32'
-gotoTable[1714] = 63963136; // 'state 61'
-gotoTable[1716] = 62914560; // 'state 60'
-gotoTable[1718] = 62914560; // 'state 60'
-gotoTable[1720] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 1721, 1723); // 'state 61'
-gotoTable[1723] = 34603008; // 'state 33'
-gotoTable[1725] = 63963136; // 'state 61'
-gotoTable[1727] = 63963136; // 'state 61'
-gotoTable[1788] = 91226112; // 'state 87'
-gotoTable[1837] = 93323264; // 'state 89'
-gotoTable.fill(52428800, 1838, 1840); // 'state 50'
-gotoTable[1840] = 49283072; // 'state 47'
-gotoTable[1844] = 47185920; // 'state 45'
-gotoTable[1905] = 33554432; // 'state 32'
-gotoTable[1906] = 63963136; // 'state 61'
-gotoTable[1908] = 62914560; // 'state 60'
-gotoTable[1910] = 62914560; // 'state 60'
-gotoTable[1912] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 1913, 1915); // 'state 61'
-gotoTable[1915] = 38797312; // 'state 37'
-gotoTable[1917] = 63963136; // 'state 61'
-gotoTable[1919] = 63963136; // 'state 61'
-gotoTable[1980] = 95420416; // 'state 91'
-gotoTable[2033] = 39845888; // 'state 38'
-gotoTable[2034] = 63963136; // 'state 61'
-gotoTable[2036] = 62914560; // 'state 60'
-gotoTable[2038] = 62914560; // 'state 60'
-gotoTable[2040] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2041, 2043); // 'state 61'
-gotoTable[2043] = 40894464; // 'state 39'
-gotoTable[2045] = 63963136; // 'state 61'
-gotoTable[2047] = 63963136; // 'state 61'
-gotoTable[2107] = 96468992; // 'state 92'
-gotoTable[2161] = 39845888; // 'state 38'
-gotoTable[2162] = 63963136; // 'state 61'
-gotoTable[2164] = 62914560; // 'state 60'
-gotoTable[2166] = 62914560; // 'state 60'
-gotoTable[2168] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2169, 2171); // 'state 61'
-gotoTable[2173] = 63963136; // 'state 61'
-gotoTable[2175] = 63963136; // 'state 61'
-gotoTable[2221] = 97517568; // 'state 93'
-gotoTable.fill(52428800, 2222, 2224); // 'state 50'
-gotoTable[2224] = 49283072; // 'state 47'
-gotoTable[2228] = 47185920; // 'state 45'
-gotoTable[2289] = 33554432; // 'state 32'
-gotoTable[2290] = 63963136; // 'state 61'
-gotoTable[2292] = 62914560; // 'state 60'
-gotoTable[2294] = 62914560; // 'state 60'
-gotoTable[2296] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2297, 2299); // 'state 61'
-gotoTable[2299] = 42991616; // 'state 41'
-gotoTable[2301] = 63963136; // 'state 61'
-gotoTable[2303] = 63963136; // 'state 61'
-gotoTable[2353] = 39845888; // 'state 38'
-gotoTable[2354] = 63963136; // 'state 61'
-gotoTable[2356] = 62914560; // 'state 60'
-gotoTable[2358] = 62914560; // 'state 60'
-gotoTable[2360] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2361, 2363); // 'state 61'
-gotoTable[2363] = 44040192; // 'state 42'
-gotoTable[2365] = 63963136; // 'state 61'
-gotoTable[2367] = 63963136; // 'state 61'
-gotoTable[2417] = 39845888; // 'state 38'
-gotoTable[2418] = 63963136; // 'state 61'
-gotoTable[2420] = 62914560; // 'state 60'
-gotoTable[2422] = 62914560; // 'state 60'
-gotoTable[2424] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2425, 2427); // 'state 61'
-gotoTable[2429] = 63963136; // 'state 61'
-gotoTable[2431] = 63963136; // 'state 61'
-gotoTable[2491] = 99614720; // 'state 95'
-gotoTable[2545] = 45088768; // 'state 43'
-gotoTable[2546] = 63963136; // 'state 61'
-gotoTable[2548] = 62914560; // 'state 60'
-gotoTable[2550] = 62914560; // 'state 60'
-gotoTable[2552] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2553, 2555); // 'state 61'
-gotoTable[2557] = 63963136; // 'state 61'
-gotoTable[2559] = 63963136; // 'state 61'
-gotoTable[2609] = 39845888; // 'state 38'
-gotoTable[2610] = 63963136; // 'state 61'
-gotoTable[2612] = 62914560; // 'state 60'
-gotoTable[2614] = 62914560; // 'state 60'
-gotoTable[2616] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2617, 2619); // 'state 61'
-gotoTable[2619] = 46137344; // 'state 44'
-gotoTable[2621] = 63963136; // 'state 61'
-gotoTable[2623] = 63963136; // 'state 61'
-gotoTable[2673] = 39845888; // 'state 38'
-gotoTable[2674] = 63963136; // 'state 61'
-gotoTable[2676] = 62914560; // 'state 60'
-gotoTable[2678] = 62914560; // 'state 60'
-gotoTable[2680] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2681, 2683); // 'state 61'
-gotoTable[2685] = 63963136; // 'state 61'
-gotoTable[2687] = 63963136; // 'state 61'
-gotoTable[2737] = 45088768; // 'state 43'
-gotoTable[2738] = 63963136; // 'state 61'
-gotoTable[2740] = 62914560; // 'state 60'
-gotoTable[2742] = 62914560; // 'state 60'
-gotoTable[2744] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2745, 2747); // 'state 61'
-gotoTable[2749] = 63963136; // 'state 61'
-gotoTable[2751] = 63963136; // 'state 61'
-gotoTable[2811] = 101711872; // 'state 97'
-gotoTable[2865] = 45088768; // 'state 43'
-gotoTable[2866] = 63963136; // 'state 61'
-gotoTable[2868] = 62914560; // 'state 60'
-gotoTable[2870] = 62914560; // 'state 60'
-gotoTable[2872] = 62914560; // 'state 60'
-gotoTable.fill(63963136, 2873, 2875); // 'state 61'
-gotoTable[2877] = 63963136; // 'state 61'
-gotoTable[2879] = 63963136; // 'state 61'
+gotoTable[39] = 805306368; // 'state 48'
+gotoTable[40] = 67108864; // 'state 4'
+gotoTable[41] = 83886080; // 'state 5'
+gotoTable.fill(822083584, 42, 44); // 'state 49'
+gotoTable[44] = 771751936; // 'state 46'
+gotoTable[45] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 46, 48); // 'state 50'
+gotoTable[48] = 788529152; // 'state 47'
+gotoTable[52] = 754974720; // 'state 45'
+gotoTable.fill(922746880, 110, 112); // 'state 55'
+gotoTable[112] = 788529152; // 'state 47'
+gotoTable[116] = 754974720; // 'state 45'
+gotoTable.fill(939524096, 174, 176); // 'state 56'
+gotoTable[176] = 788529152; // 'state 47'
+gotoTable[180] = 754974720; // 'state 45'
+gotoTable[243] = 989855744; // 'state 59'
+gotoTable[297] = 117440512; // 'state 7'
+gotoTable.fill(822083584, 298, 300); // 'state 49'
+gotoTable[300] = 855638016; // 'state 51'
+gotoTable[301] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 302, 304); // 'state 50'
+gotoTable[304] = 788529152; // 'state 47'
+gotoTable[308] = 754974720; // 'state 45'
+gotoTable.fill(872415232, 362, 364); // 'state 52'
+gotoTable[448] = 905969664; // 'state 54'
+gotoTable.fill(872415232, 490, 492); // 'state 52'
+gotoTable[561] = 1073741824; // 'state 64'
+gotoTable[562] = 1023410176; // 'state 61'
+gotoTable[564] = 1006632960; // 'state 60'
+gotoTable[566] = 1006632960; // 'state 60'
+gotoTable[568] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 569, 571); // 'state 61'
+gotoTable[573] = 1023410176; // 'state 61'
+gotoTable[575] = 1023410176; // 'state 61'
+gotoTable[622] = 1090519040; // 'state 65'
+gotoTable[624] = 788529152; // 'state 47'
+gotoTable[628] = 754974720; // 'state 45'
+gotoTable[680] = 268435456; // 'state 16'
+gotoTable[684] = 771751936; // 'state 46'
+gotoTable[685] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 686, 688); // 'state 50'
+gotoTable[688] = 788529152; // 'state 47'
+gotoTable[692] = 754974720; // 'state 45'
+gotoTable[704] = 285212672; // 'state 17'
+gotoTable[744] = 301989888; // 'state 18'
+gotoTable[748] = 771751936; // 'state 46'
+gotoTable[749] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 750, 752); // 'state 50'
+gotoTable[752] = 788529152; // 'state 47'
+gotoTable[756] = 754974720; // 'state 45'
+gotoTable[768] = 318767104; // 'state 19'
+gotoTable[821] = 1224736768; // 'state 73'
+gotoTable[887] = 1275068416; // 'state 76'
+gotoTable[945] = 335544320; // 'state 20'
+gotoTable[946] = 1023410176; // 'state 61'
+gotoTable[948] = 1006632960; // 'state 60'
+gotoTable[950] = 1006632960; // 'state 60'
+gotoTable[952] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 953, 955); // 'state 61'
+gotoTable[955] = 352321536; // 'state 21'
+gotoTable[957] = 1023410176; // 'state 61'
+gotoTable[959] = 1023410176; // 'state 61'
+gotoTable[1005] = 369098752; // 'state 22'
+gotoTable.fill(838860800, 1006, 1008); // 'state 50'
+gotoTable[1008] = 788529152; // 'state 47'
+gotoTable[1012] = 754974720; // 'state 45'
+gotoTable[1068] = 855638016; // 'state 51'
+gotoTable[1069] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 1070, 1072); // 'state 50'
+gotoTable[1072] = 788529152; // 'state 47'
+gotoTable[1076] = 754974720; // 'state 45'
+gotoTable[1128] = 385875968; // 'state 23'
+gotoTable[1132] = 771751936; // 'state 46'
+gotoTable[1133] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 1134, 1136); // 'state 50'
+gotoTable[1136] = 788529152; // 'state 47'
+gotoTable[1140] = 754974720; // 'state 45'
+gotoTable[1196] = 855638016; // 'state 51'
+gotoTable[1197] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 1198, 1200); // 'state 50'
+gotoTable[1200] = 788529152; // 'state 47'
+gotoTable[1204] = 754974720; // 'state 45'
+gotoTable[1256] = 402653184; // 'state 24'
+gotoTable[1260] = 771751936; // 'state 46'
+gotoTable[1261] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 1262, 1264); // 'state 50'
+gotoTable[1264] = 788529152; // 'state 47'
+gotoTable[1268] = 754974720; // 'state 45'
+gotoTable[1339] = 452984832; // 'state 27'
+gotoTable[1340] = 1325400064; // 'state 79'
+gotoTable[1393] = 419430400; // 'state 25'
+gotoTable[1394] = 1023410176; // 'state 61'
+gotoTable[1396] = 1006632960; // 'state 60'
+gotoTable[1398] = 1006632960; // 'state 60'
+gotoTable[1400] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 1401, 1403); // 'state 61'
+gotoTable[1405] = 1023410176; // 'state 61'
+gotoTable[1407] = 1023410176; // 'state 61'
+gotoTable[1470] = 1358954496; // 'state 81'
+gotoTable[1516] = 855638016; // 'state 51'
+gotoTable[1517] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 1518, 1520); // 'state 50'
+gotoTable[1520] = 788529152; // 'state 47'
+gotoTable[1524] = 754974720; // 'state 45'
+gotoTable[1580] = 855638016; // 'state 51'
+gotoTable[1581] = 100663296; // 'state 6'
+gotoTable.fill(838860800, 1582, 1584); // 'state 50'
+gotoTable[1584] = 788529152; // 'state 47'
+gotoTable[1588] = 754974720; // 'state 45'
+gotoTable[1659] = 503316480; // 'state 30'
+gotoTable[1660] = 1459617792; // 'state 87'
+gotoTable[1713] = 536870912; // 'state 32'
+gotoTable[1714] = 1023410176; // 'state 61'
+gotoTable[1716] = 1006632960; // 'state 60'
+gotoTable[1718] = 1006632960; // 'state 60'
+gotoTable[1720] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 1721, 1723); // 'state 61'
+gotoTable[1723] = 553648128; // 'state 33'
+gotoTable[1725] = 1023410176; // 'state 61'
+gotoTable[1727] = 1023410176; // 'state 61'
+gotoTable[1788] = 1459617792; // 'state 87'
+gotoTable[1837] = 1493172224; // 'state 89'
+gotoTable.fill(838860800, 1838, 1840); // 'state 50'
+gotoTable[1840] = 788529152; // 'state 47'
+gotoTable[1844] = 754974720; // 'state 45'
+gotoTable[1905] = 536870912; // 'state 32'
+gotoTable[1906] = 1023410176; // 'state 61'
+gotoTable[1908] = 1006632960; // 'state 60'
+gotoTable[1910] = 1006632960; // 'state 60'
+gotoTable[1912] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 1913, 1915); // 'state 61'
+gotoTable[1915] = 620756992; // 'state 37'
+gotoTable[1917] = 1023410176; // 'state 61'
+gotoTable[1919] = 1023410176; // 'state 61'
+gotoTable[1980] = 1526726656; // 'state 91'
+gotoTable[2033] = 637534208; // 'state 38'
+gotoTable[2034] = 1023410176; // 'state 61'
+gotoTable[2036] = 1006632960; // 'state 60'
+gotoTable[2038] = 1006632960; // 'state 60'
+gotoTable[2040] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2041, 2043); // 'state 61'
+gotoTable[2043] = 654311424; // 'state 39'
+gotoTable[2045] = 1023410176; // 'state 61'
+gotoTable[2047] = 1023410176; // 'state 61'
+gotoTable[2107] = 1543503872; // 'state 92'
+gotoTable[2161] = 637534208; // 'state 38'
+gotoTable[2162] = 1023410176; // 'state 61'
+gotoTable[2164] = 1006632960; // 'state 60'
+gotoTable[2166] = 1006632960; // 'state 60'
+gotoTable[2168] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2169, 2171); // 'state 61'
+gotoTable[2173] = 1023410176; // 'state 61'
+gotoTable[2175] = 1023410176; // 'state 61'
+gotoTable[2221] = 1560281088; // 'state 93'
+gotoTable.fill(838860800, 2222, 2224); // 'state 50'
+gotoTable[2224] = 788529152; // 'state 47'
+gotoTable[2228] = 754974720; // 'state 45'
+gotoTable[2289] = 536870912; // 'state 32'
+gotoTable[2290] = 1023410176; // 'state 61'
+gotoTable[2292] = 1006632960; // 'state 60'
+gotoTable[2294] = 1006632960; // 'state 60'
+gotoTable[2296] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2297, 2299); // 'state 61'
+gotoTable[2299] = 687865856; // 'state 41'
+gotoTable[2301] = 1023410176; // 'state 61'
+gotoTable[2303] = 1023410176; // 'state 61'
+gotoTable[2353] = 637534208; // 'state 38'
+gotoTable[2354] = 1023410176; // 'state 61'
+gotoTable[2356] = 1006632960; // 'state 60'
+gotoTable[2358] = 1006632960; // 'state 60'
+gotoTable[2360] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2361, 2363); // 'state 61'
+gotoTable[2363] = 704643072; // 'state 42'
+gotoTable[2365] = 1023410176; // 'state 61'
+gotoTable[2367] = 1023410176; // 'state 61'
+gotoTable[2417] = 637534208; // 'state 38'
+gotoTable[2418] = 1023410176; // 'state 61'
+gotoTable[2420] = 1006632960; // 'state 60'
+gotoTable[2422] = 1006632960; // 'state 60'
+gotoTable[2424] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2425, 2427); // 'state 61'
+gotoTable[2429] = 1023410176; // 'state 61'
+gotoTable[2431] = 1023410176; // 'state 61'
+gotoTable[2491] = 1593835520; // 'state 95'
+gotoTable[2545] = 721420288; // 'state 43'
+gotoTable[2546] = 1023410176; // 'state 61'
+gotoTable[2548] = 1006632960; // 'state 60'
+gotoTable[2550] = 1006632960; // 'state 60'
+gotoTable[2552] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2553, 2555); // 'state 61'
+gotoTable[2557] = 1023410176; // 'state 61'
+gotoTable[2559] = 1023410176; // 'state 61'
+gotoTable[2609] = 637534208; // 'state 38'
+gotoTable[2610] = 1023410176; // 'state 61'
+gotoTable[2612] = 1006632960; // 'state 60'
+gotoTable[2614] = 1006632960; // 'state 60'
+gotoTable[2616] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2617, 2619); // 'state 61'
+gotoTable[2619] = 738197504; // 'state 44'
+gotoTable[2621] = 1023410176; // 'state 61'
+gotoTable[2623] = 1023410176; // 'state 61'
+gotoTable[2673] = 637534208; // 'state 38'
+gotoTable[2674] = 1023410176; // 'state 61'
+gotoTable[2676] = 1006632960; // 'state 60'
+gotoTable[2678] = 1006632960; // 'state 60'
+gotoTable[2680] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2681, 2683); // 'state 61'
+gotoTable[2685] = 1023410176; // 'state 61'
+gotoTable[2687] = 1023410176; // 'state 61'
+gotoTable[2737] = 721420288; // 'state 43'
+gotoTable[2738] = 1023410176; // 'state 61'
+gotoTable[2740] = 1006632960; // 'state 60'
+gotoTable[2742] = 1006632960; // 'state 60'
+gotoTable[2744] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2745, 2747); // 'state 61'
+gotoTable[2749] = 1023410176; // 'state 61'
+gotoTable[2751] = 1023410176; // 'state 61'
+gotoTable[2811] = 1627389952; // 'state 97'
+gotoTable[2865] = 721420288; // 'state 43'
+gotoTable[2866] = 1023410176; // 'state 61'
+gotoTable[2868] = 1006632960; // 'state 60'
+gotoTable[2870] = 1006632960; // 'state 60'
+gotoTable[2872] = 1006632960; // 'state 60'
+gotoTable.fill(1023410176, 2873, 2875); // 'state 61'
+gotoTable[2877] = 1023410176; // 'state 61'
+gotoTable[2879] = 1023410176; // 'state 61'
 
 const wordFallbackTable = new Uint8Array(48);
 wordFallbackTable[15] = 1; // boolean
@@ -1044,14 +1112,19 @@ const lexerModeNames = {
   imm__basic_string: 3,
 };
 
-const lexerStack = new Uint8Array(64);
+let lexerStack = new Uint8Array(64);
 let lexerSp = 0;
 let lexerMode = LexerMode.INITIAL;
 
 const lexer = {
   push(mode) {
     const modeId = typeof mode === "number" ? mode : lexerModeNames[mode];
-    lexerStack[++lexerSp] = modeId;
+    if (++lexerSp >= lexerStack.length) {
+      const next = new Uint8Array(lexerStack.length << 1);
+      next.set(lexerStack);
+      lexerStack = next;
+    }
+    lexerStack[lexerSp] = modeId;
     lexerMode = modeId;
   },
   pop() {
@@ -1075,7 +1148,7 @@ const lexer = {
  * - word 1 (tp + 1): end | ((end - start) << 22) (leaf) or rtop (internal: low 20 bits = prevSibling / subtreeStart - 2)
  */
 const arena = {
-  stack: new Uint32Array(16384),
+  stack: new Uint32Array(262144),
   tree: new Uint32Array(524288),
 };
 
@@ -1084,7 +1157,7 @@ class TreeCursor {
   #tree;
   #rootPointer;
   #pointer;
-  #parentStack = new Uint32Array(64);
+  #parentStack = new Uint32Array(128);
   #siblingStack = new Uint32Array(128);
   #depth = 0;
   #siblingSp = 0;
@@ -1112,15 +1185,36 @@ class TreeCursor {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
+  #exactLeafStart(p, end) {
+    const t = this.#tree;
+    let q = p - 2;
+    while (q >= 2 && t[q] >>> 8 > 0) {
+      q -= 2;
+    }
+    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+    if (prevEnd >= end) {
+      return end;
+    }
+    return prevEnd;
+  }
+
   get start() {
     const t = this.#tree;
     let p = this.#pointer;
     if (t[p] >>> 8 > 0) {
-      p = (t[p + 1] & 0xfffff) + 2;
+      const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
+      p = (t[p + 1] & mask) + 2;
+    }
+    if (t[0] !== 0) {
+      return this.#exactLeafStart(p, t[p + 1]);
     }
     const span = t[p + 1];
     const end = span & 0x3fffff;
-    return end - (span >>> 22);
+    const len = span >>> 22;
+    if (len < 1023) {
+      return end - len;
+    }
+    return this.#exactLeafStart(p, end);
   }
 
   get end() {
@@ -1129,7 +1223,7 @@ class TreeCursor {
     while (t[p] >>> 8 > 0) {
       p -= 2;
     }
-    return t[p + 1] & 0x3fffff;
+    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
   }
 
   get value() {
@@ -1166,15 +1260,18 @@ class TreeCursor {
     }
     const d = this.#depth + 1;
     let stack = this.#parentStack;
-    if (d >= stack.length) {
+    if ((d << 1) + 1 >= stack.length) {
       const next = new Uint32Array(stack.length << 1);
       next.set(stack);
       stack = this.#parentStack = next;
     }
-    stack[d] = p | ((n - 1) << 20);
+    const idx = d << 1;
+    stack[idx] = p;
+    stack[idx + 1] = n - 1;
     this.#depth = d;
     let c = p - 2;
     if (n > 1) {
+      const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
       let sp = this.#siblingSp;
       let sStack = this.#siblingStack;
       if (sp + n >= sStack.length) {
@@ -1184,7 +1281,7 @@ class TreeCursor {
       }
       for (let k = 1; k < n; k++) {
         sStack[++sp] = c;
-        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
       }
       this.#siblingSp = sp;
     }
@@ -1194,12 +1291,16 @@ class TreeCursor {
 
   gotoNextSibling() {
     const d = this.#depth;
-    const stack = this.#parentStack;
-    const entry = stack[d];
-    if (entry < 0x100000) {
+    if (d === 0) {
       return false;
     }
-    stack[d] = entry - 0x100000;
+    const stack = this.#parentStack;
+    const remIdx = (d << 1) + 1;
+    const rem = stack[remIdx];
+    if (rem === 0) {
+      return false;
+    }
+    stack[remIdx] = rem - 1;
     const sp = this.#siblingSp;
     this.#pointer = this.#siblingStack[sp];
     this.#siblingSp = sp - 1;
@@ -1211,10 +1312,11 @@ class TreeCursor {
     if (d === 0) {
       return false;
     }
-    const entry = this.#parentStack[d];
-    this.#siblingSp -= entry >>> 20;
+    const stack = this.#parentStack;
+    const idx = d << 1;
+    this.#siblingSp -= stack[idx + 1];
     this.#depth = d - 1;
-    this.#pointer = entry & 0xfffff;
+    this.#pointer = stack[idx];
     return true;
   }
 
@@ -1250,15 +1352,36 @@ class CstNode {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
+  #exactLeafStart(p, end) {
+    const t = this.#tree;
+    let q = p - 2;
+    while (q >= 2 && t[q] >>> 8 > 0) {
+      q -= 2;
+    }
+    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+    if (prevEnd >= end) {
+      return end;
+    }
+    return prevEnd;
+  }
+
   get start() {
     const t = this.#tree;
     let p = this.#pointer;
     if (t[p] >>> 8 > 0) {
-      p = (t[p + 1] & 0xfffff) + 2;
+      const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
+      p = (t[p + 1] & mask) + 2;
+    }
+    if (t[0] !== 0) {
+      return this.#exactLeafStart(p, t[p + 1]);
     }
     const span = t[p + 1];
     const end = span & 0x3fffff;
-    return end - (span >>> 22);
+    const len = span >>> 22;
+    if (len < 1023) {
+      return end - len;
+    }
+    return this.#exactLeafStart(p, end);
   }
 
   get end() {
@@ -1267,7 +1390,7 @@ class CstNode {
     while (t[p] >>> 8 > 0) {
       p -= 2;
     }
-    return t[p + 1] & 0x3fffff;
+    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
   }
 
   get value() {
@@ -1287,9 +1410,10 @@ class CstNode {
     if (nChildren === 0) {
       return undefined;
     }
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
     let c = pointer - 2;
     for (let i = 1; i < nChildren; i++) {
-      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
     }
     return new CstNode(this.#stream, t, c);
   }
@@ -1311,9 +1435,10 @@ class CstNode {
     if (idx < 0 || idx >= nChildren) {
       return undefined;
     }
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
     let c = pointer - 2;
     for (let i = nChildren - 1; i > idx; i--) {
-      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+      c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
     }
     return new CstNode(this.#stream, t, c);
   }
@@ -1325,6 +1450,7 @@ class CstNode {
     if (nChildren === 0) {
       return undefined;
     }
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
     let match = -1;
     let c = pointer - 2;
     for (let i = 0; i < nChildren; i++) {
@@ -1332,7 +1458,7 @@ class CstNode {
         match = c;
       }
       if (i + 1 < nChildren) {
-        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
       }
     }
     return match === -1 ? undefined : new CstNode(this.#stream, t, match);
@@ -1346,6 +1472,7 @@ class CstNode {
     if (nChildren === 0) {
       return result;
     }
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
     const stream = this.#stream;
     let c = pointer - 2;
     for (let i = 0; i < nChildren; i++) {
@@ -1353,7 +1480,7 @@ class CstNode {
         result.push(new CstNode(stream, t, c));
       }
       if (i + 1 < nChildren) {
-        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+        c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
       }
     }
     result.reverse();
@@ -1368,12 +1495,13 @@ class CstNode {
       return undefined;
     }
 
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
     const stream = this.#stream;
     const children = new Array(nChildren);
     let child = pointer - 2;
     for (let i = nChildren - 1; i > 0; i--) {
       children[i] = new CstNode(stream, t, child);
-      child = t[child] >>> 8 === 0 ? child - 2 : t[child + 1] & 0xfffff;
+      child = t[child] >>> 8 === 0 ? child - 2 : t[child + 1] & mask;
     }
     children[0] = new CstNode(stream, t, child);
 
@@ -1392,9 +1520,45 @@ class CstNode {
     return new TreeCursor(this.#stream, this.#tree, this.#pointer);
   }
 
+  reemitLossless(input) {
+    const stream =
+      input === undefined
+        ? this.#stream
+        : typeof input === "string"
+        ? Buffer.from(input)
+        : input;
+    const t = this.#tree;
+    const rootPtr = this.#pointer;
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
+    const startPtr =
+      t[rootPtr] >>> 8 === 0 ? rootPtr : (t[rootPtr + 1] & mask) + 2;
+    const isRoot = startPtr === 2 && (t[1] === 0 || rootPtr === t[1]);
+    const outLen = isRoot ? stream.length : this.end - this.start;
+    const out = Buffer.allocUnsafe(outLen);
+    let offset = 0;
+    let prevEnd = isRoot ? 0 : this.start;
+
+    for (let p = startPtr; p <= rootPtr; p += 2) {
+      if (t[p] >>> 8 === 0) {
+        const end = t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+        if (end > prevEnd) {
+          out.set(stream.subarray(prevEnd, end), offset);
+          offset += end - prevEnd;
+          prevEnd = end;
+        }
+      }
+    }
+    if (isRoot && prevEnd < stream.length) {
+      out.set(stream.subarray(prevEnd, stream.length), offset);
+      offset += stream.length - prevEnd;
+    }
+    return out.subarray(0, offset);
+  }
+
   toSExpr(includeText = false) {
     const t = this.#tree;
     const stream = this.#stream;
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
     const formatNode = (p) => {
       const w0 = t[p];
       const name = parserSymbols[w0 & 0xff];
@@ -1411,7 +1575,7 @@ class CstNode {
       for (let i = n - 1; i >= 0; i--) {
         childPtrs[i] = c;
         if (i > 0) {
-          c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & 0xfffff;
+          c = t[c] >>> 8 === 0 ? c - 2 : t[c + 1] & mask;
         }
       }
       let out = "(" + name;
@@ -1502,7 +1666,8 @@ function throwSyntaxError(
     while (q >= 2 && (tree[q] >>> 8 > 0 || (tree[q] & 0xff) > 37)) {
       q -= 2;
     }
-    offset = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
+    offset =
+      q >= 2 ? (tree[0] === 0 ? tree[q + 1] & 0x3fffff : tree[q + 1]) : 0;
     while (
       offset < stream.length &&
       (stream[offset] === 32 ||
@@ -1592,6 +1757,201 @@ function throwSyntaxError(
   throw err;
 }
 
+function reemitLossless(cst, input) {
+  return cst.reemitLossless(input);
+}
+
+function parseLarge(stream) {
+  lexerSp = 0;
+  lexerStack[0] = LexerMode.INITIAL;
+  lexerMode = LexerMode.INITIAL;
+  const firstRes = nextTokenInitial(stream, 0);
+  let lookahead = firstRes.state;
+  let lookaheadStart = firstRes.start;
+  let lookaheadEnd = firstRes.end;
+
+  let stackCap = 65536;
+  let stackStates = new Uint32Array(stackCap);
+  let stackTps = new Uint32Array(stackCap);
+  let treeCap = 1048576;
+  while (treeCap <= stream.length) {
+    treeCap <<= 1;
+  }
+  let tree = new Uint32Array(treeCap);
+  tree[0] = 1;
+  const actions = actionsTable;
+  const goto = gotoTable;
+  const sa = shiftActionsTable;
+  const wf = wordFallbackTable;
+
+  let topState = 0;
+  stackStates[0] = topState;
+  stackTps[0] = 0;
+  let sp = 0;
+  let tp = 2;
+  let prevEnd = 0;
+
+  while (true) {
+    const currentState = topState;
+    const actionIndex = (currentState << 6) + lookahead;
+    const actionLookup = actions[actionIndex];
+    if ((actionLookup & 1) === 0) {
+      if (actionLookup === 0xfffe) {
+        if (prevEnd < stream.length) {
+          const rootPtr = tp - 2;
+          if (tp + 4 >= treeCap) {
+            treeCap <<= 1;
+            const nextTree = new Uint32Array(treeCap);
+            nextTree.set(tree);
+            tree = nextTree;
+          }
+          tree[tp] = 37;
+          tree[tp + 1] = stream.length;
+          tp += 2;
+          tree[tp] = (tree[rootPtr] & 0xff) | (2 << 8);
+          tree[tp + 1] = 0;
+          tp += 2;
+        }
+        tree[1] = tp - 2;
+        return new CstNode(stream, tree, tp - 2);
+      }
+      const shiftAction = sa[actionIndex];
+      if (shiftAction !== 0) {
+        switch (shiftAction) {
+          case 1:
+            lexer.push(LexerMode.IMM_BASIC_STRING);
+            break;
+          case 2:
+            lexer.pop();
+            break;
+          case 3:
+            lexer.push(LexerMode.IMM_MULTILINE_BASIC_STRING);
+            break;
+          case 4:
+            lexer.push(LexerMode.IMM_MULTILINE_LITERAL_STRING);
+            break;
+        }
+      }
+      if (sp + 2 >= stackCap) {
+        stackCap <<= 1;
+        const nextS = new Uint32Array(stackCap);
+        nextS.set(stackStates);
+        stackStates = nextS;
+        const nextT = new Uint32Array(stackCap);
+        nextT.set(stackTps);
+        stackTps = nextT;
+      }
+      if (lookaheadStart === prevEnd) {
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        sp += 1;
+        topState = actionLookup >>> 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+        prevEnd = lookaheadEnd;
+      } else {
+        if (tp + 6 >= treeCap) {
+          treeCap <<= 1;
+          const nextTree = new Uint32Array(treeCap);
+          nextTree.set(tree);
+          tree = nextTree;
+        }
+        const prevTp = stackTps[sp];
+        tree[tp] = 37;
+        tree[tp + 1] = lookaheadStart;
+        tp += 2;
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        tp += 2;
+        tree[tp] = lookahead | (2 << 8);
+        tree[tp + 1] = prevTp;
+        sp += 1;
+        topState = actionLookup >>> 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+        prevEnd = lookaheadEnd;
+      }
+      const res =
+        lexerMode === LexerMode.INITIAL
+          ? nextTokenInitial(stream, lookaheadEnd)
+          : lexerMode === LexerMode.IMM_MULTILINE_BASIC_STRING
+          ? nextTokenImmMultilineBasicString(stream, lookaheadEnd)
+          : lexerMode === LexerMode.IMM_MULTILINE_LITERAL_STRING
+          ? nextTokenImmMultilineLiteralString(stream, lookaheadEnd)
+          : nextTokenImmBasicString(stream, lookaheadEnd);
+      lookahead = res.state;
+      lookaheadStart = res.start;
+      lookaheadEnd = res.end;
+    } else {
+      if (actionLookup === 0xffff) {
+        if (
+          wf[lookahead] !== 0 &&
+          actions[(currentState << 6) + 34] !== 0xffff
+        ) {
+          lookahead = 34;
+          continue;
+        }
+        if (lookahead === 22) {
+          const res =
+            lexerMode === LexerMode.INITIAL
+              ? nextTokenInitial(stream, lookaheadEnd)
+              : lexerMode === LexerMode.IMM_MULTILINE_BASIC_STRING
+              ? nextTokenImmMultilineBasicString(stream, lookaheadEnd)
+              : lexerMode === LexerMode.IMM_MULTILINE_LITERAL_STRING
+              ? nextTokenImmMultilineLiteralString(stream, lookaheadEnd)
+              : nextTokenImmBasicString(stream, lookaheadEnd);
+          lookahead = res.state;
+          lookaheadStart = res.start;
+          lookaheadEnd = res.end;
+          continue;
+        }
+        const errLen = lookaheadEnd - lookaheadStart;
+        const errSpan =
+          lookaheadEnd === -1
+            ? -1
+            : (lookaheadEnd & 0x3fffff) |
+              ((errLen < 1023 ? errLen : 1023) << 22);
+        throwSyntaxError(
+          stream,
+          tree,
+          tp,
+          lookahead,
+          errSpan,
+          currentState << 6
+        );
+      }
+      const reduceLen = actionLookup >>> 9;
+      sp -= reduceLen;
+      const rtopState = stackStates[sp];
+      const rtopTp = stackTps[sp];
+      const word0 = actionLookup >>> 1;
+      tree[tp] = word0;
+      tree[tp + 1] = rtopTp;
+      const rawNextState = goto[(rtopState << 6) + (word0 & 0xff)];
+      topState = rawNextState >>> 24;
+      sp += 1;
+      if (sp >= stackCap) {
+        stackCap <<= 1;
+        const nextS = new Uint32Array(stackCap);
+        nextS.set(stackStates);
+        stackStates = nextS;
+        const nextT = new Uint32Array(stackCap);
+        nextT.set(stackTps);
+        stackTps = nextT;
+      }
+      stackStates[sp] = topState;
+      stackTps[sp] = tp;
+    }
+    tp += 2;
+    if (tp >= treeCap - 2) {
+      treeCap <<= 1;
+      const nextTree = new Uint32Array(treeCap);
+      nextTree.set(tree);
+      tree = nextTree;
+    }
+  }
+}
+
 /**
  * @typedef {Object} Node
  * @property {string} name
@@ -1606,21 +1966,25 @@ function throwSyntaxError(
  * @returns {Node}
  */
 function parse(input) {
+  const stream = typeof input === "string" ? Buffer.from(input) : input;
+
   lexerSp = 0;
   lexerStack[0] = LexerMode.INITIAL;
   lexerMode = LexerMode.INITIAL;
 
-  const stream = typeof input === "string" ? Buffer.from(input) : input;
-
   const firstRes = nextTokenInitial(stream, 0);
   let lookahead = firstRes.state;
   let lookaheadStart = firstRes.start;
-  let lookaheadSpan = firstRes.end | ((firstRes.end - firstRes.start) << 22);
+  const firstLen = firstRes.end - firstRes.start;
+  let lookaheadSpan =
+    firstRes.end | ((firstLen < 1023 ? firstLen : 1023) << 22);
 
   const stack = arena.stack;
   const tree = arena.tree;
   const actions = actionsTable;
   const goto = gotoTable;
+  const sa = shiftActionsTable;
+  const wf = wordFallbackTable;
   if (stream.length >>> 1 <= tree.length) {
     let top = 0; // starting state
     stack[0] = top;
@@ -1631,7 +1995,7 @@ function parse(input) {
     let prevEnd = 0;
 
     while (true) {
-      const currentState = top >>> 20;
+      const currentState = top >>> 24;
 
       const actionIndex = (currentState << 6) + lookahead;
       const actionLookup = actions[actionIndex];
@@ -1662,10 +2026,11 @@ function parse(input) {
             tp += 2;
           }
 
+          tree[1] = tp - 2;
           return new CstNode(stream, tree, tp - 2);
         }
 
-        const shiftAction = shiftActionsTable[actionIndex];
+        const shiftAction = sa[actionIndex];
         if (shiftAction !== 0) {
           switch (shiftAction) {
             case 1:
@@ -1689,7 +2054,7 @@ function parse(input) {
           tree[tp] = lookahead;
           tree[tp + 1] = lookaheadSpan;
           sp += 1;
-          top = tp | (actionLookup << 19);
+          top = tp | (actionLookup << 23);
           stack[sp] = top;
           prevEnd = tokEnd;
         } else {
@@ -1723,7 +2088,7 @@ function parse(input) {
           tree[tp] = lookahead | (nLeaves << 8);
           tree[tp + 1] = top;
           sp += 1;
-          top = tp | (actionLookup << 19);
+          top = tp | (actionLookup << 23);
           stack[sp] = top;
           prevEnd = tokEnd;
         }
@@ -1732,7 +2097,8 @@ function parse(input) {
           const res = nextTokenInitial(stream, lookaheadSpan & 0x3fffff);
           lookahead = res.state;
           lookaheadStart = res.start;
-          lookaheadSpan = res.end | ((res.end - res.start) << 22);
+          const tokLen = res.end - res.start;
+          lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
         } else if (lexerMode === LexerMode.IMM_MULTILINE_BASIC_STRING) {
           const res = nextTokenImmMultilineBasicString(
             stream,
@@ -1740,7 +2106,8 @@ function parse(input) {
           );
           lookahead = res.state;
           lookaheadStart = res.start;
-          lookaheadSpan = res.end | ((res.end - res.start) << 22);
+          const tokLen = res.end - res.start;
+          lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
         } else if (lexerMode === LexerMode.IMM_MULTILINE_LITERAL_STRING) {
           const res = nextTokenImmMultilineLiteralString(
             stream,
@@ -1748,18 +2115,20 @@ function parse(input) {
           );
           lookahead = res.state;
           lookaheadStart = res.start;
-          lookaheadSpan = res.end | ((res.end - res.start) << 22);
+          const tokLen = res.end - res.start;
+          lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
         } else {
           const res = nextTokenImmBasicString(stream, lookaheadSpan & 0x3fffff);
           lookahead = res.state;
           lookaheadStart = res.start;
-          lookaheadSpan = res.end | ((res.end - res.start) << 22);
+          const tokLen = res.end - res.start;
+          lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
         }
       } else {
         // reduce
         if (actionLookup === 0xffff) {
           if (
-            wordFallbackTable[lookahead] !== 0 &&
+            wf[lookahead] !== 0 &&
             actions[(currentState << 6) + 34] !== 0xffff
           ) {
             lookahead = 34;
@@ -1770,7 +2139,8 @@ function parse(input) {
               const res = nextTokenInitial(stream, lookaheadSpan & 0x3fffff);
               lookahead = res.state;
               lookaheadStart = res.start;
-              lookaheadSpan = res.end | ((res.end - res.start) << 22);
+              const tokLen = res.end - res.start;
+              lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
             } else if (lexerMode === LexerMode.IMM_MULTILINE_BASIC_STRING) {
               const res = nextTokenImmMultilineBasicString(
                 stream,
@@ -1778,7 +2148,8 @@ function parse(input) {
               );
               lookahead = res.state;
               lookaheadStart = res.start;
-              lookaheadSpan = res.end | ((res.end - res.start) << 22);
+              const tokLen = res.end - res.start;
+              lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
             } else if (lexerMode === LexerMode.IMM_MULTILINE_LITERAL_STRING) {
               const res = nextTokenImmMultilineLiteralString(
                 stream,
@@ -1786,7 +2157,8 @@ function parse(input) {
               );
               lookahead = res.state;
               lookaheadStart = res.start;
-              lookaheadSpan = res.end | ((res.end - res.start) << 22);
+              const tokLen = res.end - res.start;
+              lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
             } else {
               const res = nextTokenImmBasicString(
                 stream,
@@ -1794,7 +2166,8 @@ function parse(input) {
               );
               lookahead = res.state;
               lookaheadStart = res.start;
-              lookaheadSpan = res.end | ((res.end - res.start) << 22);
+              const tokLen = res.end - res.start;
+              lookaheadSpan = res.end | ((tokLen < 1023 ? tokLen : 1023) << 22);
             }
             continue;
           }
@@ -1811,7 +2184,7 @@ function parse(input) {
         const rtop = stack[sp] | 0;
         const word0 = actionLookup >>> 1;
         tree[tp] = word0; // name and number of children
-        const nextState = goto[((rtop >>> 20) << 6) + (word0 & 0xff)];
+        const nextState = goto[((rtop >>> 24) << 6) + (word0 & 0xff)];
         tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
 
         sp += 1;
@@ -1826,11 +2199,17 @@ function parse(input) {
     }
   }
 
+  if (stream.length >= 0x3fffff) {
+    return parseLarge(stream);
+  }
   let len = tree.length << 1;
   while (len < stream.length >>> 1) {
     len <<= 1;
   }
-  const nextStack = new Uint32Array(len);
+  if (len > 16777216) {
+    return parseLarge(stream);
+  }
+  const nextStack = new Uint32Array(Math.max(stack.length, len >>> 1));
   const nextTree = new Uint32Array(len);
   delete arena.stack;
   delete arena.tree;
@@ -1840,4 +2219,4 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor, LineIndex };
+export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };

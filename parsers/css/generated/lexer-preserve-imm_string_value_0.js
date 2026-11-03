@@ -57,6 +57,8 @@ table.fill(1792, 2909, 3072); // _string_value_token2
  * @returns {{ state: number, start: number, end: number }}
  */
 const next = (input, offset) => {
+  const t = table;
+
   // 11
   let state = 65;
 
@@ -65,7 +67,6 @@ const next = (input, offset) => {
   // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
-  const t = table;
 
   if (i < l && (state = t[input[i++] + 2816]) > 64) {
     if (state === 1792) {

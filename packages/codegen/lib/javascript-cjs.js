@@ -57,7 +57,7 @@ export class JavaScriptCommonJsCodegen extends JavaScriptBaseCodegen {
 
   _parserExports() {
     return `
-      module.exports = { parse, CstNode, TreeCursor, LineIndex };
+      module.exports = { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
     `;
   }
 }
