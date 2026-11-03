@@ -75,8 +75,6 @@ const next = (input, offset) => {
   let state = 27;
 
   let successPos = 0;
-
-  // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
 
@@ -114,6 +112,7 @@ const next = (input, offset) => {
       offset = i = -1;
     }
   }
+
   return {
     state,
     start: offset,

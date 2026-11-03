@@ -175,6 +175,47 @@ const arena = {
   tree: new Uint32Array(16384),
 };
 
+function exactLeafStart(stream, t, p, end) {
+  let q = p - 2;
+  while (q >= 2 && t[q] >>> 8 > 0) {
+    q -= 2;
+  }
+  const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+  if (prevEnd >= end) {
+    return end;
+  }
+  return nextToken(stream, prevEnd).start;
+}
+
+function nodeStart(stream, t, p) {
+  if (t[p] >>> 8 > 0) {
+    const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
+    p = (t[p + 1] & mask) + 2;
+  }
+  if (t[0] !== 0) {
+    return exactLeafStart(stream, t, p, t[p + 1]);
+  }
+  const span = t[p + 1];
+  const end = span & 0x3fffff;
+  const len = span >>> 22;
+  return len < 1023 ? end - len : exactLeafStart(stream, t, p, end);
+}
+
+function nodeEnd(t, p) {
+  while (t[p] >>> 8 > 0) {
+    p -= 2;
+  }
+  return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+}
+
+function nodeValue(stream, t, p) {
+  return stream.subarray(nodeStart(stream, t, p), nodeEnd(t, p));
+}
+
+function nodeText(stream, t, p) {
+  return Buffer.from(nodeValue(stream, t, p)).toString("utf-8");
+}
+
 class TreeCursor {
   #stream;
   #tree;
@@ -208,55 +249,20 @@ class TreeCursor {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
-  #exactLeafStart(p, end) {
-    const t = this.#tree;
-    let q = p - 2;
-    while (q >= 2 && t[q] >>> 8 > 0) {
-      q -= 2;
-    }
-    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
-    if (prevEnd >= end) {
-      return end;
-    }
-    return nextToken(this.#stream, prevEnd).start;
-  }
-
   get start() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    if (t[p] >>> 8 > 0) {
-      const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
-      p = (t[p + 1] & mask) + 2;
-    }
-    if (t[0] !== 0) {
-      return this.#exactLeafStart(p, t[p + 1]);
-    }
-    const span = t[p + 1];
-    const end = span & 0x3fffff;
-    const len = span >>> 22;
-    if (len < 1023) {
-      return end - len;
-    }
-    return this.#exactLeafStart(p, end);
+    return nodeStart(this.#stream, this.#tree, this.#pointer);
   }
 
   get end() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    while (t[p] >>> 8 > 0) {
-      p -= 2;
-    }
-    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+    return nodeEnd(this.#tree, this.#pointer);
   }
 
   get value() {
-    return this.#stream.subarray(this.start, this.end);
+    return nodeValue(this.#stream, this.#tree, this.#pointer);
   }
 
   get text() {
-    return Buffer.from(this.#stream.subarray(this.start, this.end)).toString(
-      "utf-8"
-    );
+    return nodeText(this.#stream, this.#tree, this.#pointer);
   }
 
   get pointer() {
@@ -375,55 +381,20 @@ class CstNode {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
-  #exactLeafStart(p, end) {
-    const t = this.#tree;
-    let q = p - 2;
-    while (q >= 2 && t[q] >>> 8 > 0) {
-      q -= 2;
-    }
-    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
-    if (prevEnd >= end) {
-      return end;
-    }
-    return nextToken(this.#stream, prevEnd).start;
-  }
-
   get start() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    if (t[p] >>> 8 > 0) {
-      const mask = t[0] === 0 ? 0x7fffff : 0xffffffff;
-      p = (t[p + 1] & mask) + 2;
-    }
-    if (t[0] !== 0) {
-      return this.#exactLeafStart(p, t[p + 1]);
-    }
-    const span = t[p + 1];
-    const end = span & 0x3fffff;
-    const len = span >>> 22;
-    if (len < 1023) {
-      return end - len;
-    }
-    return this.#exactLeafStart(p, end);
+    return nodeStart(this.#stream, this.#tree, this.#pointer);
   }
 
   get end() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    while (t[p] >>> 8 > 0) {
-      p -= 2;
-    }
-    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+    return nodeEnd(this.#tree, this.#pointer);
   }
 
   get value() {
-    return this.#stream.subarray(this.start, this.end);
+    return nodeValue(this.#stream, this.#tree, this.#pointer);
   }
 
   get text() {
-    return Buffer.from(this.#stream.subarray(this.start, this.end)).toString(
-      "utf-8"
-    );
+    return nodeText(this.#stream, this.#tree, this.#pointer);
   }
 
   get firstChild() {
@@ -926,6 +897,7 @@ function parse(input) {
   const stream = typeof input === "string" ? Buffer.from(input) : input;
 
   const firstRes = nextToken(stream, 0);
+
   let lookahead = firstRes.state;
 
   const firstLen = firstRes.end - firstRes.start;
@@ -1034,13 +1006,8 @@ function parse(input) {
   if (len > 8388608) {
     return parseLarge(stream);
   }
-  const nextStack = new Uint32Array(Math.max(stack.length, len >>> 1));
-  const nextTree = new Uint32Array(len);
-  delete arena.stack;
-  delete arena.tree;
-  arena.stack = nextStack;
-  arena.tree = nextTree;
-  Object.create(arena);
+  arena.stack = new Uint32Array(Math.max(stack.length, len >>> 1));
+  arena.tree = new Uint32Array(len);
   return parse(input);
 }
 

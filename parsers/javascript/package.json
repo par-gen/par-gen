@@ -6,9 +6,6 @@
   "scripts": {
     "start": "node ./build-grammar.mjs"
   },
-  "dependencies": {
-    "@par-gen/cli": "0.1.0"
-  },
   "jest": {
     "displayName": "JavaScript",
     "transform": {},
@@ -19,6 +16,7 @@
   "devDependencies": {
     "@babel/parser": "8.1.0",
     "@jest/globals": "26.6.2",
+    "@par-gen/cli": "0.1.0",
     "@swc/core": "1.16.21",
     "acorn": "8.19.0",
     "esbuild": "0.28.2",

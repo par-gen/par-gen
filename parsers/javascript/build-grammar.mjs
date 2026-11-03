@@ -1244,35 +1244,14 @@ fs.writeFileSync(
   JSON.stringify(grammar, null, 2)
 );
 
-console.time("generateFromTreesitter");
-const data = generateFromTreesitter(grammar);
-console.timeEnd("generateFromTreesitter");
-console.log("States:", data.states.length);
-console.log(
-  "ParserSymbols:",
-  data.parserSymbols.length,
-  "Non-null:",
-  data.parserSymbols.filter(Boolean).length
-);
-console.log("Contextual keywords:", data.contextualKeywordTokenNames);
-console.log("SkipBytes:", data.lexerData.initial.skipBytes);
-console.log("SkipTokenNames:", data.lexerData.initial.skipTokenNames);
+const data = generateFromTreesitter(grammar, { preserveExtras: true });
 
-const codegenSkip = createGenerator("javascript", "esm", {
+await createGenerator("javascript", "esm", {
   lexerFile: path.join(__dirname, "generated/lexer.js"),
   parserFile: path.join(__dirname, "generated/parser.js"),
-});
-await codegenSkip.parser(data);
+}).parser({ ...data, preserveExtras: false });
 
-const preserveData = {
-  ...data,
-  preserveExtras: true,
-  extraTokenId: data.parserSymbols.indexOf("comment"),
-  extraTokenName: "comment",
-};
-const codegenPreserve = createGenerator("javascript", "esm", {
+await createGenerator("javascript", "esm", {
   lexerFile: path.join(__dirname, "generated/lexer-preserve.js"),
   parserFile: path.join(__dirname, "generated/parser-preserve.js"),
-});
-await codegenPreserve.parser(preserveData);
-console.log("Generated both SkipExtras and PreserveExtras ESM parsers!");
+}).parser(data);

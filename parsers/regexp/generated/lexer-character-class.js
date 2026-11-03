@@ -34,11 +34,9 @@ const next = (input, offset) => {
   const t = table;
 
   // 1
-  let state = 256;
-
-  // try to find match
   let i = offset & 0x7fffffff;
   const l = input.length;
+  let state = 256;
 
   while (i < l && (state = t[state + input[i++]]) > 13);
 

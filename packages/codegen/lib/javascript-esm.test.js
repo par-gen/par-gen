@@ -926,4 +926,64 @@ describe("JavaScriptModuleCodegen", () => {
       await fsp.rm(dir2, { recursive: true, force: true });
     }
   });
+
+  it("should attach trailing trivia directly to the root node without wrapping in a duplicate root node when preserveExtras is true", async () => {
+    const SourceTextModule = /** @type {*} */ (vm).SourceTextModule;
+    const grammar = `
+      WS := '[ \\t\\r\\n]+' @ skip;
+      COMMENT := '//[^\\n]*' @ skip;
+      IDENT := '[a-z]+';
+      SEMI := ';';
+      Program := Stmt | Program Stmt;
+      Stmt := IDENT SEMI;
+    `;
+    const pData = genParser(grammar, /** @type {*} */ ({ preserveExtras: true }));
+    const codegen = new JavaScriptModuleCodegen({ lexerFile, parserFile });
+    await codegen.parser(pData);
+
+    /** @type {*} */
+    let modExports;
+    const context = vm.createContext({
+      output: (/** @type {*} */ r) => {
+        modExports = r;
+      },
+      Buffer,
+    });
+    const mod = new SourceTextModule(
+      `
+        import * as m from 'parser-file';
+        output(m);
+      `,
+      { context }
+    );
+    await mod.link(
+      /**
+       * @param {string} specifier
+       * @param {*} referencingModule
+       */
+      async (specifier, referencingModule) => {
+        if (specifier === `./${basename(lexerStateFile)}`) {
+          const code = await fsp.readFile(lexerStateFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        } else if (specifier === "parser-file") {
+          const code = await fsp.readFile(parserFile, "utf-8");
+          return new SourceTextModule(code, {
+            context: referencingModule.context,
+          });
+        }
+        throw new Error(`Unable to resolve: ${specifier}`);
+      }
+    );
+    await mod.evaluate();
+
+    const input = "foo; // trailing comment\n  ";
+    const root = modExports.parse(input);
+    expect(root.name).toBe("Program");
+    expect(root.firstChild.name).not.toBe("Program");
+    expect(root.firstChild.name).toBe("Stmt");
+    expect(root.lastChild.name).toBe("COMMENT");
+    expect(Buffer.from(root.reemitLossless()).toString("utf-8")).toBe(input);
+  });
 });

@@ -50,10 +50,10 @@ export class JavaScriptBaseCodegen {
   /**
    * @public
    * @param {LexerData} data
-   * @param {string} name
-   * @returns {Promise<void>}
+   * @param {string=} name
+   * @returns {Promise<*>}
    */
-  async lexer(data, name) {
+  async lexer(data, name = "initial") {
     const code = this._lexerCode(data);
 
     const lexerFile = this._lexerStateFile(name);
@@ -63,7 +63,7 @@ export class JavaScriptBaseCodegen {
   }
 
   /**
-   * @private
+   * @protected
    * @param {LexerData} data
    * @returns {string}
    */
@@ -720,52 +720,11 @@ export class JavaScriptBaseCodegen {
         ${hasTokenIdsTable ? "const ti = tokenIds;" : ""}
         ${
           directDeadEndTokenIds && continuableFinals.length === 0
-            ? skipTokenIds.length > 0
-              ? `// ${remappedStart / columns}
+            ? `// ${remappedStart / columns}
         let i = offset & 0x7fffffff;
         const l = input.length;
-        let state = 0;
-        while (true) {
-          state = ${remappedStart};
-          ${
-            skipBytes.length > 0
-              ? `while (i < l && s[input[i]] !== 0) {
-            i++;
-          }
-          offset = i;`
-              : ""
-          }
-          while (
-            i < l &&
-            (state = ${stepExpr}) > ${remappedLastFinal}
-          );
-
-          state -= 1;
-          if (state >>> 0 >= ${remappedLastFinal}) {
-            state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                  tokenIds[tokenNames.indexOf(ERROR)]
-                };
-            offset = -1;
-            i = -1;
-          } else if (${skipTokenIds
-            .map((id) => `state === ${id}`)
-            .join(" || ")}) {
-            offset = i;
-            continue;
-          }
-          break;
-        }
-        return {
-          state,
-          start: offset,
-          end: i,
-        };`
-              : `// ${remappedStart / columns}
         let state = ${remappedStart};
-
-        // try to find match
-        let i = offset & 0x7fffffff;
-        const l = input.length;
+        ${skipTokenIds.length > 0 ? `while (true) { state = ${remappedStart};` : ""}
         ${
           skipBytes.length > 0
             ? `while (i < l && s[input[i]] !== 0) {
@@ -782,10 +741,21 @@ export class JavaScriptBaseCodegen {
         state -= 1;
         if (state >>> 0 >= ${remappedLastFinal}) {
           state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                  tokenIds[tokenNames.indexOf(ERROR)]
-                };
+                tokenIds[tokenNames.indexOf(ERROR)]
+              };
           offset = -1;
           i = -1;
+        }${
+          skipTokenIds.length > 0
+            ? ` else if (${skipTokenIds
+                .map((id) => `state === ${id}`)
+                .join(" || ")}) {
+          offset = i;
+          continue;
+        }
+        break;
+        }`
+            : ""
         }
         return {
           state,
@@ -793,173 +763,28 @@ export class JavaScriptBaseCodegen {
           end: i,
         };`
             : directDeadEndTokenIds && !useEquivalenceClasses
-            ? skipTokenIds.length > 0
-              ? `// ${remappedStart / columns}
-        let i = offset & 0x7fffffff;
+            ? `// ${remappedStart / columns}
+        ${
+          skipTokenIds.length > 0
+            ? `let i = offset & 0x7fffffff;
         const l = input.length;
         let state = 0;
         while (true) {
-          state = ${remappedLastDeadEndFinal + 1};
-          ${
-            distinctContinuableTokenIds.length <= 1
-              ? ""
-              : "let successState = 0;"
-          }
-          ${branchingContinuableFinals.length > 0 ? "let successPos = 0;" : ""}
-          ${
-            skipBytes.length > 0
-              ? `while (i < l && s[input[i]]) {
-            i++;
-          }
-          offset = i;`
-              : ""
-          }
-          if (
-            i < l &&
-            (state = t[input[i++] + ${remappedStart}]) > ${remappedLastDeadEndFinal}
-          ) {
-            ${
-              pureSelfLoopFinals.length > 0
-                ? `${pureSelfLoopFinals
-                    .map((origState, idx) => {
-                      const s = remapState(origState);
-                      const id = tokenIds[origState / origColumns] ?? 0;
-                      return `${idx === 0 ? "if" : "else if"} (state === ${s}) {
-              while (i < l && t[input[i] + ${s}]) {
-                i++;
-              }
-              state = ${id + 1};
-            }`;
-                    })
-                    .join("\n")} else `
-                : ""
-            }while (true) {
-              ${selfLoopNonFinals
-                .map((origState) => {
-                  const s = remapState(origState);
-                  return swarSelfLoopInfo.has(origState)
-                    ? `if (state === ${s}) {
-                i = scan_${s}(input, i, l);
-                if (i < l) state = t[input[i++] + ${s}];
-              }`
-                    : `if (state === ${s}) {
-                while (i < l && (state = t[input[i++] + ${s}]) === ${s});
-              }`;
-                })
-                .join("\n")}
-              if (state > ${remappedLastSelfLoop}) {
-                while (
-                  i < l &&
-                  (state = t[state + input[i++]]) > ${remappedLastSelfLoop}
-                );
-              }
-              if (state <= ${remappedLastDeadEndFinal}) {
-                break;
-              }
-              ${
-                branchingContinuableFinals.length > 0
-                  ? `if (state <= ${remappedLastFinal}) {
-                ${
-                  distinctContinuableTokenIds.length <= 1
-                    ? ""
-                    : "successState = state;"
-                }
-                ${
-                  hasBranchingSelfLoops
-                    ? branchingContinuableFinals.length === 1
-                      ? `while (i < l && (state = t[input[i] + ${remapState(
-                          branchingContinuableFinals[0]
-                        )}]) === ${remapState(
-                          branchingContinuableFinals[0]
-                        )}) {
-                  i++;
-                }`
-                      : `while (i < l && state === (state = t[state + input[i]])) {
-                  i++;
-                }`
-                    : `if (i < l) {
-                  state = t[state + input[i]];
-                }`
-                }
-                if (${
-                  allBranchingContinuationsAboveFinal
-                    ? `state <= ${remappedLastFinal}`
-                    : "state === 0 || i >= l"
-                }) {
-                  state = ${
-                    distinctContinuableTokenIds.length === 1
-                      ? `${distinctContinuableTokenIds[0] + 1}`
-                      : `(${continuableTokenIdExpr}) + 1`
-                  };
-                  break;
-                }
-                successPos = i;
-                i++;
-              }`
-                  : ""
-              }
-              if (i >= l) {
-                break;
-              }
-            }
-          }
-
-          if (--state >>> 0 >= ${remappedLastDeadEndFinal}) {
-            ${
-              branchingContinuableFinals.length > 0
-                ? `if (${
-                    distinctContinuableTokenIds.length <= 1
-                      ? "successPos !== 0"
-                      : needsContinuableTokenIdsTable || skipBytes.length > 0
-                      ? "successState"
-                      : "successState !== 0"
-                  }) {
-              i = successPos;
-              state = ${continuableTokenIdExpr};
-            } else {
-              state = ${
-                tokenIds[tokenNames.indexOf(ERROR)] ===
-                (tokenIds[tokenNames.indexOf(EOF)] ?? 0) + 1
-                  ? `((i - l) >>> 31) + ${tokenIds[tokenNames.indexOf(EOF)]}`
-                  : `i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                      tokenIds[tokenNames.indexOf(ERROR)]
-                    }`
-              };
-              offset = i = -1;
-            }`
-                : `state = ${
-                    tokenIds[tokenNames.indexOf(ERROR)] ===
-                    (tokenIds[tokenNames.indexOf(EOF)] ?? 0) + 1
-                      ? `((i - l) >>> 31) + ${tokenIds[tokenNames.indexOf(EOF)]}`
-                      : `i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                          tokenIds[tokenNames.indexOf(ERROR)]
-                        }`
-                  };
-            offset = i = -1;`
-            }
-          }
-          if (${skipTokenIds.map((id) => `state === ${id}`).join(" || ")}) {
-            offset = i;
-            continue;
-          }
-          return {
-            state,
-            start: offset,
-            end: i,
-          };
-        }`
-              : `// ${remappedStart / columns}
-        let state = ${remappedLastDeadEndFinal + 1};
+          state = ${remappedLastDeadEndFinal + 1};`
+            : `let state = ${remappedLastDeadEndFinal + 1};`
+        }
         ${
           distinctContinuableTokenIds.length <= 1
             ? ""
             : "let successState = 0;"
         }
         ${branchingContinuableFinals.length > 0 ? "let successPos = 0;" : ""}
-
-        // try to find match
-        let i = offset & 0x7fffffff;
-        const l = input.length;
+        ${
+          skipTokenIds.length > 0
+            ? ""
+            : `let i = offset & 0x7fffffff;
+        const l = input.length;`
+        }
         ${
           skipBytes.length > 0 && !fuseStartSkipBytes
             ? `while (i < l && s[input[i]]) {
@@ -1100,94 +925,27 @@ export class JavaScriptBaseCodegen {
           offset = i = -1;`
           }
         }
+        ${
+          skipTokenIds.length > 0
+            ? `if (${skipTokenIds.map((id) => `state === ${id}`).join(" || ")}) {
+            offset = i;
+            continue;
+          }`
+            : ""
+        }
         return {
           state,
           start: offset,
           end: i,
-        };`
+        };${skipTokenIds.length > 0 ? "}" : ""}`
             : directDeadEndTokenIds
-            ? skipTokenIds.length > 0
-              ? `// ${remappedStart / columns}
+            ? `// ${remappedStart / columns}
         let i = offset | 0;
         const l = input.length;
-        while (true) {
-          let state = 0;
-          let successState = 0;
-          let successPos = 0;
-          ${
-            skipBytes.length > 0
-              ? `while (i < l && s[input[i]]) {
-            i++;
-          }
-          offset = i;`
-              : ""
-          }
-          if (
-            i < l &&
-            (state = t[${
-              directStartRow
-                ? `input[i++] + ${remappedStart}`
-                : `e[input[i++]] + ${remappedStart}`
-            }]) > ${remappedLastDeadEndFinal}
-          ) {
-            do {
-              if (state <= ${remappedLastFinal}) {
-                if (state > ${remappedLastOpenFinal}) {
-                  do {
-                    successState = state;
-                    successPos = i;
-                  } while (
-                    i < l &&
-                    (state = ${stepExpr}) > ${remappedLastOpenFinal}
-                  );
-                  break;
-                }
-                successState = state;
-                successPos = i;
-                if (i >= l) break;
-              }
-              while (
-                i < l &&
-                (state = ${stepExpr}) > ${remappedLastFinal}
-              );
-            } while (
-              ((state - ${remappedLastDeadEndFinal + 1}) >>> 0) <
-              ${remappedLastFinal - remappedLastDeadEndFinal}
-            );
-          }
-
-          if (--state >>> 0 >= ${remappedLastDeadEndFinal}) {
-            if (successState) {
-              i = successPos;
-              state = ${continuableTokenIdExpr};
-            } else {
-              state = ${
-                tokenIds[tokenNames.indexOf(ERROR)] ===
-                (tokenIds[tokenNames.indexOf(EOF)] ?? 0) + 1
-                  ? `((i - l) >>> 31) + ${tokenIds[tokenNames.indexOf(EOF)]}`
-                  : `i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                      tokenIds[tokenNames.indexOf(ERROR)]
-                    }`
-              };
-              offset = i = -1;
-            }
-          }
-          if (${skipTokenIds.map((id) => `state === ${id}`).join(" || ")}) {
-            offset = i;
-            continue;
-          }
-          return {
-            state,
-            start: offset,
-            end: i,
-          };
-        }`
-              : `// ${remappedStart / columns}
+        ${skipTokenIds.length > 0 ? "while (true) {" : ""}
         let state = 0;
         let successState = 0;
         let successPos = 0;
-        let i = offset | 0;
-        const l = input.length;
         ${
           skipBytes.length > 0
             ? `while (i < l && s[input[i]]) {
@@ -1246,98 +1004,23 @@ export class JavaScriptBaseCodegen {
             offset = i = -1;
           }
         }
+        ${
+          skipTokenIds.length > 0
+            ? `if (${skipTokenIds.map((id) => `state === ${id}`).join(" || ")}) {
+            offset = i;
+            continue;
+          }`
+            : ""
+        }
         return {
           state,
           start: offset,
           end: i,
-        };`
-            : skipMappedStates.length > 0
-            ? `let i = offset & 0x7fffffff;
-        const l = input.length;
-        while (true) {
-          ${
-            skipBytes.length > 0
-              ? `while (i < l && s[input[i]] !== 0) {
-            i++;
-          }
-          offset = i;`
-              : ""
-          }
-          let state = ${remappedStart};
-          let successState = 0;
-          let successPos = 0;
-          ${
-            deadEndFinals.length === finals.length
-              ? `while (
-            i < l &&
-            (state = ${stepExpr}) > ${remappedLastFinal}
-          );
-          if (state <= ${remappedLastFinal} && state !== 0) {
-            successState = state;
-            successPos = i;
-          }`
-              : `while (i < l) {
-            while (
-              i < l &&
-              (state = ${stepExpr}) > ${remappedLastFinal}
-            );
-            ${
-              deadEndFinals.length > 0
-                ? `if (state <= ${remappedLastDeadEndFinal}) {
-              if (state !== 0) {
-                successState = state;
-                successPos = i;
-              }
-              break;
-            }
-            if (state <= ${remappedLastFinal}) {
-              successState = state;
-              successPos = i;
-            }`
-                : `if (state === 0) {
-              break;
-            }
-            if (state <= ${remappedLastFinal}) {
-              successState = state;
-              successPos = i;
-            }`
-            }
-          }`
-          }
-          if (successState !== 0) {
-            if (${skipMappedStates
-              .map((s) => `successState === ${s}`)
-              .join(" || ")}) {
-              offset = successPos;
-              i = successPos;
-              continue;
-            }
-            state = ${
-              compactDeadEndFinals
-                ? "ti[successState]"
-                : `ti[successState >> ${columnShift}]`
-            };
-          } else {
-            state = i === l ? ${tokenIds[tokenNames.indexOf(EOF)]} : ${
-                tokenIds[tokenNames.indexOf(ERROR)]
-              };
-            offset = -1;
-            successPos = -1;
-          }
-          return {
-            state,
-            start: offset,
-            end: successPos,
-          };
-        }`
+        };${skipTokenIds.length > 0 ? "}" : ""}`
             : `// ${remappedStart / columns}
-        let state = ${remappedStart};
-        let successState = 0;
-        let successPos = 0;
-
-        // try to find match
         let i = offset & 0x7fffffff;
         const l = input.length;
+        ${skipMappedStates.length > 0 ? "while (true) {" : ""}
         ${
           skipBytes.length > 0
             ? `while (i < l && s[input[i]] !== 0) {
@@ -1346,6 +1029,9 @@ export class JavaScriptBaseCodegen {
         offset = i;`
             : ""
         }
+        let state = ${remappedStart};
+        let successState = 0;
+        let successPos = 0;
         ${
           deadEndFinals.length === finals.length
             ? `while (
@@ -1384,8 +1070,18 @@ export class JavaScriptBaseCodegen {
           }
         }`
         }
-
         if (successState !== 0) {
+          ${
+            skipMappedStates.length > 0
+              ? `if (${skipMappedStates
+                  .map((s) => `successState === ${s}`)
+                  .join(" || ")}) {
+            offset = successPos;
+            i = successPos;
+            continue;
+          }`
+              : ""
+          }
           state = ${
             compactDeadEndFinals
               ? "ti[successState]"
@@ -1402,7 +1098,7 @@ export class JavaScriptBaseCodegen {
           state,
           start: offset,
           end: successPos,
-        };`
+        };${skipMappedStates.length > 0 ? "}" : ""}`
         }
       };
 
@@ -1439,7 +1135,7 @@ export class JavaScriptBaseCodegen {
   /**
    * @abstract
    * @param {ParserData} data
-   * @returns {Promise<void>}
+   * @returns {Promise<*>}
    */
   async parser(data) {
     for (const [name, lexerData] of Object.entries(data.lexerData)) {
@@ -1453,7 +1149,7 @@ export class JavaScriptBaseCodegen {
   }
 
   /**
-   * @private
+   * @protected
    * @param {ParserData} data
    * @returns {string}
    */
@@ -1695,7 +1391,7 @@ export class JavaScriptBaseCodegen {
       !hasEpsilonRules &&
       symBits <= 14;
 
-    const compactGoto = !canFuseGotoUnitReduce && gotoTableSize > 4096;
+    const compactGoto = !canFuseGotoUnitReduce;
     const gotoArrayType = compactGoto
       ? maxStateVal <= 0xff
         ? "Uint8Array"
@@ -1860,6 +1556,29 @@ export class JavaScriptBaseCodegen {
       }
     }
 
+    /**
+     * @param {*} fromState
+     * @param {*} targetState
+     */
+    const getFusedUnitReduce = (fromState, targetState) => {
+      const unitInfo = pureUnitReduceStateInfo.get(targetState);
+      if (!unitInfo) return undefined;
+      const postGotoState = goto
+        .get(fromState)
+        ?.get(parserSymbols[unitInfo.targetSym]);
+      const postGotoActions = postGotoState
+        ? actions.get(postGotoState)
+        : undefined;
+      if (!postGotoState || !postGotoActions) return undefined;
+      let postTerminalCount = 0;
+      for (const [sym] of postGotoActions.entries()) {
+        if (ruleNamesSet.has(sym)) continue;
+        postTerminalCount++;
+        if (!unitInfo.lookaheads.has(sym)) return undefined;
+      }
+      return postTerminalCount > 0 ? { unitInfo, postGotoState } : undefined;
+    };
+
     const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
 
@@ -1909,37 +1628,15 @@ export class JavaScriptBaseCodegen {
               /** @type {string} */
               let opLabel = to.op;
               if (to.op === "shift" && to.state) {
-                const unitInfo = canFuseShiftUnitReduce
-                  ? pureUnitReduceStateInfo.get(to.state)
+                const fused = canFuseShiftUnitReduce
+                  ? getFusedUnitReduce(from, to.state)
                   : undefined;
-                let fused = false;
-                if (unitInfo !== undefined) {
-                  const reducedSymName = parserSymbols[unitInfo.targetSym];
-                  const postGotoState = goto.get(from)?.get(reducedSymName);
-                  const postGotoActions = postGotoState
-                    ? actions.get(postGotoState)
-                    : undefined;
-                  if (postGotoActions) {
-                    let postTerminalCount = 0;
-                    let allMatch = true;
-                    for (const [sym] of postGotoActions.entries()) {
-                      if (ruleNamesSet.has(sym)) continue;
-                      postTerminalCount++;
-                      if (!unitInfo.lookaheads.has(sym)) {
-                        allMatch = false;
-                        break;
-                      }
-                    }
-                    if (allMatch && postTerminalCount > 0) {
-                      packedAction = 0x8000 | (unitInfo.word0 << 1);
-                      target = unitInfo.targetSym;
-                      reduceLen = 1;
-                      opLabel = "shift+reduce";
-                      fused = true;
-                    }
-                  }
-                }
-                if (!fused) {
+                if (fused) {
+                  packedAction = 0x8000 | (fused.unitInfo.word0 << 1);
+                  target = fused.unitInfo.targetSym;
+                  reduceLen = 1;
+                  opLabel = "shift+reduce";
+                } else {
                   target =
                     /** @type {number} */ (stateToIndex.get(to.state)) *
                     stateMultiplier;
@@ -1998,33 +1695,14 @@ export class JavaScriptBaseCodegen {
           return Array.from(target.entries()).map(([symbol, to]) => {
             let toIndex = /** @type {number} */ (stateToIndex.get(to));
             let fusedWord0 = 0;
-            if (canFuseGotoUnitReduce) {
-              const unitInfo = pureUnitReduceStateInfo.get(to);
-              if (unitInfo !== undefined) {
-                const reducedSymName = parserSymbols[unitInfo.targetSym];
-                const postGotoState = goto.get(from)?.get(reducedSymName);
-                const postGotoActions = postGotoState
-                  ? actions.get(postGotoState)
-                  : undefined;
-                if (postGotoState && postGotoActions) {
-                  let postTerminalCount = 0;
-                  let allMatch = true;
-                  for (const [sym] of postGotoActions.entries()) {
-                    if (ruleNamesSet.has(sym)) continue;
-                    postTerminalCount++;
-                    if (!unitInfo.lookaheads.has(sym)) {
-                      allMatch = false;
-                      break;
-                    }
-                  }
-                  if (allMatch && postTerminalCount > 0) {
-                    toIndex = /** @type {number} */ (
-                      stateToIndex.get(postGotoState)
-                    );
-                    fusedWord0 = unitInfo.word0;
-                  }
-                }
-              }
+            const fused = canFuseGotoUnitReduce
+              ? getFusedUnitReduce(from, to)
+              : undefined;
+            if (fused) {
+              toIndex = /** @type {number} */ (
+                stateToIndex.get(fused.postGotoState)
+              );
+              fusedWord0 = fused.unitInfo.word0;
             }
             return {
               index:
@@ -2120,6 +1798,69 @@ export class JavaScriptBaseCodegen {
         tree: new Uint32Array(${states.length > 64 ? 524288 : 16384}),
       };
 
+      function exactLeafStart(stream, t, p, end) {
+        let q = p - 2;
+        while (q >= 2 && (t[q] >>> ${symBits}) > 0) {
+          q -= 2;
+        }
+        const prevEnd =
+          q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+        if (prevEnd >= end) {
+          return end;
+        }
+        ${
+          preserveExtras
+            ? "return prevEnd;"
+            : hasSingleLexerMode
+            ? "return nextToken(stream, prevEnd).start;"
+            : `const sym = t[p] & ${symMaskHex};
+        let fallbackStart = prevEnd;
+        ${lexerModes
+          .map(
+            (name) => `{
+          const r = nextToken${this._lexerModePascalCase(
+            name
+          )}(stream, prevEnd);
+          if (r.end === end) {
+            if (r.state === sym) return r.start;
+            fallbackStart = r.start;
+          }
+        }`
+          )
+          .join("\n")}
+        return fallbackStart;`
+        }
+      }
+
+      function nodeStart(stream, t, p) {
+        if ((t[p] >>> ${symBits}) > 0) {
+          const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
+          p = (t[p + 1] & mask) + 2;
+        }
+        if (t[0] !== 0) {
+          return exactLeafStart(stream, t, p, t[p + 1]);
+        }
+        const span = t[p + 1];
+        const end = span & 0x3fffff;
+        const len = span >>> 22;
+        return len < 1023 ? end - len : exactLeafStart(stream, t, p, end);
+      }
+
+      function nodeEnd(t, p) {
+        while ((t[p] >>> ${symBits}) > 0) {
+          p -= 2;
+        }
+        return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+      }
+
+      function nodeValue(stream, t, p) {
+        return stream.subarray(nodeStart(stream, t, p), nodeEnd(t, p));
+      }
+
+      function nodeText(stream, t, p) {
+        return Buffer.from(nodeValue(stream, t, p)).toString("utf-8");
+      }
+
       class TreeCursor {
         #stream;
         #tree;
@@ -2153,77 +1894,20 @@ export class JavaScriptBaseCodegen {
           return (this.#tree[this.#pointer] >>> ${symBits}) === 0;
         }
 
-        #exactLeafStart(p, end) {
-          const t = this.#tree;
-          let q = p - 2;
-          while (q >= 2 && (t[q] >>> ${symBits}) > 0) {
-            q -= 2;
-          }
-          const prevEnd =
-            q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
-          if (prevEnd >= end) {
-            return end;
-          }
-          ${
-            preserveExtras
-              ? "return prevEnd;"
-              : hasSingleLexerMode
-              ? "return nextToken(this.#stream, prevEnd).start;"
-              : `const sym = t[p] & ${symMaskHex};
-          let fallbackStart = prevEnd;
-          ${lexerModes
-            .map(
-              (name) => `{
-            const r = nextToken${this._lexerModePascalCase(
-              name
-            )}(this.#stream, prevEnd);
-            if (r.end === end) {
-              if (r.state === sym) return r.start;
-              fallbackStart = r.start;
-            }
-          }`
-            )
-            .join("\n")}
-          return fallbackStart;`
-          }
-        }
-
         get start() {
-          const t = this.#tree;
-          let p = this.#pointer;
-          if ((t[p] >>> ${symBits}) > 0) {
-            const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
-            p = (t[p + 1] & mask) + 2;
-          }
-          if (t[0] !== 0) {
-            return this.#exactLeafStart(p, t[p + 1]);
-          }
-          const span = t[p + 1];
-          const end = span & 0x3fffff;
-          const len = span >>> 22;
-          if (len < 1023) {
-            return end - len;
-          }
-          return this.#exactLeafStart(p, end);
+          return nodeStart(this.#stream, this.#tree, this.#pointer);
         }
 
         get end() {
-          const t = this.#tree;
-          let p = this.#pointer;
-          while ((t[p] >>> ${symBits}) > 0) {
-            p -= 2;
-          }
-          return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+          return nodeEnd(this.#tree, this.#pointer);
         }
 
         get value() {
-          return this.#stream.subarray(this.start, this.end);
+          return nodeValue(this.#stream, this.#tree, this.#pointer);
         }
 
         get text() {
-          return Buffer.from(
-            this.#stream.subarray(this.start, this.end)
-          ).toString("utf-8");
+          return nodeText(this.#stream, this.#tree, this.#pointer);
         }
 
         get pointer() {
@@ -2342,77 +2026,20 @@ export class JavaScriptBaseCodegen {
           return (this.#tree[this.#pointer] >>> ${symBits}) === 0;
         }
 
-        #exactLeafStart(p, end) {
-          const t = this.#tree;
-          let q = p - 2;
-          while (q >= 2 && (t[q] >>> ${symBits}) > 0) {
-            q -= 2;
-          }
-          const prevEnd =
-            q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
-          if (prevEnd >= end) {
-            return end;
-          }
-          ${
-            preserveExtras
-              ? "return prevEnd;"
-              : hasSingleLexerMode
-              ? "return nextToken(this.#stream, prevEnd).start;"
-              : `const sym = t[p] & ${symMaskHex};
-          let fallbackStart = prevEnd;
-          ${lexerModes
-            .map(
-              (name) => `{
-            const r = nextToken${this._lexerModePascalCase(
-              name
-            )}(this.#stream, prevEnd);
-            if (r.end === end) {
-              if (r.state === sym) return r.start;
-              fallbackStart = r.start;
-            }
-          }`
-            )
-            .join("\n")}
-          return fallbackStart;`
-          }
-        }
-
         get start() {
-          const t = this.#tree;
-          let p = this.#pointer;
-          if ((t[p] >>> ${symBits}) > 0) {
-            const mask = t[0] === 0 ? ${tpMaskHex} : 0xffffffff;
-            p = (t[p + 1] & mask) + 2;
-          }
-          if (t[0] !== 0) {
-            return this.#exactLeafStart(p, t[p + 1]);
-          }
-          const span = t[p + 1];
-          const end = span & 0x3fffff;
-          const len = span >>> 22;
-          if (len < 1023) {
-            return end - len;
-          }
-          return this.#exactLeafStart(p, end);
+          return nodeStart(this.#stream, this.#tree, this.#pointer);
         }
 
         get end() {
-          const t = this.#tree;
-          let p = this.#pointer;
-          while ((t[p] >>> ${symBits}) > 0) {
-            p -= 2;
-          }
-          return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+          return nodeEnd(this.#tree, this.#pointer);
         }
 
         get value() {
-          return this.#stream.subarray(this.start, this.end);
+          return nodeValue(this.#stream, this.#tree, this.#pointer);
         }
 
         get text() {
-          return Buffer.from(
-            this.#stream.subarray(this.start, this.end)
-          ).toString("utf-8");
+          return nodeText(this.#stream, this.#tree, this.#pointer);
         }
 
         get firstChild() {
@@ -2833,16 +2460,23 @@ export class JavaScriptBaseCodegen {
                 preserveExtras
                   ? `if (prevEnd < stream.length) {
                 const rootPtr = tp - 2;
+                const rootWord0 = tree[rootPtr];
+                const origChildren = rootWord0 >>> ${symBits};
                 if (tp + 4 >= treeCap) {
                   treeCap <<= 1;
                   const nextTree = new Uint32Array(treeCap);
                   nextTree.set(tree);
                   tree = nextTree;
                 }
+                if (origChildren > 0) {
+                  tp = rootPtr;
+                }
                 tree[tp] = ${extraTokenId};
                 tree[tp + 1] = stream.length;
                 tp += 2;
-                tree[tp] = (tree[rootPtr] & ${symMaskHex}) | (2 << ${symBits});
+                tree[tp] =
+                  (rootWord0 & ${symMaskHex}) |
+                  (((origChildren || 1) + 1) << ${symBits});
                 tree[tp + 1] = 0;
                 tp += 2;
               }`
@@ -2893,39 +2527,6 @@ export class JavaScriptBaseCodegen {
               stackTps[sp] = tp;
               prevEnd = lookaheadEnd;
             }`
-                : canFuseShiftUnitReduce && canFuseGotoUnitReduce
-                ? `if (actionLookup >= 0x8000) {
-              if (tp + 6 >= treeCap) {
-                treeCap <<= 1;
-                const nextTree = new Uint32Array(treeCap);
-                nextTree.set(tree);
-                tree = nextTree;
-              }
-              tree[tp] = lookahead;
-              tree[tp + 1] = lookaheadEnd;
-              const word0 = (actionLookup & 0x7fff) >>> 1;
-              const rtopTp = stackTps[sp];
-              tp += 2;
-              tree[tp] = word0;
-              tree[tp + 1] = rtopTp;
-              const rawNextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
-              if ((rawNextState & 0xffff) !== 0) {
-                tp += 2;
-                tree[tp] = rawNextState & 0xffff;
-                tree[tp + 1] = rtopTp;
-              }
-              topState = rawNextState >>> ${tpBits};
-              sp += 1;
-              stackStates[sp] = topState;
-              stackTps[sp] = tp;
-            } else {
-              tree[tp] = lookahead;
-              tree[tp + 1] = lookaheadEnd;
-              sp += 1;
-              topState = actionLookup >>> 1;
-              stackStates[sp] = topState;
-              stackTps[sp] = tp;
-            }`
                 : canFuseShiftUnitReduce
                 ? `if (actionLookup >= 0x8000) {
               if (tp + 6 >= treeCap) {
@@ -2942,9 +2543,18 @@ export class JavaScriptBaseCodegen {
               tree[tp] = word0;
               tree[tp + 1] = rtopTp;
               const rawNextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
-              topState = ${
-                compactGoto ? "rawNextState" : "rawNextState >>> " + tpBits
-              };
+              ${
+                canFuseGotoUnitReduce
+                  ? `if ((rawNextState & 0xffff) !== 0) {
+                tp += 2;
+                tree[tp] = rawNextState & 0xffff;
+                tree[tp + 1] = rtopTp;
+              }
+              topState = rawNextState >>> ${tpBits};`
+                  : `topState = ${
+                      compactGoto ? "rawNextState" : "rawNextState >>> " + tpBits
+                    };`
+              }
               sp += 1;
               stackStates[sp] = topState;
               stackTps[sp] = tp;
@@ -3096,33 +2706,17 @@ export class JavaScriptBaseCodegen {
         lexerMode = LexerMode.${this._lexerModeEnumKey(lexerModes[0])};`
         }
 
-        ${
-          this.options.debug
-            ? `let result = ${
-                hasSingleLexerMode
-                  ? "nextToken(stream, 0)"
-                  : `nextToken${this._lexerModePascalCase(
-                      lexerModes[0]
-                    )}(stream, 0)`
-              };
-        let lookahead = result.state;
-        ${preserveExtras ? "let lookaheadStart = result.start;" : ""}
-        const firstLen = result.end - result.start;
-        let lookaheadSpan =
-          result.end | ((firstLen < 1023 ? firstLen : 1023) << 22);`
-            : `const firstRes = ${
-                hasSingleLexerMode
-                  ? "nextToken(stream, 0)"
-                  : `nextToken${this._lexerModePascalCase(
-                      lexerModes[0]
-                    )}(stream, 0)`
-              };
+        ${this.options.debug ? "let result =" : "const firstRes ="} ${
+          hasSingleLexerMode
+            ? "nextToken(stream, 0)"
+            : `nextToken${this._lexerModePascalCase(lexerModes[0])}(stream, 0)`
+        };
+        ${this.options.debug ? "const firstRes = result;" : ""}
         let lookahead = firstRes.state;
         ${preserveExtras ? "let lookaheadStart = firstRes.start;" : ""}
         const firstLen = firstRes.end - firstRes.start;
         let lookaheadSpan =
-          firstRes.end | ((firstLen < 1023 ? firstLen : 1023) << 22);`
-        }
+          firstRes.end | ((firstLen < 1023 ? firstLen : 1023) << 22);
 
         ${debug(
           () => `
@@ -3162,7 +2756,7 @@ export class JavaScriptBaseCodegen {
             if ((actionLookup & 1) === 0) {
               // shift
               ${
-                canFuseShiftUnitReduce && canFuseGotoUnitReduce
+                canFuseShiftUnitReduce
                   ? `if (actionLookup >= 0x8000) {
                 if (actionLookup === ${ACTION_DONE_HEX}) {
                   tree[1] = tp - 2;
@@ -3176,39 +2770,20 @@ export class JavaScriptBaseCodegen {
                 tree[tp + 1] = top;
                 const nextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
                 sp += 1;
-                if ((nextState & 0xffff) !== 0) {
+                ${
+                  canFuseGotoUnitReduce
+                    ? `if ((nextState & 0xffff) !== 0) {
                   tp += 2;
                   tree[tp] = nextState & 0xffff;
                   tree[tp + 1] = top;
                   top = tp | (nextState & ${~tpMask});
                 } else {
                   top = tp | nextState;
+                }`
+                    : `top = tp | ${
+                        compactGoto ? `(nextState << ${tpBits})` : "nextState"
+                      };`
                 }
-                stack[sp] = top;
-              } else {
-                tree[tp] = lookahead;
-                tree[tp + 1] = lookaheadSpan;
-                sp += 1;
-                top = tp | (actionLookup << ${tpBits - 1});
-                stack[sp] = top;
-              }`
-                  : canFuseShiftUnitReduce
-                  ? `if (actionLookup >= 0x8000) {
-                if (actionLookup === ${ACTION_DONE_HEX}) {
-                  tree[1] = tp - 2;
-                  return new CstNode(stream, tree, tp - 2);
-                }
-                tree[tp] = lookahead;
-                tree[tp + 1] = lookaheadSpan;
-                const word0 = (actionLookup & 0x7fff) >>> 1;
-                tp += 2;
-                tree[tp] = word0;
-                tree[tp + 1] = top;
-                const nextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
-                sp += 1;
-                top = tp | ${
-                  compactGoto ? "(nextState << " + tpBits + ")" : "nextState"
-                };
                 stack[sp] = top;
               } else {
                 tree[tp] = lookahead;
@@ -3221,11 +2796,16 @@ export class JavaScriptBaseCodegen {
                   ? `if (actionLookup === ${ACTION_DONE_HEX}) {
                 if (prevEnd < stream.length) {
                   const rootPtr = tp - 2;
+                  const rootWord0 = tree[rootPtr];
+                  const origChildren = rootWord0 >>> ${symBits};
                   let remStart = prevEnd;
                   const endPos = stream.length;
                   const needed = (Math.ceil((endPos - remStart) / 1023) + 1) * 2;
                   if (tp + needed >= tree.length - 1) {
                     break;
+                  }
+                  if (origChildren > 0) {
+                    tp = rootPtr;
                   }
                   let chunks = 0;
                   while (remStart < endPos) {
@@ -3238,7 +2818,9 @@ export class JavaScriptBaseCodegen {
                     remStart = chunkEnd;
                     chunks++;
                   }
-                  tree[tp] = (tree[rootPtr] & ${symMaskHex}) | ((1 + chunks) << ${symBits});
+                  tree[tp] =
+                    (rootWord0 & ${symMaskHex}) |
+                    (((origChildren || 1) + chunks) << ${symBits});
                   tree[tp + 1] = 0;
                   tp += 2;
                 }
@@ -3388,14 +2970,14 @@ export class JavaScriptBaseCodegen {
                 );
               }
               ${
-                this.options.debug
-                  ? `const word0 = actionLookup >>> 1;
-              const actionSymbol = word0 & ${symMaskHex};
-              const stackItemsToReduce = word0 >>> ${symBits};
-
+                this.options.debug || hasEpsilonRules
+                  ? `const reduceLen = actionLookup >>> ${symBits + 1};
+              const word0 = actionLookup >>> 1;
+              ${debug(
+                () => `const actionSymbol = word0 & ${symMaskHex};
               console.log('action: reduce', actionSymbol,
                 parserSymbols[actionSymbol],
-                Array.from({ length: stackItemsToReduce })
+                Array.from({ length: reduceLen })
                   .map((_, i) => parserSymbols[tree[stack[sp - i] & ${tpMaskHex}] & ${symMaskHex}])
                   .reverse()
               );
@@ -3403,24 +2985,10 @@ export class JavaScriptBaseCodegen {
               console.log("    '" + input.toString().substring(Math.max(0, result.start - 10), Math.min(result.start + 10, input.length)) + "'");
               if (result.start !== -1) {
                 console.log("     " + Array(result.start - Math.max(0, result.start - 10)).fill(' ').join('') + "^");
-              }
-
-              sp -= stackItemsToReduce;
-              const rtop = stack[sp] | 0;
-              tree[tp] = word0; // name and number of children
-              if (stackItemsToReduce === 0) {
-                let q = tp - 2;
-                while (q >= 2 && (tree[q] >>> ${symBits}) > 0) q -= 2;
-                tree[tp + 1] = q >= 2 ? tree[q + 1] & 0x3fffff : 0;
-              } else {
-                tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
-              }
-              const nextState = goto[${gotoStateOffsetExpr} + actionSymbol];`
-                  : hasEpsilonRules
-                  ? `const reduceLen = actionLookup >>> ${symBits + 1};
+              }`
+              )}
               sp -= reduceLen;
               const rtop = stack[sp] | 0;
-              const word0 = actionLookup >>> 1;
               tree[tp] = word0; // name and number of children
               const nextState = goto[${gotoStateOffsetExpr} + (word0 & ${symMaskHex})];
               if (reduceLen === 0) {
@@ -3480,13 +3048,8 @@ export class JavaScriptBaseCodegen {
         if (len > ${tpMask + 1}) {
           return parseLarge(stream);
         }
-        const nextStack = new Uint32Array(Math.max(stack.length, len >>> 1));
-        const nextTree = new Uint32Array(len);
-        delete arena.stack;
-        delete arena.tree;
-        arena.stack = nextStack;
-        arena.tree = nextTree;
-        Object.create(arena);
+        arena.stack = new Uint32Array(Math.max(stack.length, len >>> 1));
+        arena.tree = new Uint32Array(len);
         return parse(input);
       }
 

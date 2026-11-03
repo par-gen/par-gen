@@ -867,233 +867,233 @@ shiftActionsTable[3784] = 2; // 'state 59' -> " -> lexer.pop()
 shiftActionsTable[4672] = 2; // 'state 73' -> """ -> lexer.pop()
 shiftActionsTable[4865] = 2; // 'state 76' -> ''' -> lexer.pop()
 
-const gotoTable = new Uint32Array(2896);
-gotoTable[39] = 805306368; // 'state 48'
-gotoTable[40] = 67108864; // 'state 4'
-gotoTable[41] = 83886080; // 'state 5'
-gotoTable.fill(822083584, 42, 44); // 'state 49'
-gotoTable[44] = 771751936; // 'state 46'
-gotoTable[45] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 46, 48); // 'state 50'
-gotoTable[48] = 788529152; // 'state 47'
-gotoTable[52] = 754974720; // 'state 45'
-gotoTable.fill(922746880, 110, 112); // 'state 55'
-gotoTable[112] = 788529152; // 'state 47'
-gotoTable[116] = 754974720; // 'state 45'
-gotoTable.fill(939524096, 174, 176); // 'state 56'
-gotoTable[176] = 788529152; // 'state 47'
-gotoTable[180] = 754974720; // 'state 45'
-gotoTable[243] = 989855744; // 'state 59'
-gotoTable[297] = 117440512; // 'state 7'
-gotoTable.fill(822083584, 298, 300); // 'state 49'
-gotoTable[300] = 855638016; // 'state 51'
-gotoTable[301] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 302, 304); // 'state 50'
-gotoTable[304] = 788529152; // 'state 47'
-gotoTable[308] = 754974720; // 'state 45'
-gotoTable.fill(872415232, 362, 364); // 'state 52'
-gotoTable[448] = 905969664; // 'state 54'
-gotoTable.fill(872415232, 490, 492); // 'state 52'
-gotoTable[561] = 1073741824; // 'state 64'
-gotoTable[562] = 1023410176; // 'state 61'
-gotoTable[564] = 1006632960; // 'state 60'
-gotoTable[566] = 1006632960; // 'state 60'
-gotoTable[568] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 569, 571); // 'state 61'
-gotoTable[573] = 1023410176; // 'state 61'
-gotoTable[575] = 1023410176; // 'state 61'
-gotoTable[622] = 1090519040; // 'state 65'
-gotoTable[624] = 788529152; // 'state 47'
-gotoTable[628] = 754974720; // 'state 45'
-gotoTable[680] = 268435456; // 'state 16'
-gotoTable[684] = 771751936; // 'state 46'
-gotoTable[685] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 686, 688); // 'state 50'
-gotoTable[688] = 788529152; // 'state 47'
-gotoTable[692] = 754974720; // 'state 45'
-gotoTable[704] = 285212672; // 'state 17'
-gotoTable[744] = 301989888; // 'state 18'
-gotoTable[748] = 771751936; // 'state 46'
-gotoTable[749] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 750, 752); // 'state 50'
-gotoTable[752] = 788529152; // 'state 47'
-gotoTable[756] = 754974720; // 'state 45'
-gotoTable[768] = 318767104; // 'state 19'
-gotoTable[821] = 1224736768; // 'state 73'
-gotoTable[887] = 1275068416; // 'state 76'
-gotoTable[945] = 335544320; // 'state 20'
-gotoTable[946] = 1023410176; // 'state 61'
-gotoTable[948] = 1006632960; // 'state 60'
-gotoTable[950] = 1006632960; // 'state 60'
-gotoTable[952] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 953, 955); // 'state 61'
-gotoTable[955] = 352321536; // 'state 21'
-gotoTable[957] = 1023410176; // 'state 61'
-gotoTable[959] = 1023410176; // 'state 61'
-gotoTable[1005] = 369098752; // 'state 22'
-gotoTable.fill(838860800, 1006, 1008); // 'state 50'
-gotoTable[1008] = 788529152; // 'state 47'
-gotoTable[1012] = 754974720; // 'state 45'
-gotoTable[1068] = 855638016; // 'state 51'
-gotoTable[1069] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 1070, 1072); // 'state 50'
-gotoTable[1072] = 788529152; // 'state 47'
-gotoTable[1076] = 754974720; // 'state 45'
-gotoTable[1128] = 385875968; // 'state 23'
-gotoTable[1132] = 771751936; // 'state 46'
-gotoTable[1133] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 1134, 1136); // 'state 50'
-gotoTable[1136] = 788529152; // 'state 47'
-gotoTable[1140] = 754974720; // 'state 45'
-gotoTable[1196] = 855638016; // 'state 51'
-gotoTable[1197] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 1198, 1200); // 'state 50'
-gotoTable[1200] = 788529152; // 'state 47'
-gotoTable[1204] = 754974720; // 'state 45'
-gotoTable[1256] = 402653184; // 'state 24'
-gotoTable[1260] = 771751936; // 'state 46'
-gotoTable[1261] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 1262, 1264); // 'state 50'
-gotoTable[1264] = 788529152; // 'state 47'
-gotoTable[1268] = 754974720; // 'state 45'
-gotoTable[1339] = 452984832; // 'state 27'
-gotoTable[1340] = 1325400064; // 'state 79'
-gotoTable[1393] = 419430400; // 'state 25'
-gotoTable[1394] = 1023410176; // 'state 61'
-gotoTable[1396] = 1006632960; // 'state 60'
-gotoTable[1398] = 1006632960; // 'state 60'
-gotoTable[1400] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 1401, 1403); // 'state 61'
-gotoTable[1405] = 1023410176; // 'state 61'
-gotoTable[1407] = 1023410176; // 'state 61'
-gotoTable[1470] = 1358954496; // 'state 81'
-gotoTable[1516] = 855638016; // 'state 51'
-gotoTable[1517] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 1518, 1520); // 'state 50'
-gotoTable[1520] = 788529152; // 'state 47'
-gotoTable[1524] = 754974720; // 'state 45'
-gotoTable[1580] = 855638016; // 'state 51'
-gotoTable[1581] = 100663296; // 'state 6'
-gotoTable.fill(838860800, 1582, 1584); // 'state 50'
-gotoTable[1584] = 788529152; // 'state 47'
-gotoTable[1588] = 754974720; // 'state 45'
-gotoTable[1659] = 503316480; // 'state 30'
-gotoTable[1660] = 1459617792; // 'state 87'
-gotoTable[1713] = 536870912; // 'state 32'
-gotoTable[1714] = 1023410176; // 'state 61'
-gotoTable[1716] = 1006632960; // 'state 60'
-gotoTable[1718] = 1006632960; // 'state 60'
-gotoTable[1720] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 1721, 1723); // 'state 61'
-gotoTable[1723] = 553648128; // 'state 33'
-gotoTable[1725] = 1023410176; // 'state 61'
-gotoTable[1727] = 1023410176; // 'state 61'
-gotoTable[1788] = 1459617792; // 'state 87'
-gotoTable[1837] = 1493172224; // 'state 89'
-gotoTable.fill(838860800, 1838, 1840); // 'state 50'
-gotoTable[1840] = 788529152; // 'state 47'
-gotoTable[1844] = 754974720; // 'state 45'
-gotoTable[1905] = 536870912; // 'state 32'
-gotoTable[1906] = 1023410176; // 'state 61'
-gotoTable[1908] = 1006632960; // 'state 60'
-gotoTable[1910] = 1006632960; // 'state 60'
-gotoTable[1912] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 1913, 1915); // 'state 61'
-gotoTable[1915] = 620756992; // 'state 37'
-gotoTable[1917] = 1023410176; // 'state 61'
-gotoTable[1919] = 1023410176; // 'state 61'
-gotoTable[1980] = 1526726656; // 'state 91'
-gotoTable[2033] = 637534208; // 'state 38'
-gotoTable[2034] = 1023410176; // 'state 61'
-gotoTable[2036] = 1006632960; // 'state 60'
-gotoTable[2038] = 1006632960; // 'state 60'
-gotoTable[2040] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2041, 2043); // 'state 61'
-gotoTable[2043] = 654311424; // 'state 39'
-gotoTable[2045] = 1023410176; // 'state 61'
-gotoTable[2047] = 1023410176; // 'state 61'
-gotoTable[2107] = 1543503872; // 'state 92'
-gotoTable[2161] = 637534208; // 'state 38'
-gotoTable[2162] = 1023410176; // 'state 61'
-gotoTable[2164] = 1006632960; // 'state 60'
-gotoTable[2166] = 1006632960; // 'state 60'
-gotoTable[2168] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2169, 2171); // 'state 61'
-gotoTable[2173] = 1023410176; // 'state 61'
-gotoTable[2175] = 1023410176; // 'state 61'
-gotoTable[2221] = 1560281088; // 'state 93'
-gotoTable.fill(838860800, 2222, 2224); // 'state 50'
-gotoTable[2224] = 788529152; // 'state 47'
-gotoTable[2228] = 754974720; // 'state 45'
-gotoTable[2289] = 536870912; // 'state 32'
-gotoTable[2290] = 1023410176; // 'state 61'
-gotoTable[2292] = 1006632960; // 'state 60'
-gotoTable[2294] = 1006632960; // 'state 60'
-gotoTable[2296] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2297, 2299); // 'state 61'
-gotoTable[2299] = 687865856; // 'state 41'
-gotoTable[2301] = 1023410176; // 'state 61'
-gotoTable[2303] = 1023410176; // 'state 61'
-gotoTable[2353] = 637534208; // 'state 38'
-gotoTable[2354] = 1023410176; // 'state 61'
-gotoTable[2356] = 1006632960; // 'state 60'
-gotoTable[2358] = 1006632960; // 'state 60'
-gotoTable[2360] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2361, 2363); // 'state 61'
-gotoTable[2363] = 704643072; // 'state 42'
-gotoTable[2365] = 1023410176; // 'state 61'
-gotoTable[2367] = 1023410176; // 'state 61'
-gotoTable[2417] = 637534208; // 'state 38'
-gotoTable[2418] = 1023410176; // 'state 61'
-gotoTable[2420] = 1006632960; // 'state 60'
-gotoTable[2422] = 1006632960; // 'state 60'
-gotoTable[2424] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2425, 2427); // 'state 61'
-gotoTable[2429] = 1023410176; // 'state 61'
-gotoTable[2431] = 1023410176; // 'state 61'
-gotoTable[2491] = 1593835520; // 'state 95'
-gotoTable[2545] = 721420288; // 'state 43'
-gotoTable[2546] = 1023410176; // 'state 61'
-gotoTable[2548] = 1006632960; // 'state 60'
-gotoTable[2550] = 1006632960; // 'state 60'
-gotoTable[2552] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2553, 2555); // 'state 61'
-gotoTable[2557] = 1023410176; // 'state 61'
-gotoTable[2559] = 1023410176; // 'state 61'
-gotoTable[2609] = 637534208; // 'state 38'
-gotoTable[2610] = 1023410176; // 'state 61'
-gotoTable[2612] = 1006632960; // 'state 60'
-gotoTable[2614] = 1006632960; // 'state 60'
-gotoTable[2616] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2617, 2619); // 'state 61'
-gotoTable[2619] = 738197504; // 'state 44'
-gotoTable[2621] = 1023410176; // 'state 61'
-gotoTable[2623] = 1023410176; // 'state 61'
-gotoTable[2673] = 637534208; // 'state 38'
-gotoTable[2674] = 1023410176; // 'state 61'
-gotoTable[2676] = 1006632960; // 'state 60'
-gotoTable[2678] = 1006632960; // 'state 60'
-gotoTable[2680] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2681, 2683); // 'state 61'
-gotoTable[2685] = 1023410176; // 'state 61'
-gotoTable[2687] = 1023410176; // 'state 61'
-gotoTable[2737] = 721420288; // 'state 43'
-gotoTable[2738] = 1023410176; // 'state 61'
-gotoTable[2740] = 1006632960; // 'state 60'
-gotoTable[2742] = 1006632960; // 'state 60'
-gotoTable[2744] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2745, 2747); // 'state 61'
-gotoTable[2749] = 1023410176; // 'state 61'
-gotoTable[2751] = 1023410176; // 'state 61'
-gotoTable[2811] = 1627389952; // 'state 97'
-gotoTable[2865] = 721420288; // 'state 43'
-gotoTable[2866] = 1023410176; // 'state 61'
-gotoTable[2868] = 1006632960; // 'state 60'
-gotoTable[2870] = 1006632960; // 'state 60'
-gotoTable[2872] = 1006632960; // 'state 60'
-gotoTable.fill(1023410176, 2873, 2875); // 'state 61'
-gotoTable[2877] = 1023410176; // 'state 61'
-gotoTable[2879] = 1023410176; // 'state 61'
+const gotoTable = new Uint8Array(2896);
+gotoTable[39] = 48; // 'state 48'
+gotoTable[40] = 4; // 'state 4'
+gotoTable[41] = 5; // 'state 5'
+gotoTable.fill(49, 42, 44); // 'state 49'
+gotoTable[44] = 46; // 'state 46'
+gotoTable[45] = 6; // 'state 6'
+gotoTable.fill(50, 46, 48); // 'state 50'
+gotoTable[48] = 47; // 'state 47'
+gotoTable[52] = 45; // 'state 45'
+gotoTable.fill(55, 110, 112); // 'state 55'
+gotoTable[112] = 47; // 'state 47'
+gotoTable[116] = 45; // 'state 45'
+gotoTable.fill(56, 174, 176); // 'state 56'
+gotoTable[176] = 47; // 'state 47'
+gotoTable[180] = 45; // 'state 45'
+gotoTable[243] = 59; // 'state 59'
+gotoTable[297] = 7; // 'state 7'
+gotoTable.fill(49, 298, 300); // 'state 49'
+gotoTable[300] = 51; // 'state 51'
+gotoTable[301] = 6; // 'state 6'
+gotoTable.fill(50, 302, 304); // 'state 50'
+gotoTable[304] = 47; // 'state 47'
+gotoTable[308] = 45; // 'state 45'
+gotoTable.fill(52, 362, 364); // 'state 52'
+gotoTable[448] = 54; // 'state 54'
+gotoTable.fill(52, 490, 492); // 'state 52'
+gotoTable[561] = 64; // 'state 64'
+gotoTable[562] = 61; // 'state 61'
+gotoTable[564] = 60; // 'state 60'
+gotoTable[566] = 60; // 'state 60'
+gotoTable[568] = 60; // 'state 60'
+gotoTable.fill(61, 569, 571); // 'state 61'
+gotoTable[573] = 61; // 'state 61'
+gotoTable[575] = 61; // 'state 61'
+gotoTable[622] = 65; // 'state 65'
+gotoTable[624] = 47; // 'state 47'
+gotoTable[628] = 45; // 'state 45'
+gotoTable[680] = 16; // 'state 16'
+gotoTable[684] = 46; // 'state 46'
+gotoTable[685] = 6; // 'state 6'
+gotoTable.fill(50, 686, 688); // 'state 50'
+gotoTable[688] = 47; // 'state 47'
+gotoTable[692] = 45; // 'state 45'
+gotoTable[704] = 17; // 'state 17'
+gotoTable[744] = 18; // 'state 18'
+gotoTable[748] = 46; // 'state 46'
+gotoTable[749] = 6; // 'state 6'
+gotoTable.fill(50, 750, 752); // 'state 50'
+gotoTable[752] = 47; // 'state 47'
+gotoTable[756] = 45; // 'state 45'
+gotoTable[768] = 19; // 'state 19'
+gotoTable[821] = 73; // 'state 73'
+gotoTable[887] = 76; // 'state 76'
+gotoTable[945] = 20; // 'state 20'
+gotoTable[946] = 61; // 'state 61'
+gotoTable[948] = 60; // 'state 60'
+gotoTable[950] = 60; // 'state 60'
+gotoTable[952] = 60; // 'state 60'
+gotoTable.fill(61, 953, 955); // 'state 61'
+gotoTable[955] = 21; // 'state 21'
+gotoTable[957] = 61; // 'state 61'
+gotoTable[959] = 61; // 'state 61'
+gotoTable[1005] = 22; // 'state 22'
+gotoTable.fill(50, 1006, 1008); // 'state 50'
+gotoTable[1008] = 47; // 'state 47'
+gotoTable[1012] = 45; // 'state 45'
+gotoTable[1068] = 51; // 'state 51'
+gotoTable[1069] = 6; // 'state 6'
+gotoTable.fill(50, 1070, 1072); // 'state 50'
+gotoTable[1072] = 47; // 'state 47'
+gotoTable[1076] = 45; // 'state 45'
+gotoTable[1128] = 23; // 'state 23'
+gotoTable[1132] = 46; // 'state 46'
+gotoTable[1133] = 6; // 'state 6'
+gotoTable.fill(50, 1134, 1136); // 'state 50'
+gotoTable[1136] = 47; // 'state 47'
+gotoTable[1140] = 45; // 'state 45'
+gotoTable[1196] = 51; // 'state 51'
+gotoTable[1197] = 6; // 'state 6'
+gotoTable.fill(50, 1198, 1200); // 'state 50'
+gotoTable[1200] = 47; // 'state 47'
+gotoTable[1204] = 45; // 'state 45'
+gotoTable[1256] = 24; // 'state 24'
+gotoTable[1260] = 46; // 'state 46'
+gotoTable[1261] = 6; // 'state 6'
+gotoTable.fill(50, 1262, 1264); // 'state 50'
+gotoTable[1264] = 47; // 'state 47'
+gotoTable[1268] = 45; // 'state 45'
+gotoTable[1339] = 27; // 'state 27'
+gotoTable[1340] = 79; // 'state 79'
+gotoTable[1393] = 25; // 'state 25'
+gotoTable[1394] = 61; // 'state 61'
+gotoTable[1396] = 60; // 'state 60'
+gotoTable[1398] = 60; // 'state 60'
+gotoTable[1400] = 60; // 'state 60'
+gotoTable.fill(61, 1401, 1403); // 'state 61'
+gotoTable[1405] = 61; // 'state 61'
+gotoTable[1407] = 61; // 'state 61'
+gotoTable[1470] = 81; // 'state 81'
+gotoTable[1516] = 51; // 'state 51'
+gotoTable[1517] = 6; // 'state 6'
+gotoTable.fill(50, 1518, 1520); // 'state 50'
+gotoTable[1520] = 47; // 'state 47'
+gotoTable[1524] = 45; // 'state 45'
+gotoTable[1580] = 51; // 'state 51'
+gotoTable[1581] = 6; // 'state 6'
+gotoTable.fill(50, 1582, 1584); // 'state 50'
+gotoTable[1584] = 47; // 'state 47'
+gotoTable[1588] = 45; // 'state 45'
+gotoTable[1659] = 30; // 'state 30'
+gotoTable[1660] = 87; // 'state 87'
+gotoTable[1713] = 32; // 'state 32'
+gotoTable[1714] = 61; // 'state 61'
+gotoTable[1716] = 60; // 'state 60'
+gotoTable[1718] = 60; // 'state 60'
+gotoTable[1720] = 60; // 'state 60'
+gotoTable.fill(61, 1721, 1723); // 'state 61'
+gotoTable[1723] = 33; // 'state 33'
+gotoTable[1725] = 61; // 'state 61'
+gotoTable[1727] = 61; // 'state 61'
+gotoTable[1788] = 87; // 'state 87'
+gotoTable[1837] = 89; // 'state 89'
+gotoTable.fill(50, 1838, 1840); // 'state 50'
+gotoTable[1840] = 47; // 'state 47'
+gotoTable[1844] = 45; // 'state 45'
+gotoTable[1905] = 32; // 'state 32'
+gotoTable[1906] = 61; // 'state 61'
+gotoTable[1908] = 60; // 'state 60'
+gotoTable[1910] = 60; // 'state 60'
+gotoTable[1912] = 60; // 'state 60'
+gotoTable.fill(61, 1913, 1915); // 'state 61'
+gotoTable[1915] = 37; // 'state 37'
+gotoTable[1917] = 61; // 'state 61'
+gotoTable[1919] = 61; // 'state 61'
+gotoTable[1980] = 91; // 'state 91'
+gotoTable[2033] = 38; // 'state 38'
+gotoTable[2034] = 61; // 'state 61'
+gotoTable[2036] = 60; // 'state 60'
+gotoTable[2038] = 60; // 'state 60'
+gotoTable[2040] = 60; // 'state 60'
+gotoTable.fill(61, 2041, 2043); // 'state 61'
+gotoTable[2043] = 39; // 'state 39'
+gotoTable[2045] = 61; // 'state 61'
+gotoTable[2047] = 61; // 'state 61'
+gotoTable[2107] = 92; // 'state 92'
+gotoTable[2161] = 38; // 'state 38'
+gotoTable[2162] = 61; // 'state 61'
+gotoTable[2164] = 60; // 'state 60'
+gotoTable[2166] = 60; // 'state 60'
+gotoTable[2168] = 60; // 'state 60'
+gotoTable.fill(61, 2169, 2171); // 'state 61'
+gotoTable[2173] = 61; // 'state 61'
+gotoTable[2175] = 61; // 'state 61'
+gotoTable[2221] = 93; // 'state 93'
+gotoTable.fill(50, 2222, 2224); // 'state 50'
+gotoTable[2224] = 47; // 'state 47'
+gotoTable[2228] = 45; // 'state 45'
+gotoTable[2289] = 32; // 'state 32'
+gotoTable[2290] = 61; // 'state 61'
+gotoTable[2292] = 60; // 'state 60'
+gotoTable[2294] = 60; // 'state 60'
+gotoTable[2296] = 60; // 'state 60'
+gotoTable.fill(61, 2297, 2299); // 'state 61'
+gotoTable[2299] = 41; // 'state 41'
+gotoTable[2301] = 61; // 'state 61'
+gotoTable[2303] = 61; // 'state 61'
+gotoTable[2353] = 38; // 'state 38'
+gotoTable[2354] = 61; // 'state 61'
+gotoTable[2356] = 60; // 'state 60'
+gotoTable[2358] = 60; // 'state 60'
+gotoTable[2360] = 60; // 'state 60'
+gotoTable.fill(61, 2361, 2363); // 'state 61'
+gotoTable[2363] = 42; // 'state 42'
+gotoTable[2365] = 61; // 'state 61'
+gotoTable[2367] = 61; // 'state 61'
+gotoTable[2417] = 38; // 'state 38'
+gotoTable[2418] = 61; // 'state 61'
+gotoTable[2420] = 60; // 'state 60'
+gotoTable[2422] = 60; // 'state 60'
+gotoTable[2424] = 60; // 'state 60'
+gotoTable.fill(61, 2425, 2427); // 'state 61'
+gotoTable[2429] = 61; // 'state 61'
+gotoTable[2431] = 61; // 'state 61'
+gotoTable[2491] = 95; // 'state 95'
+gotoTable[2545] = 43; // 'state 43'
+gotoTable[2546] = 61; // 'state 61'
+gotoTable[2548] = 60; // 'state 60'
+gotoTable[2550] = 60; // 'state 60'
+gotoTable[2552] = 60; // 'state 60'
+gotoTable.fill(61, 2553, 2555); // 'state 61'
+gotoTable[2557] = 61; // 'state 61'
+gotoTable[2559] = 61; // 'state 61'
+gotoTable[2609] = 38; // 'state 38'
+gotoTable[2610] = 61; // 'state 61'
+gotoTable[2612] = 60; // 'state 60'
+gotoTable[2614] = 60; // 'state 60'
+gotoTable[2616] = 60; // 'state 60'
+gotoTable.fill(61, 2617, 2619); // 'state 61'
+gotoTable[2619] = 44; // 'state 44'
+gotoTable[2621] = 61; // 'state 61'
+gotoTable[2623] = 61; // 'state 61'
+gotoTable[2673] = 38; // 'state 38'
+gotoTable[2674] = 61; // 'state 61'
+gotoTable[2676] = 60; // 'state 60'
+gotoTable[2678] = 60; // 'state 60'
+gotoTable[2680] = 60; // 'state 60'
+gotoTable.fill(61, 2681, 2683); // 'state 61'
+gotoTable[2685] = 61; // 'state 61'
+gotoTable[2687] = 61; // 'state 61'
+gotoTable[2737] = 43; // 'state 43'
+gotoTable[2738] = 61; // 'state 61'
+gotoTable[2740] = 60; // 'state 60'
+gotoTable[2742] = 60; // 'state 60'
+gotoTable[2744] = 60; // 'state 60'
+gotoTable.fill(61, 2745, 2747); // 'state 61'
+gotoTable[2749] = 61; // 'state 61'
+gotoTable[2751] = 61; // 'state 61'
+gotoTable[2811] = 97; // 'state 97'
+gotoTable[2865] = 43; // 'state 43'
+gotoTable[2866] = 61; // 'state 61'
+gotoTable[2868] = 60; // 'state 60'
+gotoTable[2870] = 60; // 'state 60'
+gotoTable[2872] = 60; // 'state 60'
+gotoTable.fill(61, 2873, 2875); // 'state 61'
+gotoTable[2877] = 61; // 'state 61'
+gotoTable[2879] = 61; // 'state 61'
 
 const wordFallbackTable = new Uint8Array(48);
 wordFallbackTable[15] = 1; // boolean
@@ -1154,6 +1154,47 @@ const arena = {
   tree: new Uint32Array(524288),
 };
 
+function exactLeafStart(stream, t, p, end) {
+  let q = p - 2;
+  while (q >= 2 && t[q] >>> 8 > 0) {
+    q -= 2;
+  }
+  const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
+  if (prevEnd >= end) {
+    return end;
+  }
+  return prevEnd;
+}
+
+function nodeStart(stream, t, p) {
+  if (t[p] >>> 8 > 0) {
+    const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
+    p = (t[p + 1] & mask) + 2;
+  }
+  if (t[0] !== 0) {
+    return exactLeafStart(stream, t, p, t[p + 1]);
+  }
+  const span = t[p + 1];
+  const end = span & 0x3fffff;
+  const len = span >>> 22;
+  return len < 1023 ? end - len : exactLeafStart(stream, t, p, end);
+}
+
+function nodeEnd(t, p) {
+  while (t[p] >>> 8 > 0) {
+    p -= 2;
+  }
+  return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+}
+
+function nodeValue(stream, t, p) {
+  return stream.subarray(nodeStart(stream, t, p), nodeEnd(t, p));
+}
+
+function nodeText(stream, t, p) {
+  return Buffer.from(nodeValue(stream, t, p)).toString("utf-8");
+}
+
 class TreeCursor {
   #stream;
   #tree;
@@ -1187,55 +1228,20 @@ class TreeCursor {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
-  #exactLeafStart(p, end) {
-    const t = this.#tree;
-    let q = p - 2;
-    while (q >= 2 && t[q] >>> 8 > 0) {
-      q -= 2;
-    }
-    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
-    if (prevEnd >= end) {
-      return end;
-    }
-    return prevEnd;
-  }
-
   get start() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    if (t[p] >>> 8 > 0) {
-      const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
-      p = (t[p + 1] & mask) + 2;
-    }
-    if (t[0] !== 0) {
-      return this.#exactLeafStart(p, t[p + 1]);
-    }
-    const span = t[p + 1];
-    const end = span & 0x3fffff;
-    const len = span >>> 22;
-    if (len < 1023) {
-      return end - len;
-    }
-    return this.#exactLeafStart(p, end);
+    return nodeStart(this.#stream, this.#tree, this.#pointer);
   }
 
   get end() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    while (t[p] >>> 8 > 0) {
-      p -= 2;
-    }
-    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+    return nodeEnd(this.#tree, this.#pointer);
   }
 
   get value() {
-    return this.#stream.subarray(this.start, this.end);
+    return nodeValue(this.#stream, this.#tree, this.#pointer);
   }
 
   get text() {
-    return Buffer.from(this.#stream.subarray(this.start, this.end)).toString(
-      "utf-8"
-    );
+    return nodeText(this.#stream, this.#tree, this.#pointer);
   }
 
   get pointer() {
@@ -1354,55 +1360,20 @@ class CstNode {
     return this.#tree[this.#pointer] >>> 8 === 0;
   }
 
-  #exactLeafStart(p, end) {
-    const t = this.#tree;
-    let q = p - 2;
-    while (q >= 2 && t[q] >>> 8 > 0) {
-      q -= 2;
-    }
-    const prevEnd = q >= 2 ? (t[0] === 0 ? t[q + 1] & 0x3fffff : t[q + 1]) : 0;
-    if (prevEnd >= end) {
-      return end;
-    }
-    return prevEnd;
-  }
-
   get start() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    if (t[p] >>> 8 > 0) {
-      const mask = t[0] === 0 ? 0xffffff : 0xffffffff;
-      p = (t[p + 1] & mask) + 2;
-    }
-    if (t[0] !== 0) {
-      return this.#exactLeafStart(p, t[p + 1]);
-    }
-    const span = t[p + 1];
-    const end = span & 0x3fffff;
-    const len = span >>> 22;
-    if (len < 1023) {
-      return end - len;
-    }
-    return this.#exactLeafStart(p, end);
+    return nodeStart(this.#stream, this.#tree, this.#pointer);
   }
 
   get end() {
-    const t = this.#tree;
-    let p = this.#pointer;
-    while (t[p] >>> 8 > 0) {
-      p -= 2;
-    }
-    return t[0] === 0 ? t[p + 1] & 0x3fffff : t[p + 1];
+    return nodeEnd(this.#tree, this.#pointer);
   }
 
   get value() {
-    return this.#stream.subarray(this.start, this.end);
+    return nodeValue(this.#stream, this.#tree, this.#pointer);
   }
 
   get text() {
-    return Buffer.from(this.#stream.subarray(this.start, this.end)).toString(
-      "utf-8"
-    );
+    return nodeText(this.#stream, this.#tree, this.#pointer);
   }
 
   get firstChild() {
@@ -1801,16 +1772,21 @@ function parseLarge(stream) {
       if (actionLookup === 0xfffe) {
         if (prevEnd < stream.length) {
           const rootPtr = tp - 2;
+          const rootWord0 = tree[rootPtr];
+          const origChildren = rootWord0 >>> 8;
           if (tp + 4 >= treeCap) {
             treeCap <<= 1;
             const nextTree = new Uint32Array(treeCap);
             nextTree.set(tree);
             tree = nextTree;
           }
+          if (origChildren > 0) {
+            tp = rootPtr;
+          }
           tree[tp] = 37;
           tree[tp + 1] = stream.length;
           tp += 2;
-          tree[tp] = (tree[rootPtr] & 0xff) | (2 << 8);
+          tree[tp] = (rootWord0 & 0xff) | (((origChildren || 1) + 1) << 8);
           tree[tp + 1] = 0;
           tp += 2;
         }
@@ -1931,7 +1907,7 @@ function parseLarge(stream) {
       tree[tp + 1] = rtopTp;
       const rawNextState = goto[(rtopState << 6) + (word0 & 0xff)];
 
-      topState = rawNextState >>> 24;
+      topState = rawNextState;
       sp += 1;
       if (sp >= stackCap) {
         stackCap <<= 1;
@@ -1976,6 +1952,7 @@ function parse(input) {
   lexerMode = LexerMode.INITIAL;
 
   const firstRes = nextTokenInitial(stream, 0);
+
   let lookahead = firstRes.state;
   let lookaheadStart = firstRes.start;
   const firstLen = firstRes.end - firstRes.start;
@@ -2007,11 +1984,16 @@ function parse(input) {
         if (actionLookup === 0xfffe) {
           if (prevEnd < stream.length) {
             const rootPtr = tp - 2;
+            const rootWord0 = tree[rootPtr];
+            const origChildren = rootWord0 >>> 8;
             let remStart = prevEnd;
             const endPos = stream.length;
             const needed = (Math.ceil((endPos - remStart) / 1023) + 1) * 2;
             if (tp + needed >= tree.length - 1) {
               break;
+            }
+            if (origChildren > 0) {
+              tp = rootPtr;
             }
             let chunks = 0;
             while (remStart < endPos) {
@@ -2024,7 +2006,8 @@ function parse(input) {
               remStart = chunkEnd;
               chunks++;
             }
-            tree[tp] = (tree[rootPtr] & 0xff) | ((1 + chunks) << 8);
+            tree[tp] =
+              (rootWord0 & 0xff) | (((origChildren || 1) + chunks) << 8);
             tree[tp + 1] = 0;
             tp += 2;
           }
@@ -2050,7 +2033,6 @@ function parse(input) {
               break;
           }
         }
-
         const tokEnd = lookaheadSpan & 0x3fffff;
         const tokStart = lookaheadStart;
         if (tokStart === prevEnd && tokEnd - tokStart <= 1023) {
@@ -2191,7 +2173,7 @@ function parse(input) {
         tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
 
         sp += 1;
-        top = tp | nextState;
+        top = tp | (nextState << 24);
         stack[sp] = top;
       }
 
@@ -2212,13 +2194,8 @@ function parse(input) {
   if (len > 16777216) {
     return parseLarge(stream);
   }
-  const nextStack = new Uint32Array(Math.max(stack.length, len >>> 1));
-  const nextTree = new Uint32Array(len);
-  delete arena.stack;
-  delete arena.tree;
-  arena.stack = nextStack;
-  arena.tree = nextTree;
-  Object.create(arena);
+  arena.stack = new Uint32Array(Math.max(stack.length, len >>> 1));
+  arena.tree = new Uint32Array(len);
   return parse(input);
 }
 

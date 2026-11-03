@@ -7,9 +7,6 @@
   "scripts": {
     "start": "par-gen codegen regexp.pargen ./generated"
   },
-  "dependencies": {
-    "@par-gen/cli": "0.1.0"
-  },
   "jest": {
     "displayName": "RegExp",
     "transform": {},
@@ -21,6 +18,7 @@
   "devDependencies": {
     "@babel/parser": "8.1.0",
     "@jest/globals": "26.6.2",
+    "@par-gen/cli": "0.1.0",
     "acorn": "8.19.0",
     "typescript": "5.9.3"
   }
