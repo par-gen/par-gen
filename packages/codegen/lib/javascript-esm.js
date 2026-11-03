@@ -206,6 +206,7 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
         ): CstNode<Name>;
       };
 
+      export declare const SymbolNames: ReadonlyArray<string>;
       export declare const SymbolIds: { readonly [key: string]: number };
 
       export function reemitLossless(
@@ -266,7 +267,7 @@ export class JavaScriptModuleCodegen extends JavaScriptBaseCodegen {
 
   _parserExports() {
     return `
-      export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
+      export { parse, CstNode, TreeCursor, LineIndex, SymbolNames, SymbolIds, reemitLossless };
     `;
   }
 }

@@ -158,4 +158,43 @@ describe("cli", () => {
       skipTokens: ["WS", "COMMENT"],
     });
   });
+
+  it("should pass --from-treesitter, --preserve-extras, --scanner, and --max-states options", async () => {
+    const codegen = {};
+    const createGeneratorMock = jest.fn().mockReturnValue(codegen);
+    const executeMock = jest.fn();
+    const processExit = jest.fn();
+
+    const context = vm.createContext({
+      createGeneratorMock,
+      executeMock,
+      console,
+      process: {
+        argv: [
+          "node",
+          "path",
+          "codegen",
+          "grammar.json",
+          "target",
+          "--from-treesitter",
+          "--preserve-extras",
+          "--scanner",
+          "./scanner.mjs",
+          "--max-states",
+          "512",
+        ],
+        exit: processExit,
+      },
+    });
+
+    await runCli(context);
+
+    expect(processExit).not.toHaveBeenCalled();
+    expect(executeMock).toHaveBeenCalledWith("grammar.json", codegen, {
+      fromTreesitter: true,
+      preserveExtras: true,
+      scanner: "./scanner.mjs",
+      maxStates: 512,
+    });
+  });
 });

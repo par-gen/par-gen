@@ -3,7 +3,11 @@ import {
   calculateNullable,
   calculateFirsts,
   calculateFollows,
+  isTokenLanguageSubset,
+  dfaCache,
+  stripTokenPrefix,
 } from "./parser.js";
+import { computeTokenSpecificity } from "./parser-treesitter.js";
 
 /**
  * @typedef {import('./parser').Actions} Actions
@@ -744,5 +748,47 @@ describe("generate", () => {
       data.parserSymbols.indexOf("FROM"),
       data.parserSymbols.indexOf("GET"),
     ]);
+  });
+
+  it("should fast-path literals and cache compiled DFAs in isTokenLanguageSubset", () => {
+    dfaCache.clear();
+
+    // Pure literal-to-literal comparisons use the fast path without populating dfaCache
+    expect(isTokenLanguageSubset('"async"', '"async"')).toBe(true);
+    expect(isTokenLanguageSubset('"async"', '"await"')).toBe(false);
+    expect(isTokenLanguageSubset("function", "function")).toBe(true);
+    expect(isTokenLanguageSubset("function", "return")).toBe(false);
+    expect(dfaCache.size).toBe(0);
+
+    // Literal candidate against regex superset compiles and caches only the superset DFA
+    expect(
+      isTokenLanguageSubset('"async"', "[a-zA-Z_][a-zA-Z0-9_]*")
+    ).toBe(true);
+    expect(
+      isTokenLanguageSubset('"123"', "[a-zA-Z_][a-zA-Z0-9_]*")
+    ).toBe(false);
+    expect(dfaCache.size).toBe(1);
+    const cachedSup = dfaCache.get("[a-zA-Z_][a-zA-Z0-9_]*");
+    expect(cachedSup).toBeDefined();
+
+    // Regex candidate against regex superset caches both and reuses cached entries
+    expect(
+      isTokenLanguageSubset("[a-z]+", "[a-zA-Z_][a-zA-Z0-9_]*")
+    ).toBe(true);
+    expect(
+      isTokenLanguageSubset("[0-9]+", "[a-zA-Z_][a-zA-Z0-9_]*")
+    ).toBe(false);
+    expect(dfaCache.get("[a-zA-Z_][a-zA-Z0-9_]*")).toBe(cachedSup);
+  });
+
+  it("should strip token_ prefix and score token specificity", () => {
+    expect(stripTokenPrefix("token_42")).toBe("42");
+    expect(stripTokenPrefix("IDENTIFIER")).toBe("IDENTIFIER");
+
+    expect(computeTokenSpecificity("if", true)).toBe(3);
+    expect(computeTokenSpecificity("(true|false)", false)).toBe(3);
+    expect(computeTokenSpecificity("[a-zA-Z_$][a-zA-Z0-9_$]*", false)).toBe(2);
+    expect(computeTokenSpecificity("[A-Za-z0-9_-]+", false)).toBe(1);
+    expect(computeTokenSpecificity("[^\"\\\\\\n]+", false)).toBe(0);
   });
 });

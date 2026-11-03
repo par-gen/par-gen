@@ -57,6 +57,8 @@ const parserSymbols = [
   "Elements", // 22
 ];
 
+const SymbolNames = Object.freeze(parserSymbols);
+
 const SymbolIds = Object.freeze({
   WS: 0,
   TRUE: 1,
@@ -1065,4 +1067,12 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
+export {
+  parse,
+  CstNode,
+  TreeCursor,
+  LineIndex,
+  SymbolNames,
+  SymbolIds,
+  reemitLossless,
+};

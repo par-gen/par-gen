@@ -1,1 +1,1 @@
-export { parse, CstNode, TreeCursor } from "./generated/parser.js";
+export { parse, CstNode, TreeCursor, LineIndex, SymbolNames, SymbolIds, reemitLossless, } from "./generated/parser.js";

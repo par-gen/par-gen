@@ -1702,6 +1702,8 @@ export class JavaScriptBaseCodegen {
           .join("\n")}
       ];
 
+      const SymbolNames = Object.freeze(parserSymbols);
+
       const SymbolIds = Object.freeze({
         ${trimmedParserSymbols
           .map((symbol, i) =>

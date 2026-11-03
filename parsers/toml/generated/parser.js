@@ -201,6 +201,8 @@ const parserSymbols = [
   "_line_ending_or_eof", // 64
 ];
 
+const SymbolNames = Object.freeze(parserSymbols);
+
 const SymbolIds = Object.freeze({
   '"""': 0,
   "'''": 1,
@@ -2176,4 +2178,12 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
+export {
+  parse,
+  CstNode,
+  TreeCursor,
+  LineIndex,
+  SymbolNames,
+  SymbolIds,
+  reemitLossless,
+};

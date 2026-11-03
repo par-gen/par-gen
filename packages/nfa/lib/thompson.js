@@ -2,25 +2,31 @@ import { Epsilon } from "./constants.js";
 import { parse } from "@par-gen/regexp";
 import debug from "debug";
 import { performance } from "perf_hooks";
+import {
+  SYM_ESCAPED_CHARACTER,
+  SYM_CARET,
+  SYM_DOT,
+  SYM_QUANTIFIER,
+  SYM_REGEXP,
+  SYM_EXPRESSION,
+  SYM_UNION_RULE,
+  SYM_SEQUENCE,
+  SYM_ATOM,
+  SYM_GROUP,
+  SYM_CHARACTER_CLASS,
+  SYM_CHARACTER_CLASS_CHARACTERS,
+  SYM_CHARACTER_CLASS_CHARACTER,
+  SYM_CHARACTER_CLASS_RANGE,
+  SYM_CHARACTER_RULE,
+  SYM_HEX_ESCAPE,
+  nodeId,
+  childCount,
+  prevSibling,
+  getChildren,
+  fastLeafStart,
+} from "./cst-utils.js";
 
 const log = debug("par-gen:nfa");
-
-const SYM_ESCAPED_CHARACTER = 3;
-const SYM_CARET = 4;
-const SYM_DOT = 6;
-const SYM_QUANTIFIER = 10;
-const SYM_REGEXP = 16;
-const SYM_EXPRESSION = 17;
-const SYM_UNION_RULE = 18;
-const SYM_SEQUENCE = 19;
-const SYM_ATOM = 20;
-const SYM_GROUP = 21;
-const SYM_CHARACTER_CLASS = 22;
-const SYM_CHARACTER_CLASS_CHARACTERS = 23;
-const SYM_CHARACTER_CLASS_CHARACTER = 24;
-const SYM_CHARACTER_CLASS_RANGE = 25;
-const SYM_CHARACTER_RULE = 26;
-const SYM_HEX_ESCAPE = 27;
 
 const BYTE_CHARS = Array.from({ length: 256 }, (_, i) =>
   String.fromCharCode(i)
@@ -173,24 +179,12 @@ export function fromRegExpParseTree(tree, { symbolMapper, stateFactory }) {
 
 /**
  * @param {Uint32Array} rawTree
- * @param {number} c
- * @returns {number}
- */
-function prevSibling(rawTree, c) {
-  return rawTree[c] >>> 8 === 0 ? c - 2 : rawTree[c + 1] & 0xfffff;
-}
-
-/**
- * @param {Uint32Array} rawTree
  * @param {number} ptr
  * @param {string} input
  * @returns {string}
  */
 function extractFlatChar(rawTree, ptr, input) {
-  const p = rawTree[ptr] >>> 8 === 0 ? ptr : (rawTree[ptr + 1] & 0xfffff) + 2;
-  const span = rawTree[p + 1];
-  const start = (span & 0x3fffff) - (span >>> 22);
-  return BYTE_CHARS[input.charCodeAt(start)];
+  return BYTE_CHARS[input.charCodeAt(fastLeafStart(rawTree, ptr))];
 }
 
 /**
@@ -200,10 +194,7 @@ function extractFlatChar(rawTree, ptr, input) {
  * @returns {number}
  */
 function extractFlatCharCode(rawTree, ptr, input) {
-  const p = rawTree[ptr] >>> 8 === 0 ? ptr : (rawTree[ptr + 1] & 0xfffff) + 2;
-  const span = rawTree[p + 1];
-  const start = (span & 0x3fffff) - (span >>> 22);
-  return input.charCodeAt(start);
+  return input.charCodeAt(fastLeafStart(rawTree, ptr));
 }
 
 /**
@@ -243,18 +234,10 @@ function decodeFlatHexEscapeCode(rawTree, hexPtr, input) {
  * @param {number[]} out
  */
 function collectFlatSequenceNodes(rawTree, p, out) {
-  const n = rawTree[p] >>> 8;
-  const children = new Array(n);
-  let child = p - 2;
-  for (let i = n - 1; i >= 0; i--) {
-    children[i] = child;
-    if (i > 0) {
-      child = prevSibling(rawTree, child);
-    }
-  }
-  for (let i = 0; i < n; i++) {
+  const children = getChildren(rawTree, p);
+  for (let i = 0; i < children.length; i++) {
     const c = children[i];
-    if ((rawTree[c] & 0xff) === SYM_SEQUENCE) {
+    if (nodeId(rawTree, c) === SYM_SEQUENCE) {
       collectFlatSequenceNodes(rawTree, c, out);
     } else {
       out.push(c);
@@ -291,11 +274,10 @@ function mapFlatChar(ctx, ch) {
  */
 function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
   const { rawTree, input } = ctx;
-  const word0 = rawTree[p];
-  const symId = word0 & 0xff;
+  const symId = nodeId(rawTree, p);
 
   if (symId === SYM_CHARACTER_CLASS_CHARACTER) {
-    const nChildren = word0 >>> 8;
+    const nChildren = childCount(rawTree, p);
     if (nChildren === 2) {
       const c1 = p - 2;
       const ch = decodeEscapedChar(extractFlatChar(rawTree, c1, input));
@@ -310,17 +292,17 @@ function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
       }
     } else if (nChildren === 1) {
       const c0 = p - 2;
-      const childSym = rawTree[c0] & 0xff;
+      const childSym = nodeId(rawTree, c0);
       if (childSym === SYM_CHARACTER_CLASS_RANGE) {
         const r2 = c0 - 2;
         const r1 = prevSibling(rawTree, r2);
         const r0 = prevSibling(rawTree, r1);
         const fromCode =
-          (rawTree[r0] & 0xff) === SYM_HEX_ESCAPE
+          nodeId(rawTree, r0) === SYM_HEX_ESCAPE
             ? decodeFlatHexEscapeCode(rawTree, r0, input)
             : extractFlatCharCode(rawTree, r0, input);
         const toCode =
-          (rawTree[r2] & 0xff) === SYM_HEX_ESCAPE
+          nodeId(rawTree, r2) === SYM_HEX_ESCAPE
             ? decodeFlatHexEscapeCode(rawTree, r2, input)
             : extractFlatCharCode(rawTree, r2, input);
         if (excluded !== null) {
@@ -337,8 +319,7 @@ function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
           }
         }
       } else if (childSym === SYM_ESCAPED_CHARACTER) {
-        const span = rawTree[c0 + 1];
-        const start = (span & 0x3fffff) - (span >>> 22);
+        const start = fastLeafStart(rawTree, c0);
         const ch = decodeEscapedChar(BYTE_CHARS[input.charCodeAt(start + 1)]);
         if (excluded !== null) {
           excluded[ch.charCodeAt(0)] = 1;
@@ -368,25 +349,15 @@ function walkFlatCharacterClass(ctx, p, excluded, transitionMap, finalTarget) {
     return;
   }
 
-  const nChildren = word0 >>> 8;
-  if (nChildren > 0) {
-    const children = new Array(nChildren);
-    let child = p - 2;
-    for (let i = nChildren - 1; i >= 0; i--) {
-      children[i] = child;
-      if (i > 0) {
-        child = prevSibling(rawTree, child);
-      }
-    }
-    for (let i = 0; i < nChildren; i++) {
-      walkFlatCharacterClass(
-        ctx,
-        children[i],
-        excluded,
-        transitionMap,
-        finalTarget
-      );
-    }
+  const children = getChildren(rawTree, p);
+  for (let i = 0; i < children.length; i++) {
+    walkFlatCharacterClass(
+      ctx,
+      children[i],
+      excluded,
+      transitionMap,
+      finalTarget
+    );
   }
 }
 
@@ -404,15 +375,14 @@ function visitFlat(ctx, ptr) {
 
   let currentPtr = ptr;
   while (true) {
-    const w = rawTree[currentPtr];
-    const s = w & 0xff;
+    const s = nodeId(rawTree, currentPtr);
+    const n = childCount(rawTree, currentPtr);
     if (s === SYM_REGEXP || s === SYM_EXPRESSION) {
-      if (w >>> 8 === 0) {
+      if (n === 0) {
         throw new Error("Illegal state");
       }
       currentPtr -= 2;
     } else if (s === SYM_GROUP) {
-      const n = w >>> 8;
       if (n < 2) {
         throw new Error("Illegal state");
       }
@@ -423,9 +393,8 @@ function visitFlat(ctx, ptr) {
     }
   }
 
-  const word0 = rawTree[currentPtr];
-  const symId = word0 & 0xff;
-  const nChildren = word0 >>> 8;
+  const symId = nodeId(rawTree, currentPtr);
+  const nChildren = childCount(rawTree, currentPtr);
 
   switch (symId) {
     case SYM_SEQUENCE: {
@@ -497,7 +466,7 @@ function visitFlat(ctx, ptr) {
         c0 = prevSibling(rawTree, c0);
       }
       if (nChildren > 1) {
-        if ((rawTree[last] & 0xff) === SYM_QUANTIFIER) {
+        if (nodeId(rawTree, last) === SYM_QUANTIFIER) {
           const quantifier = extractFlatChar(rawTree, last, input) || "*";
           const start = stateFactory(ctx.counter++, dummyNode);
           const final = stateFactory(ctx.counter++, dummyNode);
@@ -527,10 +496,9 @@ function visitFlat(ctx, ptr) {
           BYTE_CHARS[decodeFlatHexEscapeCode(rawTree, currentPtr, input)];
       } else {
         const c0 = currentPtr - 2;
-        const childSym = rawTree[c0] & 0xff;
+        const childSym = nodeId(rawTree, c0);
         if (childSym === SYM_ESCAPED_CHARACTER) {
-          const span = rawTree[c0 + 1];
-          const start = (span & 0x3fffff) - (span >>> 22);
+          const start = fastLeafStart(rawTree, c0);
           decoded = decodeEscapedChar(BYTE_CHARS[input.charCodeAt(start + 1)]);
         } else if (childSym === SYM_HEX_ESCAPE) {
           decoded = BYTE_CHARS[decodeFlatHexEscapeCode(rawTree, c0, input)];
@@ -552,12 +520,12 @@ function visitFlat(ctx, ptr) {
       const closeBracket = currentPtr - 2;
       const charsNode = prevSibling(rawTree, closeBracket);
       const beforeChars = prevSibling(rawTree, charsNode);
-      const negative = (rawTree[beforeChars] & 0xff) === SYM_CARET;
+      const negative = nodeId(rawTree, beforeChars) === SYM_CARET;
       if (
         !charsNode ||
-        (rawTree[charsNode] & 0xff) !== SYM_CHARACTER_CLASS_CHARACTERS
+        nodeId(rawTree, charsNode) !== SYM_CHARACTER_CLASS_CHARACTERS
       ) {
-        throw new Error(`Unknown op code '${rawTree[charsNode] & 0xff}'`);
+        throw new Error(`Unknown op code '${nodeId(rawTree, charsNode)}'`);
       }
 
       const start = stateFactory(ctx.counter++, dummyNode);

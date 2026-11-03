@@ -426,6 +426,8 @@ const parserSymbols = [
   "TypeSystemDirectiveLocation", // 143
 ];
 
+const SymbolNames = Object.freeze(parserSymbols);
+
 const SymbolIds = Object.freeze({
   query: 0,
   mutation: 1,
@@ -3388,4 +3390,12 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
+export {
+  parse,
+  CstNode,
+  TreeCursor,
+  LineIndex,
+  SymbolNames,
+  SymbolIds,
+  reemitLossless,
+};

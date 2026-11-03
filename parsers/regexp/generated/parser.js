@@ -80,6 +80,8 @@ const parserSymbols = [
   "HexEscape", // 27
 ];
 
+const SymbolNames = Object.freeze(parserSymbols);
+
 const SymbolIds = Object.freeze({
   CHARACTER: 0,
   HEX_PREFIX: 1,
@@ -1271,4 +1273,12 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
+export {
+  parse,
+  CstNode,
+  TreeCursor,
+  LineIndex,
+  SymbolNames,
+  SymbolIds,
+  reemitLossless,
+};

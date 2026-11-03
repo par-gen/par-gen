@@ -1,3 +1,4 @@
+declare const SymbolNames: readonly string[];
 declare const SymbolIds: Readonly<{
     CHARACTER: 0;
     HEX_PREFIX: 1;
@@ -106,4 +107,4 @@ export type Node = {
  * @returns {Node}
  */
 declare function parse(input: Uint8Array | string): Node;
-export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
+export { parse, CstNode, TreeCursor, LineIndex, SymbolNames, SymbolIds, reemitLossless, };

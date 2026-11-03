@@ -426,6 +426,8 @@ const parserSymbols = [
   "class_name", // 134
 ];
 
+const SymbolNames = Object.freeze(parserSymbols);
+
 const SymbolIds = Object.freeze({
   "[": 0,
   from: 1,
@@ -4652,4 +4654,12 @@ function parse(input) {
   return parse(input);
 }
 
-export { parse, CstNode, TreeCursor, LineIndex, SymbolIds, reemitLossless };
+export {
+  parse,
+  CstNode,
+  TreeCursor,
+  LineIndex,
+  SymbolNames,
+  SymbolIds,
+  reemitLossless,
+};

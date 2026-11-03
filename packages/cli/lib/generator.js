@@ -4,6 +4,8 @@ import {
 } from "@par-gen/codegen";
 import { generate, generateFromTreesitter } from "@par-gen/parser";
 import { promises as fsp } from "fs";
+import { resolve } from "path";
+import { pathToFileURL } from "url";
 
 /**
  * @typedef {import('@par-gen/codegen/types/type').Codegen} Codegen
@@ -11,6 +13,16 @@ import { promises as fsp } from "fs";
 
 /**
  * @typedef {import('@par-gen/grammar/types/parser').ParseOptions} ParseOptions
+ */
+
+/**
+ * @typedef {ParseOptions & {
+ *   fromTreesitter?: boolean,
+ *   preserveExtras?: boolean,
+ *   scanner?: string,
+ *   maxStates?: number,
+ *   externals?: Record<string, *>
+ * }} ExecuteOptions
  */
 
 /**
@@ -43,14 +55,39 @@ export function createGenerator(language, module, options) {
 /**
  * @param {string} grammarFile
  * @param {Codegen} codegen
- * @param {ParseOptions=} options
+ * @param {ExecuteOptions=} options
  */
 export async function execute(grammarFile, codegen, options) {
   const source = await fsp.readFile(grammarFile, "utf-8");
   const isTreesitterJson =
-    grammarFile.endsWith(".json") || source.trimStart().startsWith("{");
+    Boolean(options?.fromTreesitter) ||
+    grammarFile.endsWith(".json") ||
+    source.trimStart().startsWith("{");
+
+  /** @type {ExecuteOptions | undefined} */
+  let effectiveOptions = options;
+  if (isTreesitterJson && options?.scanner) {
+    const scannerUrl = pathToFileURL(resolve(options.scanner)).href;
+    const scannerMod = await import(scannerUrl);
+    const loadedExternals =
+      scannerMod.externals ??
+      scannerMod.default?.externals ??
+      scannerMod.default;
+    if (loadedExternals && typeof loadedExternals === "object") {
+      effectiveOptions = {
+        ...options,
+        externals: {
+          ...loadedExternals,
+          ...(options.externals ?? {}),
+        },
+      };
+    }
+  }
+
   const data = isTreesitterJson
-    ? generateFromTreesitter(source, options)
-    : generate(source, options);
+    ? generateFromTreesitter(source, effectiveOptions)
+    : generate(source, effectiveOptions);
   await codegen.parser(data);
 }
+
+export { execute as generateParser };

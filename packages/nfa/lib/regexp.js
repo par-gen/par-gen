@@ -1,38 +1,16 @@
 import { parse } from "@par-gen/regexp";
-
-const REGEXP_SYMBOLS = [
-  "CHARACTER", // 0
-  "HEX_PREFIX", // 1
-  "HEX_NUMBER", // 2
-  "ESCAPED_CHARACTER", // 3
-  "CARET", // 4
-  "DASH", // 5
-  "DOT", // 6
-  "UNION", // 7
-  "PAREN_OPEN", // 8
-  "PAREN_CLOSE", // 9
-  "QUANTIFIER", // 10
-  "BRACKET_OPEN", // 11
-  "BRACKET_CLOSE", // 12
-  "@par-gen.EOF", // 13
-  "@par-gen.ERROR", // 14
-  "S", // 15
-  "RegExp", // 16
-  "Expression", // 17
-  "Union", // 18
-  "Sequence", // 19
-  "Atom", // 20
-  "Group", // 21
-  "CharacterClass", // 22
-  "CharacterClassCharacters", // 23
-  "CharacterClassCharacter", // 24
-  "CharacterClassRange", // 25
-  "Character", // 26
-  "HexEscape", // 27
-];
-
-const SYM_REGEXP = 16;
-const SYM_EXPRESSION = 17;
+import {
+  SYM_REGEXP,
+  SYM_EXPRESSION,
+  nodeId,
+  nodeName,
+  childCount,
+  prevSibling,
+  leafStart,
+  leafEnd,
+  nodeStart,
+  nodeEnd,
+} from "./cst-utils.js";
 
 /**
  * @template VALUE
@@ -60,32 +38,15 @@ class FlatCstNode {
   }
 
   get name() {
-    return REGEXP_SYMBOLS[this.__tree[this.__pointer] & 0xff];
+    return nodeName(this.__tree, this.__pointer);
   }
 
   get start() {
-    const rawTree = this.__tree;
-    let p = this.__pointer;
-    if (rawTree[p] >>> 8 > 0) {
-      p = (rawTree[p + 1] & 0xfffff) + 2;
-    }
-    let q = p - 2;
-    while (q >= 2 && rawTree[q] >>> 8 > 0) {
-      q -= 2;
-    }
-    const prevEnd = q >= 2 ? rawTree[q + 1] & 0x3fffff : 0;
-    const span = rawTree[p + 1];
-    const end = span & 0x3fffff;
-    return prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
+    return nodeStart(this.__tree, this.__pointer);
   }
 
   get end() {
-    const rawTree = this.__tree;
-    let p = this.__pointer;
-    while (rawTree[p] >>> 8 > 0) {
-      p -= 2;
-    }
-    return rawTree[p + 1] & 0x3fffff;
+    return nodeEnd(this.__tree, this.__pointer);
   }
 
   get value() {
@@ -95,7 +56,7 @@ class FlatCstNode {
   get items() {
     const rawTree = this.__tree;
     const pointer = this.__pointer;
-    const nChildren = rawTree[pointer] >>> 8;
+    const nChildren = childCount(rawTree, pointer);
     if (nChildren === 0) {
       return undefined;
     }
@@ -104,8 +65,7 @@ class FlatCstNode {
     let child = pointer - 2;
     for (let i = nChildren - 1; i > 0; i--) {
       children[i] = new FlatCstNode(rawTree, child, this.__input);
-      child =
-        rawTree[child] >>> 8 === 0 ? child - 2 : rawTree[child + 1] & 0xfffff;
+      child = prevSibling(rawTree, child);
     }
     children[0] = new FlatCstNode(rawTree, child, this.__input);
     return children;
@@ -121,19 +81,12 @@ class FlatCstNode {
  * @returns {ParseTree<V>}
  */
 function convertFlatNode(rawTree, ptr, input, mapper) {
-  const word0 = rawTree[ptr];
-  const name = REGEXP_SYMBOLS[word0 & 0xff];
-  const nChildren = word0 >>> 8;
+  const name = nodeName(rawTree, ptr);
+  const nChildren = childCount(rawTree, ptr);
 
   if (nChildren === 0) {
-    let q = ptr - 2;
-    while (q >= 2 && rawTree[q] >>> 8 > 0) {
-      q -= 2;
-    }
-    const prevEnd = q >= 2 ? rawTree[q + 1] & 0x3fffff : 0;
-    const span = rawTree[ptr + 1];
-    const end = span & 0x3fffff;
-    const start = prevEnd + (((end - prevEnd) - (span >>> 22)) & 0x3ff);
+    const start = leafStart(rawTree, ptr);
+    const end = leafEnd(rawTree, ptr);
     const raw =
       end - start === 1 ? input.charAt(start) : input.slice(start, end);
     return {
@@ -150,8 +103,7 @@ function convertFlatNode(rawTree, ptr, input, mapper) {
   let child = ptr - 2;
   for (let i = nChildren - 1; i > 0; i--) {
     items[i] = convertFlatNode(rawTree, child, input, mapper);
-    child =
-      rawTree[child] >>> 8 === 0 ? child - 2 : rawTree[child + 1] & 0xfffff;
+    child = prevSibling(rawTree, child);
   }
   items[0] = convertFlatNode(rawTree, child, input, mapper);
 
@@ -222,11 +174,10 @@ export function parseRegExp(expression) {
   if (rawTree !== undefined && rootPtr !== undefined) {
     let ptr = rootPtr;
     while (true) {
-      const word0 = rawTree[ptr];
-      const symId = word0 & 0xff;
+      const symId = nodeId(rawTree, ptr);
       if (
         (symId === SYM_REGEXP || symId === SYM_EXPRESSION) &&
-        word0 >>> 8 > 0
+        childCount(rawTree, ptr) > 0
       ) {
         ptr -= 2;
       } else {

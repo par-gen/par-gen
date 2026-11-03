@@ -35,16 +35,38 @@ cli
     "Comma-separated list of token names to skip (e.g. WS)",
     ""
   )
+  .option(
+    "--from-treesitter",
+    "Interpret the grammar file as a Tree-sitter grammar.json"
+  )
+  .option(
+    "--preserve-extras",
+    "Preserve trivia/extra tokens in the CST for lossless round-tripping"
+  )
+  .option(
+    "--scanner",
+    "Path to an external scanner overrides module for Tree-sitter grammars"
+  )
+  .option(
+    "--max-states",
+    "Maximum LR state budget when compiling a Tree-sitter grammar"
+  )
   .example("codegen ./json.pargen ./generated")
+  .example("codegen ./grammar.json ./generated --preserve-extras")
   .action(
     /**
      * @param {string} grammarFile
      * @param {string} targetDirectory
-     * @param {Object} opts
-     * @param {string} opts.language
-     * @param {string} opts.module
-     * @param {boolean} opts.debug
-     * @param {string=} opts.skip
+     * @param {{
+     *   language: string,
+     *   module: string,
+     *   debug: boolean,
+     *   skip?: string,
+     *   scanner?: string,
+     *   "from-treesitter"?: boolean,
+     *   "preserve-extras"?: boolean,
+     *   "max-states"?: number | string
+     * }} opts
      */
     async (grammarFile, targetDirectory, opts) => {
       const codegen = createGenerator(opts.language, opts.module, {
@@ -58,8 +80,29 @@ cli
         .map((t) => t.trim())
         .filter(Boolean);
 
+      /** @type {import('./generator.js').ExecuteOptions} */
+      const execOptions = {};
       if (skipTokens.length > 0) {
-        await execute(grammarFile, codegen, { skipTokens });
+        execOptions.skipTokens = skipTokens;
+      }
+      if (opts["from-treesitter"]) {
+        execOptions.fromTreesitter = true;
+      }
+      if (opts["preserve-extras"]) {
+        execOptions.preserveExtras = true;
+      }
+      if (opts.scanner) {
+        execOptions.scanner = String(opts.scanner);
+      }
+      if (opts["max-states"] !== undefined) {
+        const parsedMaxStates = Number(opts["max-states"]);
+        if (!Number.isNaN(parsedMaxStates)) {
+          execOptions.maxStates = parsedMaxStates;
+        }
+      }
+
+      if (Object.keys(execOptions).length > 0) {
+        await execute(grammarFile, codegen, execOptions);
       } else {
         await execute(grammarFile, codegen);
       }

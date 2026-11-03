@@ -933,6 +933,116 @@ const BUILTIN_EXTERNAL_OVERRIDES = {
  * @typedef {ParseOptions & { externals?: Record<string, TreeSitterNode> }} TreeSitterParseOptions
  */
 
+const PREC_NAME_PREFIX = "S:";
+const PREC_SYMBOL_PREFIX = "R:";
+
+/**
+ * Check whether `expr` contains an unescaped negated character class (`[^...]`).
+ *
+ * @param {string} expr
+ * @returns {boolean}
+ */
+export function hasUnescapedNegatedCharClass(expr) {
+  let inEscape = false;
+  let inClass = false;
+  for (let i = 0; i < expr.length; i++) {
+    const ch = expr[i];
+    if (inEscape) {
+      inEscape = false;
+      continue;
+    }
+    if (ch === "\\") {
+      inEscape = true;
+      continue;
+    }
+    if (inClass) {
+      if (ch === "]") {
+        inClass = false;
+      }
+      continue;
+    }
+    if (ch === "[") {
+      if (expr[i + 1] === "^") {
+        return true;
+      }
+      inClass = true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Score a token regex expression by lexical specificity (higher = more specific):
+ * - `3`: Fixed string literals (`isKeywordLike === true`) or pure literal unions (e.g. `(true|false)`)
+ * - `2`: Structured regex tokens (multi-part identifiers like `[a-zA-Z_$][a-zA-Z0-9_$]*`, numbers, dates)
+ * - `1`: Broad single-character-class repeats (`/^\[\^?[^\]]+\][+*]$/` matching both letters and digits)
+ * - `0`: Catch-all negated character class / wildcard / whitespace tokens
+ *
+ * @param {string} expr
+ * @param {boolean} [isKeywordLike=false]
+ * @returns {number}
+ */
+export function computeTokenSpecificity(expr, isKeywordLike = false) {
+  if (isKeywordLike) {
+    return 3;
+  }
+  if (/^\(?[a-zA-Z0-9_]+(\|[a-zA-Z0-9_]+)*\)?$/.test(expr)) {
+    return 3;
+  }
+  if (
+    hasUnescapedNegatedCharClass(expr) ||
+    /(^|[^\\])\\s/.test(expr) ||
+    /(^|[^\\])\./.test(expr)
+  ) {
+    return 0;
+  }
+  if (/^\[(?=[^\]]*[a-zA-Z])(?=[^\]]*[0-9])[^\^\]][^\]]*\][+*]$/.test(expr)) {
+    return 1;
+  }
+  return 2;
+}
+
+/**
+ * Structurally infer the grammar's primary word/identifier token when `grammar.word`
+ * is not explicitly declared:
+ * 1. Explicit `options?.word` or `grammar.word`
+ * 2. Top-level `"identifier"` rule if present
+ * 3. First top-level single-`PATTERN` rule whose pattern is an unnegated ASCII letter/alphanumeric
+ *    character-class repetition (`/^\[(?=[^\]]*a-z)(?=[^\]]*A-Z)[^\^\]][^\]]*\][+*]$/`).
+ *
+ * @param {TreeSitterGrammar} grammar
+ * @param {Record<string, TreeSitterNode>} grammarRules
+ * @param {string=} explicitWord
+ * @returns {string | undefined}
+ */
+function inferWordToken(grammar, grammarRules, explicitWord) {
+  if (explicitWord) {
+    return explicitWord;
+  }
+  if (grammar.word) {
+    return grammar.word;
+  }
+  if (Object.prototype.hasOwnProperty.call(grammarRules, "identifier")) {
+    return "identifier";
+  }
+  const names = Object.keys(grammarRules);
+  for (let i = 1; i < names.length; i++) {
+    const rName = names[i];
+    if (rName.startsWith("_")) {
+      continue;
+    }
+    const unwrapped = unwrapMeta(grammarRules[rName]);
+    if (
+      unwrapped.type === "PATTERN" &&
+      typeof unwrapped.value === "string" &&
+      /^\[(?=[^\]]*a-z)(?=[^\]]*A-Z)[^\^\]][^\]]*\][+*]$/.test(unwrapped.value)
+    ) {
+      return rName;
+    }
+  }
+  return undefined;
+}
+
 /**
  * @param {string | TreeSitterGrammar} input
  * @param {TreeSitterParseOptions=} options
@@ -947,14 +1057,7 @@ export function generate(input, options) {
     throw new Error("Tree-sitter grammar contains no rules");
   }
   const startRuleName = ruleNames[0];
-  const effectiveWord =
-    options?.word ??
-    grammar.word ??
-    (Object.prototype.hasOwnProperty.call(grammarRules, "identifier")
-      ? "identifier"
-      : Object.prototype.hasOwnProperty.call(grammarRules, "bare_key")
-      ? "bare_key"
-      : undefined);
+  const effectiveWord = inferWordToken(grammar, grammarRules, options?.word);
 
   // Handle `externals` and built-in/user rule overrides: apply options.externals, built-in overrides, or automatic alias/blank inference
   const builtinMap = (grammar.name && BUILTIN_EXTERNAL_OVERRIDES[grammar.name]) || {};
@@ -1009,12 +1112,12 @@ export function generate(input, options) {
       const parsedGroup = [];
       for (const entry of group) {
         if (typeof entry === "string") {
-          parsedGroup.push({ key: `S:${entry}`, isSymbol: false });
+          parsedGroup.push({ key: `${PREC_NAME_PREFIX}${entry}`, isSymbol: false });
         } else if (entry && typeof entry === "object") {
           if (entry.type === "SYMBOL" && typeof entry.name === "string") {
-            parsedGroup.push({ key: `R:${entry.name}`, isSymbol: true });
+            parsedGroup.push({ key: `${PREC_SYMBOL_PREFIX}${entry.name}`, isSymbol: true });
           } else if (typeof entry.value === "string") {
-            parsedGroup.push({ key: `S:${entry.value}`, isSymbol: false });
+            parsedGroup.push({ key: `${PREC_NAME_PREFIX}${entry.value}`, isSymbol: false });
           }
         }
       }
@@ -1066,10 +1169,10 @@ export function generate(input, options) {
 
     for (const key of allKeys) {
       const score = getRank(key) * 10;
-      if (key.startsWith("S:")) {
-        namedPrecMap.set(key.slice(2), score);
-      } else if (key.startsWith("R:")) {
-        symbolDefaultPrecMap.set(key.slice(2), score);
+      if (key.startsWith(PREC_NAME_PREFIX)) {
+        namedPrecMap.set(key.slice(PREC_NAME_PREFIX.length), score);
+      } else if (key.startsWith(PREC_SYMBOL_PREFIX)) {
+        symbolDefaultPrecMap.set(key.slice(PREC_SYMBOL_PREFIX.length), score);
       }
     }
   }
@@ -1358,7 +1461,7 @@ export function generate(input, options) {
         }
         const { nonEmptyExpr: expr, isNullable } = splitNullableRegexQuantifier(rawExpr);
         // Treat inline negated character class patterns (like `[^"\\\n]+` inside string rules) as immediate-eligible
-        const isNegatedCharClass = expr.includes("[^");
+        const isNegatedCharClass = hasUnescapedNegatedCharClass(expr);
         const isImmediate = node.type === "IMMEDIATE_TOKEN" || isNegatedCharClass;
         if (!isImmediate) {
           const existingPatTok = inlinePatternToTokenName.get(expr);
@@ -1903,7 +2006,7 @@ export function generate(input, options) {
     }
   }
 
-  // Sort tokens: higher lexPrec first, then STRING literals before PATTERN/TOKEN, then non-word before word, then extras last
+  // Sort tokens: higher lexPrec first, then STRING literals before PATTERN/TOKEN, then by token specificity when comparing word vs non-word tokens, then extras last
   const sortedTokens = Array.from(tokenByName.values())
     .filter((t) => t.isExtra || referencedSymbols.has(t.name))
     .sort((a, b) => {
@@ -1916,8 +2019,11 @@ export function generate(input, options) {
       if (a.isString !== b.isString) {
         return a.isString ? -1 : 1;
       }
-      if (a.isWord !== b.isWord && (a.name === "bare_key" || b.name === "bare_key")) {
-        return a.isWord ? 1 : -1;
+      if (a.isWord !== b.isWord) {
+        const wordTok = a.isWord ? a : b;
+        if (computeTokenSpecificity(wordTok.expr, wordTok.isString) <= 1) {
+          return a.isWord ? 1 : -1;
+        }
       }
       return a.order - b.order;
     });

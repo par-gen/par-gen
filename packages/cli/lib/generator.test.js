@@ -161,4 +161,65 @@ describe("execute", () => {
       await fsp.rm(dir, { recursive: true, force: true });
     }
   });
+
+  it("should support preserveExtras and external scanner module on Tree-sitter grammar.json", async () => {
+    const dir = await fsp.mkdtemp(join(tmpdir(), "pargen-cli-ts-opts-"));
+    try {
+      const grammarPath = join(dir, "grammar.json");
+      const scannerPath = join(dir, "scanner.mjs");
+      const lexerFile = join(dir, "lexer.js");
+      const parserFile = join(dir, "parser.js");
+
+      const tsGrammar = {
+        name: "ext_lang",
+        word: "identifier",
+        externals: [{ type: "SYMBOL", name: "_semi" }],
+        rules: {
+          program: {
+            type: "SEQ",
+            members: [
+              { type: "SYMBOL", name: "identifier" },
+              { type: "SYMBOL", name: "_semi" },
+            ],
+          },
+          identifier: {
+            type: "PATTERN",
+            value: "[a-zA-Z_][a-zA-Z0-9_]*",
+          },
+          comment: {
+            type: "PATTERN",
+            value: "#[^\\n]*",
+          },
+        },
+        extras: [
+          { type: "PATTERN", value: "[ \\t\\r\\n]+" },
+          { type: "SYMBOL", name: "comment" },
+        ],
+      };
+
+      await fsp.writeFile(grammarPath, JSON.stringify(tsGrammar, null, 2));
+      await fsp.writeFile(
+        scannerPath,
+        `export const externals = { _semi: { type: "STRING", value: ";" } };\n`
+      );
+
+      const codegen = createGenerator("javascript", "esm", {
+        lexerFile,
+        parserFile,
+      });
+
+      await execute(grammarPath, codegen, {
+        fromTreesitter: true,
+        preserveExtras: true,
+        scanner: scannerPath,
+        maxStates: 256,
+      });
+
+      const parse = await loadGeneratedEsmParser(dir);
+      const cst = parse("hello # trivia\n;").toJSON();
+      expect(cst.name).toBe("program");
+    } finally {
+      await fsp.rm(dir, { recursive: true, force: true });
+    }
+  });
 });

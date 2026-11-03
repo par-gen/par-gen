@@ -69,32 +69,227 @@ const log = debug("par-gen:parser");
  * @typedef {import('@par-gen/grammar/types/parser').ParseOptions} ParseOptions
  */
 
+export const TOKEN_PREFIX = "token_";
+
 /**
- * @param {Token} candidateToken
- * @param {LexerData} wordDfa
- * @param {Token[]} specialTokens
+ * Strip the internal `"token_"` prefix from a synthesized token name if present.
+ *
+ * @param {string} token
+ * @returns {string}
+ */
+export function stripTokenPrefix(token) {
+  return token.startsWith(TOKEN_PREFIX)
+    ? token.slice(TOKEN_PREFIX.length)
+    : token;
+}
+
+/**
+ * @typedef {Object} CompiledDfaEntry
+ * @property {LexerData} dfa
+ * @property {Map<number, Map<number, number>>} transMap
+ * @property {Set<number>} finalSet
+ */
+
+/** @type {Map<string, CompiledDfaEntry>} */
+export const dfaCache = new Map();
+
+/** @type {WeakMap<LexerData, CompiledDfaEntry>} */
+const lexerDataCache = new WeakMap();
+
+/**
+ * Extract a fixed literal string if `expr` is either a quoted string literal
+ * (`"..."` or `'...'` without escapes) or a plain unescaped identifier/number literal.
+ *
+ * @param {string} expr
+ * @returns {string | null}
+ */
+function extractSimpleLiteral(expr) {
+  if (expr.length >= 2) {
+    const first = expr[0];
+    const last = expr[expr.length - 1];
+    if (
+      (first === '"' && last === '"') ||
+      (first === "'" && last === "'")
+    ) {
+      const inner = expr.slice(1, -1);
+      if (!inner.includes("\\") && !inner.includes(first)) {
+        return inner;
+      }
+    }
+  }
+  if (/^[a-zA-Z0-9_]+$/.test(expr)) {
+    return expr;
+  }
+  return null;
+}
+
+/**
+ * Normalize a quoted string literal into a par-gen regexp pattern by escaping
+ * regex metacharacters when needed.
+ *
+ * @param {string} expr
+ * @returns {string}
+ */
+function normalizeTokenExpr(expr) {
+  if (expr.length >= 2) {
+    const first = expr[0];
+    const last = expr[expr.length - 1];
+    if (
+      (first === '"' && last === '"') ||
+      (first === "'" && last === "'")
+    ) {
+      const inner = expr.slice(1, -1);
+      if (!inner.includes("\\") && !inner.includes(first)) {
+        return inner.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+    }
+  }
+  return expr;
+}
+
+/** @type {Token[]} */
+const DEFAULT_SPECIAL_TOKENS = [
+  { uid: -1, name: "@par-gen.EOF", expr: "", state: ["initial"] },
+  { uid: -2, name: "@par-gen.ERROR", expr: "", state: ["initial"] },
+];
+
+/**
+ * Compile or retrieve a cached DFA entry for a token, regex expression, or LexerData.
+ *
+ * @param {Token | LexerData | string} source
+ * @param {Token[]} [specialTokens]
+ * @returns {CompiledDfaEntry}
+ */
+function getOrCompileDfa(source, specialTokens = []) {
+  if (
+    typeof source === "object" &&
+    source !== null &&
+    "transitions" in source &&
+    "finals" in source
+  ) {
+    let entry = lexerDataCache.get(source);
+    if (!entry) {
+      /** @type {Map<number, Map<number, number>>} */
+      const transMap = new Map();
+      for (const [from, tr] of source.transitions) {
+        transMap.set(from, new Map(tr));
+      }
+      entry = {
+        dfa: source,
+        transMap,
+        finalSet: new Set(source.finals),
+      };
+      lexerDataCache.set(source, entry);
+    }
+    return entry;
+  }
+
+  const rawExpr = typeof source === "string" ? source : source.expr;
+  const expr = normalizeTokenExpr(rawExpr);
+  const effectiveSpecial =
+    specialTokens.length > 0 ? specialTokens : DEFAULT_SPECIAL_TOKENS;
+  const cacheKey = expr;
+  let entry = dfaCache.get(cacheKey);
+  if (!entry) {
+    /** @type {Token} */
+    const tokenObj =
+      typeof source === "string" || rawExpr !== expr
+        ? {
+            uid: typeof source === "string" ? 0 : source.uid,
+            name: typeof source === "string" ? "cand" : source.name,
+            expr,
+            state: ["initial"],
+          }
+        : source;
+    const dfa = generateFromTokens([tokenObj, ...effectiveSpecial]);
+    /** @type {Map<number, Map<number, number>>} */
+    const transMap = new Map();
+    for (const [from, tr] of dfa.transitions) {
+      transMap.set(from, new Map(tr));
+    }
+    entry = {
+      dfa,
+      transMap,
+      finalSet: new Set(dfa.finals),
+    };
+    dfaCache.set(cacheKey, entry);
+  }
+  return entry;
+}
+
+/**
+ * Test whether the regular language of `subTokenOrExpr` is a subset of `supDfaOrExpr`.
+ * Includes a literal fast-path and DFA caching so repeated checks do not recompile NFAs/DFAs.
+ *
+ * @param {Token | string} candidateToken
+ * @param {LexerData | Token | string} wordDfa
+ * @param {Token[]} [specialTokens]
  * @returns {boolean}
  */
-function isTokenLanguageSubset(candidateToken, wordDfa, specialTokens) {
-  const candDfa = generateFromTokens([candidateToken, ...specialTokens]);
+export function isTokenLanguageSubset(
+  candidateToken,
+  wordDfa,
+  specialTokens = []
+) {
+  const subExpr =
+    typeof candidateToken === "string" ? candidateToken : candidateToken.expr;
+  if (subExpr === "") {
+    return false;
+  }
+
+  const subLit = extractSimpleLiteral(subExpr);
+  const supExpr =
+    typeof wordDfa === "string"
+      ? wordDfa
+      : "expr" in wordDfa
+      ? wordDfa.expr
+      : null;
+
+  if (subLit !== null && supExpr !== null) {
+    const supLit = extractSimpleLiteral(supExpr);
+    if (supLit !== null) {
+      return subLit.length > 0 && subLit === supLit;
+    }
+  }
+
+  const supEntry = getOrCompileDfa(wordDfa, specialTokens);
+  if (supEntry.finalSet.size === 0) {
+    return false;
+  }
+
+  if (subLit !== null) {
+    if (subLit.length === 0) {
+      return false;
+    }
+    const bytes = Buffer.from(subLit, "utf8");
+    let state = supEntry.dfa.start;
+    for (let i = 0; i < bytes.length; i++) {
+      const next =
+        supEntry.transMap.get(state)?.get(bytes[i]) ?? supEntry.dfa.errorState;
+      if (next === supEntry.dfa.errorState) {
+        return false;
+      }
+      state = next;
+    }
+    return supEntry.finalSet.has(state);
+  }
+
+  const candEntry = getOrCompileDfa(candidateToken, specialTokens);
+  const candDfa = candEntry.dfa;
   if (candDfa.finals.length === 0) {
     return false;
   }
 
-  /** @type {Map<number, Map<number, number>>} */
-  const wordTrans = new Map();
-  for (const [from, tr] of wordDfa.transitions) {
-    wordTrans.set(from, new Map(tr));
-  }
-  const wordFinalSet = new Set(wordDfa.finals);
-
-  const candTrans = new Map(candDfa.transitions);
-  const candFinalSet = new Set(candDfa.finals);
+  const wordDfaObj = supEntry.dfa;
+  const wordTrans = supEntry.transMap;
+  const wordFinalSet = supEntry.finalSet;
+  const candTrans = candEntry.transMap;
+  const candFinalSet = candEntry.finalSet;
 
   /** @type {Array<[number, number]>} */
-  const queue = [[candDfa.start, wordDfa.start]];
+  const queue = [[candDfa.start, wordDfaObj.start]];
   /** @type {Set<string>} */
-  const visited = new Set([`${candDfa.start}:${wordDfa.start}`]);
+  const visited = new Set([`${candDfa.start}:${wordDfaObj.start}`]);
 
   while (queue.length > 0) {
     const pair = queue.shift();
@@ -105,14 +300,17 @@ function isTokenLanguageSubset(candidateToken, wordDfa, specialTokens) {
     if (candFinalSet.has(sC) && !wordFinalSet.has(sW)) {
       return false;
     }
-    const trC = candTrans.get(sC) ?? [];
+    const trC = candTrans.get(sC);
     const trW = wordTrans.get(sW);
+    if (!trC) {
+      continue;
+    }
     for (const [byte, nextC] of trC) {
       if (nextC === candDfa.errorState) {
         continue;
       }
-      const nextW = trW?.get(byte) ?? wordDfa.errorState;
-      if (nextW === wordDfa.errorState) {
+      const nextW = trW?.get(byte) ?? wordDfaObj.errorState;
+      if (nextW === wordDfaObj.errorState) {
         return false;
       }
       const key = `${nextC}:${nextW}`;
@@ -343,12 +541,24 @@ export function generate(grammar, options) {
       ...rules,
     ];
 
+    const nullable = calculateNullable(augmentedRules);
+    const firsts = calculateFirsts(parserTokens, augmentedRules, nullable);
+    const precContext = buildPrecedenceContext(
+      augmentedRules,
+      parserTokens,
+      effectiveOptions,
+      nullable,
+      firsts
+    );
+    const precomputed = { precContext, nullable, firsts };
+
     log("start createDFA (rules=%d, tokens=%d)", augmentedRules.length, parserTokens.length);
     const dfa = createDFA(
       parserTokens,
       EOF,
       augmentedRules,
-      effectiveOptions
+      effectiveOptions,
+      precomputed
     );
     log("done createDFA (states=%d)", dfa.description.states.length);
 
@@ -357,7 +567,8 @@ export function generate(grammar, options) {
       EOF,
       augmentedRules,
       parserTokens,
-      effectiveOptions
+      effectiveOptions,
+      precomputed
     );
     log("done createActionTable");
     const goto = createGotoTable(dfa, augmentedRules);
@@ -651,15 +862,22 @@ export function generate(grammar, options) {
  * @param {string} EOF
  * @param {Rule[]} rules
  * @param {ParseOptions=} options
+ * @param {{ precContext?: PrecedenceContext, nullable?: Set<string>, firsts?: Map<string, Set<Token>> }=} precomputed
  * @returns {DFA<ItemState, string>}
  */
-function createDFA(tokens, EOF, rules, options) {
+function createDFA(tokens, EOF, rules, options, precomputed) {
   const {
     states,
     transitions,
     start,
     finals,
-  } = calculateStatesAndTransitionTable(tokens, EOF, rules, options);
+  } = calculateStatesAndTransitionTable(
+    tokens,
+    EOF,
+    rules,
+    options,
+    precomputed
+  );
 
   /** @type {DFADescription<ItemState, string>} */
   const description = {
@@ -1943,26 +2161,30 @@ function canMergeCoreGroup(group, precContext) {
  * @param {string} EOF
  * @param {Rule[]} rules
  * @param {ParseOptions=} options
+ * @param {{ precContext?: PrecedenceContext, nullable?: Set<string>, firsts?: Map<string, Set<Token>> }=} precomputed
  * @returns {{states: ItemState[], transitions: Map<ItemState, Map<string, ItemState>>, start: ItemState, finals: ItemState[]}}
  */
-function calculateStatesAndTransitionTable(tokens, EOF, rules, options) {
+function calculateStatesAndTransitionTable(
+  tokens,
+  EOF,
+  rules,
+  options,
+  precomputed
+) {
   /** @type {Map<ItemState, Map<string, ItemState>>} */
   const transitions = new Map();
 
   const items = createItems(tokens, EOF, rules);
 
   log("createItems done (%d items)", items.length);
-  const nullable = calculateNullable(rules);
-  const firsts = calculateFirsts(tokens, rules, nullable);
+  const nullable = precomputed?.nullable ?? calculateNullable(rules);
+  const firsts =
+    precomputed?.firsts ?? calculateFirsts(tokens, rules, nullable);
   const follows = calculateFollows(firsts, tokens, EOF, rules, nullable);
   log("nullable/firsts/follows done");
-  const precContext = buildPrecedenceContext(
-    rules,
-    tokens,
-    options,
-    nullable,
-    firsts
-  );
+  const precContext =
+    precomputed?.precContext ??
+    buildPrecedenceContext(rules, tokens, options, nullable, firsts);
 
   /** @type {ItemState[]} */
   const itemSets = [];
@@ -2486,13 +2708,29 @@ function calculateStatesAndTransitionTable(tokens, EOF, rules, options) {
  * @param {Rule[]=} rules
  * @param {Token[]=} tokens
  * @param {ParseOptions=} options
+ * @param {{ precContext?: PrecedenceContext, nullable?: Set<string>, firsts?: Map<string, Set<Token>> }=} precomputed
  * @returns {Map<ItemState, Map<string, Actions>>}
  */
-function createActionTable(dfa, EOF, rules = [], tokens = [], options) {
+function createActionTable(
+  dfa,
+  EOF,
+  rules = [],
+  tokens = [],
+  options,
+  precomputed
+) {
   /** @type {Map<ItemState, Map<string, Actions>>} */
   const actions = new Map();
 
-  const precContext = buildPrecedenceContext(rules, tokens, options);
+  const precContext =
+    precomputed?.precContext ??
+    buildPrecedenceContext(
+      rules,
+      tokens,
+      options,
+      precomputed?.nullable,
+      precomputed?.firsts
+    );
 
   dfa.description.states.forEach((currentState) => {
     const transition = dfa.description.transitions.get(currentState);

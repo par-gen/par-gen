@@ -112,6 +112,7 @@ export declare const CstNode: {
   ): CstNode<Name>;
 };
 
+export declare const SymbolNames: ReadonlyArray<string>;
 export declare const SymbolIds: { readonly [key: string]: number };
 
 export function reemitLossless(
