@@ -80,6 +80,51 @@ table[7284] = 5120; // TRUE
 table[7291] = 5; // CURLY_OPEN
 table[7293] = 6; // CURLY_CLOSE
 
+const fast_1536 = new Uint8Array(256);
+for (let j = 0; j < 256; j++) fast_1536[j] = table[1536 + j] === 1536 ? 0 : 1;
+let cachedInput_1536 = null;
+let cachedDv_1536 = null;
+const scan_1536 = (input, i, l) => {
+  const dv =
+    input === cachedInput_1536
+      ? cachedDv_1536
+      : ((cachedInput_1536 = input),
+        (cachedDv_1536 = new DataView(
+          input.buffer,
+          input.byteOffset,
+          input.byteLength
+        )));
+  const l8 = l - 7;
+  while (i < l8) {
+    const w0 = dv.getUint32(i, true);
+    if (
+      (((w0 - 0x1010101) |
+        ((w0 ^ 0x22222222) - 0x01010101) |
+        ((w0 ^ 0x5c5c5c5c) - 0x01010101) |
+        w0) &
+        0x80808080) !==
+      0
+    )
+      break;
+    const w1 = dv.getUint32(i + 4, true);
+    if (
+      (((w1 - 0x1010101) |
+        ((w1 ^ 0x22222222) - 0x01010101) |
+        ((w1 ^ 0x5c5c5c5c) - 0x01010101) |
+        w1) &
+        0x80808080) !==
+      0
+    ) {
+      i += 4;
+      break;
+    }
+    i += 8;
+  }
+  const f = fast_1536;
+  while (i < l && f[input[i]] === 0) i++;
+  return i;
+};
+
 /**
  * @param {Uint8Array} input
  * @param {number} offset
@@ -105,11 +150,12 @@ const next = (input, offset) => {
       state = 1;
     } else
       while (true) {
+        if (state === 1536) {
+          i = scan_1536(input, i, l);
+          if (i < l) state = t[input[i++] + 1536];
+        }
         if (state > 1536) {
           while (i < l && (state = t[state + input[i++]]) > 1536);
-        }
-        if (state === 1536) {
-          while (i < l && (state = t[input[i++] + 1536]) === 1536);
         }
         if (state <= 12) {
           break;

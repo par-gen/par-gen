@@ -1044,7 +1044,7 @@ const SymbolIds = Object.freeze({
 });
 
 const actionsTable = new Uint16Array(95840).fill(0xffff);
-actionsTable.fill(798, 0, 5); // 'state 0' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 0, 5); // 'state 0' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[5] = 2; // 'state 0' -> { -> shift (target=1, len=0)
 actionsTable[7] = 800; // 'state 0' -> if -> shift (target=400, len=0)
 actionsTable[8] = 4; // 'state 0' -> ( -> shift (target=2, len=0)
@@ -1052,7 +1052,7 @@ actionsTable[11] = 802; // 'state 0' -> while -> shift (target=401, len=0)
 actionsTable[12] = 6; // 'state 0' -> do -> shift (target=3, len=0)
 actionsTable[14] = 804; // 'state 0' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 15, 18); // 'state 0' -> const..var -> shift (target=4, len=0)
-actionsTable[18] = 806; // 'state 0' -> of -> shift (target=403, len=0)
+actionsTable[18] = 33636; // 'state 0' -> of -> shift+reduce (target=178, len=1)
 actionsTable[20] = 10; // 'state 0' -> return -> shift (target=5, len=0)
 actionsTable[21] = 12; // 'state 0' -> throw -> shift (target=6, len=0)
 actionsTable[22] = 14; // 'state 0' -> try -> shift (target=7, len=0)
@@ -1060,13 +1060,13 @@ actionsTable[25] = 808; // 'state 0' -> switch -> shift (target=404, len=0)
 actionsTable[29] = 810; // 'state 0' -> break -> shift (target=405, len=0)
 actionsTable[30] = 812; // 'state 0' -> continue -> shift (target=406, len=0)
 actionsTable[31] = 16; // 'state 0' -> import -> shift (target=8, len=0)
-actionsTable[32] = 806; // 'state 0' -> from -> shift (target=403, len=0)
+actionsTable[32] = 33636; // 'state 0' -> from -> shift+reduce (target=178, len=1)
 actionsTable[36] = 814; // 'state 0' -> type -> shift (target=407, len=0)
 actionsTable[37] = 18; // 'state 0' -> export -> shift (target=9, len=0)
 actionsTable[41] = 20; // 'state 0' -> [ -> shift (target=10, len=0)
 actionsTable[43] = 22; // 'state 0' -> async -> shift (target=11, len=0)
 actionsTable[44] = 24; // 'state 0' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 47, 49); // 'state 0' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 47, 49); // 'state 0' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[49] = 26; // 'state 0' -> class -> shift (target=13, len=0)
 actionsTable[52] = 816; // 'state 0' -> interface -> shift (target=408, len=0)
 actionsTable[54] = 28; // 'state 0' -> < -> shift (target=14, len=0)
@@ -1076,10 +1076,10 @@ actionsTable.fill(30, 69, 71); // 'state 0' -> +..- -> shift (target=15, len=0)
 actionsTable.fill(30, 72, 75); // 'state 0' -> !..delete -> shift (target=15, len=0)
 actionsTable[75] = 34; // 'state 0' -> await -> shift (target=17, len=0)
 actionsTable[78] = 818; // 'state 0' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 80, 83); // 'state 0' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 80, 83); // 'state 0' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[89] = 36; // 'state 0' -> update_operator -> shift (target=18, len=0)
-actionsTable[90] = 798; // 'state 0' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 128, 133); // 'state 1' -> true..super -> shift (target=399, len=0)
+actionsTable[90] = 33638; // 'state 0' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 128, 133); // 'state 1' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[133] = 2; // 'state 1' -> { -> shift (target=1, len=0)
 actionsTable[134] = 836; // 'state 1' -> } -> shift (target=418, len=0)
 actionsTable[135] = 800; // 'state 1' -> if -> shift (target=400, len=0)
@@ -1088,7 +1088,7 @@ actionsTable[139] = 802; // 'state 1' -> while -> shift (target=401, len=0)
 actionsTable[140] = 6; // 'state 1' -> do -> shift (target=3, len=0)
 actionsTable[142] = 804; // 'state 1' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 143, 146); // 'state 1' -> const..var -> shift (target=4, len=0)
-actionsTable[146] = 806; // 'state 1' -> of -> shift (target=403, len=0)
+actionsTable[146] = 33636; // 'state 1' -> of -> shift+reduce (target=178, len=1)
 actionsTable[148] = 10; // 'state 1' -> return -> shift (target=5, len=0)
 actionsTable[149] = 12; // 'state 1' -> throw -> shift (target=6, len=0)
 actionsTable[150] = 14; // 'state 1' -> try -> shift (target=7, len=0)
@@ -1096,7 +1096,7 @@ actionsTable[153] = 808; // 'state 1' -> switch -> shift (target=404, len=0)
 actionsTable[157] = 810; // 'state 1' -> break -> shift (target=405, len=0)
 actionsTable[158] = 812; // 'state 1' -> continue -> shift (target=406, len=0)
 actionsTable[159] = 16; // 'state 1' -> import -> shift (target=8, len=0)
-actionsTable[160] = 806; // 'state 1' -> from -> shift (target=403, len=0)
+actionsTable[160] = 33636; // 'state 1' -> from -> shift+reduce (target=178, len=1)
 actionsTable[164] = 814; // 'state 1' -> type -> shift (target=407, len=0)
 actionsTable[165] = 18; // 'state 1' -> export -> shift (target=9, len=0)
 actionsTable[168] = 48; // 'state 1' -> ... -> shift (target=24, len=0)
@@ -1114,21 +1114,21 @@ actionsTable.fill(30, 200, 203); // 'state 1' -> !..delete -> shift (target=15, 
 actionsTable[203] = 34; // 'state 1' -> await -> shift (target=17, len=0)
 actionsTable[206] = 838; // 'state 1' -> identifier -> shift (target=419, len=0)
 actionsTable.fill(840, 208, 210); // 'state 1' -> number..string -> shift (target=420, len=0)
-actionsTable[210] = 798; // 'state 1' -> template_string -> shift (target=399, len=0)
+actionsTable[210] = 33638; // 'state 1' -> template_string -> shift+reduce (target=179, len=1)
 actionsTable[217] = 36; // 'state 1' -> update_operator -> shift (target=18, len=0)
-actionsTable[218] = 798; // 'state 1' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 256, 261); // 'state 2' -> true..super -> shift (target=399, len=0)
+actionsTable[218] = 33638; // 'state 1' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 256, 261); // 'state 2' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[261] = 68; // 'state 2' -> { -> shift (target=34, len=0)
 actionsTable[264] = 4; // 'state 2' -> ( -> shift (target=2, len=0)
 actionsTable[265] = 134; // 'state 2' -> ) -> shift (target=67, len=0)
-actionsTable[274] = 806; // 'state 2' -> of -> shift (target=403, len=0)
-actionsTable[288] = 806; // 'state 2' -> from -> shift (target=403, len=0)
-actionsTable[292] = 806; // 'state 2' -> type -> shift (target=403, len=0)
+actionsTable[274] = 33636; // 'state 2' -> of -> shift+reduce (target=178, len=1)
+actionsTable[288] = 33636; // 'state 2' -> from -> shift+reduce (target=178, len=1)
+actionsTable[292] = 33636; // 'state 2' -> type -> shift+reduce (target=178, len=1)
 actionsTable[296] = 170; // 'state 2' -> ... -> shift (target=85, len=0)
 actionsTable[297] = 20; // 'state 2' -> [ -> shift (target=10, len=0)
 actionsTable[299] = 70; // 'state 2' -> async -> shift (target=35, len=0)
 actionsTable[300] = 72; // 'state 2' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 303, 305); // 'state 2' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 303, 305); // 'state 2' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[305] = 74; // 'state 2' -> class -> shift (target=37, len=0)
 actionsTable[310] = 28; // 'state 2' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 315, 317); // 'state 2' -> void..typeof -> shift (target=15, len=0)
@@ -1137,10 +1137,10 @@ actionsTable.fill(30, 325, 327); // 'state 2' -> +..- -> shift (target=15, len=0
 actionsTable.fill(30, 328, 331); // 'state 2' -> !..delete -> shift (target=15, len=0)
 actionsTable[331] = 34; // 'state 2' -> await -> shift (target=17, len=0)
 actionsTable[334] = 172; // 'state 2' -> identifier -> shift (target=86, len=0)
-actionsTable.fill(798, 336, 339); // 'state 2' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 336, 339); // 'state 2' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[345] = 36; // 'state 2' -> update_operator -> shift (target=18, len=0)
-actionsTable[346] = 798; // 'state 2' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 384, 389); // 'state 3' -> true..super -> shift (target=399, len=0)
+actionsTable[346] = 33638; // 'state 2' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 384, 389); // 'state 3' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[389] = 2; // 'state 3' -> { -> shift (target=1, len=0)
 actionsTable[391] = 800; // 'state 3' -> if -> shift (target=400, len=0)
 actionsTable[392] = 4; // 'state 3' -> ( -> shift (target=2, len=0)
@@ -1148,7 +1148,7 @@ actionsTable[395] = 802; // 'state 3' -> while -> shift (target=401, len=0)
 actionsTable[396] = 6; // 'state 3' -> do -> shift (target=3, len=0)
 actionsTable[398] = 804; // 'state 3' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 399, 402); // 'state 3' -> const..var -> shift (target=4, len=0)
-actionsTable[402] = 806; // 'state 3' -> of -> shift (target=403, len=0)
+actionsTable[402] = 33636; // 'state 3' -> of -> shift+reduce (target=178, len=1)
 actionsTable[404] = 10; // 'state 3' -> return -> shift (target=5, len=0)
 actionsTable[405] = 12; // 'state 3' -> throw -> shift (target=6, len=0)
 actionsTable[406] = 14; // 'state 3' -> try -> shift (target=7, len=0)
@@ -1156,13 +1156,13 @@ actionsTable[409] = 808; // 'state 3' -> switch -> shift (target=404, len=0)
 actionsTable[413] = 810; // 'state 3' -> break -> shift (target=405, len=0)
 actionsTable[414] = 812; // 'state 3' -> continue -> shift (target=406, len=0)
 actionsTable[415] = 16; // 'state 3' -> import -> shift (target=8, len=0)
-actionsTable[416] = 806; // 'state 3' -> from -> shift (target=403, len=0)
+actionsTable[416] = 33636; // 'state 3' -> from -> shift+reduce (target=178, len=1)
 actionsTable[420] = 814; // 'state 3' -> type -> shift (target=407, len=0)
 actionsTable[421] = 18; // 'state 3' -> export -> shift (target=9, len=0)
 actionsTable[425] = 20; // 'state 3' -> [ -> shift (target=10, len=0)
 actionsTable[427] = 22; // 'state 3' -> async -> shift (target=11, len=0)
 actionsTable[428] = 24; // 'state 3' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 431, 433); // 'state 3' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 431, 433); // 'state 3' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[433] = 26; // 'state 3' -> class -> shift (target=13, len=0)
 actionsTable[436] = 816; // 'state 3' -> interface -> shift (target=408, len=0)
 actionsTable[438] = 28; // 'state 3' -> < -> shift (target=14, len=0)
@@ -1172,30 +1172,30 @@ actionsTable.fill(30, 453, 455); // 'state 3' -> +..- -> shift (target=15, len=0
 actionsTable.fill(30, 456, 459); // 'state 3' -> !..delete -> shift (target=15, len=0)
 actionsTable[459] = 34; // 'state 3' -> await -> shift (target=17, len=0)
 actionsTable[462] = 818; // 'state 3' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 464, 467); // 'state 3' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 464, 467); // 'state 3' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[473] = 36; // 'state 3' -> update_operator -> shift (target=18, len=0)
-actionsTable[474] = 798; // 'state 3' -> regex -> shift (target=399, len=0)
+actionsTable[474] = 33638; // 'state 3' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[517] = 122; // 'state 4' -> { -> shift (target=61, len=0)
 actionsTable[553] = 124; // 'state 4' -> [ -> shift (target=62, len=0)
-actionsTable[590] = 894; // 'state 4' -> identifier -> shift (target=447, len=0)
-actionsTable.fill(798, 640, 645); // 'state 5' -> true..super -> shift (target=399, len=0)
+actionsTable[590] = 33536; // 'state 4' -> identifier -> shift+reduce (target=128, len=1)
+actionsTable.fill(33638, 640, 645); // 'state 5' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[645] = 68; // 'state 5' -> { -> shift (target=34, len=0)
 actionsTable.fill(721, 646, 648); // 'state 5' -> }..if -> reduce (target=104, len=1)
 actionsTable[648] = 4; // 'state 5' -> ( -> shift (target=2, len=0)
 actionsTable.fill(721, 650, 653); // 'state 5' -> else..do -> reduce (target=104, len=1)
 actionsTable[653] = 852; // 'state 5' -> ; -> shift (target=426, len=0)
 actionsTable.fill(721, 654, 658); // 'state 5' -> for..var -> reduce (target=104, len=1)
-actionsTable[658] = 806; // 'state 5' -> of -> shift (target=403, len=0)
+actionsTable[658] = 33636; // 'state 5' -> of -> shift+reduce (target=178, len=1)
 actionsTable.fill(721, 660, 663); // 'state 5' -> return..try -> reduce (target=104, len=1)
 actionsTable.fill(721, 665, 667); // 'state 5' -> switch..case -> reduce (target=104, len=1)
 actionsTable.fill(721, 668, 672); // 'state 5' -> default..import -> reduce (target=104, len=1)
-actionsTable[672] = 806; // 'state 5' -> from -> shift (target=403, len=0)
-actionsTable[676] = 806; // 'state 5' -> type -> shift (target=403, len=0)
+actionsTable[672] = 33636; // 'state 5' -> from -> shift+reduce (target=178, len=1)
+actionsTable[676] = 33636; // 'state 5' -> type -> shift+reduce (target=178, len=1)
 actionsTable[677] = 721; // 'state 5' -> export -> reduce (target=104, len=1)
 actionsTable[681] = 20; // 'state 5' -> [ -> shift (target=10, len=0)
 actionsTable[683] = 70; // 'state 5' -> async -> shift (target=35, len=0)
 actionsTable[684] = 72; // 'state 5' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 687, 689); // 'state 5' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 687, 689); // 'state 5' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[689] = 74; // 'state 5' -> class -> shift (target=37, len=0)
 actionsTable[692] = 721; // 'state 5' -> interface -> reduce (target=104, len=1)
 actionsTable[694] = 28; // 'state 5' -> < -> shift (target=14, len=0)
@@ -1205,20 +1205,20 @@ actionsTable.fill(30, 709, 711); // 'state 5' -> +..- -> shift (target=15, len=0
 actionsTable.fill(30, 712, 715); // 'state 5' -> !..delete -> shift (target=15, len=0)
 actionsTable[715] = 34; // 'state 5' -> await -> shift (target=17, len=0)
 actionsTable[718] = 818; // 'state 5' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 720, 723); // 'state 5' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 720, 723); // 'state 5' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[729] = 36; // 'state 5' -> update_operator -> shift (target=18, len=0)
-actionsTable[730] = 798; // 'state 5' -> regex -> shift (target=399, len=0)
+actionsTable[730] = 33638; // 'state 5' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[731] = 721; // 'state 5' -> @par-gen.EOF -> reduce (target=104, len=1)
-actionsTable.fill(798, 768, 773); // 'state 6' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 768, 773); // 'state 6' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[773] = 68; // 'state 6' -> { -> shift (target=34, len=0)
 actionsTable[776] = 4; // 'state 6' -> ( -> shift (target=2, len=0)
-actionsTable[786] = 806; // 'state 6' -> of -> shift (target=403, len=0)
-actionsTable[800] = 806; // 'state 6' -> from -> shift (target=403, len=0)
-actionsTable[804] = 806; // 'state 6' -> type -> shift (target=403, len=0)
+actionsTable[786] = 33636; // 'state 6' -> of -> shift+reduce (target=178, len=1)
+actionsTable[800] = 33636; // 'state 6' -> from -> shift+reduce (target=178, len=1)
+actionsTable[804] = 33636; // 'state 6' -> type -> shift+reduce (target=178, len=1)
 actionsTable[809] = 20; // 'state 6' -> [ -> shift (target=10, len=0)
 actionsTable[811] = 70; // 'state 6' -> async -> shift (target=35, len=0)
 actionsTable[812] = 72; // 'state 6' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 815, 817); // 'state 6' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 815, 817); // 'state 6' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[817] = 74; // 'state 6' -> class -> shift (target=37, len=0)
 actionsTable[822] = 28; // 'state 6' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 827, 829); // 'state 6' -> void..typeof -> shift (target=15, len=0)
@@ -1227,9 +1227,9 @@ actionsTable.fill(30, 837, 839); // 'state 6' -> +..- -> shift (target=15, len=0
 actionsTable.fill(30, 840, 843); // 'state 6' -> !..delete -> shift (target=15, len=0)
 actionsTable[843] = 34; // 'state 6' -> await -> shift (target=17, len=0)
 actionsTable[846] = 818; // 'state 6' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 848, 851); // 'state 6' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 848, 851); // 'state 6' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[857] = 36; // 'state 6' -> update_operator -> shift (target=18, len=0)
-actionsTable[858] = 798; // 'state 6' -> regex -> shift (target=399, len=0)
+actionsTable[858] = 33638; // 'state 6' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[901] = 80; // 'state 7' -> { -> shift (target=40, len=0)
 actionsTable[1029] = 116; // 'state 8' -> { -> shift (target=58, len=0)
 actionsTable[1058] = 870; // 'state 8' -> * -> shift (target=435, len=0)
@@ -1247,19 +1247,19 @@ actionsTable[1195] = 884; // 'state 9' -> async -> shift (target=442, len=0)
 actionsTable[1196] = 886; // 'state 9' -> function -> shift (target=443, len=0)
 actionsTable[1201] = 888; // 'state 9' -> class -> shift (target=444, len=0)
 actionsTable[1204] = 816; // 'state 9' -> interface -> shift (target=408, len=0)
-actionsTable.fill(798, 1280, 1285); // 'state 10' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 1280, 1285); // 'state 10' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[1285] = 68; // 'state 10' -> { -> shift (target=34, len=0)
 actionsTable[1288] = 4; // 'state 10' -> ( -> shift (target=2, len=0)
-actionsTable[1298] = 806; // 'state 10' -> of -> shift (target=403, len=0)
-actionsTable[1312] = 806; // 'state 10' -> from -> shift (target=403, len=0)
+actionsTable[1298] = 33636; // 'state 10' -> of -> shift+reduce (target=178, len=1)
+actionsTable[1312] = 33636; // 'state 10' -> from -> shift+reduce (target=178, len=1)
 actionsTable[1313] = 192; // 'state 10' -> , -> shift (target=96, len=0)
-actionsTable[1316] = 806; // 'state 10' -> type -> shift (target=403, len=0)
+actionsTable[1316] = 33636; // 'state 10' -> type -> shift+reduce (target=178, len=1)
 actionsTable[1320] = 48; // 'state 10' -> ... -> shift (target=24, len=0)
 actionsTable[1321] = 20; // 'state 10' -> [ -> shift (target=10, len=0)
 actionsTable[1322] = 906; // 'state 10' -> ] -> shift (target=453, len=0)
 actionsTable[1323] = 70; // 'state 10' -> async -> shift (target=35, len=0)
 actionsTable[1324] = 72; // 'state 10' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 1327, 1329); // 'state 10' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 1327, 1329); // 'state 10' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[1329] = 74; // 'state 10' -> class -> shift (target=37, len=0)
 actionsTable[1334] = 28; // 'state 10' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 1339, 1341); // 'state 10' -> void..typeof -> shift (target=15, len=0)
@@ -1268,9 +1268,9 @@ actionsTable.fill(30, 1349, 1351); // 'state 10' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 1352, 1355); // 'state 10' -> !..delete -> shift (target=15, len=0)
 actionsTable[1355] = 34; // 'state 10' -> await -> shift (target=17, len=0)
 actionsTable[1358] = 818; // 'state 10' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 1360, 1363); // 'state 10' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 1360, 1363); // 'state 10' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[1369] = 36; // 'state 10' -> update_operator -> shift (target=18, len=0)
-actionsTable[1370] = 798; // 'state 10' -> regex -> shift (target=399, len=0)
+actionsTable[1370] = 33638; // 'state 10' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(869, 1408, 1416); // 'state 11' -> true..if -> reduce (target=178, len=1)
 actionsTable[1416] = 130; // 'state 11' -> ( -> shift (target=65, len=0)
 actionsTable.fill(869, 1418, 1431); // 'state 11' -> else..try -> reduce (target=178, len=1)
@@ -1299,16 +1299,16 @@ actionsTable[1715] = 150; // 'state 13' -> implements -> shift (target=75, len=0
 actionsTable[1718] = 28; // 'state 13' -> < -> shift (target=14, len=0)
 actionsTable[1742] = 152; // 'state 13' -> identifier -> shift (target=76, len=0)
 actionsTable[1870] = 908; // 'state 14' -> identifier -> shift (target=454, len=0)
-actionsTable.fill(798, 1920, 1925); // 'state 15' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 1920, 1925); // 'state 15' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[1925] = 68; // 'state 15' -> { -> shift (target=34, len=0)
 actionsTable[1928] = 4; // 'state 15' -> ( -> shift (target=2, len=0)
-actionsTable[1938] = 806; // 'state 15' -> of -> shift (target=403, len=0)
-actionsTable[1952] = 806; // 'state 15' -> from -> shift (target=403, len=0)
-actionsTable[1956] = 806; // 'state 15' -> type -> shift (target=403, len=0)
+actionsTable[1938] = 33636; // 'state 15' -> of -> shift+reduce (target=178, len=1)
+actionsTable[1952] = 33636; // 'state 15' -> from -> shift+reduce (target=178, len=1)
+actionsTable[1956] = 33636; // 'state 15' -> type -> shift+reduce (target=178, len=1)
 actionsTable[1961] = 20; // 'state 15' -> [ -> shift (target=10, len=0)
 actionsTable[1963] = 70; // 'state 15' -> async -> shift (target=35, len=0)
 actionsTable[1964] = 72; // 'state 15' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 1967, 1969); // 'state 15' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 1967, 1969); // 'state 15' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[1969] = 74; // 'state 15' -> class -> shift (target=37, len=0)
 actionsTable[1974] = 28; // 'state 15' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 1979, 1981); // 'state 15' -> void..typeof -> shift (target=15, len=0)
@@ -1317,33 +1317,33 @@ actionsTable.fill(30, 1989, 1991); // 'state 15' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 1992, 1995); // 'state 15' -> !..delete -> shift (target=15, len=0)
 actionsTable[1995] = 34; // 'state 15' -> await -> shift (target=17, len=0)
 actionsTable[1998] = 818; // 'state 15' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 2000, 2003); // 'state 15' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 2000, 2003); // 'state 15' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[2009] = 36; // 'state 15' -> update_operator -> shift (target=18, len=0)
-actionsTable[2010] = 798; // 'state 15' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 2048, 2053); // 'state 16' -> true..super -> shift (target=399, len=0)
+actionsTable[2010] = 33638; // 'state 15' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 2048, 2053); // 'state 16' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[2053] = 68; // 'state 16' -> { -> shift (target=34, len=0)
 actionsTable[2056] = 188; // 'state 16' -> ( -> shift (target=94, len=0)
-actionsTable[2066] = 806; // 'state 16' -> of -> shift (target=403, len=0)
-actionsTable[2080] = 806; // 'state 16' -> from -> shift (target=403, len=0)
-actionsTable[2084] = 806; // 'state 16' -> type -> shift (target=403, len=0)
+actionsTable[2066] = 33636; // 'state 16' -> of -> shift+reduce (target=178, len=1)
+actionsTable[2080] = 33636; // 'state 16' -> from -> shift+reduce (target=178, len=1)
+actionsTable[2084] = 33636; // 'state 16' -> type -> shift+reduce (target=178, len=1)
 actionsTable[2089] = 20; // 'state 16' -> [ -> shift (target=10, len=0)
 actionsTable[2091] = 904; // 'state 16' -> async -> shift (target=452, len=0)
 actionsTable[2092] = 72; // 'state 16' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 2095, 2097); // 'state 16' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 2095, 2097); // 'state 16' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[2097] = 74; // 'state 16' -> class -> shift (target=37, len=0)
-actionsTable[2126] = 798; // 'state 16' -> identifier -> shift (target=399, len=0)
-actionsTable.fill(798, 2128, 2131); // 'state 16' -> number..template_string -> shift (target=399, len=0)
-actionsTable[2138] = 798; // 'state 16' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 2176, 2181); // 'state 17' -> true..super -> shift (target=399, len=0)
+actionsTable[2126] = 33638; // 'state 16' -> identifier -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 2128, 2131); // 'state 16' -> number..template_string -> shift+reduce (target=179, len=1)
+actionsTable[2138] = 33638; // 'state 16' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 2176, 2181); // 'state 17' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[2181] = 68; // 'state 17' -> { -> shift (target=34, len=0)
 actionsTable[2184] = 4; // 'state 17' -> ( -> shift (target=2, len=0)
-actionsTable[2194] = 806; // 'state 17' -> of -> shift (target=403, len=0)
-actionsTable[2208] = 806; // 'state 17' -> from -> shift (target=403, len=0)
-actionsTable[2212] = 806; // 'state 17' -> type -> shift (target=403, len=0)
+actionsTable[2194] = 33636; // 'state 17' -> of -> shift+reduce (target=178, len=1)
+actionsTable[2208] = 33636; // 'state 17' -> from -> shift+reduce (target=178, len=1)
+actionsTable[2212] = 33636; // 'state 17' -> type -> shift+reduce (target=178, len=1)
 actionsTable[2217] = 20; // 'state 17' -> [ -> shift (target=10, len=0)
 actionsTable[2219] = 70; // 'state 17' -> async -> shift (target=35, len=0)
 actionsTable[2220] = 72; // 'state 17' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 2223, 2225); // 'state 17' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 2223, 2225); // 'state 17' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[2225] = 74; // 'state 17' -> class -> shift (target=37, len=0)
 actionsTable[2230] = 28; // 'state 17' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 2235, 2237); // 'state 17' -> void..typeof -> shift (target=15, len=0)
@@ -1352,19 +1352,19 @@ actionsTable.fill(30, 2245, 2247); // 'state 17' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 2248, 2251); // 'state 17' -> !..delete -> shift (target=15, len=0)
 actionsTable[2251] = 34; // 'state 17' -> await -> shift (target=17, len=0)
 actionsTable[2254] = 818; // 'state 17' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 2256, 2259); // 'state 17' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 2256, 2259); // 'state 17' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[2265] = 36; // 'state 17' -> update_operator -> shift (target=18, len=0)
-actionsTable[2266] = 798; // 'state 17' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 2304, 2309); // 'state 18' -> true..super -> shift (target=399, len=0)
+actionsTable[2266] = 33638; // 'state 17' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 2304, 2309); // 'state 18' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[2309] = 68; // 'state 18' -> { -> shift (target=34, len=0)
 actionsTable[2312] = 4; // 'state 18' -> ( -> shift (target=2, len=0)
-actionsTable[2322] = 806; // 'state 18' -> of -> shift (target=403, len=0)
-actionsTable[2336] = 806; // 'state 18' -> from -> shift (target=403, len=0)
-actionsTable[2340] = 806; // 'state 18' -> type -> shift (target=403, len=0)
+actionsTable[2322] = 33636; // 'state 18' -> of -> shift+reduce (target=178, len=1)
+actionsTable[2336] = 33636; // 'state 18' -> from -> shift+reduce (target=178, len=1)
+actionsTable[2340] = 33636; // 'state 18' -> type -> shift+reduce (target=178, len=1)
 actionsTable[2345] = 20; // 'state 18' -> [ -> shift (target=10, len=0)
 actionsTable[2347] = 70; // 'state 18' -> async -> shift (target=35, len=0)
 actionsTable[2348] = 72; // 'state 18' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 2351, 2353); // 'state 18' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 2351, 2353); // 'state 18' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[2353] = 74; // 'state 18' -> class -> shift (target=37, len=0)
 actionsTable[2358] = 28; // 'state 18' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 2363, 2365); // 'state 18' -> void..typeof -> shift (target=15, len=0)
@@ -1373,10 +1373,10 @@ actionsTable.fill(30, 2373, 2375); // 'state 18' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 2376, 2379); // 'state 18' -> !..delete -> shift (target=15, len=0)
 actionsTable[2379] = 34; // 'state 18' -> await -> shift (target=17, len=0)
 actionsTable[2382] = 818; // 'state 18' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 2384, 2387); // 'state 18' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 2384, 2387); // 'state 18' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[2393] = 36; // 'state 18' -> update_operator -> shift (target=18, len=0)
-actionsTable[2394] = 798; // 'state 18' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 2432, 2437); // 'state 19' -> true..super -> shift (target=399, len=0)
+actionsTable[2394] = 33638; // 'state 18' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 2432, 2437); // 'state 19' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[2437] = 2; // 'state 19' -> { -> shift (target=1, len=0)
 actionsTable[2439] = 800; // 'state 19' -> if -> shift (target=400, len=0)
 actionsTable[2440] = 4; // 'state 19' -> ( -> shift (target=2, len=0)
@@ -1384,7 +1384,7 @@ actionsTable[2443] = 802; // 'state 19' -> while -> shift (target=401, len=0)
 actionsTable[2444] = 6; // 'state 19' -> do -> shift (target=3, len=0)
 actionsTable[2446] = 804; // 'state 19' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 2447, 2450); // 'state 19' -> const..var -> shift (target=4, len=0)
-actionsTable[2450] = 806; // 'state 19' -> of -> shift (target=403, len=0)
+actionsTable[2450] = 33636; // 'state 19' -> of -> shift+reduce (target=178, len=1)
 actionsTable[2452] = 10; // 'state 19' -> return -> shift (target=5, len=0)
 actionsTable[2453] = 12; // 'state 19' -> throw -> shift (target=6, len=0)
 actionsTable[2454] = 14; // 'state 19' -> try -> shift (target=7, len=0)
@@ -1392,13 +1392,13 @@ actionsTable[2457] = 808; // 'state 19' -> switch -> shift (target=404, len=0)
 actionsTable[2461] = 810; // 'state 19' -> break -> shift (target=405, len=0)
 actionsTable[2462] = 812; // 'state 19' -> continue -> shift (target=406, len=0)
 actionsTable[2463] = 16; // 'state 19' -> import -> shift (target=8, len=0)
-actionsTable[2464] = 806; // 'state 19' -> from -> shift (target=403, len=0)
+actionsTable[2464] = 33636; // 'state 19' -> from -> shift+reduce (target=178, len=1)
 actionsTable[2468] = 814; // 'state 19' -> type -> shift (target=407, len=0)
 actionsTable[2469] = 18; // 'state 19' -> export -> shift (target=9, len=0)
 actionsTable[2473] = 20; // 'state 19' -> [ -> shift (target=10, len=0)
 actionsTable[2475] = 22; // 'state 19' -> async -> shift (target=11, len=0)
 actionsTable[2476] = 24; // 'state 19' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 2479, 2481); // 'state 19' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 2479, 2481); // 'state 19' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[2481] = 26; // 'state 19' -> class -> shift (target=13, len=0)
 actionsTable[2484] = 816; // 'state 19' -> interface -> shift (target=408, len=0)
 actionsTable[2486] = 28; // 'state 19' -> < -> shift (target=14, len=0)
@@ -1408,9 +1408,9 @@ actionsTable.fill(30, 2501, 2503); // 'state 19' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 2504, 2507); // 'state 19' -> !..delete -> shift (target=15, len=0)
 actionsTable[2507] = 34; // 'state 19' -> await -> shift (target=17, len=0)
 actionsTable[2510] = 818; // 'state 19' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 2512, 2515); // 'state 19' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 2512, 2515); // 'state 19' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[2521] = 36; // 'state 19' -> update_operator -> shift (target=18, len=0)
-actionsTable[2522] = 798; // 'state 19' -> regex -> shift (target=399, len=0)
+actionsTable[2522] = 33638; // 'state 19' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[2523] = 65534; // 'state 19' -> @par-gen.EOF -> done (target=0, len=0)
 actionsTable[2587] = 164; // 'state 20' -> : -> shift (target=82, len=0)
 actionsTable[2613] = 164; // 'state 20' -> ?: -> shift (target=82, len=0)
@@ -1467,16 +1467,16 @@ actionsTable[3002] = 162; // 'state 23' -> => -> shift (target=81, len=0)
 actionsTable.fill(871, 3003, 3005); // 'state 23' -> void..typeof -> reduce (target=179, len=1)
 actionsTable.fill(871, 3006, 3028); // 'state 23' -> new..accessibility_modifier -> reduce (target=179, len=1)
 actionsTable.fill(871, 3029, 3036); // 'state 23' -> equality_operator..@par-gen.EOF -> reduce (target=179, len=1)
-actionsTable.fill(798, 3072, 3077); // 'state 24' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 3072, 3077); // 'state 24' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[3077] = 68; // 'state 24' -> { -> shift (target=34, len=0)
 actionsTable[3080] = 4; // 'state 24' -> ( -> shift (target=2, len=0)
-actionsTable[3090] = 806; // 'state 24' -> of -> shift (target=403, len=0)
-actionsTable[3104] = 806; // 'state 24' -> from -> shift (target=403, len=0)
-actionsTable[3108] = 806; // 'state 24' -> type -> shift (target=403, len=0)
+actionsTable[3090] = 33636; // 'state 24' -> of -> shift+reduce (target=178, len=1)
+actionsTable[3104] = 33636; // 'state 24' -> from -> shift+reduce (target=178, len=1)
+actionsTable[3108] = 33636; // 'state 24' -> type -> shift+reduce (target=178, len=1)
 actionsTable[3113] = 20; // 'state 24' -> [ -> shift (target=10, len=0)
 actionsTable[3115] = 70; // 'state 24' -> async -> shift (target=35, len=0)
 actionsTable[3116] = 72; // 'state 24' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 3119, 3121); // 'state 24' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 3119, 3121); // 'state 24' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[3121] = 74; // 'state 24' -> class -> shift (target=37, len=0)
 actionsTable[3126] = 28; // 'state 24' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 3131, 3133); // 'state 24' -> void..typeof -> shift (target=15, len=0)
@@ -1485,22 +1485,22 @@ actionsTable.fill(30, 3141, 3143); // 'state 24' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 3144, 3147); // 'state 24' -> !..delete -> shift (target=15, len=0)
 actionsTable[3147] = 34; // 'state 24' -> await -> shift (target=17, len=0)
 actionsTable[3150] = 818; // 'state 24' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 3152, 3155); // 'state 24' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 3152, 3155); // 'state 24' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[3161] = 36; // 'state 24' -> update_operator -> shift (target=18, len=0)
-actionsTable[3162] = 798; // 'state 24' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 3200, 3205); // 'state 25' -> true..super -> shift (target=399, len=0)
+actionsTable[3162] = 33638; // 'state 24' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 3200, 3205); // 'state 25' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[3205] = 68; // 'state 25' -> { -> shift (target=34, len=0)
 actionsTable[3208] = 4; // 'state 25' -> ( -> shift (target=2, len=0)
-actionsTable[3218] = 806; // 'state 25' -> of -> shift (target=403, len=0)
-actionsTable[3232] = 806; // 'state 25' -> from -> shift (target=403, len=0)
+actionsTable[3218] = 33636; // 'state 25' -> of -> shift+reduce (target=178, len=1)
+actionsTable[3232] = 33636; // 'state 25' -> from -> shift+reduce (target=178, len=1)
 actionsTable[3233] = 192; // 'state 25' -> , -> shift (target=96, len=0)
-actionsTable[3236] = 806; // 'state 25' -> type -> shift (target=403, len=0)
+actionsTable[3236] = 33636; // 'state 25' -> type -> shift+reduce (target=178, len=1)
 actionsTable[3240] = 48; // 'state 25' -> ... -> shift (target=24, len=0)
 actionsTable[3241] = 20; // 'state 25' -> [ -> shift (target=10, len=0)
 actionsTable[3242] = 906; // 'state 25' -> ] -> shift (target=453, len=0)
 actionsTable[3243] = 70; // 'state 25' -> async -> shift (target=35, len=0)
 actionsTable[3244] = 72; // 'state 25' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 3247, 3249); // 'state 25' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 3247, 3249); // 'state 25' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[3249] = 74; // 'state 25' -> class -> shift (target=37, len=0)
 actionsTable[3254] = 28; // 'state 25' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 3259, 3261); // 'state 25' -> void..typeof -> shift (target=15, len=0)
@@ -1509,26 +1509,26 @@ actionsTable.fill(30, 3269, 3271); // 'state 25' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 3272, 3275); // 'state 25' -> !..delete -> shift (target=15, len=0)
 actionsTable[3275] = 34; // 'state 25' -> await -> shift (target=17, len=0)
 actionsTable[3278] = 818; // 'state 25' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 3280, 3283); // 'state 25' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 3280, 3283); // 'state 25' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[3289] = 36; // 'state 25' -> update_operator -> shift (target=18, len=0)
-actionsTable[3290] = 798; // 'state 25' -> regex -> shift (target=399, len=0)
+actionsTable[3290] = 33638; // 'state 25' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(869, 3328, 3336); // 'state 26' -> true..if -> reduce (target=178, len=1)
 actionsTable[3336] = 130; // 'state 26' -> ( -> shift (target=65, len=0)
 actionsTable.fill(869, 3339, 3346); // 'state 26' -> while..var -> reduce (target=178, len=1)
-actionsTable[3346] = 806; // 'state 26' -> of -> shift (target=403, len=0)
+actionsTable[3346] = 33636; // 'state 26' -> of -> shift+reduce (target=178, len=1)
 actionsTable.fill(869, 3347, 3351); // 'state 26' -> in..try -> reduce (target=178, len=1)
 actionsTable[3353] = 869; // 'state 26' -> switch -> reduce (target=178, len=1)
 actionsTable[3355] = 869; // 'state 26' -> : -> reduce (target=178, len=1)
 actionsTable.fill(869, 3357, 3360); // 'state 26' -> break..import -> reduce (target=178, len=1)
-actionsTable[3360] = 806; // 'state 26' -> from -> shift (target=403, len=0)
+actionsTable[3360] = 33636; // 'state 26' -> from -> shift+reduce (target=178, len=1)
 actionsTable.fill(869, 3361, 3364); // 'state 26' -> ,..as -> reduce (target=178, len=1)
-actionsTable[3364] = 806; // 'state 26' -> type -> shift (target=403, len=0)
+actionsTable[3364] = 33636; // 'state 26' -> type -> shift+reduce (target=178, len=1)
 actionsTable[3365] = 869; // 'state 26' -> export -> reduce (target=178, len=1)
 actionsTable[3367] = 869; // 'state 26' -> = -> reduce (target=178, len=1)
 actionsTable[3369] = 198; // 'state 26' -> [ -> shift (target=99, len=0)
 actionsTable[3371] = 914; // 'state 26' -> async -> shift (target=457, len=0)
 actionsTable[3372] = 132; // 'state 26' -> function -> shift (target=66, len=0)
-actionsTable.fill(806, 3375, 3377); // 'state 26' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 3375, 3377); // 'state 26' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[3377] = 869; // 'state 26' -> class -> reduce (target=178, len=1)
 actionsTable.fill(869, 3380, 3382); // 'state 26' -> interface..?: -> reduce (target=178, len=1)
 actionsTable[3382] = 28; // 'state 26' -> < -> shift (target=14, len=0)
@@ -1536,34 +1536,34 @@ actionsTable.fill(869, 3383, 3386); // 'state 26' -> >..& -> reduce (target=178,
 actionsTable.fill(869, 3387, 3389); // 'state 26' -> void..typeof -> reduce (target=178, len=1)
 actionsTable.fill(869, 3390, 3406); // 'state 26' -> new... -> reduce (target=178, len=1)
 actionsTable[3406] = 916; // 'state 26' -> identifier -> shift (target=458, len=0)
-actionsTable.fill(848, 3408, 3410); // 'state 26' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 3408, 3410); // 'state 26' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[3410] = 869; // 'state 26' -> template_string -> reduce (target=178, len=1)
 actionsTable.fill(869, 3412, 3419); // 'state 26' -> compound_assignment_operator..regex -> reduce (target=178, len=1)
 actionsTable.fill(869, 3456, 3465); // 'state 27' -> true..( -> reduce (target=178, len=1)
 actionsTable.fill(869, 3467, 3474); // 'state 27' -> while..var -> reduce (target=178, len=1)
-actionsTable[3474] = 806; // 'state 27' -> of -> shift (target=403, len=0)
+actionsTable[3474] = 33636; // 'state 27' -> of -> shift+reduce (target=178, len=1)
 actionsTable.fill(869, 3475, 3479); // 'state 27' -> in..try -> reduce (target=178, len=1)
 actionsTable[3481] = 869; // 'state 27' -> switch -> reduce (target=178, len=1)
 actionsTable[3483] = 869; // 'state 27' -> : -> reduce (target=178, len=1)
 actionsTable.fill(869, 3485, 3488); // 'state 27' -> break..import -> reduce (target=178, len=1)
-actionsTable[3488] = 806; // 'state 27' -> from -> shift (target=403, len=0)
+actionsTable[3488] = 33636; // 'state 27' -> from -> shift+reduce (target=178, len=1)
 actionsTable.fill(869, 3489, 3492); // 'state 27' -> ,..as -> reduce (target=178, len=1)
-actionsTable[3492] = 806; // 'state 27' -> type -> shift (target=403, len=0)
+actionsTable[3492] = 33636; // 'state 27' -> type -> shift+reduce (target=178, len=1)
 actionsTable[3493] = 869; // 'state 27' -> export -> reduce (target=178, len=1)
 actionsTable[3495] = 869; // 'state 27' -> = -> reduce (target=178, len=1)
 actionsTable[3497] = 198; // 'state 27' -> [ -> shift (target=99, len=0)
 actionsTable[3499] = 914; // 'state 27' -> async -> shift (target=457, len=0)
 actionsTable[3500] = 869; // 'state 27' -> function -> reduce (target=178, len=1)
-actionsTable.fill(806, 3503, 3505); // 'state 27' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 3503, 3505); // 'state 27' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[3505] = 869; // 'state 27' -> class -> reduce (target=178, len=1)
 actionsTable.fill(869, 3508, 3514); // 'state 27' -> interface..& -> reduce (target=178, len=1)
 actionsTable.fill(869, 3515, 3517); // 'state 27' -> void..typeof -> reduce (target=178, len=1)
 actionsTable.fill(869, 3518, 3534); // 'state 27' -> new... -> reduce (target=178, len=1)
-actionsTable[3534] = 848; // 'state 27' -> identifier -> shift (target=424, len=0)
-actionsTable.fill(848, 3536, 3538); // 'state 27' -> number..string -> shift (target=424, len=0)
+actionsTable[3534] = 33694; // 'state 27' -> identifier -> shift+reduce (target=207, len=1)
+actionsTable.fill(33694, 3536, 3538); // 'state 27' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[3538] = 869; // 'state 27' -> template_string -> reduce (target=178, len=1)
 actionsTable.fill(869, 3540, 3547); // 'state 27' -> compound_assignment_operator..regex -> reduce (target=178, len=1)
-actionsTable.fill(798, 3584, 3589); // 'state 28' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 3584, 3589); // 'state 28' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[3589] = 2; // 'state 28' -> { -> shift (target=1, len=0)
 actionsTable[3590] = 910; // 'state 28' -> } -> shift (target=455, len=0)
 actionsTable[3591] = 800; // 'state 28' -> if -> shift (target=400, len=0)
@@ -1572,7 +1572,7 @@ actionsTable[3595] = 802; // 'state 28' -> while -> shift (target=401, len=0)
 actionsTable[3596] = 6; // 'state 28' -> do -> shift (target=3, len=0)
 actionsTable[3598] = 804; // 'state 28' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 3599, 3602); // 'state 28' -> const..var -> shift (target=4, len=0)
-actionsTable[3602] = 806; // 'state 28' -> of -> shift (target=403, len=0)
+actionsTable[3602] = 33636; // 'state 28' -> of -> shift+reduce (target=178, len=1)
 actionsTable[3604] = 10; // 'state 28' -> return -> shift (target=5, len=0)
 actionsTable[3605] = 12; // 'state 28' -> throw -> shift (target=6, len=0)
 actionsTable[3606] = 14; // 'state 28' -> try -> shift (target=7, len=0)
@@ -1580,13 +1580,13 @@ actionsTable[3609] = 808; // 'state 28' -> switch -> shift (target=404, len=0)
 actionsTable[3613] = 810; // 'state 28' -> break -> shift (target=405, len=0)
 actionsTable[3614] = 812; // 'state 28' -> continue -> shift (target=406, len=0)
 actionsTable[3615] = 16; // 'state 28' -> import -> shift (target=8, len=0)
-actionsTable[3616] = 806; // 'state 28' -> from -> shift (target=403, len=0)
+actionsTable[3616] = 33636; // 'state 28' -> from -> shift+reduce (target=178, len=1)
 actionsTable[3620] = 814; // 'state 28' -> type -> shift (target=407, len=0)
 actionsTable[3621] = 18; // 'state 28' -> export -> shift (target=9, len=0)
 actionsTable[3625] = 20; // 'state 28' -> [ -> shift (target=10, len=0)
 actionsTable[3627] = 22; // 'state 28' -> async -> shift (target=11, len=0)
 actionsTable[3628] = 24; // 'state 28' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 3631, 3633); // 'state 28' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 3631, 3633); // 'state 28' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[3633] = 26; // 'state 28' -> class -> shift (target=13, len=0)
 actionsTable[3636] = 816; // 'state 28' -> interface -> shift (target=408, len=0)
 actionsTable[3638] = 28; // 'state 28' -> < -> shift (target=14, len=0)
@@ -1596,24 +1596,24 @@ actionsTable.fill(30, 3653, 3655); // 'state 28' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 3656, 3659); // 'state 28' -> !..delete -> shift (target=15, len=0)
 actionsTable[3659] = 34; // 'state 28' -> await -> shift (target=17, len=0)
 actionsTable[3662] = 818; // 'state 28' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 3664, 3667); // 'state 28' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 3664, 3667); // 'state 28' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[3673] = 36; // 'state 28' -> update_operator -> shift (target=18, len=0)
-actionsTable[3674] = 798; // 'state 28' -> regex -> shift (target=399, len=0)
+actionsTable[3674] = 33638; // 'state 28' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[3718] = 920; // 'state 29' -> } -> shift (target=460, len=0)
 actionsTable[3745] = 204; // 'state 29' -> , -> shift (target=102, len=0)
 actionsTable[3848] = 138; // 'state 30' -> ( -> shift (target=69, len=0)
 actionsTable[3867] = 206; // 'state 30' -> : -> shift (target=103, len=0)
 actionsTable[3894] = 28; // 'state 30' -> < -> shift (target=14, len=0)
-actionsTable.fill(798, 3968, 3973); // 'state 31' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 3968, 3973); // 'state 31' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[3973] = 68; // 'state 31' -> { -> shift (target=34, len=0)
 actionsTable[3976] = 4; // 'state 31' -> ( -> shift (target=2, len=0)
-actionsTable[3986] = 806; // 'state 31' -> of -> shift (target=403, len=0)
-actionsTable[4000] = 806; // 'state 31' -> from -> shift (target=403, len=0)
-actionsTable[4004] = 806; // 'state 31' -> type -> shift (target=403, len=0)
+actionsTable[3986] = 33636; // 'state 31' -> of -> shift+reduce (target=178, len=1)
+actionsTable[4000] = 33636; // 'state 31' -> from -> shift+reduce (target=178, len=1)
+actionsTable[4004] = 33636; // 'state 31' -> type -> shift+reduce (target=178, len=1)
 actionsTable[4009] = 20; // 'state 31' -> [ -> shift (target=10, len=0)
 actionsTable[4011] = 70; // 'state 31' -> async -> shift (target=35, len=0)
 actionsTable[4012] = 72; // 'state 31' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 4015, 4017); // 'state 31' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 4015, 4017); // 'state 31' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[4017] = 74; // 'state 31' -> class -> shift (target=37, len=0)
 actionsTable[4022] = 28; // 'state 31' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 4027, 4029); // 'state 31' -> void..typeof -> shift (target=15, len=0)
@@ -1622,19 +1622,19 @@ actionsTable.fill(30, 4037, 4039); // 'state 31' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 4040, 4043); // 'state 31' -> !..delete -> shift (target=15, len=0)
 actionsTable[4043] = 34; // 'state 31' -> await -> shift (target=17, len=0)
 actionsTable[4046] = 818; // 'state 31' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 4048, 4051); // 'state 31' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 4048, 4051); // 'state 31' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[4057] = 36; // 'state 31' -> update_operator -> shift (target=18, len=0)
-actionsTable[4058] = 798; // 'state 31' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 4096, 4101); // 'state 32' -> true..super -> shift (target=399, len=0)
+actionsTable[4058] = 33638; // 'state 31' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 4096, 4101); // 'state 32' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[4101] = 68; // 'state 32' -> { -> shift (target=34, len=0)
 actionsTable[4104] = 4; // 'state 32' -> ( -> shift (target=2, len=0)
-actionsTable[4114] = 806; // 'state 32' -> of -> shift (target=403, len=0)
-actionsTable[4128] = 806; // 'state 32' -> from -> shift (target=403, len=0)
-actionsTable[4132] = 806; // 'state 32' -> type -> shift (target=403, len=0)
+actionsTable[4114] = 33636; // 'state 32' -> of -> shift+reduce (target=178, len=1)
+actionsTable[4128] = 33636; // 'state 32' -> from -> shift+reduce (target=178, len=1)
+actionsTable[4132] = 33636; // 'state 32' -> type -> shift+reduce (target=178, len=1)
 actionsTable[4137] = 20; // 'state 32' -> [ -> shift (target=10, len=0)
 actionsTable[4139] = 70; // 'state 32' -> async -> shift (target=35, len=0)
 actionsTable[4140] = 72; // 'state 32' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 4143, 4145); // 'state 32' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 4143, 4145); // 'state 32' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[4145] = 74; // 'state 32' -> class -> shift (target=37, len=0)
 actionsTable[4150] = 28; // 'state 32' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 4155, 4157); // 'state 32' -> void..typeof -> shift (target=15, len=0)
@@ -1643,21 +1643,21 @@ actionsTable.fill(30, 4165, 4167); // 'state 32' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 4168, 4171); // 'state 32' -> !..delete -> shift (target=15, len=0)
 actionsTable[4171] = 34; // 'state 32' -> await -> shift (target=17, len=0)
 actionsTable[4174] = 818; // 'state 32' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 4176, 4179); // 'state 32' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 4176, 4179); // 'state 32' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[4185] = 36; // 'state 32' -> update_operator -> shift (target=18, len=0)
-actionsTable[4186] = 798; // 'state 32' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 4224, 4229); // 'state 33' -> true..super -> shift (target=399, len=0)
+actionsTable[4186] = 33638; // 'state 32' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 4224, 4229); // 'state 33' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[4229] = 68; // 'state 33' -> { -> shift (target=34, len=0)
 actionsTable[4232] = 4; // 'state 33' -> ( -> shift (target=2, len=0)
 actionsTable[4237] = 218; // 'state 33' -> ; -> shift (target=109, len=0)
 actionsTable.fill(220, 4239, 4242); // 'state 33' -> const..var -> shift (target=110, len=0)
-actionsTable[4242] = 806; // 'state 33' -> of -> shift (target=403, len=0)
-actionsTable[4256] = 806; // 'state 33' -> from -> shift (target=403, len=0)
-actionsTable[4260] = 806; // 'state 33' -> type -> shift (target=403, len=0)
+actionsTable[4242] = 33636; // 'state 33' -> of -> shift+reduce (target=178, len=1)
+actionsTable[4256] = 33636; // 'state 33' -> from -> shift+reduce (target=178, len=1)
+actionsTable[4260] = 33636; // 'state 33' -> type -> shift+reduce (target=178, len=1)
 actionsTable[4265] = 20; // 'state 33' -> [ -> shift (target=10, len=0)
 actionsTable[4267] = 70; // 'state 33' -> async -> shift (target=35, len=0)
 actionsTable[4268] = 72; // 'state 33' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 4271, 4273); // 'state 33' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 4271, 4273); // 'state 33' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[4273] = 74; // 'state 33' -> class -> shift (target=37, len=0)
 actionsTable[4278] = 28; // 'state 33' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 4283, 4285); // 'state 33' -> void..typeof -> shift (target=15, len=0)
@@ -1666,19 +1666,19 @@ actionsTable.fill(30, 4293, 4295); // 'state 33' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 4296, 4299); // 'state 33' -> !..delete -> shift (target=15, len=0)
 actionsTable[4299] = 34; // 'state 33' -> await -> shift (target=17, len=0)
 actionsTable[4302] = 818; // 'state 33' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 4304, 4307); // 'state 33' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 4304, 4307); // 'state 33' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[4313] = 36; // 'state 33' -> update_operator -> shift (target=18, len=0)
-actionsTable[4314] = 798; // 'state 33' -> regex -> shift (target=399, len=0)
+actionsTable[4314] = 33638; // 'state 33' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[4358] = 928; // 'state 34' -> } -> shift (target=464, len=0)
-actionsTable[4370] = 806; // 'state 34' -> of -> shift (target=403, len=0)
-actionsTable[4384] = 806; // 'state 34' -> from -> shift (target=403, len=0)
-actionsTable[4388] = 806; // 'state 34' -> type -> shift (target=403, len=0)
+actionsTable[4370] = 33636; // 'state 34' -> of -> shift+reduce (target=178, len=1)
+actionsTable[4384] = 33636; // 'state 34' -> from -> shift+reduce (target=178, len=1)
+actionsTable[4388] = 33636; // 'state 34' -> type -> shift+reduce (target=178, len=1)
 actionsTable[4392] = 48; // 'state 34' -> ... -> shift (target=24, len=0)
 actionsTable[4393] = 198; // 'state 34' -> [ -> shift (target=99, len=0)
 actionsTable[4395] = 226; // 'state 34' -> async -> shift (target=113, len=0)
 actionsTable.fill(54, 4399, 4401); // 'state 34' -> get..set -> shift (target=27, len=0)
 actionsTable[4430] = 930; // 'state 34' -> identifier -> shift (target=465, len=0)
-actionsTable.fill(848, 4432, 4434); // 'state 34' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 4432, 4434); // 'state 34' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable.fill(869, 4480, 4488); // 'state 35' -> true..if -> reduce (target=178, len=1)
 actionsTable[4488] = 130; // 'state 35' -> ( -> shift (target=65, len=0)
 actionsTable.fill(869, 4489, 4503); // 'state 35' -> )..try -> reduce (target=178, len=1)
@@ -1780,7 +1780,7 @@ actionsTable[5079] = 114; // 'state 39' -> shift_operator -> shift (target=57, l
 actionsTable[5080] = 90; // 'state 39' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[5081] = 866; // 'state 39' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(1235, 5082, 5084); // 'state 39' -> regex..@par-gen.EOF -> reduce (target=105, len=2)
-actionsTable.fill(798, 5120, 5125); // 'state 40' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 5120, 5125); // 'state 40' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[5125] = 2; // 'state 40' -> { -> shift (target=1, len=0)
 actionsTable[5126] = 936; // 'state 40' -> } -> shift (target=468, len=0)
 actionsTable[5127] = 800; // 'state 40' -> if -> shift (target=400, len=0)
@@ -1789,7 +1789,7 @@ actionsTable[5131] = 802; // 'state 40' -> while -> shift (target=401, len=0)
 actionsTable[5132] = 6; // 'state 40' -> do -> shift (target=3, len=0)
 actionsTable[5134] = 804; // 'state 40' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 5135, 5138); // 'state 40' -> const..var -> shift (target=4, len=0)
-actionsTable[5138] = 806; // 'state 40' -> of -> shift (target=403, len=0)
+actionsTable[5138] = 33636; // 'state 40' -> of -> shift+reduce (target=178, len=1)
 actionsTable[5140] = 10; // 'state 40' -> return -> shift (target=5, len=0)
 actionsTable[5141] = 12; // 'state 40' -> throw -> shift (target=6, len=0)
 actionsTable[5142] = 14; // 'state 40' -> try -> shift (target=7, len=0)
@@ -1797,13 +1797,13 @@ actionsTable[5145] = 808; // 'state 40' -> switch -> shift (target=404, len=0)
 actionsTable[5149] = 810; // 'state 40' -> break -> shift (target=405, len=0)
 actionsTable[5150] = 812; // 'state 40' -> continue -> shift (target=406, len=0)
 actionsTable[5151] = 16; // 'state 40' -> import -> shift (target=8, len=0)
-actionsTable[5152] = 806; // 'state 40' -> from -> shift (target=403, len=0)
+actionsTable[5152] = 33636; // 'state 40' -> from -> shift+reduce (target=178, len=1)
 actionsTable[5156] = 814; // 'state 40' -> type -> shift (target=407, len=0)
 actionsTable[5157] = 18; // 'state 40' -> export -> shift (target=9, len=0)
 actionsTable[5161] = 20; // 'state 40' -> [ -> shift (target=10, len=0)
 actionsTable[5163] = 22; // 'state 40' -> async -> shift (target=11, len=0)
 actionsTable[5164] = 24; // 'state 40' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 5167, 5169); // 'state 40' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 5167, 5169); // 'state 40' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[5169] = 26; // 'state 40' -> class -> shift (target=13, len=0)
 actionsTable[5172] = 816; // 'state 40' -> interface -> shift (target=408, len=0)
 actionsTable[5174] = 28; // 'state 40' -> < -> shift (target=14, len=0)
@@ -1813,9 +1813,9 @@ actionsTable.fill(30, 5189, 5191); // 'state 40' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 5192, 5195); // 'state 40' -> !..delete -> shift (target=15, len=0)
 actionsTable[5195] = 34; // 'state 40' -> await -> shift (target=17, len=0)
 actionsTable[5198] = 818; // 'state 40' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 5200, 5203); // 'state 40' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 5200, 5203); // 'state 40' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[5209] = 36; // 'state 40' -> update_operator -> shift (target=18, len=0)
-actionsTable[5210] = 798; // 'state 40' -> regex -> shift (target=399, len=0)
+actionsTable[5210] = 33638; // 'state 40' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(1237, 5248, 5257); // 'state 41' -> true..( -> reduce (target=106, len=2)
 actionsTable.fill(1237, 5258, 5261); // 'state 41' -> else..do -> reduce (target=106, len=2)
 actionsTable.fill(1237, 5262, 5267); // 'state 41' -> for..of -> reduce (target=106, len=2)
@@ -1837,16 +1837,16 @@ actionsTable.fill(1237, 5320, 5324); // 'state 41' -> !..await -> reduce (target
 actionsTable[5326] = 1237; // 'state 41' -> identifier -> reduce (target=106, len=2)
 actionsTable.fill(1237, 5328, 5331); // 'state 41' -> number..template_string -> reduce (target=106, len=2)
 actionsTable.fill(1237, 5337, 5340); // 'state 41' -> update_operator..@par-gen.EOF -> reduce (target=106, len=2)
-actionsTable.fill(798, 5376, 5381); // 'state 42' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 5376, 5381); // 'state 42' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[5381] = 68; // 'state 42' -> { -> shift (target=34, len=0)
 actionsTable[5384] = 4; // 'state 42' -> ( -> shift (target=2, len=0)
-actionsTable[5394] = 806; // 'state 42' -> of -> shift (target=403, len=0)
-actionsTable[5408] = 806; // 'state 42' -> from -> shift (target=403, len=0)
-actionsTable[5412] = 806; // 'state 42' -> type -> shift (target=403, len=0)
+actionsTable[5394] = 33636; // 'state 42' -> of -> shift+reduce (target=178, len=1)
+actionsTable[5408] = 33636; // 'state 42' -> from -> shift+reduce (target=178, len=1)
+actionsTable[5412] = 33636; // 'state 42' -> type -> shift+reduce (target=178, len=1)
 actionsTable[5417] = 20; // 'state 42' -> [ -> shift (target=10, len=0)
 actionsTable[5419] = 70; // 'state 42' -> async -> shift (target=35, len=0)
 actionsTable[5420] = 72; // 'state 42' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 5423, 5425); // 'state 42' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 5423, 5425); // 'state 42' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[5425] = 74; // 'state 42' -> class -> shift (target=37, len=0)
 actionsTable[5430] = 28; // 'state 42' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 5435, 5437); // 'state 42' -> void..typeof -> shift (target=15, len=0)
@@ -1855,21 +1855,21 @@ actionsTable.fill(30, 5445, 5447); // 'state 42' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 5448, 5451); // 'state 42' -> !..delete -> shift (target=15, len=0)
 actionsTable[5451] = 34; // 'state 42' -> await -> shift (target=17, len=0)
 actionsTable[5454] = 818; // 'state 42' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 5456, 5459); // 'state 42' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 5456, 5459); // 'state 42' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[5465] = 36; // 'state 42' -> update_operator -> shift (target=18, len=0)
-actionsTable[5466] = 798; // 'state 42' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 5504, 5509); // 'state 43' -> true..super -> shift (target=399, len=0)
+actionsTable[5466] = 33638; // 'state 42' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 5504, 5509); // 'state 43' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[5509] = 68; // 'state 43' -> { -> shift (target=34, len=0)
 actionsTable[5512] = 4; // 'state 43' -> ( -> shift (target=2, len=0)
 actionsTable[5513] = 960; // 'state 43' -> ) -> shift (target=480, len=0)
-actionsTable[5522] = 806; // 'state 43' -> of -> shift (target=403, len=0)
-actionsTable[5536] = 806; // 'state 43' -> from -> shift (target=403, len=0)
-actionsTable[5540] = 806; // 'state 43' -> type -> shift (target=403, len=0)
+actionsTable[5522] = 33636; // 'state 43' -> of -> shift+reduce (target=178, len=1)
+actionsTable[5536] = 33636; // 'state 43' -> from -> shift+reduce (target=178, len=1)
+actionsTable[5540] = 33636; // 'state 43' -> type -> shift+reduce (target=178, len=1)
 actionsTable[5544] = 48; // 'state 43' -> ... -> shift (target=24, len=0)
 actionsTable[5545] = 20; // 'state 43' -> [ -> shift (target=10, len=0)
 actionsTable[5547] = 70; // 'state 43' -> async -> shift (target=35, len=0)
 actionsTable[5548] = 72; // 'state 43' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 5551, 5553); // 'state 43' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 5551, 5553); // 'state 43' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[5553] = 74; // 'state 43' -> class -> shift (target=37, len=0)
 actionsTable[5558] = 28; // 'state 43' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 5563, 5565); // 'state 43' -> void..typeof -> shift (target=15, len=0)
@@ -1878,19 +1878,19 @@ actionsTable.fill(30, 5573, 5575); // 'state 43' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 5576, 5579); // 'state 43' -> !..delete -> shift (target=15, len=0)
 actionsTable[5579] = 34; // 'state 43' -> await -> shift (target=17, len=0)
 actionsTable[5582] = 818; // 'state 43' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 5584, 5587); // 'state 43' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 5584, 5587); // 'state 43' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[5593] = 36; // 'state 43' -> update_operator -> shift (target=18, len=0)
-actionsTable[5594] = 798; // 'state 43' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 5632, 5637); // 'state 44' -> true..super -> shift (target=399, len=0)
+actionsTable[5594] = 33638; // 'state 43' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 5632, 5637); // 'state 44' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[5637] = 68; // 'state 44' -> { -> shift (target=34, len=0)
 actionsTable[5640] = 4; // 'state 44' -> ( -> shift (target=2, len=0)
-actionsTable[5650] = 806; // 'state 44' -> of -> shift (target=403, len=0)
-actionsTable[5664] = 806; // 'state 44' -> from -> shift (target=403, len=0)
-actionsTable[5668] = 806; // 'state 44' -> type -> shift (target=403, len=0)
+actionsTable[5650] = 33636; // 'state 44' -> of -> shift+reduce (target=178, len=1)
+actionsTable[5664] = 33636; // 'state 44' -> from -> shift+reduce (target=178, len=1)
+actionsTable[5668] = 33636; // 'state 44' -> type -> shift+reduce (target=178, len=1)
 actionsTable[5673] = 20; // 'state 44' -> [ -> shift (target=10, len=0)
 actionsTable[5675] = 70; // 'state 44' -> async -> shift (target=35, len=0)
 actionsTable[5676] = 72; // 'state 44' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 5679, 5681); // 'state 44' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 5679, 5681); // 'state 44' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[5681] = 74; // 'state 44' -> class -> shift (target=37, len=0)
 actionsTable[5686] = 28; // 'state 44' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 5691, 5693); // 'state 44' -> void..typeof -> shift (target=15, len=0)
@@ -1899,19 +1899,19 @@ actionsTable.fill(30, 5701, 5703); // 'state 44' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 5704, 5707); // 'state 44' -> !..delete -> shift (target=15, len=0)
 actionsTable[5707] = 34; // 'state 44' -> await -> shift (target=17, len=0)
 actionsTable[5710] = 818; // 'state 44' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 5712, 5715); // 'state 44' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 5712, 5715); // 'state 44' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[5721] = 36; // 'state 44' -> update_operator -> shift (target=18, len=0)
-actionsTable[5722] = 798; // 'state 44' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 5760, 5765); // 'state 45' -> true..super -> shift (target=399, len=0)
+actionsTable[5722] = 33638; // 'state 44' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 5760, 5765); // 'state 45' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[5765] = 68; // 'state 45' -> { -> shift (target=34, len=0)
 actionsTable[5768] = 4; // 'state 45' -> ( -> shift (target=2, len=0)
-actionsTable[5778] = 806; // 'state 45' -> of -> shift (target=403, len=0)
-actionsTable[5792] = 806; // 'state 45' -> from -> shift (target=403, len=0)
-actionsTable[5796] = 806; // 'state 45' -> type -> shift (target=403, len=0)
+actionsTable[5778] = 33636; // 'state 45' -> of -> shift+reduce (target=178, len=1)
+actionsTable[5792] = 33636; // 'state 45' -> from -> shift+reduce (target=178, len=1)
+actionsTable[5796] = 33636; // 'state 45' -> type -> shift+reduce (target=178, len=1)
 actionsTable[5801] = 20; // 'state 45' -> [ -> shift (target=10, len=0)
 actionsTable[5803] = 70; // 'state 45' -> async -> shift (target=35, len=0)
 actionsTable[5804] = 72; // 'state 45' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 5807, 5809); // 'state 45' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 5807, 5809); // 'state 45' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[5809] = 74; // 'state 45' -> class -> shift (target=37, len=0)
 actionsTable[5814] = 28; // 'state 45' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 5819, 5821); // 'state 45' -> void..typeof -> shift (target=15, len=0)
@@ -1920,29 +1920,29 @@ actionsTable.fill(30, 5829, 5831); // 'state 45' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 5832, 5835); // 'state 45' -> !..delete -> shift (target=15, len=0)
 actionsTable[5835] = 34; // 'state 45' -> await -> shift (target=17, len=0)
 actionsTable[5838] = 818; // 'state 45' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 5840, 5843); // 'state 45' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 5840, 5843); // 'state 45' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[5849] = 36; // 'state 45' -> update_operator -> shift (target=18, len=0)
-actionsTable[5850] = 798; // 'state 45' -> regex -> shift (target=399, len=0)
-actionsTable.fill(942, 5888, 5891); // 'state 46' -> true..null -> shift (target=471, len=0)
+actionsTable[5850] = 33638; // 'state 45' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33606, 5888, 5891); // 'state 46' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[5893] = 262; // 'state 46' -> { -> shift (target=131, len=0)
 actionsTable[5896] = 264; // 'state 46' -> ( -> shift (target=132, len=0)
 actionsTable[5929] = 266; // 'state 46' -> [ -> shift (target=133, len=0)
 actionsTable[5942] = 28; // 'state 46' -> < -> shift (target=14, len=0)
 actionsTable[5944] = 268; // 'state 46' -> | -> shift (target=134, len=0)
-actionsTable[5947] = 942; // 'state 46' -> void -> shift (target=471, len=0)
+actionsTable[5947] = 33606; // 'state 46' -> void -> shift+reduce (target=163, len=1)
 actionsTable[5948] = 944; // 'state 46' -> typeof -> shift (target=472, len=0)
 actionsTable[5966] = 270; // 'state 46' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 5968, 5970); // 'state 46' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(798, 6016, 6021); // 'state 47' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33606, 5968, 5970); // 'state 46' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33638, 6016, 6021); // 'state 47' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6021] = 68; // 'state 47' -> { -> shift (target=34, len=0)
 actionsTable[6024] = 4; // 'state 47' -> ( -> shift (target=2, len=0)
-actionsTable[6034] = 806; // 'state 47' -> of -> shift (target=403, len=0)
-actionsTable[6048] = 806; // 'state 47' -> from -> shift (target=403, len=0)
-actionsTable[6052] = 806; // 'state 47' -> type -> shift (target=403, len=0)
+actionsTable[6034] = 33636; // 'state 47' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6048] = 33636; // 'state 47' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6052] = 33636; // 'state 47' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6057] = 20; // 'state 47' -> [ -> shift (target=10, len=0)
 actionsTable[6059] = 70; // 'state 47' -> async -> shift (target=35, len=0)
 actionsTable[6060] = 72; // 'state 47' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6063, 6065); // 'state 47' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6063, 6065); // 'state 47' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6065] = 74; // 'state 47' -> class -> shift (target=37, len=0)
 actionsTable[6070] = 28; // 'state 47' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6075, 6077); // 'state 47' -> void..typeof -> shift (target=15, len=0)
@@ -1951,19 +1951,19 @@ actionsTable.fill(30, 6085, 6087); // 'state 47' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6088, 6091); // 'state 47' -> !..delete -> shift (target=15, len=0)
 actionsTable[6091] = 34; // 'state 47' -> await -> shift (target=17, len=0)
 actionsTable[6094] = 818; // 'state 47' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6096, 6099); // 'state 47' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6096, 6099); // 'state 47' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[6105] = 36; // 'state 47' -> update_operator -> shift (target=18, len=0)
-actionsTable[6106] = 798; // 'state 47' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 6144, 6149); // 'state 48' -> true..super -> shift (target=399, len=0)
+actionsTable[6106] = 33638; // 'state 47' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 6144, 6149); // 'state 48' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6149] = 68; // 'state 48' -> { -> shift (target=34, len=0)
 actionsTable[6152] = 4; // 'state 48' -> ( -> shift (target=2, len=0)
-actionsTable[6162] = 806; // 'state 48' -> of -> shift (target=403, len=0)
-actionsTable[6176] = 806; // 'state 48' -> from -> shift (target=403, len=0)
-actionsTable[6180] = 806; // 'state 48' -> type -> shift (target=403, len=0)
+actionsTable[6162] = 33636; // 'state 48' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6176] = 33636; // 'state 48' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6180] = 33636; // 'state 48' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6185] = 20; // 'state 48' -> [ -> shift (target=10, len=0)
 actionsTable[6187] = 70; // 'state 48' -> async -> shift (target=35, len=0)
 actionsTable[6188] = 72; // 'state 48' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6191, 6193); // 'state 48' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6191, 6193); // 'state 48' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6193] = 74; // 'state 48' -> class -> shift (target=37, len=0)
 actionsTable[6198] = 28; // 'state 48' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6203, 6205); // 'state 48' -> void..typeof -> shift (target=15, len=0)
@@ -1972,19 +1972,19 @@ actionsTable.fill(30, 6213, 6215); // 'state 48' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6216, 6219); // 'state 48' -> !..delete -> shift (target=15, len=0)
 actionsTable[6219] = 34; // 'state 48' -> await -> shift (target=17, len=0)
 actionsTable[6222] = 818; // 'state 48' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6224, 6227); // 'state 48' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6224, 6227); // 'state 48' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[6233] = 36; // 'state 48' -> update_operator -> shift (target=18, len=0)
-actionsTable[6234] = 798; // 'state 48' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 6272, 6277); // 'state 49' -> true..super -> shift (target=399, len=0)
+actionsTable[6234] = 33638; // 'state 48' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 6272, 6277); // 'state 49' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6277] = 68; // 'state 49' -> { -> shift (target=34, len=0)
 actionsTable[6280] = 4; // 'state 49' -> ( -> shift (target=2, len=0)
-actionsTable[6290] = 806; // 'state 49' -> of -> shift (target=403, len=0)
-actionsTable[6304] = 806; // 'state 49' -> from -> shift (target=403, len=0)
-actionsTable[6308] = 806; // 'state 49' -> type -> shift (target=403, len=0)
+actionsTable[6290] = 33636; // 'state 49' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6304] = 33636; // 'state 49' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6308] = 33636; // 'state 49' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6313] = 20; // 'state 49' -> [ -> shift (target=10, len=0)
 actionsTable[6315] = 70; // 'state 49' -> async -> shift (target=35, len=0)
 actionsTable[6316] = 72; // 'state 49' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6319, 6321); // 'state 49' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6319, 6321); // 'state 49' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6321] = 74; // 'state 49' -> class -> shift (target=37, len=0)
 actionsTable[6326] = 28; // 'state 49' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6331, 6333); // 'state 49' -> void..typeof -> shift (target=15, len=0)
@@ -1993,19 +1993,19 @@ actionsTable.fill(30, 6341, 6343); // 'state 49' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6344, 6347); // 'state 49' -> !..delete -> shift (target=15, len=0)
 actionsTable[6347] = 34; // 'state 49' -> await -> shift (target=17, len=0)
 actionsTable[6350] = 818; // 'state 49' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6352, 6355); // 'state 49' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6352, 6355); // 'state 49' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[6361] = 36; // 'state 49' -> update_operator -> shift (target=18, len=0)
-actionsTable[6362] = 798; // 'state 49' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 6400, 6405); // 'state 50' -> true..super -> shift (target=399, len=0)
+actionsTable[6362] = 33638; // 'state 49' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 6400, 6405); // 'state 50' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6405] = 68; // 'state 50' -> { -> shift (target=34, len=0)
 actionsTable[6408] = 4; // 'state 50' -> ( -> shift (target=2, len=0)
-actionsTable[6418] = 806; // 'state 50' -> of -> shift (target=403, len=0)
-actionsTable[6432] = 806; // 'state 50' -> from -> shift (target=403, len=0)
-actionsTable[6436] = 806; // 'state 50' -> type -> shift (target=403, len=0)
+actionsTable[6418] = 33636; // 'state 50' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6432] = 33636; // 'state 50' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6436] = 33636; // 'state 50' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6441] = 20; // 'state 50' -> [ -> shift (target=10, len=0)
 actionsTable[6443] = 70; // 'state 50' -> async -> shift (target=35, len=0)
 actionsTable[6444] = 72; // 'state 50' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6447, 6449); // 'state 50' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6447, 6449); // 'state 50' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6449] = 74; // 'state 50' -> class -> shift (target=37, len=0)
 actionsTable[6454] = 28; // 'state 50' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6459, 6461); // 'state 50' -> void..typeof -> shift (target=15, len=0)
@@ -2014,19 +2014,19 @@ actionsTable.fill(30, 6469, 6471); // 'state 50' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6472, 6475); // 'state 50' -> !..delete -> shift (target=15, len=0)
 actionsTable[6475] = 34; // 'state 50' -> await -> shift (target=17, len=0)
 actionsTable[6478] = 818; // 'state 50' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6480, 6483); // 'state 50' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6480, 6483); // 'state 50' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[6489] = 36; // 'state 50' -> update_operator -> shift (target=18, len=0)
-actionsTable[6490] = 798; // 'state 50' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 6528, 6533); // 'state 51' -> true..super -> shift (target=399, len=0)
+actionsTable[6490] = 33638; // 'state 50' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 6528, 6533); // 'state 51' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6533] = 68; // 'state 51' -> { -> shift (target=34, len=0)
 actionsTable[6536] = 4; // 'state 51' -> ( -> shift (target=2, len=0)
-actionsTable[6546] = 806; // 'state 51' -> of -> shift (target=403, len=0)
-actionsTable[6560] = 806; // 'state 51' -> from -> shift (target=403, len=0)
-actionsTable[6564] = 806; // 'state 51' -> type -> shift (target=403, len=0)
+actionsTable[6546] = 33636; // 'state 51' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6560] = 33636; // 'state 51' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6564] = 33636; // 'state 51' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6569] = 20; // 'state 51' -> [ -> shift (target=10, len=0)
 actionsTable[6571] = 70; // 'state 51' -> async -> shift (target=35, len=0)
 actionsTable[6572] = 72; // 'state 51' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6575, 6577); // 'state 51' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6575, 6577); // 'state 51' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6577] = 74; // 'state 51' -> class -> shift (target=37, len=0)
 actionsTable[6582] = 28; // 'state 51' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6587, 6589); // 'state 51' -> void..typeof -> shift (target=15, len=0)
@@ -2035,19 +2035,19 @@ actionsTable.fill(30, 6597, 6599); // 'state 51' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6600, 6603); // 'state 51' -> !..delete -> shift (target=15, len=0)
 actionsTable[6603] = 34; // 'state 51' -> await -> shift (target=17, len=0)
 actionsTable[6606] = 818; // 'state 51' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6608, 6611); // 'state 51' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6608, 6611); // 'state 51' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[6617] = 36; // 'state 51' -> update_operator -> shift (target=18, len=0)
-actionsTable[6618] = 798; // 'state 51' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 6656, 6661); // 'state 52' -> true..super -> shift (target=399, len=0)
+actionsTable[6618] = 33638; // 'state 51' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 6656, 6661); // 'state 52' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6661] = 68; // 'state 52' -> { -> shift (target=34, len=0)
 actionsTable[6664] = 4; // 'state 52' -> ( -> shift (target=2, len=0)
-actionsTable[6674] = 806; // 'state 52' -> of -> shift (target=403, len=0)
-actionsTable[6688] = 806; // 'state 52' -> from -> shift (target=403, len=0)
-actionsTable[6692] = 806; // 'state 52' -> type -> shift (target=403, len=0)
+actionsTable[6674] = 33636; // 'state 52' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6688] = 33636; // 'state 52' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6692] = 33636; // 'state 52' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6697] = 20; // 'state 52' -> [ -> shift (target=10, len=0)
 actionsTable[6699] = 70; // 'state 52' -> async -> shift (target=35, len=0)
 actionsTable[6700] = 72; // 'state 52' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6703, 6705); // 'state 52' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6703, 6705); // 'state 52' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6705] = 74; // 'state 52' -> class -> shift (target=37, len=0)
 actionsTable[6710] = 28; // 'state 52' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6715, 6717); // 'state 52' -> void..typeof -> shift (target=15, len=0)
@@ -2056,19 +2056,19 @@ actionsTable.fill(30, 6725, 6727); // 'state 52' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6728, 6731); // 'state 52' -> !..delete -> shift (target=15, len=0)
 actionsTable[6731] = 34; // 'state 52' -> await -> shift (target=17, len=0)
 actionsTable[6734] = 818; // 'state 52' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6736, 6739); // 'state 52' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6736, 6739); // 'state 52' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[6745] = 36; // 'state 52' -> update_operator -> shift (target=18, len=0)
-actionsTable[6746] = 798; // 'state 52' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 6784, 6789); // 'state 53' -> true..super -> shift (target=399, len=0)
+actionsTable[6746] = 33638; // 'state 52' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 6784, 6789); // 'state 53' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6789] = 68; // 'state 53' -> { -> shift (target=34, len=0)
 actionsTable[6792] = 4; // 'state 53' -> ( -> shift (target=2, len=0)
-actionsTable[6802] = 806; // 'state 53' -> of -> shift (target=403, len=0)
-actionsTable[6816] = 806; // 'state 53' -> from -> shift (target=403, len=0)
-actionsTable[6820] = 806; // 'state 53' -> type -> shift (target=403, len=0)
+actionsTable[6802] = 33636; // 'state 53' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6816] = 33636; // 'state 53' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6820] = 33636; // 'state 53' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6825] = 20; // 'state 53' -> [ -> shift (target=10, len=0)
 actionsTable[6827] = 70; // 'state 53' -> async -> shift (target=35, len=0)
 actionsTable[6828] = 72; // 'state 53' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6831, 6833); // 'state 53' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6831, 6833); // 'state 53' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6833] = 74; // 'state 53' -> class -> shift (target=37, len=0)
 actionsTable[6838] = 28; // 'state 53' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6843, 6845); // 'state 53' -> void..typeof -> shift (target=15, len=0)
@@ -2077,19 +2077,19 @@ actionsTable.fill(30, 6853, 6855); // 'state 53' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6856, 6859); // 'state 53' -> !..delete -> shift (target=15, len=0)
 actionsTable[6859] = 34; // 'state 53' -> await -> shift (target=17, len=0)
 actionsTable[6862] = 818; // 'state 53' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6864, 6867); // 'state 53' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6864, 6867); // 'state 53' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[6873] = 36; // 'state 53' -> update_operator -> shift (target=18, len=0)
-actionsTable[6874] = 798; // 'state 53' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 6912, 6917); // 'state 54' -> true..super -> shift (target=399, len=0)
+actionsTable[6874] = 33638; // 'state 53' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 6912, 6917); // 'state 54' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[6917] = 68; // 'state 54' -> { -> shift (target=34, len=0)
 actionsTable[6920] = 4; // 'state 54' -> ( -> shift (target=2, len=0)
-actionsTable[6930] = 806; // 'state 54' -> of -> shift (target=403, len=0)
-actionsTable[6944] = 806; // 'state 54' -> from -> shift (target=403, len=0)
-actionsTable[6948] = 806; // 'state 54' -> type -> shift (target=403, len=0)
+actionsTable[6930] = 33636; // 'state 54' -> of -> shift+reduce (target=178, len=1)
+actionsTable[6944] = 33636; // 'state 54' -> from -> shift+reduce (target=178, len=1)
+actionsTable[6948] = 33636; // 'state 54' -> type -> shift+reduce (target=178, len=1)
 actionsTable[6953] = 20; // 'state 54' -> [ -> shift (target=10, len=0)
 actionsTable[6955] = 70; // 'state 54' -> async -> shift (target=35, len=0)
 actionsTable[6956] = 72; // 'state 54' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 6959, 6961); // 'state 54' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 6959, 6961); // 'state 54' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[6961] = 74; // 'state 54' -> class -> shift (target=37, len=0)
 actionsTable[6966] = 28; // 'state 54' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 6971, 6973); // 'state 54' -> void..typeof -> shift (target=15, len=0)
@@ -2098,22 +2098,22 @@ actionsTable.fill(30, 6981, 6983); // 'state 54' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 6984, 6987); // 'state 54' -> !..delete -> shift (target=15, len=0)
 actionsTable[6987] = 34; // 'state 54' -> await -> shift (target=17, len=0)
 actionsTable[6990] = 818; // 'state 54' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 6992, 6995); // 'state 54' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 6992, 6995); // 'state 54' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[7001] = 36; // 'state 54' -> update_operator -> shift (target=18, len=0)
-actionsTable[7002] = 798; // 'state 54' -> regex -> shift (target=399, len=0)
+actionsTable[7002] = 33638; // 'state 54' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[7048] = 86; // 'state 55' -> ( -> shift (target=43, len=0)
 actionsTable[7081] = 274; // 'state 55' -> [ -> shift (target=137, len=0)
 actionsTable.fill(956, 7118, 7120); // 'state 55' -> identifier..private_property_identifier -> shift (target=478, len=0)
-actionsTable.fill(798, 7168, 7173); // 'state 56' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 7168, 7173); // 'state 56' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[7173] = 68; // 'state 56' -> { -> shift (target=34, len=0)
 actionsTable[7176] = 4; // 'state 56' -> ( -> shift (target=2, len=0)
-actionsTable[7186] = 806; // 'state 56' -> of -> shift (target=403, len=0)
-actionsTable[7200] = 806; // 'state 56' -> from -> shift (target=403, len=0)
-actionsTable[7204] = 806; // 'state 56' -> type -> shift (target=403, len=0)
+actionsTable[7186] = 33636; // 'state 56' -> of -> shift+reduce (target=178, len=1)
+actionsTable[7200] = 33636; // 'state 56' -> from -> shift+reduce (target=178, len=1)
+actionsTable[7204] = 33636; // 'state 56' -> type -> shift+reduce (target=178, len=1)
 actionsTable[7209] = 20; // 'state 56' -> [ -> shift (target=10, len=0)
 actionsTable[7211] = 70; // 'state 56' -> async -> shift (target=35, len=0)
 actionsTable[7212] = 72; // 'state 56' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 7215, 7217); // 'state 56' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 7215, 7217); // 'state 56' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[7217] = 74; // 'state 56' -> class -> shift (target=37, len=0)
 actionsTable[7222] = 28; // 'state 56' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 7227, 7229); // 'state 56' -> void..typeof -> shift (target=15, len=0)
@@ -2122,19 +2122,19 @@ actionsTable.fill(30, 7237, 7239); // 'state 56' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 7240, 7243); // 'state 56' -> !..delete -> shift (target=15, len=0)
 actionsTable[7243] = 34; // 'state 56' -> await -> shift (target=17, len=0)
 actionsTable[7246] = 818; // 'state 56' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 7248, 7251); // 'state 56' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 7248, 7251); // 'state 56' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[7257] = 36; // 'state 56' -> update_operator -> shift (target=18, len=0)
-actionsTable[7258] = 798; // 'state 56' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 7296, 7301); // 'state 57' -> true..super -> shift (target=399, len=0)
+actionsTable[7258] = 33638; // 'state 56' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 7296, 7301); // 'state 57' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[7301] = 68; // 'state 57' -> { -> shift (target=34, len=0)
 actionsTable[7304] = 4; // 'state 57' -> ( -> shift (target=2, len=0)
-actionsTable[7314] = 806; // 'state 57' -> of -> shift (target=403, len=0)
-actionsTable[7328] = 806; // 'state 57' -> from -> shift (target=403, len=0)
-actionsTable[7332] = 806; // 'state 57' -> type -> shift (target=403, len=0)
+actionsTable[7314] = 33636; // 'state 57' -> of -> shift+reduce (target=178, len=1)
+actionsTable[7328] = 33636; // 'state 57' -> from -> shift+reduce (target=178, len=1)
+actionsTable[7332] = 33636; // 'state 57' -> type -> shift+reduce (target=178, len=1)
 actionsTable[7337] = 20; // 'state 57' -> [ -> shift (target=10, len=0)
 actionsTable[7339] = 70; // 'state 57' -> async -> shift (target=35, len=0)
 actionsTable[7340] = 72; // 'state 57' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 7343, 7345); // 'state 57' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 7343, 7345); // 'state 57' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[7345] = 74; // 'state 57' -> class -> shift (target=37, len=0)
 actionsTable[7350] = 28; // 'state 57' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 7355, 7357); // 'state 57' -> void..typeof -> shift (target=15, len=0)
@@ -2143,22 +2143,22 @@ actionsTable.fill(30, 7365, 7367); // 'state 57' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 7368, 7371); // 'state 57' -> !..delete -> shift (target=15, len=0)
 actionsTable[7371] = 34; // 'state 57' -> await -> shift (target=17, len=0)
 actionsTable[7374] = 818; // 'state 57' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 7376, 7379); // 'state 57' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 7376, 7379); // 'state 57' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[7385] = 36; // 'state 57' -> update_operator -> shift (target=18, len=0)
-actionsTable[7386] = 798; // 'state 57' -> regex -> shift (target=399, len=0)
+actionsTable[7386] = 33638; // 'state 57' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[7430] = 964; // 'state 58' -> } -> shift (target=482, len=0)
 actionsTable[7460] = 966; // 'state 58' -> type -> shift (target=483, len=0)
 actionsTable[7502] = 968; // 'state 58' -> identifier -> shift (target=484, len=0)
-actionsTable.fill(798, 7552, 7557); // 'state 59' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 7552, 7557); // 'state 59' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[7557] = 68; // 'state 59' -> { -> shift (target=34, len=0)
 actionsTable[7560] = 4; // 'state 59' -> ( -> shift (target=2, len=0)
-actionsTable[7570] = 806; // 'state 59' -> of -> shift (target=403, len=0)
-actionsTable[7584] = 806; // 'state 59' -> from -> shift (target=403, len=0)
-actionsTable[7588] = 806; // 'state 59' -> type -> shift (target=403, len=0)
+actionsTable[7570] = 33636; // 'state 59' -> of -> shift+reduce (target=178, len=1)
+actionsTable[7584] = 33636; // 'state 59' -> from -> shift+reduce (target=178, len=1)
+actionsTable[7588] = 33636; // 'state 59' -> type -> shift+reduce (target=178, len=1)
 actionsTable[7593] = 20; // 'state 59' -> [ -> shift (target=10, len=0)
 actionsTable[7595] = 22; // 'state 59' -> async -> shift (target=11, len=0)
 actionsTable[7596] = 24; // 'state 59' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 7599, 7601); // 'state 59' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 7599, 7601); // 'state 59' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[7601] = 26; // 'state 59' -> class -> shift (target=13, len=0)
 actionsTable[7606] = 28; // 'state 59' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 7611, 7613); // 'state 59' -> void..typeof -> shift (target=15, len=0)
@@ -2167,9 +2167,9 @@ actionsTable.fill(30, 7621, 7623); // 'state 59' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 7624, 7627); // 'state 59' -> !..delete -> shift (target=15, len=0)
 actionsTable[7627] = 34; // 'state 59' -> await -> shift (target=17, len=0)
 actionsTable[7630] = 818; // 'state 59' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 7632, 7635); // 'state 59' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 7632, 7635); // 'state 59' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[7641] = 36; // 'state 59' -> update_operator -> shift (target=18, len=0)
-actionsTable[7642] = 798; // 'state 59' -> regex -> shift (target=399, len=0)
+actionsTable[7642] = 33638; // 'state 59' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(8, 7695, 7698); // 'state 60' -> const..var -> shift (target=4, len=0)
 actionsTable[7711] = 16; // 'state 60' -> import -> shift (target=8, len=0)
 actionsTable[7716] = 882; // 'state 60' -> type -> shift (target=441, len=0)
@@ -2179,21 +2179,21 @@ actionsTable[7724] = 886; // 'state 60' -> function -> shift (target=443, len=0)
 actionsTable[7729] = 888; // 'state 60' -> class -> shift (target=444, len=0)
 actionsTable[7732] = 816; // 'state 60' -> interface -> shift (target=408, len=0)
 actionsTable[7814] = 990; // 'state 61' -> } -> shift (target=495, len=0)
-actionsTable[7826] = 806; // 'state 61' -> of -> shift (target=403, len=0)
-actionsTable[7840] = 806; // 'state 61' -> from -> shift (target=403, len=0)
-actionsTable[7844] = 806; // 'state 61' -> type -> shift (target=403, len=0)
+actionsTable[7826] = 33636; // 'state 61' -> of -> shift+reduce (target=178, len=1)
+actionsTable[7840] = 33636; // 'state 61' -> from -> shift+reduce (target=178, len=1)
+actionsTable[7844] = 33636; // 'state 61' -> type -> shift+reduce (target=178, len=1)
 actionsTable[7848] = 294; // 'state 61' -> ... -> shift (target=147, len=0)
 actionsTable[7849] = 198; // 'state 61' -> [ -> shift (target=99, len=0)
 actionsTable[7851] = 914; // 'state 61' -> async -> shift (target=457, len=0)
-actionsTable.fill(806, 7855, 7857); // 'state 61' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 7855, 7857); // 'state 61' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[7886] = 992; // 'state 61' -> identifier -> shift (target=496, len=0)
-actionsTable.fill(848, 7888, 7890); // 'state 61' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 7888, 7890); // 'state 61' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[7941] = 122; // 'state 62' -> { -> shift (target=61, len=0)
 actionsTable[7969] = 298; // 'state 62' -> , -> shift (target=149, len=0)
 actionsTable[7976] = 300; // 'state 62' -> ... -> shift (target=150, len=0)
 actionsTable[7977] = 124; // 'state 62' -> [ -> shift (target=62, len=0)
 actionsTable[7978] = 996; // 'state 62' -> ] -> shift (target=498, len=0)
-actionsTable[8014] = 894; // 'state 62' -> identifier -> shift (target=447, len=0)
+actionsTable[8014] = 33536; // 'state 62' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable.fill(1277, 8064, 8073); // 'state 63' -> true..( -> reduce (target=126, len=2)
 actionsTable.fill(1277, 8074, 8077); // 'state 63' -> else..do -> reduce (target=126, len=2)
 actionsTable[8077] = 984; // 'state 63' -> ; -> shift (target=492, len=0)
@@ -2236,18 +2236,18 @@ actionsTable.fill(767, 8264, 8268); // 'state 64' -> !..await -> reduce (target=
 actionsTable[8270] = 767; // 'state 64' -> identifier -> reduce (target=127, len=1)
 actionsTable.fill(767, 8272, 8275); // 'state 64' -> number..template_string -> reduce (target=127, len=1)
 actionsTable.fill(767, 8281, 8284); // 'state 64' -> update_operator..@par-gen.EOF -> reduce (target=127, len=1)
-actionsTable.fill(798, 8320, 8325); // 'state 65' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 8320, 8325); // 'state 65' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[8325] = 68; // 'state 65' -> { -> shift (target=34, len=0)
 actionsTable[8328] = 4; // 'state 65' -> ( -> shift (target=2, len=0)
 actionsTable[8329] = 312; // 'state 65' -> ) -> shift (target=156, len=0)
-actionsTable[8338] = 806; // 'state 65' -> of -> shift (target=403, len=0)
-actionsTable[8352] = 806; // 'state 65' -> from -> shift (target=403, len=0)
-actionsTable[8356] = 806; // 'state 65' -> type -> shift (target=403, len=0)
+actionsTable[8338] = 33636; // 'state 65' -> of -> shift+reduce (target=178, len=1)
+actionsTable[8352] = 33636; // 'state 65' -> from -> shift+reduce (target=178, len=1)
+actionsTable[8356] = 33636; // 'state 65' -> type -> shift+reduce (target=178, len=1)
 actionsTable[8360] = 170; // 'state 65' -> ... -> shift (target=85, len=0)
 actionsTable[8361] = 20; // 'state 65' -> [ -> shift (target=10, len=0)
 actionsTable[8363] = 70; // 'state 65' -> async -> shift (target=35, len=0)
 actionsTable[8364] = 72; // 'state 65' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 8367, 8369); // 'state 65' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 8367, 8369); // 'state 65' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[8369] = 74; // 'state 65' -> class -> shift (target=37, len=0)
 actionsTable[8374] = 28; // 'state 65' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 8379, 8381); // 'state 65' -> void..typeof -> shift (target=15, len=0)
@@ -2256,9 +2256,9 @@ actionsTable.fill(30, 8389, 8391); // 'state 65' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 8392, 8395); // 'state 65' -> !..delete -> shift (target=15, len=0)
 actionsTable[8395] = 34; // 'state 65' -> await -> shift (target=17, len=0)
 actionsTable[8398] = 172; // 'state 65' -> identifier -> shift (target=86, len=0)
-actionsTable.fill(798, 8400, 8403); // 'state 65' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 8400, 8403); // 'state 65' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[8409] = 36; // 'state 65' -> update_operator -> shift (target=18, len=0)
-actionsTable[8410] = 798; // 'state 65' -> regex -> shift (target=399, len=0)
+actionsTable[8410] = 33638; // 'state 65' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[8456] = 138; // 'state 66' -> ( -> shift (target=69, len=0)
 actionsTable[8502] = 28; // 'state 66' -> < -> shift (target=14, len=0)
 actionsTable[8526] = 304; // 'state 66' -> identifier -> shift (target=152, len=0)
@@ -2270,11 +2270,10 @@ actionsTable[8837] = 122; // 'state 69' -> { -> shift (target=61, len=0)
 actionsTable[8841] = 1004; // 'state 69' -> ) -> shift (target=502, len=0)
 actionsTable[8872] = 320; // 'state 69' -> ... -> shift (target=160, len=0)
 actionsTable[8873] = 124; // 'state 69' -> [ -> shift (target=62, len=0)
-actionsTable[8875] = 1006; // 'state 69' -> async -> shift (target=503, len=0)
-actionsTable.fill(1008, 8877, 8879); // 'state 69' -> static..readonly -> shift (target=504, len=0)
-actionsTable.fill(1006, 8879, 8881); // 'state 69' -> get..set -> shift (target=503, len=0)
-actionsTable[8910] = 894; // 'state 69' -> identifier -> shift (target=447, len=0)
-actionsTable[8915] = 1008; // 'state 69' -> accessibility_modifier -> shift (target=504, len=0)
+actionsTable[8875] = 33564; // 'state 69' -> async -> shift+reduce (target=142, len=1)
+actionsTable.fill(33564, 8877, 8881); // 'state 69' -> static..set -> shift+reduce (target=142, len=1)
+actionsTable[8910] = 33536; // 'state 69' -> identifier -> shift+reduce (target=128, len=1)
+actionsTable[8915] = 33564; // 'state 69' -> accessibility_modifier -> shift+reduce (target=142, len=1)
 actionsTable[8968] = 138; // 'state 70' -> ( -> shift (target=69, len=0)
 actionsTable[9014] = 28; // 'state 70' -> < -> shift (target=14, len=0)
 actionsTable[9093] = 80; // 'state 71' -> { -> shift (target=40, len=0)
@@ -2282,28 +2281,28 @@ actionsTable[9115] = 164; // 'state 71' -> : -> shift (target=82, len=0)
 actionsTable[9141] = 164; // 'state 71' -> ?: -> shift (target=82, len=0)
 actionsTable[9224] = 138; // 'state 72' -> ( -> shift (target=69, len=0)
 actionsTable[9350] = 1014; // 'state 73' -> } -> shift (target=507, len=0)
-actionsTable[9357] = 1016; // 'state 73' -> ; -> shift (target=508, len=0)
-actionsTable[9362] = 806; // 'state 73' -> of -> shift (target=403, len=0)
-actionsTable[9376] = 806; // 'state 73' -> from -> shift (target=403, len=0)
-actionsTable[9380] = 806; // 'state 73' -> type -> shift (target=403, len=0)
+actionsTable[9357] = 33574; // 'state 73' -> ; -> shift+reduce (target=147, len=1)
+actionsTable[9362] = 33636; // 'state 73' -> of -> shift+reduce (target=178, len=1)
+actionsTable[9376] = 33636; // 'state 73' -> from -> shift+reduce (target=178, len=1)
+actionsTable[9380] = 33636; // 'state 73' -> type -> shift+reduce (target=178, len=1)
 actionsTable[9385] = 198; // 'state 73' -> [ -> shift (target=99, len=0)
 actionsTable[9387] = 1018; // 'state 73' -> async -> shift (target=509, len=0)
-actionsTable.fill(1008, 9389, 9391); // 'state 73' -> static..readonly -> shift (target=504, len=0)
+actionsTable.fill(33564, 9389, 9391); // 'state 73' -> static..readonly -> shift+reduce (target=142, len=1)
 actionsTable.fill(1020, 9391, 9393); // 'state 73' -> get..set -> shift (target=510, len=0)
-actionsTable[9422] = 848; // 'state 73' -> identifier -> shift (target=424, len=0)
+actionsTable[9422] = 33694; // 'state 73' -> identifier -> shift+reduce (target=207, len=1)
 actionsTable[9423] = 338; // 'state 73' -> private_property_identifier -> shift (target=169, len=0)
-actionsTable.fill(848, 9424, 9426); // 'state 73' -> number..string -> shift (target=424, len=0)
-actionsTable[9427] = 1008; // 'state 73' -> accessibility_modifier -> shift (target=504, len=0)
-actionsTable.fill(798, 9472, 9477); // 'state 74' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33694, 9424, 9426); // 'state 73' -> number..string -> shift+reduce (target=207, len=1)
+actionsTable[9427] = 33564; // 'state 73' -> accessibility_modifier -> shift+reduce (target=142, len=1)
+actionsTable.fill(33638, 9472, 9477); // 'state 74' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[9477] = 68; // 'state 74' -> { -> shift (target=34, len=0)
 actionsTable[9480] = 4; // 'state 74' -> ( -> shift (target=2, len=0)
-actionsTable[9490] = 806; // 'state 74' -> of -> shift (target=403, len=0)
-actionsTable[9504] = 806; // 'state 74' -> from -> shift (target=403, len=0)
-actionsTable[9508] = 806; // 'state 74' -> type -> shift (target=403, len=0)
+actionsTable[9490] = 33636; // 'state 74' -> of -> shift+reduce (target=178, len=1)
+actionsTable[9504] = 33636; // 'state 74' -> from -> shift+reduce (target=178, len=1)
+actionsTable[9508] = 33636; // 'state 74' -> type -> shift+reduce (target=178, len=1)
 actionsTable[9513] = 20; // 'state 74' -> [ -> shift (target=10, len=0)
 actionsTable[9515] = 70; // 'state 74' -> async -> shift (target=35, len=0)
 actionsTable[9516] = 72; // 'state 74' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 9519, 9521); // 'state 74' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 9519, 9521); // 'state 74' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[9521] = 74; // 'state 74' -> class -> shift (target=37, len=0)
 actionsTable[9526] = 28; // 'state 74' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 9531, 9533); // 'state 74' -> void..typeof -> shift (target=15, len=0)
@@ -2312,19 +2311,19 @@ actionsTable.fill(30, 9541, 9543); // 'state 74' -> +..- -> shift (target=15, le
 actionsTable.fill(30, 9544, 9547); // 'state 74' -> !..delete -> shift (target=15, len=0)
 actionsTable[9547] = 34; // 'state 74' -> await -> shift (target=17, len=0)
 actionsTable[9550] = 818; // 'state 74' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 9552, 9555); // 'state 74' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 9552, 9555); // 'state 74' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[9561] = 36; // 'state 74' -> update_operator -> shift (target=18, len=0)
-actionsTable[9562] = 798; // 'state 74' -> regex -> shift (target=399, len=0)
-actionsTable.fill(942, 9600, 9603); // 'state 75' -> true..null -> shift (target=471, len=0)
+actionsTable[9562] = 33638; // 'state 74' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33606, 9600, 9603); // 'state 75' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[9605] = 262; // 'state 75' -> { -> shift (target=131, len=0)
 actionsTable[9608] = 264; // 'state 75' -> ( -> shift (target=132, len=0)
 actionsTable[9641] = 266; // 'state 75' -> [ -> shift (target=133, len=0)
 actionsTable[9654] = 28; // 'state 75' -> < -> shift (target=14, len=0)
 actionsTable[9656] = 268; // 'state 75' -> | -> shift (target=134, len=0)
-actionsTable[9659] = 942; // 'state 75' -> void -> shift (target=471, len=0)
+actionsTable[9659] = 33606; // 'state 75' -> void -> shift+reduce (target=163, len=1)
 actionsTable[9660] = 944; // 'state 75' -> typeof -> shift (target=472, len=0)
 actionsTable[9678] = 270; // 'state 75' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 9680, 9682); // 'state 75' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 9680, 9682); // 'state 75' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[9733] = 146; // 'state 76' -> { -> shift (target=73, len=0)
 actionsTable[9778] = 148; // 'state 76' -> extends -> shift (target=74, len=0)
 actionsTable[9779] = 150; // 'state 76' -> implements -> shift (target=75, len=0)
@@ -2338,16 +2337,16 @@ actionsTable[10162] = 344; // 'state 79' -> extends -> shift (target=172, len=0)
 actionsTable[10166] = 28; // 'state 79' -> < -> shift (target=14, len=0)
 actionsTable[10279] = 350; // 'state 80' -> = -> shift (target=175, len=0)
 actionsTable[10294] = 28; // 'state 80' -> < -> shift (target=14, len=0)
-actionsTable.fill(798, 10368, 10373); // 'state 81' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 10368, 10373); // 'state 81' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[10373] = 2; // 'state 81' -> { -> shift (target=1, len=0)
 actionsTable[10376] = 4; // 'state 81' -> ( -> shift (target=2, len=0)
-actionsTable[10386] = 806; // 'state 81' -> of -> shift (target=403, len=0)
-actionsTable[10400] = 806; // 'state 81' -> from -> shift (target=403, len=0)
-actionsTable[10404] = 806; // 'state 81' -> type -> shift (target=403, len=0)
+actionsTable[10386] = 33636; // 'state 81' -> of -> shift+reduce (target=178, len=1)
+actionsTable[10400] = 33636; // 'state 81' -> from -> shift+reduce (target=178, len=1)
+actionsTable[10404] = 33636; // 'state 81' -> type -> shift+reduce (target=178, len=1)
 actionsTable[10409] = 20; // 'state 81' -> [ -> shift (target=10, len=0)
 actionsTable[10411] = 70; // 'state 81' -> async -> shift (target=35, len=0)
 actionsTable[10412] = 72; // 'state 81' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 10415, 10417); // 'state 81' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 10415, 10417); // 'state 81' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[10417] = 74; // 'state 81' -> class -> shift (target=37, len=0)
 actionsTable[10422] = 28; // 'state 81' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 10427, 10429); // 'state 81' -> void..typeof -> shift (target=15, len=0)
@@ -2356,29 +2355,29 @@ actionsTable.fill(30, 10437, 10439); // 'state 81' -> +..- -> shift (target=15, 
 actionsTable.fill(30, 10440, 10443); // 'state 81' -> !..delete -> shift (target=15, len=0)
 actionsTable[10443] = 34; // 'state 81' -> await -> shift (target=17, len=0)
 actionsTable[10446] = 818; // 'state 81' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 10448, 10451); // 'state 81' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 10448, 10451); // 'state 81' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[10457] = 36; // 'state 81' -> update_operator -> shift (target=18, len=0)
-actionsTable[10458] = 798; // 'state 81' -> regex -> shift (target=399, len=0)
-actionsTable.fill(942, 10496, 10499); // 'state 82' -> true..null -> shift (target=471, len=0)
+actionsTable[10458] = 33638; // 'state 81' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33606, 10496, 10499); // 'state 82' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[10501] = 262; // 'state 82' -> { -> shift (target=131, len=0)
 actionsTable[10504] = 264; // 'state 82' -> ( -> shift (target=132, len=0)
 actionsTable[10537] = 266; // 'state 82' -> [ -> shift (target=133, len=0)
 actionsTable[10550] = 28; // 'state 82' -> < -> shift (target=14, len=0)
 actionsTable[10552] = 268; // 'state 82' -> | -> shift (target=134, len=0)
-actionsTable[10555] = 942; // 'state 82' -> void -> shift (target=471, len=0)
+actionsTable[10555] = 33606; // 'state 82' -> void -> shift+reduce (target=163, len=1)
 actionsTable[10556] = 944; // 'state 82' -> typeof -> shift (target=472, len=0)
 actionsTable[10574] = 270; // 'state 82' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 10576, 10578); // 'state 82' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(798, 10624, 10629); // 'state 83' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33606, 10576, 10578); // 'state 82' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33638, 10624, 10629); // 'state 83' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[10629] = 68; // 'state 83' -> { -> shift (target=34, len=0)
 actionsTable[10632] = 4; // 'state 83' -> ( -> shift (target=2, len=0)
-actionsTable[10642] = 806; // 'state 83' -> of -> shift (target=403, len=0)
-actionsTable[10656] = 806; // 'state 83' -> from -> shift (target=403, len=0)
-actionsTable[10660] = 806; // 'state 83' -> type -> shift (target=403, len=0)
+actionsTable[10642] = 33636; // 'state 83' -> of -> shift+reduce (target=178, len=1)
+actionsTable[10656] = 33636; // 'state 83' -> from -> shift+reduce (target=178, len=1)
+actionsTable[10660] = 33636; // 'state 83' -> type -> shift+reduce (target=178, len=1)
 actionsTable[10665] = 20; // 'state 83' -> [ -> shift (target=10, len=0)
 actionsTable[10667] = 70; // 'state 83' -> async -> shift (target=35, len=0)
 actionsTable[10668] = 72; // 'state 83' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 10671, 10673); // 'state 83' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 10671, 10673); // 'state 83' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[10673] = 74; // 'state 83' -> class -> shift (target=37, len=0)
 actionsTable[10678] = 28; // 'state 83' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 10683, 10685); // 'state 83' -> void..typeof -> shift (target=15, len=0)
@@ -2387,19 +2386,19 @@ actionsTable.fill(30, 10693, 10695); // 'state 83' -> +..- -> shift (target=15, 
 actionsTable.fill(30, 10696, 10699); // 'state 83' -> !..delete -> shift (target=15, len=0)
 actionsTable[10699] = 34; // 'state 83' -> await -> shift (target=17, len=0)
 actionsTable[10702] = 818; // 'state 83' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 10704, 10707); // 'state 83' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 10704, 10707); // 'state 83' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[10713] = 36; // 'state 83' -> update_operator -> shift (target=18, len=0)
-actionsTable[10714] = 798; // 'state 83' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 10752, 10757); // 'state 84' -> true..super -> shift (target=399, len=0)
+actionsTable[10714] = 33638; // 'state 83' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 10752, 10757); // 'state 84' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[10757] = 68; // 'state 84' -> { -> shift (target=34, len=0)
 actionsTable[10760] = 4; // 'state 84' -> ( -> shift (target=2, len=0)
-actionsTable[10770] = 806; // 'state 84' -> of -> shift (target=403, len=0)
-actionsTable[10784] = 806; // 'state 84' -> from -> shift (target=403, len=0)
-actionsTable[10788] = 806; // 'state 84' -> type -> shift (target=403, len=0)
+actionsTable[10770] = 33636; // 'state 84' -> of -> shift+reduce (target=178, len=1)
+actionsTable[10784] = 33636; // 'state 84' -> from -> shift+reduce (target=178, len=1)
+actionsTable[10788] = 33636; // 'state 84' -> type -> shift+reduce (target=178, len=1)
 actionsTable[10793] = 20; // 'state 84' -> [ -> shift (target=10, len=0)
 actionsTable[10795] = 70; // 'state 84' -> async -> shift (target=35, len=0)
 actionsTable[10796] = 72; // 'state 84' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 10799, 10801); // 'state 84' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 10799, 10801); // 'state 84' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[10801] = 74; // 'state 84' -> class -> shift (target=37, len=0)
 actionsTable[10806] = 28; // 'state 84' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 10811, 10813); // 'state 84' -> void..typeof -> shift (target=15, len=0)
@@ -2408,19 +2407,19 @@ actionsTable.fill(30, 10821, 10823); // 'state 84' -> +..- -> shift (target=15, 
 actionsTable.fill(30, 10824, 10827); // 'state 84' -> !..delete -> shift (target=15, len=0)
 actionsTable[10827] = 34; // 'state 84' -> await -> shift (target=17, len=0)
 actionsTable[10830] = 818; // 'state 84' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 10832, 10835); // 'state 84' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 10832, 10835); // 'state 84' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[10841] = 36; // 'state 84' -> update_operator -> shift (target=18, len=0)
-actionsTable[10842] = 798; // 'state 84' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 10880, 10885); // 'state 85' -> true..super -> shift (target=399, len=0)
+actionsTable[10842] = 33638; // 'state 84' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 10880, 10885); // 'state 85' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[10885] = 68; // 'state 85' -> { -> shift (target=34, len=0)
 actionsTable[10888] = 4; // 'state 85' -> ( -> shift (target=2, len=0)
-actionsTable[10898] = 806; // 'state 85' -> of -> shift (target=403, len=0)
-actionsTable[10912] = 806; // 'state 85' -> from -> shift (target=403, len=0)
-actionsTable[10916] = 806; // 'state 85' -> type -> shift (target=403, len=0)
+actionsTable[10898] = 33636; // 'state 85' -> of -> shift+reduce (target=178, len=1)
+actionsTable[10912] = 33636; // 'state 85' -> from -> shift+reduce (target=178, len=1)
+actionsTable[10916] = 33636; // 'state 85' -> type -> shift+reduce (target=178, len=1)
 actionsTable[10921] = 20; // 'state 85' -> [ -> shift (target=10, len=0)
 actionsTable[10923] = 70; // 'state 85' -> async -> shift (target=35, len=0)
 actionsTable[10924] = 72; // 'state 85' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 10927, 10929); // 'state 85' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 10927, 10929); // 'state 85' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[10929] = 74; // 'state 85' -> class -> shift (target=37, len=0)
 actionsTable[10934] = 28; // 'state 85' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 10939, 10941); // 'state 85' -> void..typeof -> shift (target=15, len=0)
@@ -2429,9 +2428,9 @@ actionsTable.fill(30, 10949, 10951); // 'state 85' -> +..- -> shift (target=15, 
 actionsTable.fill(30, 10952, 10955); // 'state 85' -> !..delete -> shift (target=15, len=0)
 actionsTable[10955] = 34; // 'state 85' -> await -> shift (target=17, len=0)
 actionsTable[10958] = 360; // 'state 85' -> identifier -> shift (target=180, len=0)
-actionsTable.fill(798, 10960, 10963); // 'state 85' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 10960, 10963); // 'state 85' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[10969] = 36; // 'state 85' -> update_operator -> shift (target=18, len=0)
-actionsTable[10970] = 798; // 'state 85' -> regex -> shift (target=399, len=0)
+actionsTable[10970] = 33638; // 'state 85' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(871, 11016, 11018); // 'state 86' -> (..) -> reduce (target=179, len=1)
 actionsTable[11027] = 871; // 'state 86' -> in -> reduce (target=179, len=1)
 actionsTable[11035] = 164; // 'state 86' -> : -> shift (target=82, len=0)
@@ -2532,17 +2531,17 @@ actionsTable.fill(1405, 11982, 11988); // 'state 93' -> identifier..accessibilit
 actionsTable.fill(1405, 11989, 11993); // 'state 93' -> equality_operator..multiplicative_operator -> reduce (target=190, len=2)
 actionsTable[11993] = 866; // 'state 93' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(1405, 11994, 11996); // 'state 93' -> regex..@par-gen.EOF -> reduce (target=190, len=2)
-actionsTable.fill(798, 12032, 12037); // 'state 94' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 12032, 12037); // 'state 94' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[12037] = 68; // 'state 94' -> { -> shift (target=34, len=0)
 actionsTable[12040] = 4; // 'state 94' -> ( -> shift (target=2, len=0)
-actionsTable[12050] = 806; // 'state 94' -> of -> shift (target=403, len=0)
-actionsTable[12064] = 806; // 'state 94' -> from -> shift (target=403, len=0)
-actionsTable[12068] = 806; // 'state 94' -> type -> shift (target=403, len=0)
+actionsTable[12050] = 33636; // 'state 94' -> of -> shift+reduce (target=178, len=1)
+actionsTable[12064] = 33636; // 'state 94' -> from -> shift+reduce (target=178, len=1)
+actionsTable[12068] = 33636; // 'state 94' -> type -> shift+reduce (target=178, len=1)
 actionsTable[12072] = 48; // 'state 94' -> ... -> shift (target=24, len=0)
 actionsTable[12073] = 20; // 'state 94' -> [ -> shift (target=10, len=0)
 actionsTable[12075] = 70; // 'state 94' -> async -> shift (target=35, len=0)
 actionsTable[12076] = 72; // 'state 94' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 12079, 12081); // 'state 94' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 12079, 12081); // 'state 94' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[12081] = 74; // 'state 94' -> class -> shift (target=37, len=0)
 actionsTable[12086] = 28; // 'state 94' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 12091, 12093); // 'state 94' -> void..typeof -> shift (target=15, len=0)
@@ -2551,9 +2550,9 @@ actionsTable.fill(30, 12101, 12103); // 'state 94' -> +..- -> shift (target=15, 
 actionsTable.fill(30, 12104, 12107); // 'state 94' -> !..delete -> shift (target=15, len=0)
 actionsTable[12107] = 34; // 'state 94' -> await -> shift (target=17, len=0)
 actionsTable[12110] = 818; // 'state 94' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 12112, 12115); // 'state 94' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 12112, 12115); // 'state 94' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[12121] = 36; // 'state 94' -> update_operator -> shift (target=18, len=0)
-actionsTable[12122] = 798; // 'state 94' -> regex -> shift (target=399, len=0)
+actionsTable[12122] = 33638; // 'state 94' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(1409, 12160, 12168); // 'state 95' -> true..if -> reduce (target=192, len=2)
 actionsTable[12168] = 86; // 'state 95' -> ( -> shift (target=43, len=0)
 actionsTable.fill(1409, 12169, 12183); // 'state 95' -> )..try -> reduce (target=192, len=2)
@@ -2565,17 +2564,17 @@ actionsTable.fill(1409, 12215, 12218); // 'state 95' -> >..& -> reduce (target=1
 actionsTable.fill(1409, 12219, 12221); // 'state 95' -> void..typeof -> reduce (target=192, len=2)
 actionsTable.fill(1409, 12222, 12244); // 'state 95' -> new..accessibility_modifier -> reduce (target=192, len=2)
 actionsTable.fill(1409, 12245, 12252); // 'state 95' -> equality_operator..@par-gen.EOF -> reduce (target=192, len=2)
-actionsTable.fill(798, 12288, 12293); // 'state 96' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 12288, 12293); // 'state 96' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[12293] = 68; // 'state 96' -> { -> shift (target=34, len=0)
 actionsTable[12296] = 4; // 'state 96' -> ( -> shift (target=2, len=0)
-actionsTable[12306] = 806; // 'state 96' -> of -> shift (target=403, len=0)
-actionsTable[12320] = 806; // 'state 96' -> from -> shift (target=403, len=0)
-actionsTable[12324] = 806; // 'state 96' -> type -> shift (target=403, len=0)
+actionsTable[12306] = 33636; // 'state 96' -> of -> shift+reduce (target=178, len=1)
+actionsTable[12320] = 33636; // 'state 96' -> from -> shift+reduce (target=178, len=1)
+actionsTable[12324] = 33636; // 'state 96' -> type -> shift+reduce (target=178, len=1)
 actionsTable[12328] = 48; // 'state 96' -> ... -> shift (target=24, len=0)
 actionsTable[12329] = 20; // 'state 96' -> [ -> shift (target=10, len=0)
 actionsTable[12331] = 70; // 'state 96' -> async -> shift (target=35, len=0)
 actionsTable[12332] = 72; // 'state 96' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 12335, 12337); // 'state 96' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 12335, 12337); // 'state 96' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[12337] = 74; // 'state 96' -> class -> shift (target=37, len=0)
 actionsTable[12342] = 28; // 'state 96' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 12347, 12349); // 'state 96' -> void..typeof -> shift (target=15, len=0)
@@ -2584,23 +2583,23 @@ actionsTable.fill(30, 12357, 12359); // 'state 96' -> +..- -> shift (target=15, 
 actionsTable.fill(30, 12360, 12363); // 'state 96' -> !..delete -> shift (target=15, len=0)
 actionsTable[12363] = 34; // 'state 96' -> await -> shift (target=17, len=0)
 actionsTable[12366] = 818; // 'state 96' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 12368, 12371); // 'state 96' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 12368, 12371); // 'state 96' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[12377] = 36; // 'state 96' -> update_operator -> shift (target=18, len=0)
-actionsTable[12378] = 798; // 'state 96' -> regex -> shift (target=399, len=0)
+actionsTable[12378] = 33638; // 'state 96' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[12449] = 372; // 'state 97' -> , -> shift (target=186, len=0)
 actionsTable[12458] = 1042; // 'state 97' -> ] -> shift (target=521, len=0)
 actionsTable[12577] = 374; // 'state 98' -> , -> shift (target=187, len=0)
 actionsTable[12599] = 1046; // 'state 98' -> > -> shift (target=523, len=0)
-actionsTable.fill(798, 12672, 12677); // 'state 99' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 12672, 12677); // 'state 99' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[12677] = 68; // 'state 99' -> { -> shift (target=34, len=0)
 actionsTable[12680] = 4; // 'state 99' -> ( -> shift (target=2, len=0)
-actionsTable[12690] = 806; // 'state 99' -> of -> shift (target=403, len=0)
-actionsTable[12704] = 806; // 'state 99' -> from -> shift (target=403, len=0)
-actionsTable[12708] = 806; // 'state 99' -> type -> shift (target=403, len=0)
+actionsTable[12690] = 33636; // 'state 99' -> of -> shift+reduce (target=178, len=1)
+actionsTable[12704] = 33636; // 'state 99' -> from -> shift+reduce (target=178, len=1)
+actionsTable[12708] = 33636; // 'state 99' -> type -> shift+reduce (target=178, len=1)
 actionsTable[12713] = 20; // 'state 99' -> [ -> shift (target=10, len=0)
 actionsTable[12715] = 70; // 'state 99' -> async -> shift (target=35, len=0)
 actionsTable[12716] = 72; // 'state 99' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 12719, 12721); // 'state 99' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 12719, 12721); // 'state 99' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[12721] = 74; // 'state 99' -> class -> shift (target=37, len=0)
 actionsTable[12726] = 28; // 'state 99' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 12731, 12733); // 'state 99' -> void..typeof -> shift (target=15, len=0)
@@ -2609,9 +2608,9 @@ actionsTable.fill(30, 12741, 12743); // 'state 99' -> +..- -> shift (target=15, 
 actionsTable.fill(30, 12744, 12747); // 'state 99' -> !..delete -> shift (target=15, len=0)
 actionsTable[12747] = 34; // 'state 99' -> await -> shift (target=17, len=0)
 actionsTable[12750] = 818; // 'state 99' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 12752, 12755); // 'state 99' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 12752, 12755); // 'state 99' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[12761] = 36; // 'state 99' -> update_operator -> shift (target=18, len=0)
-actionsTable[12762] = 798; // 'state 99' -> regex -> shift (target=399, len=0)
+actionsTable[12762] = 33638; // 'state 99' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[12808] = 138; // 'state 100' -> ( -> shift (target=69, len=0)
 actionsTable[12854] = 28; // 'state 100' -> < -> shift (target=14, len=0)
 actionsTable[12936] = 86; // 'state 101' -> ( -> shift (target=43, len=0)
@@ -2639,25 +2638,25 @@ actionsTable[13015] = 114; // 'state 101' -> shift_operator -> shift (target=57,
 actionsTable[13016] = 90; // 'state 101' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[13017] = 866; // 'state 101' -> update_operator -> shift (target=433, len=0)
 actionsTable[13062] = 1052; // 'state 102' -> } -> shift (target=526, len=0)
-actionsTable[13074] = 806; // 'state 102' -> of -> shift (target=403, len=0)
-actionsTable[13088] = 806; // 'state 102' -> from -> shift (target=403, len=0)
-actionsTable[13092] = 806; // 'state 102' -> type -> shift (target=403, len=0)
+actionsTable[13074] = 33636; // 'state 102' -> of -> shift+reduce (target=178, len=1)
+actionsTable[13088] = 33636; // 'state 102' -> from -> shift+reduce (target=178, len=1)
+actionsTable[13092] = 33636; // 'state 102' -> type -> shift+reduce (target=178, len=1)
 actionsTable[13096] = 48; // 'state 102' -> ... -> shift (target=24, len=0)
 actionsTable[13097] = 198; // 'state 102' -> [ -> shift (target=99, len=0)
 actionsTable[13099] = 226; // 'state 102' -> async -> shift (target=113, len=0)
 actionsTable.fill(54, 13103, 13105); // 'state 102' -> get..set -> shift (target=27, len=0)
 actionsTable[13134] = 930; // 'state 102' -> identifier -> shift (target=465, len=0)
-actionsTable.fill(848, 13136, 13138); // 'state 102' -> number..string -> shift (target=424, len=0)
-actionsTable.fill(798, 13184, 13189); // 'state 103' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33694, 13136, 13138); // 'state 102' -> number..string -> shift+reduce (target=207, len=1)
+actionsTable.fill(33638, 13184, 13189); // 'state 103' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[13189] = 68; // 'state 103' -> { -> shift (target=34, len=0)
 actionsTable[13192] = 4; // 'state 103' -> ( -> shift (target=2, len=0)
-actionsTable[13202] = 806; // 'state 103' -> of -> shift (target=403, len=0)
-actionsTable[13216] = 806; // 'state 103' -> from -> shift (target=403, len=0)
-actionsTable[13220] = 806; // 'state 103' -> type -> shift (target=403, len=0)
+actionsTable[13202] = 33636; // 'state 103' -> of -> shift+reduce (target=178, len=1)
+actionsTable[13216] = 33636; // 'state 103' -> from -> shift+reduce (target=178, len=1)
+actionsTable[13220] = 33636; // 'state 103' -> type -> shift+reduce (target=178, len=1)
 actionsTable[13225] = 20; // 'state 103' -> [ -> shift (target=10, len=0)
 actionsTable[13227] = 70; // 'state 103' -> async -> shift (target=35, len=0)
 actionsTable[13228] = 72; // 'state 103' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 13231, 13233); // 'state 103' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 13231, 13233); // 'state 103' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[13233] = 74; // 'state 103' -> class -> shift (target=37, len=0)
 actionsTable[13238] = 28; // 'state 103' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 13243, 13245); // 'state 103' -> void..typeof -> shift (target=15, len=0)
@@ -2666,9 +2665,9 @@ actionsTable.fill(30, 13253, 13255); // 'state 103' -> +..- -> shift (target=15,
 actionsTable.fill(30, 13256, 13259); // 'state 103' -> !..delete -> shift (target=15, len=0)
 actionsTable[13259] = 34; // 'state 103' -> await -> shift (target=17, len=0)
 actionsTable[13262] = 818; // 'state 103' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 13264, 13267); // 'state 103' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 13264, 13267); // 'state 103' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[13273] = 36; // 'state 103' -> update_operator -> shift (target=18, len=0)
-actionsTable[13274] = 798; // 'state 103' -> regex -> shift (target=399, len=0)
+actionsTable[13274] = 33638; // 'state 103' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[13317] = 80; // 'state 104' -> { -> shift (target=40, len=0)
 actionsTable[13339] = 164; // 'state 104' -> : -> shift (target=82, len=0)
 actionsTable[13365] = 164; // 'state 104' -> ?: -> shift (target=82, len=0)
@@ -2745,17 +2744,17 @@ actionsTable[13910] = 88; // 'state 108' -> relational_operator -> shift (target
 actionsTable[13911] = 114; // 'state 108' -> shift_operator -> shift (target=57, len=0)
 actionsTable[13912] = 90; // 'state 108' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[13913] = 866; // 'state 108' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 13952, 13957); // 'state 109' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 13952, 13957); // 'state 109' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[13957] = 68; // 'state 109' -> { -> shift (target=34, len=0)
 actionsTable[13960] = 4; // 'state 109' -> ( -> shift (target=2, len=0)
 actionsTable[13965] = 398; // 'state 109' -> ; -> shift (target=199, len=0)
-actionsTable[13970] = 806; // 'state 109' -> of -> shift (target=403, len=0)
-actionsTable[13984] = 806; // 'state 109' -> from -> shift (target=403, len=0)
-actionsTable[13988] = 806; // 'state 109' -> type -> shift (target=403, len=0)
+actionsTable[13970] = 33636; // 'state 109' -> of -> shift+reduce (target=178, len=1)
+actionsTable[13984] = 33636; // 'state 109' -> from -> shift+reduce (target=178, len=1)
+actionsTable[13988] = 33636; // 'state 109' -> type -> shift+reduce (target=178, len=1)
 actionsTable[13993] = 20; // 'state 109' -> [ -> shift (target=10, len=0)
 actionsTable[13995] = 70; // 'state 109' -> async -> shift (target=35, len=0)
 actionsTable[13996] = 72; // 'state 109' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 13999, 14001); // 'state 109' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 13999, 14001); // 'state 109' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[14001] = 74; // 'state 109' -> class -> shift (target=37, len=0)
 actionsTable[14006] = 28; // 'state 109' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 14011, 14013); // 'state 109' -> void..typeof -> shift (target=15, len=0)
@@ -2764,12 +2763,12 @@ actionsTable.fill(30, 14021, 14023); // 'state 109' -> +..- -> shift (target=15,
 actionsTable.fill(30, 14024, 14027); // 'state 109' -> !..delete -> shift (target=15, len=0)
 actionsTable[14027] = 34; // 'state 109' -> await -> shift (target=17, len=0)
 actionsTable[14030] = 818; // 'state 109' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 14032, 14035); // 'state 109' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 14032, 14035); // 'state 109' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[14041] = 36; // 'state 109' -> update_operator -> shift (target=18, len=0)
-actionsTable[14042] = 798; // 'state 109' -> regex -> shift (target=399, len=0)
+actionsTable[14042] = 33638; // 'state 109' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[14085] = 122; // 'state 110' -> { -> shift (target=61, len=0)
 actionsTable[14121] = 124; // 'state 110' -> [ -> shift (target=62, len=0)
-actionsTable[14158] = 894; // 'state 110' -> identifier -> shift (target=447, len=0)
+actionsTable[14158] = 33536; // 'state 110' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[14216] = 86; // 'state 111' -> ( -> shift (target=43, len=0)
 actionsTable[14221] = 404; // 'state 111' -> ; -> shift (target=202, len=0)
 actionsTable[14227] = 88; // 'state 111' -> in -> shift (target=44, len=0)
@@ -2798,17 +2797,17 @@ actionsTable[14390] = 28; // 'state 112' -> < -> shift (target=14, len=0)
 actionsTable[14414] = 406; // 'state 112' -> identifier -> shift (target=203, len=0)
 actionsTable[14470] = 869; // 'state 113' -> } -> reduce (target=178, len=1)
 actionsTable[14472] = 869; // 'state 113' -> ( -> reduce (target=178, len=1)
-actionsTable[14482] = 806; // 'state 113' -> of -> shift (target=403, len=0)
+actionsTable[14482] = 33636; // 'state 113' -> of -> shift+reduce (target=178, len=1)
 actionsTable[14491] = 869; // 'state 113' -> : -> reduce (target=178, len=1)
-actionsTable[14496] = 806; // 'state 113' -> from -> shift (target=403, len=0)
+actionsTable[14496] = 33636; // 'state 113' -> from -> shift+reduce (target=178, len=1)
 actionsTable[14497] = 869; // 'state 113' -> , -> reduce (target=178, len=1)
-actionsTable[14500] = 806; // 'state 113' -> type -> shift (target=403, len=0)
+actionsTable[14500] = 33636; // 'state 113' -> type -> shift+reduce (target=178, len=1)
 actionsTable[14505] = 198; // 'state 113' -> [ -> shift (target=99, len=0)
 actionsTable[14507] = 914; // 'state 113' -> async -> shift (target=457, len=0)
-actionsTable.fill(806, 14511, 14513); // 'state 113' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 14511, 14513); // 'state 113' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable.fill(869, 14517, 14519); // 'state 113' -> ?:..< -> reduce (target=178, len=1)
-actionsTable[14542] = 848; // 'state 113' -> identifier -> shift (target=424, len=0)
-actionsTable.fill(848, 14544, 14546); // 'state 113' -> number..string -> shift (target=424, len=0)
+actionsTable[14542] = 33694; // 'state 113' -> identifier -> shift+reduce (target=207, len=1)
+actionsTable.fill(33694, 14544, 14546); // 'state 113' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[14600] = 138; // 'state 114' -> ( -> shift (target=69, len=0)
 actionsTable[14646] = 28; // 'state 114' -> < -> shift (target=14, len=0)
 actionsTable[14725] = 146; // 'state 115' -> { -> shift (target=73, len=0)
@@ -3156,17 +3155,17 @@ actionsTable.fill(1911, 16725, 16729); // 'state 130' -> equality_operator..mult
 actionsTable[16729] = 866; // 'state 130' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(1911, 16730, 16732); // 'state 130' -> regex..@par-gen.EOF -> reduce (target=187, len=3)
 actionsTable[16774] = 1074; // 'state 131' -> } -> shift (target=537, len=0)
-actionsTable[16786] = 806; // 'state 131' -> of -> shift (target=403, len=0)
-actionsTable[16800] = 806; // 'state 131' -> from -> shift (target=403, len=0)
-actionsTable[16804] = 806; // 'state 131' -> type -> shift (target=403, len=0)
+actionsTable[16786] = 33636; // 'state 131' -> of -> shift+reduce (target=178, len=1)
+actionsTable[16800] = 33636; // 'state 131' -> from -> shift+reduce (target=178, len=1)
+actionsTable[16804] = 33636; // 'state 131' -> type -> shift+reduce (target=178, len=1)
 actionsTable[16809] = 436; // 'state 131' -> [ -> shift (target=218, len=0)
 actionsTable[16811] = 914; // 'state 131' -> async -> shift (target=457, len=0)
 actionsTable[16814] = 438; // 'state 131' -> readonly -> shift (target=219, len=0)
-actionsTable.fill(806, 16815, 16817); // 'state 131' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 16815, 16817); // 'state 131' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[16830] = 440; // 'state 131' -> new -> shift (target=220, len=0)
-actionsTable[16846] = 848; // 'state 131' -> identifier -> shift (target=424, len=0)
-actionsTable.fill(848, 16848, 16850); // 'state 131' -> number..string -> shift (target=424, len=0)
-actionsTable.fill(942, 16896, 16899); // 'state 132' -> true..null -> shift (target=471, len=0)
+actionsTable[16846] = 33694; // 'state 131' -> identifier -> shift+reduce (target=207, len=1)
+actionsTable.fill(33694, 16848, 16850); // 'state 131' -> number..string -> shift+reduce (target=207, len=1)
+actionsTable.fill(33606, 16896, 16899); // 'state 132' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[16901] = 420; // 'state 132' -> { -> shift (target=210, len=0)
 actionsTable[16904] = 264; // 'state 132' -> ( -> shift (target=132, len=0)
 actionsTable[16905] = 1066; // 'state 132' -> ) -> shift (target=533, len=0)
@@ -3174,31 +3173,31 @@ actionsTable[16936] = 422; // 'state 132' -> ... -> shift (target=211, len=0)
 actionsTable[16937] = 424; // 'state 132' -> [ -> shift (target=212, len=0)
 actionsTable[16950] = 28; // 'state 132' -> < -> shift (target=14, len=0)
 actionsTable[16952] = 268; // 'state 132' -> | -> shift (target=134, len=0)
-actionsTable[16955] = 942; // 'state 132' -> void -> shift (target=471, len=0)
+actionsTable[16955] = 33606; // 'state 132' -> void -> shift+reduce (target=163, len=1)
 actionsTable[16956] = 944; // 'state 132' -> typeof -> shift (target=472, len=0)
 actionsTable[16974] = 426; // 'state 132' -> identifier -> shift (target=213, len=0)
-actionsTable.fill(942, 16976, 16978); // 'state 132' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(942, 17024, 17027); // 'state 133' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 16976, 16978); // 'state 132' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33606, 17024, 17027); // 'state 133' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[17029] = 262; // 'state 133' -> { -> shift (target=131, len=0)
 actionsTable[17032] = 264; // 'state 133' -> ( -> shift (target=132, len=0)
 actionsTable[17065] = 266; // 'state 133' -> [ -> shift (target=133, len=0)
 actionsTable[17066] = 1072; // 'state 133' -> ] -> shift (target=536, len=0)
 actionsTable[17078] = 28; // 'state 133' -> < -> shift (target=14, len=0)
 actionsTable[17080] = 268; // 'state 133' -> | -> shift (target=134, len=0)
-actionsTable[17083] = 942; // 'state 133' -> void -> shift (target=471, len=0)
+actionsTable[17083] = 33606; // 'state 133' -> void -> shift+reduce (target=163, len=1)
 actionsTable[17084] = 944; // 'state 133' -> typeof -> shift (target=472, len=0)
 actionsTable[17102] = 270; // 'state 133' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 17104, 17106); // 'state 133' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(942, 17152, 17155); // 'state 134' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 17104, 17106); // 'state 133' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33606, 17152, 17155); // 'state 134' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[17157] = 262; // 'state 134' -> { -> shift (target=131, len=0)
 actionsTable[17160] = 264; // 'state 134' -> ( -> shift (target=132, len=0)
 actionsTable[17193] = 266; // 'state 134' -> [ -> shift (target=133, len=0)
 actionsTable[17206] = 28; // 'state 134' -> < -> shift (target=14, len=0)
 actionsTable[17208] = 268; // 'state 134' -> | -> shift (target=134, len=0)
-actionsTable[17211] = 942; // 'state 134' -> void -> shift (target=471, len=0)
+actionsTable[17211] = 33606; // 'state 134' -> void -> shift+reduce (target=163, len=1)
 actionsTable[17212] = 944; // 'state 134' -> typeof -> shift (target=472, len=0)
 actionsTable[17230] = 270; // 'state 134' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 17232, 17234); // 'state 134' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 17232, 17234); // 'state 134' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable.fill(839, 17280, 17303); // 'state 135' -> true..try -> reduce (target=163, len=1)
 actionsTable.fill(839, 17305, 17318); // 'state 135' -> switch..export -> reduce (target=163, len=1)
 actionsTable[17319] = 839; // 'state 135' -> = -> reduce (target=163, len=1)
@@ -3210,16 +3209,16 @@ actionsTable[17341] = 432; // 'state 135' -> is -> shift (target=216, len=0)
 actionsTable.fill(839, 17342, 17364); // 'state 135' -> new..accessibility_modifier -> reduce (target=163, len=1)
 actionsTable.fill(839, 17365, 17372); // 'state 135' -> equality_operator..@par-gen.EOF -> reduce (target=163, len=1)
 actionsTable[17416] = 418; // 'state 136' -> ( -> shift (target=209, len=0)
-actionsTable.fill(798, 17536, 17541); // 'state 137' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 17536, 17541); // 'state 137' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[17541] = 68; // 'state 137' -> { -> shift (target=34, len=0)
 actionsTable[17544] = 4; // 'state 137' -> ( -> shift (target=2, len=0)
-actionsTable[17554] = 806; // 'state 137' -> of -> shift (target=403, len=0)
-actionsTable[17568] = 806; // 'state 137' -> from -> shift (target=403, len=0)
-actionsTable[17572] = 806; // 'state 137' -> type -> shift (target=403, len=0)
+actionsTable[17554] = 33636; // 'state 137' -> of -> shift+reduce (target=178, len=1)
+actionsTable[17568] = 33636; // 'state 137' -> from -> shift+reduce (target=178, len=1)
+actionsTable[17572] = 33636; // 'state 137' -> type -> shift+reduce (target=178, len=1)
 actionsTable[17577] = 20; // 'state 137' -> [ -> shift (target=10, len=0)
 actionsTable[17579] = 70; // 'state 137' -> async -> shift (target=35, len=0)
 actionsTable[17580] = 72; // 'state 137' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 17583, 17585); // 'state 137' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 17583, 17585); // 'state 137' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[17585] = 74; // 'state 137' -> class -> shift (target=37, len=0)
 actionsTable[17590] = 28; // 'state 137' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 17595, 17597); // 'state 137' -> void..typeof -> shift (target=15, len=0)
@@ -3228,9 +3227,9 @@ actionsTable.fill(30, 17605, 17607); // 'state 137' -> +..- -> shift (target=15,
 actionsTable.fill(30, 17608, 17611); // 'state 137' -> !..delete -> shift (target=15, len=0)
 actionsTable[17611] = 34; // 'state 137' -> await -> shift (target=17, len=0)
 actionsTable[17614] = 818; // 'state 137' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 17616, 17619); // 'state 137' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 17616, 17619); // 'state 137' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[17625] = 36; // 'state 137' -> update_operator -> shift (target=18, len=0)
-actionsTable[17626] = 798; // 'state 137' -> regex -> shift (target=399, len=0)
+actionsTable[17626] = 33638; // 'state 137' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[17673] = 1080; // 'state 138' -> ) -> shift (target=540, len=0)
 actionsTable[17697] = 448; // 'state 138' -> , -> shift (target=224, len=0)
 actionsTable[17800] = 86; // 'state 139' -> ( -> shift (target=43, len=0)
@@ -3307,17 +3306,17 @@ actionsTable[18521] = 866; // 'state 144' -> update_operator -> shift (target=43
 actionsTable.fill(1785, 18522, 18524); // 'state 144' -> regex..@par-gen.EOF -> reduce (target=124, len=3)
 actionsTable[18565] = 122; // 'state 145' -> { -> shift (target=61, len=0)
 actionsTable[18601] = 124; // 'state 145' -> [ -> shift (target=62, len=0)
-actionsTable[18638] = 894; // 'state 145' -> identifier -> shift (target=447, len=0)
-actionsTable.fill(798, 18688, 18693); // 'state 146' -> true..super -> shift (target=399, len=0)
+actionsTable[18638] = 33536; // 'state 145' -> identifier -> shift+reduce (target=128, len=1)
+actionsTable.fill(33638, 18688, 18693); // 'state 146' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[18693] = 68; // 'state 146' -> { -> shift (target=34, len=0)
 actionsTable[18696] = 4; // 'state 146' -> ( -> shift (target=2, len=0)
-actionsTable[18706] = 806; // 'state 146' -> of -> shift (target=403, len=0)
-actionsTable[18720] = 806; // 'state 146' -> from -> shift (target=403, len=0)
-actionsTable[18724] = 806; // 'state 146' -> type -> shift (target=403, len=0)
+actionsTable[18706] = 33636; // 'state 146' -> of -> shift+reduce (target=178, len=1)
+actionsTable[18720] = 33636; // 'state 146' -> from -> shift+reduce (target=178, len=1)
+actionsTable[18724] = 33636; // 'state 146' -> type -> shift+reduce (target=178, len=1)
 actionsTable[18729] = 20; // 'state 146' -> [ -> shift (target=10, len=0)
 actionsTable[18731] = 70; // 'state 146' -> async -> shift (target=35, len=0)
 actionsTable[18732] = 72; // 'state 146' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 18735, 18737); // 'state 146' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 18735, 18737); // 'state 146' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[18737] = 74; // 'state 146' -> class -> shift (target=37, len=0)
 actionsTable[18742] = 28; // 'state 146' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 18747, 18749); // 'state 146' -> void..typeof -> shift (target=15, len=0)
@@ -3326,21 +3325,21 @@ actionsTable.fill(30, 18757, 18759); // 'state 146' -> +..- -> shift (target=15,
 actionsTable.fill(30, 18760, 18763); // 'state 146' -> !..delete -> shift (target=15, len=0)
 actionsTable[18763] = 34; // 'state 146' -> await -> shift (target=17, len=0)
 actionsTable[18766] = 818; // 'state 146' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 18768, 18771); // 'state 146' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 18768, 18771); // 'state 146' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[18777] = 36; // 'state 146' -> update_operator -> shift (target=18, len=0)
-actionsTable[18778] = 798; // 'state 146' -> regex -> shift (target=399, len=0)
+actionsTable[18778] = 33638; // 'state 146' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[18821] = 122; // 'state 147' -> { -> shift (target=61, len=0)
 actionsTable[18857] = 124; // 'state 147' -> [ -> shift (target=62, len=0)
-actionsTable[18894] = 894; // 'state 147' -> identifier -> shift (target=447, len=0)
+actionsTable[18894] = 33536; // 'state 147' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[18950] = 1112; // 'state 148' -> } -> shift (target=556, len=0)
 actionsTable[18977] = 468; // 'state 148' -> , -> shift (target=234, len=0)
 actionsTable[19077] = 122; // 'state 149' -> { -> shift (target=61, len=0)
 actionsTable[19112] = 300; // 'state 149' -> ... -> shift (target=150, len=0)
 actionsTable[19113] = 124; // 'state 149' -> [ -> shift (target=62, len=0)
-actionsTable[19150] = 894; // 'state 149' -> identifier -> shift (target=447, len=0)
+actionsTable[19150] = 33536; // 'state 149' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[19205] = 122; // 'state 150' -> { -> shift (target=61, len=0)
 actionsTable[19241] = 124; // 'state 150' -> [ -> shift (target=62, len=0)
-actionsTable[19278] = 894; // 'state 150' -> identifier -> shift (target=447, len=0)
+actionsTable[19278] = 33536; // 'state 150' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[19361] = 476; // 'state 151' -> , -> shift (target=238, len=0)
 actionsTable[19370] = 1118; // 'state 151' -> ] -> shift (target=559, len=0)
 actionsTable[19464] = 138; // 'state 152' -> ( -> shift (target=69, len=0)
@@ -3349,16 +3348,16 @@ actionsTable[19589] = 80; // 'state 153' -> { -> shift (target=40, len=0)
 actionsTable[19611] = 164; // 'state 153' -> : -> shift (target=82, len=0)
 actionsTable[19637] = 164; // 'state 153' -> ?: -> shift (target=82, len=0)
 actionsTable[19720] = 138; // 'state 154' -> ( -> shift (target=69, len=0)
-actionsTable.fill(798, 19840, 19845); // 'state 155' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 19840, 19845); // 'state 155' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[19845] = 2; // 'state 155' -> { -> shift (target=1, len=0)
 actionsTable[19848] = 4; // 'state 155' -> ( -> shift (target=2, len=0)
-actionsTable[19858] = 806; // 'state 155' -> of -> shift (target=403, len=0)
-actionsTable[19872] = 806; // 'state 155' -> from -> shift (target=403, len=0)
-actionsTable[19876] = 806; // 'state 155' -> type -> shift (target=403, len=0)
+actionsTable[19858] = 33636; // 'state 155' -> of -> shift+reduce (target=178, len=1)
+actionsTable[19872] = 33636; // 'state 155' -> from -> shift+reduce (target=178, len=1)
+actionsTable[19876] = 33636; // 'state 155' -> type -> shift+reduce (target=178, len=1)
 actionsTable[19881] = 20; // 'state 155' -> [ -> shift (target=10, len=0)
 actionsTable[19883] = 70; // 'state 155' -> async -> shift (target=35, len=0)
 actionsTable[19884] = 72; // 'state 155' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 19887, 19889); // 'state 155' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 19887, 19889); // 'state 155' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[19889] = 74; // 'state 155' -> class -> shift (target=37, len=0)
 actionsTable[19894] = 28; // 'state 155' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 19899, 19901); // 'state 155' -> void..typeof -> shift (target=15, len=0)
@@ -3367,9 +3366,9 @@ actionsTable.fill(30, 19909, 19911); // 'state 155' -> +..- -> shift (target=15,
 actionsTable.fill(30, 19912, 19915); // 'state 155' -> !..delete -> shift (target=15, len=0)
 actionsTable[19915] = 34; // 'state 155' -> await -> shift (target=17, len=0)
 actionsTable[19918] = 818; // 'state 155' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 19920, 19923); // 'state 155' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 19920, 19923); // 'state 155' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[19929] = 36; // 'state 155' -> update_operator -> shift (target=18, len=0)
-actionsTable[19930] = 798; // 'state 155' -> regex -> shift (target=399, len=0)
+actionsTable[19930] = 33638; // 'state 155' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[19995] = 164; // 'state 156' -> : -> shift (target=82, len=0)
 actionsTable[20021] = 164; // 'state 156' -> ?: -> shift (target=82, len=0)
 actionsTable[20026] = 490; // 'state 156' -> => -> shift (target=245, len=0)
@@ -3381,7 +3380,7 @@ actionsTable[20232] = 138; // 'state 158' -> ( -> shift (target=69, len=0)
 actionsTable[20357] = 80; // 'state 159' -> { -> shift (target=40, len=0)
 actionsTable[20485] = 122; // 'state 160' -> { -> shift (target=61, len=0)
 actionsTable[20521] = 124; // 'state 160' -> [ -> shift (target=62, len=0)
-actionsTable[20558] = 894; // 'state 160' -> identifier -> shift (target=447, len=0)
+actionsTable[20558] = 33536; // 'state 160' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[20617] = 789; // 'state 161' -> ) -> reduce (target=138, len=1)
 actionsTable[20635] = 164; // 'state 161' -> : -> shift (target=82, len=0)
 actionsTable[20641] = 789; // 'state 161' -> , -> reduce (target=138, len=1)
@@ -3394,7 +3393,7 @@ actionsTable[20905] = 124; // 'state 163' -> [ -> shift (target=62, len=0)
 actionsTable[20907] = 1138; // 'state 163' -> async -> shift (target=569, len=0)
 actionsTable.fill(1140, 20909, 20911); // 'state 163' -> static..readonly -> shift (target=570, len=0)
 actionsTable.fill(1138, 20911, 20913); // 'state 163' -> get..set -> shift (target=569, len=0)
-actionsTable[20942] = 894; // 'state 163' -> identifier -> shift (target=447, len=0)
+actionsTable[20942] = 33536; // 'state 163' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[20947] = 1140; // 'state 163' -> accessibility_modifier -> shift (target=570, len=0)
 actionsTable[20997] = 146; // 'state 164' -> { -> shift (target=73, len=0)
 actionsTable[21125] = 146; // 'state 165' -> { -> shift (target=73, len=0)
@@ -3444,53 +3443,53 @@ actionsTable[21685] = 164; // 'state 169' -> ?: -> shift (target=82, len=0)
 actionsTable[21686] = 28; // 'state 169' -> < -> shift (target=14, len=0)
 actionsTable.fill(813, 21710, 21714); // 'state 169' -> identifier..string -> reduce (target=150, len=1)
 actionsTable[21715] = 813; // 'state 169' -> accessibility_modifier -> reduce (target=150, len=1)
-actionsTable[21778] = 806; // 'state 170' -> of -> shift (target=403, len=0)
-actionsTable[21792] = 806; // 'state 170' -> from -> shift (target=403, len=0)
-actionsTable[21796] = 806; // 'state 170' -> type -> shift (target=403, len=0)
+actionsTable[21778] = 33636; // 'state 170' -> of -> shift+reduce (target=178, len=1)
+actionsTable[21792] = 33636; // 'state 170' -> from -> shift+reduce (target=178, len=1)
+actionsTable[21796] = 33636; // 'state 170' -> type -> shift+reduce (target=178, len=1)
 actionsTable[21801] = 198; // 'state 170' -> [ -> shift (target=99, len=0)
 actionsTable[21803] = 1158; // 'state 170' -> async -> shift (target=579, len=0)
 actionsTable.fill(1140, 21805, 21807); // 'state 170' -> static..readonly -> shift (target=570, len=0)
 actionsTable.fill(1158, 21807, 21809); // 'state 170' -> get..set -> shift (target=579, len=0)
-actionsTable[21838] = 848; // 'state 170' -> identifier -> shift (target=424, len=0)
+actionsTable[21838] = 33694; // 'state 170' -> identifier -> shift+reduce (target=207, len=1)
 actionsTable[21839] = 510; // 'state 170' -> private_property_identifier -> shift (target=255, len=0)
-actionsTable.fill(848, 21840, 21842); // 'state 170' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 21840, 21842); // 'state 170' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[21843] = 1140; // 'state 170' -> accessibility_modifier -> shift (target=570, len=0)
 actionsTable[21894] = 1154; // 'state 171' -> } -> shift (target=577, len=0)
 actionsTable[21901] = 1156; // 'state 171' -> ; -> shift (target=578, len=0)
-actionsTable[21906] = 806; // 'state 171' -> of -> shift (target=403, len=0)
-actionsTable[21920] = 806; // 'state 171' -> from -> shift (target=403, len=0)
-actionsTable[21924] = 806; // 'state 171' -> type -> shift (target=403, len=0)
+actionsTable[21906] = 33636; // 'state 171' -> of -> shift+reduce (target=178, len=1)
+actionsTable[21920] = 33636; // 'state 171' -> from -> shift+reduce (target=178, len=1)
+actionsTable[21924] = 33636; // 'state 171' -> type -> shift+reduce (target=178, len=1)
 actionsTable[21929] = 198; // 'state 171' -> [ -> shift (target=99, len=0)
 actionsTable[21931] = 1018; // 'state 171' -> async -> shift (target=509, len=0)
-actionsTable.fill(1008, 21933, 21935); // 'state 171' -> static..readonly -> shift (target=504, len=0)
+actionsTable.fill(33564, 21933, 21935); // 'state 171' -> static..readonly -> shift+reduce (target=142, len=1)
 actionsTable.fill(1020, 21935, 21937); // 'state 171' -> get..set -> shift (target=510, len=0)
-actionsTable[21966] = 848; // 'state 171' -> identifier -> shift (target=424, len=0)
+actionsTable[21966] = 33694; // 'state 171' -> identifier -> shift+reduce (target=207, len=1)
 actionsTable[21967] = 338; // 'state 171' -> private_property_identifier -> shift (target=169, len=0)
-actionsTable.fill(848, 21968, 21970); // 'state 171' -> number..string -> shift (target=424, len=0)
-actionsTable[21971] = 1008; // 'state 171' -> accessibility_modifier -> shift (target=504, len=0)
-actionsTable.fill(942, 22016, 22019); // 'state 172' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33694, 21968, 21970); // 'state 171' -> number..string -> shift+reduce (target=207, len=1)
+actionsTable[21971] = 33564; // 'state 171' -> accessibility_modifier -> shift+reduce (target=142, len=1)
+actionsTable.fill(33606, 22016, 22019); // 'state 172' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[22021] = 262; // 'state 172' -> { -> shift (target=131, len=0)
 actionsTable[22024] = 264; // 'state 172' -> ( -> shift (target=132, len=0)
 actionsTable[22057] = 266; // 'state 172' -> [ -> shift (target=133, len=0)
 actionsTable[22070] = 28; // 'state 172' -> < -> shift (target=14, len=0)
 actionsTable[22072] = 268; // 'state 172' -> | -> shift (target=134, len=0)
-actionsTable[22075] = 942; // 'state 172' -> void -> shift (target=471, len=0)
+actionsTable[22075] = 33606; // 'state 172' -> void -> shift+reduce (target=163, len=1)
 actionsTable[22076] = 944; // 'state 172' -> typeof -> shift (target=472, len=0)
 actionsTable[22094] = 270; // 'state 172' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 22096, 22098); // 'state 172' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 22096, 22098); // 'state 172' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[22149] = 262; // 'state 173' -> { -> shift (target=131, len=0)
 actionsTable[22277] = 262; // 'state 174' -> { -> shift (target=131, len=0)
 actionsTable[22322] = 344; // 'state 174' -> extends -> shift (target=172, len=0)
-actionsTable.fill(942, 22400, 22403); // 'state 175' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 22400, 22403); // 'state 175' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[22405] = 262; // 'state 175' -> { -> shift (target=131, len=0)
 actionsTable[22408] = 264; // 'state 175' -> ( -> shift (target=132, len=0)
 actionsTable[22441] = 266; // 'state 175' -> [ -> shift (target=133, len=0)
 actionsTable[22454] = 28; // 'state 175' -> < -> shift (target=14, len=0)
 actionsTable[22456] = 268; // 'state 175' -> | -> shift (target=134, len=0)
-actionsTable[22459] = 942; // 'state 175' -> void -> shift (target=471, len=0)
+actionsTable[22459] = 33606; // 'state 175' -> void -> shift+reduce (target=163, len=1)
 actionsTable[22460] = 944; // 'state 175' -> typeof -> shift (target=472, len=0)
 actionsTable[22478] = 270; // 'state 175' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 22480, 22482); // 'state 175' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 22480, 22482); // 'state 175' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable.fill(1907, 22528, 22536); // 'state 176' -> true..if -> reduce (target=185, len=3)
 actionsTable[22536] = 86; // 'state 176' -> ( -> shift (target=43, len=0)
 actionsTable.fill(1907, 22537, 22547); // 'state 176' -> )..of -> reduce (target=185, len=3)
@@ -3593,18 +3592,18 @@ actionsTable[22871] = 114; // 'state 178' -> shift_operator -> shift (target=57,
 actionsTable[22872] = 90; // 'state 178' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[22873] = 866; // 'state 178' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(1905, 22874, 22876); // 'state 178' -> regex..@par-gen.EOF -> reduce (target=184, len=3)
-actionsTable.fill(798, 22912, 22917); // 'state 179' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 22912, 22917); // 'state 179' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[22917] = 68; // 'state 179' -> { -> shift (target=34, len=0)
 actionsTable[22920] = 4; // 'state 179' -> ( -> shift (target=2, len=0)
 actionsTable[22921] = 1168; // 'state 179' -> ) -> shift (target=584, len=0)
-actionsTable[22930] = 806; // 'state 179' -> of -> shift (target=403, len=0)
-actionsTable[22944] = 806; // 'state 179' -> from -> shift (target=403, len=0)
-actionsTable[22948] = 806; // 'state 179' -> type -> shift (target=403, len=0)
+actionsTable[22930] = 33636; // 'state 179' -> of -> shift+reduce (target=178, len=1)
+actionsTable[22944] = 33636; // 'state 179' -> from -> shift+reduce (target=178, len=1)
+actionsTable[22948] = 33636; // 'state 179' -> type -> shift+reduce (target=178, len=1)
 actionsTable[22952] = 48; // 'state 179' -> ... -> shift (target=24, len=0)
 actionsTable[22953] = 20; // 'state 179' -> [ -> shift (target=10, len=0)
 actionsTable[22955] = 70; // 'state 179' -> async -> shift (target=35, len=0)
 actionsTable[22956] = 72; // 'state 179' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 22959, 22961); // 'state 179' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 22959, 22961); // 'state 179' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[22961] = 74; // 'state 179' -> class -> shift (target=37, len=0)
 actionsTable[22966] = 28; // 'state 179' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 22971, 22973); // 'state 179' -> void..typeof -> shift (target=15, len=0)
@@ -3613,9 +3612,9 @@ actionsTable.fill(30, 22981, 22983); // 'state 179' -> +..- -> shift (target=15,
 actionsTable.fill(30, 22984, 22987); // 'state 179' -> !..delete -> shift (target=15, len=0)
 actionsTable[22987] = 34; // 'state 179' -> await -> shift (target=17, len=0)
 actionsTable[22990] = 818; // 'state 179' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 22992, 22995); // 'state 179' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 22992, 22995); // 'state 179' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[23001] = 36; // 'state 179' -> update_operator -> shift (target=18, len=0)
-actionsTable[23002] = 798; // 'state 179' -> regex -> shift (target=399, len=0)
+actionsTable[23002] = 33638; // 'state 179' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(871, 23048, 23050); // 'state 180' -> (..) -> reduce (target=179, len=1)
 actionsTable[23059] = 871; // 'state 180' -> in -> reduce (target=179, len=1)
 actionsTable[23067] = 164; // 'state 180' -> : -> shift (target=82, len=0)
@@ -3641,18 +3640,18 @@ actionsTable.fill(871, 23231, 23240); // 'state 181' -> ?..** -> reduce (target=
 actionsTable.fill(871, 23244, 23246); // 'state 181' -> ?.... -> reduce (target=179, len=1)
 actionsTable[23252] = 877; // 'state 181' -> compound_assignment_operator -> reduce (target=182, len=1)
 actionsTable.fill(871, 23253, 23258); // 'state 181' -> equality_operator..update_operator -> reduce (target=179, len=1)
-actionsTable.fill(798, 23296, 23301); // 'state 182' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 23296, 23301); // 'state 182' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[23301] = 68; // 'state 182' -> { -> shift (target=34, len=0)
 actionsTable[23304] = 4; // 'state 182' -> ( -> shift (target=2, len=0)
 actionsTable[23305] = 1174; // 'state 182' -> ) -> shift (target=587, len=0)
-actionsTable[23314] = 806; // 'state 182' -> of -> shift (target=403, len=0)
-actionsTable[23328] = 806; // 'state 182' -> from -> shift (target=403, len=0)
-actionsTable[23332] = 806; // 'state 182' -> type -> shift (target=403, len=0)
+actionsTable[23314] = 33636; // 'state 182' -> of -> shift+reduce (target=178, len=1)
+actionsTable[23328] = 33636; // 'state 182' -> from -> shift+reduce (target=178, len=1)
+actionsTable[23332] = 33636; // 'state 182' -> type -> shift+reduce (target=178, len=1)
 actionsTable[23336] = 170; // 'state 182' -> ... -> shift (target=85, len=0)
 actionsTable[23337] = 20; // 'state 182' -> [ -> shift (target=10, len=0)
 actionsTable[23339] = 70; // 'state 182' -> async -> shift (target=35, len=0)
 actionsTable[23340] = 72; // 'state 182' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 23343, 23345); // 'state 182' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 23343, 23345); // 'state 182' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[23345] = 74; // 'state 182' -> class -> shift (target=37, len=0)
 actionsTable[23350] = 28; // 'state 182' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 23355, 23357); // 'state 182' -> void..typeof -> shift (target=15, len=0)
@@ -3661,35 +3660,35 @@ actionsTable.fill(30, 23365, 23367); // 'state 182' -> +..- -> shift (target=15,
 actionsTable.fill(30, 23368, 23371); // 'state 182' -> !..delete -> shift (target=15, len=0)
 actionsTable[23371] = 34; // 'state 182' -> await -> shift (target=17, len=0)
 actionsTable[23374] = 172; // 'state 182' -> identifier -> shift (target=86, len=0)
-actionsTable.fill(798, 23376, 23379); // 'state 182' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 23376, 23379); // 'state 182' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[23385] = 36; // 'state 182' -> update_operator -> shift (target=18, len=0)
-actionsTable[23386] = 798; // 'state 182' -> regex -> shift (target=399, len=0)
-actionsTable.fill(942, 23424, 23427); // 'state 183' -> true..null -> shift (target=471, len=0)
+actionsTable[23386] = 33638; // 'state 182' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33606, 23424, 23427); // 'state 183' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[23429] = 262; // 'state 183' -> { -> shift (target=131, len=0)
 actionsTable[23432] = 264; // 'state 183' -> ( -> shift (target=132, len=0)
 actionsTable[23465] = 266; // 'state 183' -> [ -> shift (target=133, len=0)
 actionsTable[23478] = 28; // 'state 183' -> < -> shift (target=14, len=0)
 actionsTable[23480] = 268; // 'state 183' -> | -> shift (target=134, len=0)
-actionsTable[23483] = 942; // 'state 183' -> void -> shift (target=471, len=0)
+actionsTable[23483] = 33606; // 'state 183' -> void -> shift+reduce (target=163, len=1)
 actionsTable[23484] = 944; // 'state 183' -> typeof -> shift (target=472, len=0)
 actionsTable[23502] = 270; // 'state 183' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 23504, 23506); // 'state 183' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 23504, 23506); // 'state 183' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[23560] = 86; // 'state 184' -> ( -> shift (target=43, len=0)
 actionsTable[23713] = 372; // 'state 185' -> , -> shift (target=186, len=0)
 actionsTable[23722] = 1180; // 'state 185' -> ] -> shift (target=590, len=0)
-actionsTable.fill(798, 23808, 23813); // 'state 186' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 23808, 23813); // 'state 186' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[23813] = 68; // 'state 186' -> { -> shift (target=34, len=0)
 actionsTable[23816] = 4; // 'state 186' -> ( -> shift (target=2, len=0)
-actionsTable[23826] = 806; // 'state 186' -> of -> shift (target=403, len=0)
-actionsTable[23840] = 806; // 'state 186' -> from -> shift (target=403, len=0)
+actionsTable[23826] = 33636; // 'state 186' -> of -> shift+reduce (target=178, len=1)
+actionsTable[23840] = 33636; // 'state 186' -> from -> shift+reduce (target=178, len=1)
 actionsTable[23841] = 911; // 'state 186' -> , -> reduce (target=199, len=1)
-actionsTable[23844] = 806; // 'state 186' -> type -> shift (target=403, len=0)
+actionsTable[23844] = 33636; // 'state 186' -> type -> shift+reduce (target=178, len=1)
 actionsTable[23848] = 48; // 'state 186' -> ... -> shift (target=24, len=0)
 actionsTable[23849] = 20; // 'state 186' -> [ -> shift (target=10, len=0)
 actionsTable[23850] = 911; // 'state 186' -> ] -> reduce (target=199, len=1)
 actionsTable[23851] = 70; // 'state 186' -> async -> shift (target=35, len=0)
 actionsTable[23852] = 72; // 'state 186' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 23855, 23857); // 'state 186' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 23855, 23857); // 'state 186' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[23857] = 74; // 'state 186' -> class -> shift (target=37, len=0)
 actionsTable[23862] = 28; // 'state 186' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 23867, 23869); // 'state 186' -> void..typeof -> shift (target=15, len=0)
@@ -3698,31 +3697,31 @@ actionsTable.fill(30, 23877, 23879); // 'state 186' -> +..- -> shift (target=15,
 actionsTable.fill(30, 23880, 23883); // 'state 186' -> !..delete -> shift (target=15, len=0)
 actionsTable[23883] = 34; // 'state 186' -> await -> shift (target=17, len=0)
 actionsTable[23886] = 818; // 'state 186' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 23888, 23891); // 'state 186' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 23888, 23891); // 'state 186' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[23897] = 36; // 'state 186' -> update_operator -> shift (target=18, len=0)
-actionsTable[23898] = 798; // 'state 186' -> regex -> shift (target=399, len=0)
+actionsTable[23898] = 33638; // 'state 186' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[23991] = 1186; // 'state 187' -> > -> shift (target=593, len=0)
 actionsTable[24014] = 908; // 'state 187' -> identifier -> shift (target=454, len=0)
-actionsTable.fill(942, 24064, 24067); // 'state 188' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 24064, 24067); // 'state 188' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[24069] = 262; // 'state 188' -> { -> shift (target=131, len=0)
 actionsTable[24072] = 264; // 'state 188' -> ( -> shift (target=132, len=0)
 actionsTable[24105] = 266; // 'state 188' -> [ -> shift (target=133, len=0)
 actionsTable[24118] = 28; // 'state 188' -> < -> shift (target=14, len=0)
 actionsTable[24120] = 268; // 'state 188' -> | -> shift (target=134, len=0)
-actionsTable[24123] = 942; // 'state 188' -> void -> shift (target=471, len=0)
+actionsTable[24123] = 33606; // 'state 188' -> void -> shift+reduce (target=163, len=1)
 actionsTable[24124] = 944; // 'state 188' -> typeof -> shift (target=472, len=0)
 actionsTable[24142] = 270; // 'state 188' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 24144, 24146); // 'state 188' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(942, 24192, 24195); // 'state 189' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 24144, 24146); // 'state 188' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33606, 24192, 24195); // 'state 189' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[24197] = 262; // 'state 189' -> { -> shift (target=131, len=0)
 actionsTable[24200] = 264; // 'state 189' -> ( -> shift (target=132, len=0)
 actionsTable[24233] = 266; // 'state 189' -> [ -> shift (target=133, len=0)
 actionsTable[24246] = 28; // 'state 189' -> < -> shift (target=14, len=0)
 actionsTable[24248] = 268; // 'state 189' -> | -> shift (target=134, len=0)
-actionsTable[24251] = 942; // 'state 189' -> void -> shift (target=471, len=0)
+actionsTable[24251] = 33606; // 'state 189' -> void -> shift+reduce (target=163, len=1)
 actionsTable[24252] = 944; // 'state 189' -> typeof -> shift (target=472, len=0)
 actionsTable[24270] = 270; // 'state 189' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 24272, 24274); // 'state 189' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 24272, 24274); // 'state 189' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[24325] = 80; // 'state 190' -> { -> shift (target=40, len=0)
 actionsTable[24347] = 164; // 'state 190' -> : -> shift (target=82, len=0)
 actionsTable[24373] = 164; // 'state 190' -> ?: -> shift (target=82, len=0)
@@ -3751,15 +3750,15 @@ actionsTable[24663] = 114; // 'state 192' -> shift_operator -> shift (target=57,
 actionsTable[24664] = 90; // 'state 192' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[24665] = 866; // 'state 192' -> update_operator -> shift (target=433, len=0)
 actionsTable[24710] = 1196; // 'state 193' -> } -> shift (target=598, len=0)
-actionsTable[24722] = 806; // 'state 193' -> of -> shift (target=403, len=0)
-actionsTable[24736] = 806; // 'state 193' -> from -> shift (target=403, len=0)
-actionsTable[24740] = 806; // 'state 193' -> type -> shift (target=403, len=0)
+actionsTable[24722] = 33636; // 'state 193' -> of -> shift+reduce (target=178, len=1)
+actionsTable[24736] = 33636; // 'state 193' -> from -> shift+reduce (target=178, len=1)
+actionsTable[24740] = 33636; // 'state 193' -> type -> shift+reduce (target=178, len=1)
 actionsTable[24744] = 48; // 'state 193' -> ... -> shift (target=24, len=0)
 actionsTable[24745] = 198; // 'state 193' -> [ -> shift (target=99, len=0)
 actionsTable[24747] = 226; // 'state 193' -> async -> shift (target=113, len=0)
 actionsTable.fill(54, 24751, 24753); // 'state 193' -> get..set -> shift (target=27, len=0)
 actionsTable[24782] = 930; // 'state 193' -> identifier -> shift (target=465, len=0)
-actionsTable.fill(848, 24784, 24786); // 'state 193' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 24784, 24786); // 'state 193' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[24838] = 1947; // 'state 194' -> } -> reduce (target=205, len=3)
 actionsTable[24840] = 86; // 'state 194' -> ( -> shift (target=43, len=0)
 actionsTable[24851] = 88; // 'state 194' -> in -> shift (target=44, len=0)
@@ -3785,7 +3784,7 @@ actionsTable[24919] = 114; // 'state 194' -> shift_operator -> shift (target=57,
 actionsTable[24920] = 90; // 'state 194' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[24921] = 866; // 'state 194' -> update_operator -> shift (target=433, len=0)
 actionsTable[24965] = 80; // 'state 195' -> { -> shift (target=40, len=0)
-actionsTable.fill(798, 25088, 25093); // 'state 196' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 25088, 25093); // 'state 196' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[25093] = 2; // 'state 196' -> { -> shift (target=1, len=0)
 actionsTable[25095] = 800; // 'state 196' -> if -> shift (target=400, len=0)
 actionsTable[25096] = 4; // 'state 196' -> ( -> shift (target=2, len=0)
@@ -3793,7 +3792,7 @@ actionsTable[25099] = 802; // 'state 196' -> while -> shift (target=401, len=0)
 actionsTable[25100] = 6; // 'state 196' -> do -> shift (target=3, len=0)
 actionsTable[25102] = 804; // 'state 196' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 25103, 25106); // 'state 196' -> const..var -> shift (target=4, len=0)
-actionsTable[25106] = 806; // 'state 196' -> of -> shift (target=403, len=0)
+actionsTable[25106] = 33636; // 'state 196' -> of -> shift+reduce (target=178, len=1)
 actionsTable[25108] = 10; // 'state 196' -> return -> shift (target=5, len=0)
 actionsTable[25109] = 12; // 'state 196' -> throw -> shift (target=6, len=0)
 actionsTable[25110] = 14; // 'state 196' -> try -> shift (target=7, len=0)
@@ -3801,13 +3800,13 @@ actionsTable[25113] = 808; // 'state 196' -> switch -> shift (target=404, len=0)
 actionsTable[25117] = 810; // 'state 196' -> break -> shift (target=405, len=0)
 actionsTable[25118] = 812; // 'state 196' -> continue -> shift (target=406, len=0)
 actionsTable[25119] = 16; // 'state 196' -> import -> shift (target=8, len=0)
-actionsTable[25120] = 806; // 'state 196' -> from -> shift (target=403, len=0)
+actionsTable[25120] = 33636; // 'state 196' -> from -> shift+reduce (target=178, len=1)
 actionsTable[25124] = 814; // 'state 196' -> type -> shift (target=407, len=0)
 actionsTable[25125] = 18; // 'state 196' -> export -> shift (target=9, len=0)
 actionsTable[25129] = 20; // 'state 196' -> [ -> shift (target=10, len=0)
 actionsTable[25131] = 22; // 'state 196' -> async -> shift (target=11, len=0)
 actionsTable[25132] = 24; // 'state 196' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 25135, 25137); // 'state 196' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 25135, 25137); // 'state 196' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[25137] = 26; // 'state 196' -> class -> shift (target=13, len=0)
 actionsTable[25140] = 816; // 'state 196' -> interface -> shift (target=408, len=0)
 actionsTable[25142] = 28; // 'state 196' -> < -> shift (target=14, len=0)
@@ -3817,10 +3816,10 @@ actionsTable.fill(30, 25157, 25159); // 'state 196' -> +..- -> shift (target=15,
 actionsTable.fill(30, 25160, 25163); // 'state 196' -> !..delete -> shift (target=15, len=0)
 actionsTable[25163] = 34; // 'state 196' -> await -> shift (target=17, len=0)
 actionsTable[25166] = 818; // 'state 196' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 25168, 25171); // 'state 196' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 25168, 25171); // 'state 196' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[25177] = 36; // 'state 196' -> update_operator -> shift (target=18, len=0)
-actionsTable[25178] = 798; // 'state 196' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 25216, 25221); // 'state 197' -> true..super -> shift (target=399, len=0)
+actionsTable[25178] = 33638; // 'state 196' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 25216, 25221); // 'state 197' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[25221] = 2; // 'state 197' -> { -> shift (target=1, len=0)
 actionsTable[25223] = 800; // 'state 197' -> if -> shift (target=400, len=0)
 actionsTable[25224] = 4; // 'state 197' -> ( -> shift (target=2, len=0)
@@ -3828,7 +3827,7 @@ actionsTable[25227] = 802; // 'state 197' -> while -> shift (target=401, len=0)
 actionsTable[25228] = 6; // 'state 197' -> do -> shift (target=3, len=0)
 actionsTable[25230] = 804; // 'state 197' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 25231, 25234); // 'state 197' -> const..var -> shift (target=4, len=0)
-actionsTable[25234] = 806; // 'state 197' -> of -> shift (target=403, len=0)
+actionsTable[25234] = 33636; // 'state 197' -> of -> shift+reduce (target=178, len=1)
 actionsTable[25236] = 10; // 'state 197' -> return -> shift (target=5, len=0)
 actionsTable[25237] = 12; // 'state 197' -> throw -> shift (target=6, len=0)
 actionsTable[25238] = 14; // 'state 197' -> try -> shift (target=7, len=0)
@@ -3836,13 +3835,13 @@ actionsTable[25241] = 808; // 'state 197' -> switch -> shift (target=404, len=0)
 actionsTable[25245] = 810; // 'state 197' -> break -> shift (target=405, len=0)
 actionsTable[25246] = 812; // 'state 197' -> continue -> shift (target=406, len=0)
 actionsTable[25247] = 16; // 'state 197' -> import -> shift (target=8, len=0)
-actionsTable[25248] = 806; // 'state 197' -> from -> shift (target=403, len=0)
+actionsTable[25248] = 33636; // 'state 197' -> from -> shift+reduce (target=178, len=1)
 actionsTable[25252] = 814; // 'state 197' -> type -> shift (target=407, len=0)
 actionsTable[25253] = 18; // 'state 197' -> export -> shift (target=9, len=0)
 actionsTable[25257] = 20; // 'state 197' -> [ -> shift (target=10, len=0)
 actionsTable[25259] = 22; // 'state 197' -> async -> shift (target=11, len=0)
 actionsTable[25260] = 24; // 'state 197' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 25263, 25265); // 'state 197' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 25263, 25265); // 'state 197' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[25265] = 26; // 'state 197' -> class -> shift (target=13, len=0)
 actionsTable[25268] = 816; // 'state 197' -> interface -> shift (target=408, len=0)
 actionsTable[25270] = 28; // 'state 197' -> < -> shift (target=14, len=0)
@@ -3852,19 +3851,19 @@ actionsTable.fill(30, 25285, 25287); // 'state 197' -> +..- -> shift (target=15,
 actionsTable.fill(30, 25288, 25291); // 'state 197' -> !..delete -> shift (target=15, len=0)
 actionsTable[25291] = 34; // 'state 197' -> await -> shift (target=17, len=0)
 actionsTable[25294] = 818; // 'state 197' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 25296, 25299); // 'state 197' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 25296, 25299); // 'state 197' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[25305] = 36; // 'state 197' -> update_operator -> shift (target=18, len=0)
-actionsTable[25306] = 798; // 'state 197' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 25344, 25349); // 'state 198' -> true..super -> shift (target=399, len=0)
+actionsTable[25306] = 33638; // 'state 197' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 25344, 25349); // 'state 198' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[25349] = 68; // 'state 198' -> { -> shift (target=34, len=0)
 actionsTable[25352] = 4; // 'state 198' -> ( -> shift (target=2, len=0)
-actionsTable[25362] = 806; // 'state 198' -> of -> shift (target=403, len=0)
-actionsTable[25376] = 806; // 'state 198' -> from -> shift (target=403, len=0)
-actionsTable[25380] = 806; // 'state 198' -> type -> shift (target=403, len=0)
+actionsTable[25362] = 33636; // 'state 198' -> of -> shift+reduce (target=178, len=1)
+actionsTable[25376] = 33636; // 'state 198' -> from -> shift+reduce (target=178, len=1)
+actionsTable[25380] = 33636; // 'state 198' -> type -> shift+reduce (target=178, len=1)
 actionsTable[25385] = 20; // 'state 198' -> [ -> shift (target=10, len=0)
 actionsTable[25387] = 70; // 'state 198' -> async -> shift (target=35, len=0)
 actionsTable[25388] = 72; // 'state 198' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 25391, 25393); // 'state 198' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 25391, 25393); // 'state 198' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[25393] = 74; // 'state 198' -> class -> shift (target=37, len=0)
 actionsTable[25398] = 28; // 'state 198' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 25403, 25405); // 'state 198' -> void..typeof -> shift (target=15, len=0)
@@ -3873,20 +3872,20 @@ actionsTable.fill(30, 25413, 25415); // 'state 198' -> +..- -> shift (target=15,
 actionsTable.fill(30, 25416, 25419); // 'state 198' -> !..delete -> shift (target=15, len=0)
 actionsTable[25419] = 34; // 'state 198' -> await -> shift (target=17, len=0)
 actionsTable[25422] = 818; // 'state 198' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 25424, 25427); // 'state 198' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 25424, 25427); // 'state 198' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[25433] = 36; // 'state 198' -> update_operator -> shift (target=18, len=0)
-actionsTable[25434] = 798; // 'state 198' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 25472, 25477); // 'state 199' -> true..super -> shift (target=399, len=0)
+actionsTable[25434] = 33638; // 'state 198' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 25472, 25477); // 'state 199' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[25477] = 68; // 'state 199' -> { -> shift (target=34, len=0)
 actionsTable[25480] = 4; // 'state 199' -> ( -> shift (target=2, len=0)
 actionsTable[25481] = 544; // 'state 199' -> ) -> shift (target=272, len=0)
-actionsTable[25490] = 806; // 'state 199' -> of -> shift (target=403, len=0)
-actionsTable[25504] = 806; // 'state 199' -> from -> shift (target=403, len=0)
-actionsTable[25508] = 806; // 'state 199' -> type -> shift (target=403, len=0)
+actionsTable[25490] = 33636; // 'state 199' -> of -> shift+reduce (target=178, len=1)
+actionsTable[25504] = 33636; // 'state 199' -> from -> shift+reduce (target=178, len=1)
+actionsTable[25508] = 33636; // 'state 199' -> type -> shift+reduce (target=178, len=1)
 actionsTable[25513] = 20; // 'state 199' -> [ -> shift (target=10, len=0)
 actionsTable[25515] = 70; // 'state 199' -> async -> shift (target=35, len=0)
 actionsTable[25516] = 72; // 'state 199' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 25519, 25521); // 'state 199' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 25519, 25521); // 'state 199' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[25521] = 74; // 'state 199' -> class -> shift (target=37, len=0)
 actionsTable[25526] = 28; // 'state 199' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 25531, 25533); // 'state 199' -> void..typeof -> shift (target=15, len=0)
@@ -3895,9 +3894,9 @@ actionsTable.fill(30, 25541, 25543); // 'state 199' -> +..- -> shift (target=15,
 actionsTable.fill(30, 25544, 25547); // 'state 199' -> !..delete -> shift (target=15, len=0)
 actionsTable[25547] = 34; // 'state 199' -> await -> shift (target=17, len=0)
 actionsTable[25550] = 818; // 'state 199' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 25552, 25555); // 'state 199' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 25552, 25555); // 'state 199' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[25561] = 36; // 'state 199' -> update_operator -> shift (target=18, len=0)
-actionsTable[25562] = 798; // 'state 199' -> regex -> shift (target=399, len=0)
+actionsTable[25562] = 33638; // 'state 199' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[25608] = 86; // 'state 200' -> ( -> shift (target=43, len=0)
 actionsTable[25613] = 542; // 'state 200' -> ; -> shift (target=271, len=0)
 actionsTable[25619] = 88; // 'state 200' -> in -> shift (target=44, len=0)
@@ -3941,17 +3940,17 @@ actionsTable.fill(767, 25800, 25804); // 'state 201' -> !..await -> reduce (targ
 actionsTable[25806] = 767; // 'state 201' -> identifier -> reduce (target=127, len=1)
 actionsTable.fill(767, 25808, 25811); // 'state 201' -> number..template_string -> reduce (target=127, len=1)
 actionsTable.fill(767, 25817, 25819); // 'state 201' -> update_operator..regex -> reduce (target=127, len=1)
-actionsTable.fill(798, 25856, 25861); // 'state 202' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 25856, 25861); // 'state 202' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[25861] = 68; // 'state 202' -> { -> shift (target=34, len=0)
 actionsTable[25864] = 4; // 'state 202' -> ( -> shift (target=2, len=0)
 actionsTable[25869] = 542; // 'state 202' -> ; -> shift (target=271, len=0)
-actionsTable[25874] = 806; // 'state 202' -> of -> shift (target=403, len=0)
-actionsTable[25888] = 806; // 'state 202' -> from -> shift (target=403, len=0)
-actionsTable[25892] = 806; // 'state 202' -> type -> shift (target=403, len=0)
+actionsTable[25874] = 33636; // 'state 202' -> of -> shift+reduce (target=178, len=1)
+actionsTable[25888] = 33636; // 'state 202' -> from -> shift+reduce (target=178, len=1)
+actionsTable[25892] = 33636; // 'state 202' -> type -> shift+reduce (target=178, len=1)
 actionsTable[25897] = 20; // 'state 202' -> [ -> shift (target=10, len=0)
 actionsTable[25899] = 70; // 'state 202' -> async -> shift (target=35, len=0)
 actionsTable[25900] = 72; // 'state 202' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 25903, 25905); // 'state 202' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 25903, 25905); // 'state 202' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[25905] = 74; // 'state 202' -> class -> shift (target=37, len=0)
 actionsTable[25910] = 28; // 'state 202' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 25915, 25917); // 'state 202' -> void..typeof -> shift (target=15, len=0)
@@ -3960,9 +3959,9 @@ actionsTable.fill(30, 25925, 25927); // 'state 202' -> +..- -> shift (target=15,
 actionsTable.fill(30, 25928, 25931); // 'state 202' -> !..delete -> shift (target=15, len=0)
 actionsTable[25931] = 34; // 'state 202' -> await -> shift (target=17, len=0)
 actionsTable[25934] = 818; // 'state 202' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 25936, 25939); // 'state 202' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 25936, 25939); // 'state 202' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[25945] = 36; // 'state 202' -> update_operator -> shift (target=18, len=0)
-actionsTable[25946] = 798; // 'state 202' -> regex -> shift (target=399, len=0)
+actionsTable[25946] = 33638; // 'state 202' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[25992] = 138; // 'state 203' -> ( -> shift (target=69, len=0)
 actionsTable[26038] = 28; // 'state 203' -> < -> shift (target=14, len=0)
 actionsTable[26117] = 146; // 'state 204' -> { -> shift (target=73, len=0)
@@ -3970,18 +3969,18 @@ actionsTable[26162] = 148; // 'state 204' -> extends -> shift (target=74, len=0)
 actionsTable[26163] = 150; // 'state 204' -> implements -> shift (target=75, len=0)
 actionsTable[26245] = 122; // 'state 205' -> { -> shift (target=61, len=0)
 actionsTable[26281] = 124; // 'state 205' -> [ -> shift (target=62, len=0)
-actionsTable[26318] = 894; // 'state 205' -> identifier -> shift (target=447, len=0)
+actionsTable[26318] = 33536; // 'state 205' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[26373] = 558; // 'state 206' -> { -> shift (target=279, len=0)
-actionsTable.fill(798, 26496, 26501); // 'state 207' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 26496, 26501); // 'state 207' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[26501] = 68; // 'state 207' -> { -> shift (target=34, len=0)
 actionsTable[26504] = 4; // 'state 207' -> ( -> shift (target=2, len=0)
-actionsTable[26514] = 806; // 'state 207' -> of -> shift (target=403, len=0)
-actionsTable[26528] = 806; // 'state 207' -> from -> shift (target=403, len=0)
-actionsTable[26532] = 806; // 'state 207' -> type -> shift (target=403, len=0)
+actionsTable[26514] = 33636; // 'state 207' -> of -> shift+reduce (target=178, len=1)
+actionsTable[26528] = 33636; // 'state 207' -> from -> shift+reduce (target=178, len=1)
+actionsTable[26532] = 33636; // 'state 207' -> type -> shift+reduce (target=178, len=1)
 actionsTable[26537] = 20; // 'state 207' -> [ -> shift (target=10, len=0)
 actionsTable[26539] = 70; // 'state 207' -> async -> shift (target=35, len=0)
 actionsTable[26540] = 72; // 'state 207' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 26543, 26545); // 'state 207' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 26543, 26545); // 'state 207' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[26545] = 74; // 'state 207' -> class -> shift (target=37, len=0)
 actionsTable[26550] = 28; // 'state 207' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 26555, 26557); // 'state 207' -> void..typeof -> shift (target=15, len=0)
@@ -3990,33 +3989,32 @@ actionsTable.fill(30, 26565, 26567); // 'state 207' -> +..- -> shift (target=15,
 actionsTable.fill(30, 26568, 26571); // 'state 207' -> !..delete -> shift (target=15, len=0)
 actionsTable[26571] = 34; // 'state 207' -> await -> shift (target=17, len=0)
 actionsTable[26574] = 818; // 'state 207' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 26576, 26579); // 'state 207' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 26576, 26579); // 'state 207' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[26585] = 36; // 'state 207' -> update_operator -> shift (target=18, len=0)
-actionsTable[26586] = 798; // 'state 207' -> regex -> shift (target=399, len=0)
-actionsTable.fill(942, 26624, 26627); // 'state 208' -> true..null -> shift (target=471, len=0)
+actionsTable[26586] = 33638; // 'state 207' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33606, 26624, 26627); // 'state 208' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[26629] = 262; // 'state 208' -> { -> shift (target=131, len=0)
 actionsTable[26632] = 264; // 'state 208' -> ( -> shift (target=132, len=0)
 actionsTable[26665] = 266; // 'state 208' -> [ -> shift (target=133, len=0)
 actionsTable[26666] = 1210; // 'state 208' -> ] -> shift (target=605, len=0)
 actionsTable[26678] = 28; // 'state 208' -> < -> shift (target=14, len=0)
 actionsTable[26680] = 268; // 'state 208' -> | -> shift (target=134, len=0)
-actionsTable[26683] = 942; // 'state 208' -> void -> shift (target=471, len=0)
+actionsTable[26683] = 33606; // 'state 208' -> void -> shift+reduce (target=163, len=1)
 actionsTable[26684] = 944; // 'state 208' -> typeof -> shift (target=472, len=0)
 actionsTable[26702] = 270; // 'state 208' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 26704, 26706); // 'state 208' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 26704, 26706); // 'state 208' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[26757] = 562; // 'state 209' -> { -> shift (target=281, len=0)
 actionsTable[26761] = 1214; // 'state 209' -> ) -> shift (target=607, len=0)
 actionsTable[26792] = 564; // 'state 209' -> ... -> shift (target=282, len=0)
 actionsTable[26793] = 566; // 'state 209' -> [ -> shift (target=283, len=0)
-actionsTable[26795] = 1006; // 'state 209' -> async -> shift (target=503, len=0)
-actionsTable.fill(1008, 26797, 26799); // 'state 209' -> static..readonly -> shift (target=504, len=0)
-actionsTable.fill(1006, 26799, 26801); // 'state 209' -> get..set -> shift (target=503, len=0)
+actionsTable[26795] = 33564; // 'state 209' -> async -> shift+reduce (target=142, len=1)
+actionsTable.fill(33564, 26797, 26801); // 'state 209' -> static..set -> shift+reduce (target=142, len=1)
 actionsTable[26830] = 568; // 'state 209' -> identifier -> shift (target=284, len=0)
-actionsTable[26835] = 1008; // 'state 209' -> accessibility_modifier -> shift (target=504, len=0)
+actionsTable[26835] = 33564; // 'state 209' -> accessibility_modifier -> shift+reduce (target=142, len=1)
 actionsTable[26886] = 1216; // 'state 210' -> } -> shift (target=608, len=0)
-actionsTable[26898] = 806; // 'state 210' -> of -> shift (target=403, len=0)
-actionsTable[26912] = 806; // 'state 210' -> from -> shift (target=403, len=0)
-actionsTable[26916] = 806; // 'state 210' -> type -> shift (target=403, len=0)
+actionsTable[26898] = 33636; // 'state 210' -> of -> shift+reduce (target=178, len=1)
+actionsTable[26912] = 33636; // 'state 210' -> from -> shift+reduce (target=178, len=1)
+actionsTable[26916] = 33636; // 'state 210' -> type -> shift+reduce (target=178, len=1)
 actionsTable[26920] = 48; // 'state 210' -> ... -> shift (target=24, len=0)
 actionsTable[26921] = 436; // 'state 210' -> [ -> shift (target=218, len=0)
 actionsTable[26923] = 226; // 'state 210' -> async -> shift (target=113, len=0)
@@ -4024,24 +4022,24 @@ actionsTable[26926] = 438; // 'state 210' -> readonly -> shift (target=219, len=
 actionsTable.fill(54, 26927, 26929); // 'state 210' -> get..set -> shift (target=27, len=0)
 actionsTable[26942] = 440; // 'state 210' -> new -> shift (target=220, len=0)
 actionsTable[26958] = 930; // 'state 210' -> identifier -> shift (target=465, len=0)
-actionsTable.fill(848, 26960, 26962); // 'state 210' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 26960, 26962); // 'state 210' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[27013] = 68; // 'state 211' -> { -> shift (target=34, len=0)
 actionsTable[27049] = 20; // 'state 211' -> [ -> shift (target=10, len=0)
 actionsTable[27086] = 572; // 'state 211' -> identifier -> shift (target=286, len=0)
 actionsTable.fill(1218, 27136, 27139); // 'state 212' -> true..null -> shift (target=609, len=0)
-actionsTable.fill(798, 27139, 27141); // 'state 212' -> this..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 27139, 27141); // 'state 212' -> this..super -> shift+reduce (target=179, len=1)
 actionsTable[27141] = 420; // 'state 212' -> { -> shift (target=210, len=0)
 actionsTable[27144] = 576; // 'state 212' -> ( -> shift (target=288, len=0)
-actionsTable[27154] = 806; // 'state 212' -> of -> shift (target=403, len=0)
-actionsTable[27168] = 806; // 'state 212' -> from -> shift (target=403, len=0)
+actionsTable[27154] = 33636; // 'state 212' -> of -> shift+reduce (target=178, len=1)
+actionsTable[27168] = 33636; // 'state 212' -> from -> shift+reduce (target=178, len=1)
 actionsTable[27169] = 192; // 'state 212' -> , -> shift (target=96, len=0)
-actionsTable[27172] = 806; // 'state 212' -> type -> shift (target=403, len=0)
+actionsTable[27172] = 33636; // 'state 212' -> type -> shift+reduce (target=178, len=1)
 actionsTable[27176] = 48; // 'state 212' -> ... -> shift (target=24, len=0)
 actionsTable[27177] = 424; // 'state 212' -> [ -> shift (target=212, len=0)
 actionsTable[27178] = 1220; // 'state 212' -> ] -> shift (target=610, len=0)
 actionsTable[27179] = 70; // 'state 212' -> async -> shift (target=35, len=0)
 actionsTable[27180] = 72; // 'state 212' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 27183, 27185); // 'state 212' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 27183, 27185); // 'state 212' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[27185] = 74; // 'state 212' -> class -> shift (target=37, len=0)
 actionsTable[27190] = 28; // 'state 212' -> < -> shift (target=14, len=0)
 actionsTable[27192] = 268; // 'state 212' -> | -> shift (target=134, len=0)
@@ -4053,9 +4051,9 @@ actionsTable.fill(30, 27208, 27211); // 'state 212' -> !..delete -> shift (targe
 actionsTable[27211] = 34; // 'state 212' -> await -> shift (target=17, len=0)
 actionsTable[27214] = 582; // 'state 212' -> identifier -> shift (target=291, len=0)
 actionsTable.fill(1218, 27216, 27218); // 'state 212' -> number..string -> shift (target=609, len=0)
-actionsTable[27218] = 798; // 'state 212' -> template_string -> shift (target=399, len=0)
+actionsTable[27218] = 33638; // 'state 212' -> template_string -> shift+reduce (target=179, len=1)
 actionsTable[27225] = 36; // 'state 212' -> update_operator -> shift (target=18, len=0)
-actionsTable[27226] = 798; // 'state 212' -> regex -> shift (target=399, len=0)
+actionsTable[27226] = 33638; // 'state 212' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[27273] = 839; // 'state 213' -> ) -> reduce (target=163, len=1)
 actionsTable[27291] = 164; // 'state 213' -> : -> shift (target=82, len=0)
 actionsTable[27305] = 839; // 'state 213' -> [ -> reduce (target=163, len=1)
@@ -4065,40 +4063,40 @@ actionsTable.fill(839, 27320, 27322); // 'state 213' -> |..& -> reduce (target=1
 actionsTable[27325] = 432; // 'state 213' -> is -> shift (target=216, len=0)
 actionsTable[27419] = 164; // 'state 214' -> : -> shift (target=82, len=0)
 actionsTable[27445] = 164; // 'state 214' -> ?: -> shift (target=82, len=0)
-actionsTable.fill(942, 27520, 27523); // 'state 215' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 27520, 27523); // 'state 215' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[27525] = 262; // 'state 215' -> { -> shift (target=131, len=0)
 actionsTable[27528] = 264; // 'state 215' -> ( -> shift (target=132, len=0)
 actionsTable[27561] = 266; // 'state 215' -> [ -> shift (target=133, len=0)
 actionsTable[27574] = 28; // 'state 215' -> < -> shift (target=14, len=0)
 actionsTable[27576] = 268; // 'state 215' -> | -> shift (target=134, len=0)
-actionsTable[27579] = 942; // 'state 215' -> void -> shift (target=471, len=0)
+actionsTable[27579] = 33606; // 'state 215' -> void -> shift+reduce (target=163, len=1)
 actionsTable[27580] = 944; // 'state 215' -> typeof -> shift (target=472, len=0)
 actionsTable[27598] = 270; // 'state 215' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 27600, 27602); // 'state 215' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(942, 27648, 27651); // 'state 216' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 27600, 27602); // 'state 215' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33606, 27648, 27651); // 'state 216' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[27653] = 262; // 'state 216' -> { -> shift (target=131, len=0)
 actionsTable[27656] = 264; // 'state 216' -> ( -> shift (target=132, len=0)
 actionsTable[27689] = 266; // 'state 216' -> [ -> shift (target=133, len=0)
 actionsTable[27702] = 28; // 'state 216' -> < -> shift (target=14, len=0)
 actionsTable[27704] = 268; // 'state 216' -> | -> shift (target=134, len=0)
-actionsTable[27707] = 942; // 'state 216' -> void -> shift (target=471, len=0)
+actionsTable[27707] = 33606; // 'state 216' -> void -> shift+reduce (target=163, len=1)
 actionsTable[27708] = 944; // 'state 216' -> typeof -> shift (target=472, len=0)
 actionsTable[27726] = 270; // 'state 216' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 27728, 27730); // 'state 216' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 27728, 27730); // 'state 216' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[27809] = 588; // 'state 217' -> , -> shift (target=294, len=0)
 actionsTable[27818] = 1228; // 'state 217' -> ] -> shift (target=614, len=0)
 actionsTable[27832] = 506; // 'state 217' -> | -> shift (target=253, len=0)
 actionsTable[27833] = 508; // 'state 217' -> & -> shift (target=254, len=0)
-actionsTable.fill(798, 27904, 27909); // 'state 218' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 27904, 27909); // 'state 218' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[27909] = 68; // 'state 218' -> { -> shift (target=34, len=0)
 actionsTable[27912] = 4; // 'state 218' -> ( -> shift (target=2, len=0)
-actionsTable[27922] = 806; // 'state 218' -> of -> shift (target=403, len=0)
-actionsTable[27936] = 806; // 'state 218' -> from -> shift (target=403, len=0)
-actionsTable[27940] = 806; // 'state 218' -> type -> shift (target=403, len=0)
+actionsTable[27922] = 33636; // 'state 218' -> of -> shift+reduce (target=178, len=1)
+actionsTable[27936] = 33636; // 'state 218' -> from -> shift+reduce (target=178, len=1)
+actionsTable[27940] = 33636; // 'state 218' -> type -> shift+reduce (target=178, len=1)
 actionsTable[27945] = 20; // 'state 218' -> [ -> shift (target=10, len=0)
 actionsTable[27947] = 70; // 'state 218' -> async -> shift (target=35, len=0)
 actionsTable[27948] = 72; // 'state 218' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 27951, 27953); // 'state 218' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 27951, 27953); // 'state 218' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[27953] = 74; // 'state 218' -> class -> shift (target=37, len=0)
 actionsTable[27958] = 28; // 'state 218' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 27963, 27965); // 'state 218' -> void..typeof -> shift (target=15, len=0)
@@ -4107,30 +4105,30 @@ actionsTable.fill(30, 27973, 27975); // 'state 218' -> +..- -> shift (target=15,
 actionsTable.fill(30, 27976, 27979); // 'state 218' -> !..delete -> shift (target=15, len=0)
 actionsTable[27979] = 34; // 'state 218' -> await -> shift (target=17, len=0)
 actionsTable[27982] = 1240; // 'state 218' -> identifier -> shift (target=620, len=0)
-actionsTable.fill(798, 27984, 27987); // 'state 218' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 27984, 27987); // 'state 218' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[27993] = 36; // 'state 218' -> update_operator -> shift (target=18, len=0)
-actionsTable[27994] = 798; // 'state 218' -> regex -> shift (target=399, len=0)
-actionsTable[28050] = 806; // 'state 219' -> of -> shift (target=403, len=0)
-actionsTable[28064] = 806; // 'state 219' -> from -> shift (target=403, len=0)
-actionsTable[28068] = 806; // 'state 219' -> type -> shift (target=403, len=0)
+actionsTable[27994] = 33638; // 'state 218' -> regex -> shift+reduce (target=179, len=1)
+actionsTable[28050] = 33636; // 'state 219' -> of -> shift+reduce (target=178, len=1)
+actionsTable[28064] = 33636; // 'state 219' -> from -> shift+reduce (target=178, len=1)
+actionsTable[28068] = 33636; // 'state 219' -> type -> shift+reduce (target=178, len=1)
 actionsTable[28073] = 590; // 'state 219' -> [ -> shift (target=295, len=0)
 actionsTable[28075] = 914; // 'state 219' -> async -> shift (target=457, len=0)
-actionsTable.fill(806, 28079, 28081); // 'state 219' -> get..set -> shift (target=403, len=0)
-actionsTable[28110] = 848; // 'state 219' -> identifier -> shift (target=424, len=0)
-actionsTable.fill(848, 28112, 28114); // 'state 219' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33636, 28079, 28081); // 'state 219' -> get..set -> shift+reduce (target=178, len=1)
+actionsTable[28110] = 33694; // 'state 219' -> identifier -> shift+reduce (target=207, len=1)
+actionsTable.fill(33694, 28112, 28114); // 'state 219' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[28168] = 138; // 'state 220' -> ( -> shift (target=69, len=0)
 actionsTable[28214] = 28; // 'state 220' -> < -> shift (target=14, len=0)
 actionsTable[28294] = 1232; // 'state 221' -> } -> shift (target=616, len=0)
-actionsTable[28306] = 806; // 'state 221' -> of -> shift (target=403, len=0)
-actionsTable[28320] = 806; // 'state 221' -> from -> shift (target=403, len=0)
-actionsTable[28324] = 806; // 'state 221' -> type -> shift (target=403, len=0)
+actionsTable[28306] = 33636; // 'state 221' -> of -> shift+reduce (target=178, len=1)
+actionsTable[28320] = 33636; // 'state 221' -> from -> shift+reduce (target=178, len=1)
+actionsTable[28324] = 33636; // 'state 221' -> type -> shift+reduce (target=178, len=1)
 actionsTable[28329] = 436; // 'state 221' -> [ -> shift (target=218, len=0)
 actionsTable[28331] = 914; // 'state 221' -> async -> shift (target=457, len=0)
 actionsTable[28334] = 438; // 'state 221' -> readonly -> shift (target=219, len=0)
-actionsTable.fill(806, 28335, 28337); // 'state 221' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 28335, 28337); // 'state 221' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[28350] = 440; // 'state 221' -> new -> shift (target=220, len=0)
-actionsTable[28366] = 848; // 'state 221' -> identifier -> shift (target=424, len=0)
-actionsTable.fill(848, 28368, 28370); // 'state 221' -> number..string -> shift (target=424, len=0)
+actionsTable[28366] = 33694; // 'state 221' -> identifier -> shift+reduce (target=207, len=1)
+actionsTable.fill(33694, 28368, 28370); // 'state 221' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[28424] = 138; // 'state 222' -> ( -> shift (target=69, len=0)
 actionsTable[28443] = 164; // 'state 222' -> : -> shift (target=82, len=0)
 actionsTable[28469] = 164; // 'state 222' -> ?: -> shift (target=82, len=0)
@@ -4158,18 +4156,18 @@ actionsTable[28630] = 88; // 'state 223' -> relational_operator -> shift (target
 actionsTable[28631] = 114; // 'state 223' -> shift_operator -> shift (target=57, len=0)
 actionsTable[28632] = 90; // 'state 223' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[28633] = 866; // 'state 223' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 28672, 28677); // 'state 224' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 28672, 28677); // 'state 224' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[28677] = 68; // 'state 224' -> { -> shift (target=34, len=0)
 actionsTable[28680] = 4; // 'state 224' -> ( -> shift (target=2, len=0)
 actionsTable[28681] = 1244; // 'state 224' -> ) -> shift (target=622, len=0)
-actionsTable[28690] = 806; // 'state 224' -> of -> shift (target=403, len=0)
-actionsTable[28704] = 806; // 'state 224' -> from -> shift (target=403, len=0)
-actionsTable[28708] = 806; // 'state 224' -> type -> shift (target=403, len=0)
+actionsTable[28690] = 33636; // 'state 224' -> of -> shift+reduce (target=178, len=1)
+actionsTable[28704] = 33636; // 'state 224' -> from -> shift+reduce (target=178, len=1)
+actionsTable[28708] = 33636; // 'state 224' -> type -> shift+reduce (target=178, len=1)
 actionsTable[28712] = 48; // 'state 224' -> ... -> shift (target=24, len=0)
 actionsTable[28713] = 20; // 'state 224' -> [ -> shift (target=10, len=0)
 actionsTable[28715] = 70; // 'state 224' -> async -> shift (target=35, len=0)
 actionsTable[28716] = 72; // 'state 224' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 28719, 28721); // 'state 224' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 28719, 28721); // 'state 224' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[28721] = 74; // 'state 224' -> class -> shift (target=37, len=0)
 actionsTable[28726] = 28; // 'state 224' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 28731, 28733); // 'state 224' -> void..typeof -> shift (target=15, len=0)
@@ -4178,9 +4176,9 @@ actionsTable.fill(30, 28741, 28743); // 'state 224' -> +..- -> shift (target=15,
 actionsTable.fill(30, 28744, 28747); // 'state 224' -> !..delete -> shift (target=15, len=0)
 actionsTable[28747] = 34; // 'state 224' -> await -> shift (target=17, len=0)
 actionsTable[28750] = 818; // 'state 224' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 28752, 28755); // 'state 224' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 28752, 28755); // 'state 224' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[28761] = 36; // 'state 224' -> update_operator -> shift (target=18, len=0)
-actionsTable[28762] = 798; // 'state 224' -> regex -> shift (target=399, len=0)
+actionsTable[28762] = 33638; // 'state 224' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[28806] = 1248; // 'state 225' -> } -> shift (target=624, len=0)
 actionsTable[28836] = 966; // 'state 225' -> type -> shift (target=483, len=0)
 actionsTable[28878] = 968; // 'state 225' -> identifier -> shift (target=484, len=0)
@@ -4197,17 +4195,17 @@ actionsTable[29490] = 148; // 'state 230' -> extends -> shift (target=74, len=0)
 actionsTable[29491] = 150; // 'state 230' -> implements -> shift (target=75, len=0)
 actionsTable[29573] = 122; // 'state 231' -> { -> shift (target=61, len=0)
 actionsTable[29609] = 124; // 'state 231' -> [ -> shift (target=62, len=0)
-actionsTable[29646] = 894; // 'state 231' -> identifier -> shift (target=447, len=0)
-actionsTable.fill(798, 29696, 29701); // 'state 232' -> true..super -> shift (target=399, len=0)
+actionsTable[29646] = 33536; // 'state 231' -> identifier -> shift+reduce (target=128, len=1)
+actionsTable.fill(33638, 29696, 29701); // 'state 232' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[29701] = 68; // 'state 232' -> { -> shift (target=34, len=0)
 actionsTable[29704] = 4; // 'state 232' -> ( -> shift (target=2, len=0)
-actionsTable[29714] = 806; // 'state 232' -> of -> shift (target=403, len=0)
-actionsTable[29728] = 806; // 'state 232' -> from -> shift (target=403, len=0)
-actionsTable[29732] = 806; // 'state 232' -> type -> shift (target=403, len=0)
+actionsTable[29714] = 33636; // 'state 232' -> of -> shift+reduce (target=178, len=1)
+actionsTable[29728] = 33636; // 'state 232' -> from -> shift+reduce (target=178, len=1)
+actionsTable[29732] = 33636; // 'state 232' -> type -> shift+reduce (target=178, len=1)
 actionsTable[29737] = 20; // 'state 232' -> [ -> shift (target=10, len=0)
 actionsTable[29739] = 70; // 'state 232' -> async -> shift (target=35, len=0)
 actionsTable[29740] = 72; // 'state 232' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 29743, 29745); // 'state 232' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 29743, 29745); // 'state 232' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[29745] = 74; // 'state 232' -> class -> shift (target=37, len=0)
 actionsTable[29750] = 28; // 'state 232' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 29755, 29757); // 'state 232' -> void..typeof -> shift (target=15, len=0)
@@ -4216,9 +4214,9 @@ actionsTable.fill(30, 29765, 29767); // 'state 232' -> +..- -> shift (target=15,
 actionsTable.fill(30, 29768, 29771); // 'state 232' -> !..delete -> shift (target=15, len=0)
 actionsTable[29771] = 34; // 'state 232' -> await -> shift (target=17, len=0)
 actionsTable[29774] = 818; // 'state 232' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 29776, 29779); // 'state 232' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 29776, 29779); // 'state 232' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[29785] = 36; // 'state 232' -> update_operator -> shift (target=18, len=0)
-actionsTable[29786] = 798; // 'state 232' -> regex -> shift (target=399, len=0)
+actionsTable[29786] = 33638; // 'state 232' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(1791, 29824, 29832); // 'state 233' -> true..if -> reduce (target=127, len=3)
 actionsTable[29832] = 86; // 'state 233' -> ( -> shift (target=43, len=0)
 actionsTable.fill(1791, 29834, 29843); // 'state 233' -> else..of -> reduce (target=127, len=3)
@@ -4257,25 +4255,25 @@ actionsTable[29912] = 90; // 'state 233' -> multiplicative_operator -> shift (ta
 actionsTable[29913] = 866; // 'state 233' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(1791, 29914, 29916); // 'state 233' -> regex..@par-gen.EOF -> reduce (target=127, len=3)
 actionsTable[29958] = 1266; // 'state 234' -> } -> shift (target=633, len=0)
-actionsTable[29970] = 806; // 'state 234' -> of -> shift (target=403, len=0)
-actionsTable[29984] = 806; // 'state 234' -> from -> shift (target=403, len=0)
-actionsTable[29988] = 806; // 'state 234' -> type -> shift (target=403, len=0)
+actionsTable[29970] = 33636; // 'state 234' -> of -> shift+reduce (target=178, len=1)
+actionsTable[29984] = 33636; // 'state 234' -> from -> shift+reduce (target=178, len=1)
+actionsTable[29988] = 33636; // 'state 234' -> type -> shift+reduce (target=178, len=1)
 actionsTable[29992] = 294; // 'state 234' -> ... -> shift (target=147, len=0)
 actionsTable[29993] = 198; // 'state 234' -> [ -> shift (target=99, len=0)
 actionsTable[29995] = 914; // 'state 234' -> async -> shift (target=457, len=0)
-actionsTable.fill(806, 29999, 30001); // 'state 234' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 29999, 30001); // 'state 234' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[30030] = 992; // 'state 234' -> identifier -> shift (target=496, len=0)
-actionsTable.fill(848, 30032, 30034); // 'state 234' -> number..string -> shift (target=424, len=0)
-actionsTable.fill(798, 30080, 30085); // 'state 235' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33694, 30032, 30034); // 'state 234' -> number..string -> shift+reduce (target=207, len=1)
+actionsTable.fill(33638, 30080, 30085); // 'state 235' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[30085] = 68; // 'state 235' -> { -> shift (target=34, len=0)
 actionsTable[30088] = 4; // 'state 235' -> ( -> shift (target=2, len=0)
-actionsTable[30098] = 806; // 'state 235' -> of -> shift (target=403, len=0)
-actionsTable[30112] = 806; // 'state 235' -> from -> shift (target=403, len=0)
-actionsTable[30116] = 806; // 'state 235' -> type -> shift (target=403, len=0)
+actionsTable[30098] = 33636; // 'state 235' -> of -> shift+reduce (target=178, len=1)
+actionsTable[30112] = 33636; // 'state 235' -> from -> shift+reduce (target=178, len=1)
+actionsTable[30116] = 33636; // 'state 235' -> type -> shift+reduce (target=178, len=1)
 actionsTable[30121] = 20; // 'state 235' -> [ -> shift (target=10, len=0)
 actionsTable[30123] = 70; // 'state 235' -> async -> shift (target=35, len=0)
 actionsTable[30124] = 72; // 'state 235' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 30127, 30129); // 'state 235' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 30127, 30129); // 'state 235' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[30129] = 74; // 'state 235' -> class -> shift (target=37, len=0)
 actionsTable[30134] = 28; // 'state 235' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 30139, 30141); // 'state 235' -> void..typeof -> shift (target=15, len=0)
@@ -4284,12 +4282,12 @@ actionsTable.fill(30, 30149, 30151); // 'state 235' -> +..- -> shift (target=15,
 actionsTable.fill(30, 30152, 30155); // 'state 235' -> !..delete -> shift (target=15, len=0)
 actionsTable[30155] = 34; // 'state 235' -> await -> shift (target=17, len=0)
 actionsTable[30158] = 818; // 'state 235' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 30160, 30163); // 'state 235' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 30160, 30163); // 'state 235' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[30169] = 36; // 'state 235' -> update_operator -> shift (target=18, len=0)
-actionsTable[30170] = 798; // 'state 235' -> regex -> shift (target=399, len=0)
+actionsTable[30170] = 33638; // 'state 235' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[30213] = 122; // 'state 236' -> { -> shift (target=61, len=0)
 actionsTable[30249] = 124; // 'state 236' -> [ -> shift (target=62, len=0)
-actionsTable[30286] = 894; // 'state 236' -> identifier -> shift (target=447, len=0)
+actionsTable[30286] = 33536; // 'state 236' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[30369] = 476; // 'state 237' -> , -> shift (target=238, len=0)
 actionsTable[30378] = 1272; // 'state 237' -> ] -> shift (target=636, len=0)
 actionsTable[30469] = 122; // 'state 238' -> { -> shift (target=61, len=0)
@@ -4297,17 +4295,17 @@ actionsTable[30497] = 777; // 'state 238' -> , -> reduce (target=132, len=1)
 actionsTable[30504] = 300; // 'state 238' -> ... -> shift (target=150, len=0)
 actionsTable[30505] = 124; // 'state 238' -> [ -> shift (target=62, len=0)
 actionsTable[30506] = 777; // 'state 238' -> ] -> reduce (target=132, len=1)
-actionsTable[30542] = 894; // 'state 238' -> identifier -> shift (target=447, len=0)
-actionsTable.fill(798, 30592, 30597); // 'state 239' -> true..super -> shift (target=399, len=0)
+actionsTable[30542] = 33536; // 'state 238' -> identifier -> shift+reduce (target=128, len=1)
+actionsTable.fill(33638, 30592, 30597); // 'state 239' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[30597] = 68; // 'state 239' -> { -> shift (target=34, len=0)
 actionsTable[30600] = 4; // 'state 239' -> ( -> shift (target=2, len=0)
-actionsTable[30610] = 806; // 'state 239' -> of -> shift (target=403, len=0)
-actionsTable[30624] = 806; // 'state 239' -> from -> shift (target=403, len=0)
-actionsTable[30628] = 806; // 'state 239' -> type -> shift (target=403, len=0)
+actionsTable[30610] = 33636; // 'state 239' -> of -> shift+reduce (target=178, len=1)
+actionsTable[30624] = 33636; // 'state 239' -> from -> shift+reduce (target=178, len=1)
+actionsTable[30628] = 33636; // 'state 239' -> type -> shift+reduce (target=178, len=1)
 actionsTable[30633] = 20; // 'state 239' -> [ -> shift (target=10, len=0)
 actionsTable[30635] = 70; // 'state 239' -> async -> shift (target=35, len=0)
 actionsTable[30636] = 72; // 'state 239' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 30639, 30641); // 'state 239' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 30639, 30641); // 'state 239' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[30641] = 74; // 'state 239' -> class -> shift (target=37, len=0)
 actionsTable[30646] = 28; // 'state 239' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 30651, 30653); // 'state 239' -> void..typeof -> shift (target=15, len=0)
@@ -4316,9 +4314,9 @@ actionsTable.fill(30, 30661, 30663); // 'state 239' -> +..- -> shift (target=15,
 actionsTable.fill(30, 30664, 30667); // 'state 239' -> !..delete -> shift (target=15, len=0)
 actionsTable[30667] = 34; // 'state 239' -> await -> shift (target=17, len=0)
 actionsTable[30670] = 818; // 'state 239' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 30672, 30675); // 'state 239' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 30672, 30675); // 'state 239' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[30681] = 36; // 'state 239' -> update_operator -> shift (target=18, len=0)
-actionsTable[30682] = 798; // 'state 239' -> regex -> shift (target=399, len=0)
+actionsTable[30682] = 33638; // 'state 239' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[30725] = 80; // 'state 240' -> { -> shift (target=40, len=0)
 actionsTable[30733] = 1278; // 'state 240' -> ; -> shift (target=639, len=0)
 actionsTable[30747] = 164; // 'state 240' -> : -> shift (target=82, len=0)
@@ -4362,16 +4360,16 @@ actionsTable[31319] = 114; // 'state 244' -> shift_operator -> shift (target=57,
 actionsTable[31320] = 90; // 'state 244' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[31321] = 866; // 'state 244' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(2419, 31322, 31324); // 'state 244' -> regex..@par-gen.EOF -> reduce (target=185, len=4)
-actionsTable.fill(798, 31360, 31365); // 'state 245' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 31360, 31365); // 'state 245' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[31365] = 2; // 'state 245' -> { -> shift (target=1, len=0)
 actionsTable[31368] = 4; // 'state 245' -> ( -> shift (target=2, len=0)
-actionsTable[31378] = 806; // 'state 245' -> of -> shift (target=403, len=0)
-actionsTable[31392] = 806; // 'state 245' -> from -> shift (target=403, len=0)
-actionsTable[31396] = 806; // 'state 245' -> type -> shift (target=403, len=0)
+actionsTable[31378] = 33636; // 'state 245' -> of -> shift+reduce (target=178, len=1)
+actionsTable[31392] = 33636; // 'state 245' -> from -> shift+reduce (target=178, len=1)
+actionsTable[31396] = 33636; // 'state 245' -> type -> shift+reduce (target=178, len=1)
 actionsTable[31401] = 20; // 'state 245' -> [ -> shift (target=10, len=0)
 actionsTable[31403] = 70; // 'state 245' -> async -> shift (target=35, len=0)
 actionsTable[31404] = 72; // 'state 245' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 31407, 31409); // 'state 245' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 31407, 31409); // 'state 245' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[31409] = 74; // 'state 245' -> class -> shift (target=37, len=0)
 actionsTable[31414] = 28; // 'state 245' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 31419, 31421); // 'state 245' -> void..typeof -> shift (target=15, len=0)
@@ -4380,35 +4378,34 @@ actionsTable.fill(30, 31429, 31431); // 'state 245' -> +..- -> shift (target=15,
 actionsTable.fill(30, 31432, 31435); // 'state 245' -> !..delete -> shift (target=15, len=0)
 actionsTable[31435] = 34; // 'state 245' -> await -> shift (target=17, len=0)
 actionsTable[31438] = 818; // 'state 245' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 31440, 31443); // 'state 245' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 31440, 31443); // 'state 245' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[31449] = 36; // 'state 245' -> update_operator -> shift (target=18, len=0)
-actionsTable[31450] = 798; // 'state 245' -> regex -> shift (target=399, len=0)
+actionsTable[31450] = 33638; // 'state 245' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[31493] = 80; // 'state 246' -> { -> shift (target=40, len=0)
 actionsTable[31501] = 1278; // 'state 246' -> ; -> shift (target=639, len=0)
 actionsTable[31621] = 122; // 'state 247' -> { -> shift (target=61, len=0)
 actionsTable[31625] = 1288; // 'state 247' -> ) -> shift (target=644, len=0)
 actionsTable[31656] = 320; // 'state 247' -> ... -> shift (target=160, len=0)
 actionsTable[31657] = 124; // 'state 247' -> [ -> shift (target=62, len=0)
-actionsTable[31659] = 1006; // 'state 247' -> async -> shift (target=503, len=0)
-actionsTable.fill(1008, 31661, 31663); // 'state 247' -> static..readonly -> shift (target=504, len=0)
-actionsTable.fill(1006, 31663, 31665); // 'state 247' -> get..set -> shift (target=503, len=0)
-actionsTable[31694] = 894; // 'state 247' -> identifier -> shift (target=447, len=0)
-actionsTable[31699] = 1008; // 'state 247' -> accessibility_modifier -> shift (target=504, len=0)
+actionsTable[31659] = 33564; // 'state 247' -> async -> shift+reduce (target=142, len=1)
+actionsTable.fill(33564, 31661, 31665); // 'state 247' -> static..set -> shift+reduce (target=142, len=1)
+actionsTable[31694] = 33536; // 'state 247' -> identifier -> shift+reduce (target=128, len=1)
+actionsTable[31699] = 33564; // 'state 247' -> accessibility_modifier -> shift+reduce (target=142, len=1)
 actionsTable[31753] = 1301; // 'state 248' -> ) -> reduce (target=138, len=2)
 actionsTable[31771] = 164; // 'state 248' -> : -> shift (target=82, len=0)
 actionsTable[31777] = 1301; // 'state 248' -> , -> reduce (target=138, len=2)
 actionsTable[31783] = 636; // 'state 248' -> = -> shift (target=318, len=0)
 actionsTable[31797] = 164; // 'state 248' -> ?: -> shift (target=82, len=0)
-actionsTable.fill(798, 31872, 31877); // 'state 249' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 31872, 31877); // 'state 249' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[31877] = 68; // 'state 249' -> { -> shift (target=34, len=0)
 actionsTable[31880] = 4; // 'state 249' -> ( -> shift (target=2, len=0)
-actionsTable[31890] = 806; // 'state 249' -> of -> shift (target=403, len=0)
-actionsTable[31904] = 806; // 'state 249' -> from -> shift (target=403, len=0)
-actionsTable[31908] = 806; // 'state 249' -> type -> shift (target=403, len=0)
+actionsTable[31890] = 33636; // 'state 249' -> of -> shift+reduce (target=178, len=1)
+actionsTable[31904] = 33636; // 'state 249' -> from -> shift+reduce (target=178, len=1)
+actionsTable[31908] = 33636; // 'state 249' -> type -> shift+reduce (target=178, len=1)
 actionsTable[31913] = 20; // 'state 249' -> [ -> shift (target=10, len=0)
 actionsTable[31915] = 70; // 'state 249' -> async -> shift (target=35, len=0)
 actionsTable[31916] = 72; // 'state 249' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 31919, 31921); // 'state 249' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 31919, 31921); // 'state 249' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[31921] = 74; // 'state 249' -> class -> shift (target=37, len=0)
 actionsTable[31926] = 28; // 'state 249' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 31931, 31933); // 'state 249' -> void..typeof -> shift (target=15, len=0)
@@ -4417,44 +4414,44 @@ actionsTable.fill(30, 31941, 31943); // 'state 249' -> +..- -> shift (target=15,
 actionsTable.fill(30, 31944, 31947); // 'state 249' -> !..delete -> shift (target=15, len=0)
 actionsTable[31947] = 34; // 'state 249' -> await -> shift (target=17, len=0)
 actionsTable[31950] = 818; // 'state 249' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 31952, 31955); // 'state 249' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 31952, 31955); // 'state 249' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[31961] = 36; // 'state 249' -> update_operator -> shift (target=18, len=0)
-actionsTable[31962] = 798; // 'state 249' -> regex -> shift (target=399, len=0)
+actionsTable[31962] = 33638; // 'state 249' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[32009] = 1301; // 'state 250' -> ) -> reduce (target=138, len=2)
 actionsTable[32027] = 164; // 'state 250' -> : -> shift (target=82, len=0)
 actionsTable[32033] = 1301; // 'state 250' -> , -> reduce (target=138, len=2)
 actionsTable[32053] = 164; // 'state 250' -> ?: -> shift (target=82, len=0)
 actionsTable[32133] = 146; // 'state 251' -> { -> shift (target=73, len=0)
-actionsTable.fill(942, 32256, 32259); // 'state 252' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 32256, 32259); // 'state 252' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[32261] = 262; // 'state 252' -> { -> shift (target=131, len=0)
 actionsTable[32264] = 264; // 'state 252' -> ( -> shift (target=132, len=0)
 actionsTable[32297] = 266; // 'state 252' -> [ -> shift (target=133, len=0)
 actionsTable[32310] = 28; // 'state 252' -> < -> shift (target=14, len=0)
 actionsTable[32312] = 268; // 'state 252' -> | -> shift (target=134, len=0)
-actionsTable[32315] = 942; // 'state 252' -> void -> shift (target=471, len=0)
+actionsTable[32315] = 33606; // 'state 252' -> void -> shift+reduce (target=163, len=1)
 actionsTable[32316] = 944; // 'state 252' -> typeof -> shift (target=472, len=0)
 actionsTable[32334] = 270; // 'state 252' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 32336, 32338); // 'state 252' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(942, 32384, 32387); // 'state 253' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 32336, 32338); // 'state 252' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33606, 32384, 32387); // 'state 253' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[32389] = 262; // 'state 253' -> { -> shift (target=131, len=0)
 actionsTable[32392] = 264; // 'state 253' -> ( -> shift (target=132, len=0)
 actionsTable[32425] = 266; // 'state 253' -> [ -> shift (target=133, len=0)
 actionsTable[32438] = 28; // 'state 253' -> < -> shift (target=14, len=0)
 actionsTable[32440] = 268; // 'state 253' -> | -> shift (target=134, len=0)
-actionsTable[32443] = 942; // 'state 253' -> void -> shift (target=471, len=0)
+actionsTable[32443] = 33606; // 'state 253' -> void -> shift+reduce (target=163, len=1)
 actionsTable[32444] = 944; // 'state 253' -> typeof -> shift (target=472, len=0)
 actionsTable[32462] = 270; // 'state 253' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 32464, 32466); // 'state 253' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(942, 32512, 32515); // 'state 254' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 32464, 32466); // 'state 253' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33606, 32512, 32515); // 'state 254' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[32517] = 262; // 'state 254' -> { -> shift (target=131, len=0)
 actionsTable[32520] = 264; // 'state 254' -> ( -> shift (target=132, len=0)
 actionsTable[32553] = 266; // 'state 254' -> [ -> shift (target=133, len=0)
 actionsTable[32566] = 28; // 'state 254' -> < -> shift (target=14, len=0)
 actionsTable[32568] = 268; // 'state 254' -> | -> shift (target=134, len=0)
-actionsTable[32571] = 942; // 'state 254' -> void -> shift (target=471, len=0)
+actionsTable[32571] = 33606; // 'state 254' -> void -> shift+reduce (target=163, len=1)
 actionsTable[32572] = 944; // 'state 254' -> typeof -> shift (target=472, len=0)
 actionsTable[32590] = 270; // 'state 254' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 32592, 32594); // 'state 254' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 32592, 32594); // 'state 254' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[32646] = 1325; // 'state 255' -> } -> reduce (target=150, len=2)
 actionsTable[32648] = 138; // 'state 255' -> ( -> shift (target=69, len=0)
 actionsTable[32653] = 1302; // 'state 255' -> ; -> shift (target=651, len=0)
@@ -4470,16 +4467,16 @@ actionsTable[32693] = 164; // 'state 255' -> ?: -> shift (target=82, len=0)
 actionsTable[32694] = 28; // 'state 255' -> < -> shift (target=14, len=0)
 actionsTable.fill(1325, 32718, 32722); // 'state 255' -> identifier..string -> reduce (target=150, len=2)
 actionsTable[32723] = 1325; // 'state 255' -> accessibility_modifier -> reduce (target=150, len=2)
-actionsTable.fill(798, 32768, 32773); // 'state 256' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 32768, 32773); // 'state 256' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[32773] = 68; // 'state 256' -> { -> shift (target=34, len=0)
 actionsTable[32776] = 4; // 'state 256' -> ( -> shift (target=2, len=0)
-actionsTable[32786] = 806; // 'state 256' -> of -> shift (target=403, len=0)
-actionsTable[32800] = 806; // 'state 256' -> from -> shift (target=403, len=0)
-actionsTable[32804] = 806; // 'state 256' -> type -> shift (target=403, len=0)
+actionsTable[32786] = 33636; // 'state 256' -> of -> shift+reduce (target=178, len=1)
+actionsTable[32800] = 33636; // 'state 256' -> from -> shift+reduce (target=178, len=1)
+actionsTable[32804] = 33636; // 'state 256' -> type -> shift+reduce (target=178, len=1)
 actionsTable[32809] = 20; // 'state 256' -> [ -> shift (target=10, len=0)
 actionsTable[32811] = 70; // 'state 256' -> async -> shift (target=35, len=0)
 actionsTable[32812] = 72; // 'state 256' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 32815, 32817); // 'state 256' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 32815, 32817); // 'state 256' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[32817] = 74; // 'state 256' -> class -> shift (target=37, len=0)
 actionsTable[32822] = 28; // 'state 256' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 32827, 32829); // 'state 256' -> void..typeof -> shift (target=15, len=0)
@@ -4488,9 +4485,9 @@ actionsTable.fill(30, 32837, 32839); // 'state 256' -> +..- -> shift (target=15,
 actionsTable.fill(30, 32840, 32843); // 'state 256' -> !..delete -> shift (target=15, len=0)
 actionsTable[32843] = 34; // 'state 256' -> await -> shift (target=17, len=0)
 actionsTable[32846] = 818; // 'state 256' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 32848, 32851); // 'state 256' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 32848, 32851); // 'state 256' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[32857] = 36; // 'state 256' -> update_operator -> shift (target=18, len=0)
-actionsTable[32858] = 798; // 'state 256' -> regex -> shift (target=399, len=0)
+actionsTable[32858] = 33638; // 'state 256' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[32901] = 80; // 'state 257' -> { -> shift (target=40, len=0)
 actionsTable[32923] = 164; // 'state 257' -> : -> shift (target=82, len=0)
 actionsTable[32949] = 164; // 'state 257' -> ?: -> shift (target=82, len=0)
@@ -4500,28 +4497,28 @@ actionsTable[33285] = 1329; // 'state 260' -> { -> reduce (target=152, len=2)
 actionsTable[33313] = 504; // 'state 260' -> , -> shift (target=252, len=0)
 actionsTable[33336] = 506; // 'state 260' -> | -> shift (target=253, len=0)
 actionsTable[33337] = 508; // 'state 260' -> & -> shift (target=254, len=0)
-actionsTable.fill(942, 33408, 33411); // 'state 261' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 33408, 33411); // 'state 261' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[33413] = 262; // 'state 261' -> { -> shift (target=131, len=0)
 actionsTable[33416] = 264; // 'state 261' -> ( -> shift (target=132, len=0)
 actionsTable[33449] = 266; // 'state 261' -> [ -> shift (target=133, len=0)
 actionsTable[33462] = 28; // 'state 261' -> < -> shift (target=14, len=0)
 actionsTable[33464] = 268; // 'state 261' -> | -> shift (target=134, len=0)
-actionsTable[33467] = 942; // 'state 261' -> void -> shift (target=471, len=0)
+actionsTable[33467] = 33606; // 'state 261' -> void -> shift+reduce (target=163, len=1)
 actionsTable[33468] = 944; // 'state 261' -> typeof -> shift (target=472, len=0)
 actionsTable[33486] = 270; // 'state 261' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 33488, 33490); // 'state 261' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(798, 33536, 33541); // 'state 262' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33606, 33488, 33490); // 'state 261' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33638, 33536, 33541); // 'state 262' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[33541] = 68; // 'state 262' -> { -> shift (target=34, len=0)
 actionsTable[33544] = 4; // 'state 262' -> ( -> shift (target=2, len=0)
 actionsTable[33545] = 1316; // 'state 262' -> ) -> shift (target=658, len=0)
-actionsTable[33554] = 806; // 'state 262' -> of -> shift (target=403, len=0)
-actionsTable[33568] = 806; // 'state 262' -> from -> shift (target=403, len=0)
-actionsTable[33572] = 806; // 'state 262' -> type -> shift (target=403, len=0)
+actionsTable[33554] = 33636; // 'state 262' -> of -> shift+reduce (target=178, len=1)
+actionsTable[33568] = 33636; // 'state 262' -> from -> shift+reduce (target=178, len=1)
+actionsTable[33572] = 33636; // 'state 262' -> type -> shift+reduce (target=178, len=1)
 actionsTable[33576] = 48; // 'state 262' -> ... -> shift (target=24, len=0)
 actionsTable[33577] = 20; // 'state 262' -> [ -> shift (target=10, len=0)
 actionsTable[33579] = 70; // 'state 262' -> async -> shift (target=35, len=0)
 actionsTable[33580] = 72; // 'state 262' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 33583, 33585); // 'state 262' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 33583, 33585); // 'state 262' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[33585] = 74; // 'state 262' -> class -> shift (target=37, len=0)
 actionsTable[33590] = 28; // 'state 262' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 33595, 33597); // 'state 262' -> void..typeof -> shift (target=15, len=0)
@@ -4530,19 +4527,19 @@ actionsTable.fill(30, 33605, 33607); // 'state 262' -> +..- -> shift (target=15,
 actionsTable.fill(30, 33608, 33611); // 'state 262' -> !..delete -> shift (target=15, len=0)
 actionsTable[33611] = 34; // 'state 262' -> await -> shift (target=17, len=0)
 actionsTable[33614] = 818; // 'state 262' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 33616, 33619); // 'state 262' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 33616, 33619); // 'state 262' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[33625] = 36; // 'state 262' -> update_operator -> shift (target=18, len=0)
-actionsTable[33626] = 798; // 'state 262' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 33664, 33669); // 'state 263' -> true..super -> shift (target=399, len=0)
+actionsTable[33626] = 33638; // 'state 262' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 33664, 33669); // 'state 263' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[33669] = 68; // 'state 263' -> { -> shift (target=34, len=0)
 actionsTable[33672] = 4; // 'state 263' -> ( -> shift (target=2, len=0)
-actionsTable[33682] = 806; // 'state 263' -> of -> shift (target=403, len=0)
-actionsTable[33696] = 806; // 'state 263' -> from -> shift (target=403, len=0)
-actionsTable[33700] = 806; // 'state 263' -> type -> shift (target=403, len=0)
+actionsTable[33682] = 33636; // 'state 263' -> of -> shift+reduce (target=178, len=1)
+actionsTable[33696] = 33636; // 'state 263' -> from -> shift+reduce (target=178, len=1)
+actionsTable[33700] = 33636; // 'state 263' -> type -> shift+reduce (target=178, len=1)
 actionsTable[33705] = 20; // 'state 263' -> [ -> shift (target=10, len=0)
 actionsTable[33707] = 70; // 'state 263' -> async -> shift (target=35, len=0)
 actionsTable[33708] = 72; // 'state 263' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 33711, 33713); // 'state 263' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 33711, 33713); // 'state 263' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[33713] = 74; // 'state 263' -> class -> shift (target=37, len=0)
 actionsTable[33718] = 28; // 'state 263' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 33723, 33725); // 'state 263' -> void..typeof -> shift (target=15, len=0)
@@ -4551,21 +4548,21 @@ actionsTable.fill(30, 33733, 33735); // 'state 263' -> +..- -> shift (target=15,
 actionsTable.fill(30, 33736, 33739); // 'state 263' -> !..delete -> shift (target=15, len=0)
 actionsTable[33739] = 34; // 'state 263' -> await -> shift (target=17, len=0)
 actionsTable[33742] = 818; // 'state 263' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 33744, 33747); // 'state 263' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 33744, 33747); // 'state 263' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[33753] = 36; // 'state 263' -> update_operator -> shift (target=18, len=0)
-actionsTable[33754] = 798; // 'state 263' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 33792, 33797); // 'state 264' -> true..super -> shift (target=399, len=0)
+actionsTable[33754] = 33638; // 'state 263' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 33792, 33797); // 'state 264' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[33797] = 68; // 'state 264' -> { -> shift (target=34, len=0)
 actionsTable[33800] = 4; // 'state 264' -> ( -> shift (target=2, len=0)
 actionsTable[33801] = 1320; // 'state 264' -> ) -> shift (target=660, len=0)
-actionsTable[33810] = 806; // 'state 264' -> of -> shift (target=403, len=0)
-actionsTable[33824] = 806; // 'state 264' -> from -> shift (target=403, len=0)
-actionsTable[33828] = 806; // 'state 264' -> type -> shift (target=403, len=0)
+actionsTable[33810] = 33636; // 'state 264' -> of -> shift+reduce (target=178, len=1)
+actionsTable[33824] = 33636; // 'state 264' -> from -> shift+reduce (target=178, len=1)
+actionsTable[33828] = 33636; // 'state 264' -> type -> shift+reduce (target=178, len=1)
 actionsTable[33832] = 170; // 'state 264' -> ... -> shift (target=85, len=0)
 actionsTable[33833] = 20; // 'state 264' -> [ -> shift (target=10, len=0)
 actionsTable[33835] = 70; // 'state 264' -> async -> shift (target=35, len=0)
 actionsTable[33836] = 72; // 'state 264' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 33839, 33841); // 'state 264' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 33839, 33841); // 'state 264' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[33841] = 74; // 'state 264' -> class -> shift (target=37, len=0)
 actionsTable[33846] = 28; // 'state 264' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 33851, 33853); // 'state 264' -> void..typeof -> shift (target=15, len=0)
@@ -4574,26 +4571,26 @@ actionsTable.fill(30, 33861, 33863); // 'state 264' -> +..- -> shift (target=15,
 actionsTable.fill(30, 33864, 33867); // 'state 264' -> !..delete -> shift (target=15, len=0)
 actionsTable[33867] = 34; // 'state 264' -> await -> shift (target=17, len=0)
 actionsTable[33870] = 172; // 'state 264' -> identifier -> shift (target=86, len=0)
-actionsTable.fill(798, 33872, 33875); // 'state 264' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 33872, 33875); // 'state 264' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[33881] = 36; // 'state 264' -> update_operator -> shift (target=18, len=0)
-actionsTable[33882] = 798; // 'state 264' -> regex -> shift (target=399, len=0)
+actionsTable[33882] = 33638; // 'state 264' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[33953] = 656; // 'state 265' -> , -> shift (target=328, len=0)
 actionsTable[33975] = 1324; // 'state 265' -> > -> shift (target=662, len=0)
 actionsTable[33976] = 506; // 'state 265' -> | -> shift (target=253, len=0)
 actionsTable[33977] = 508; // 'state 265' -> & -> shift (target=254, len=0)
-actionsTable.fill(798, 34048, 34053); // 'state 266' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 34048, 34053); // 'state 266' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[34053] = 68; // 'state 266' -> { -> shift (target=34, len=0)
 actionsTable[34056] = 4; // 'state 266' -> ( -> shift (target=2, len=0)
-actionsTable[34066] = 806; // 'state 266' -> of -> shift (target=403, len=0)
-actionsTable[34080] = 806; // 'state 266' -> from -> shift (target=403, len=0)
+actionsTable[34066] = 33636; // 'state 266' -> of -> shift+reduce (target=178, len=1)
+actionsTable[34080] = 33636; // 'state 266' -> from -> shift+reduce (target=178, len=1)
 actionsTable[34081] = 1423; // 'state 266' -> , -> reduce (target=199, len=2)
-actionsTable[34084] = 806; // 'state 266' -> type -> shift (target=403, len=0)
+actionsTable[34084] = 33636; // 'state 266' -> type -> shift+reduce (target=178, len=1)
 actionsTable[34088] = 48; // 'state 266' -> ... -> shift (target=24, len=0)
 actionsTable[34089] = 20; // 'state 266' -> [ -> shift (target=10, len=0)
 actionsTable[34090] = 1423; // 'state 266' -> ] -> reduce (target=199, len=2)
 actionsTable[34091] = 70; // 'state 266' -> async -> shift (target=35, len=0)
 actionsTable[34092] = 72; // 'state 266' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 34095, 34097); // 'state 266' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 34095, 34097); // 'state 266' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[34097] = 74; // 'state 266' -> class -> shift (target=37, len=0)
 actionsTable[34102] = 28; // 'state 266' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 34107, 34109); // 'state 266' -> void..typeof -> shift (target=15, len=0)
@@ -4602,9 +4599,9 @@ actionsTable.fill(30, 34117, 34119); // 'state 266' -> +..- -> shift (target=15,
 actionsTable.fill(30, 34120, 34123); // 'state 266' -> !..delete -> shift (target=15, len=0)
 actionsTable[34123] = 34; // 'state 266' -> await -> shift (target=17, len=0)
 actionsTable[34126] = 818; // 'state 266' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 34128, 34131); // 'state 266' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 34128, 34131); // 'state 266' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[34137] = 36; // 'state 266' -> update_operator -> shift (target=18, len=0)
-actionsTable[34138] = 798; // 'state 266' -> regex -> shift (target=399, len=0)
+actionsTable[34138] = 33638; // 'state 266' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[34231] = 1332; // 'state 267' -> > -> shift (target=666, len=0)
 actionsTable[34254] = 908; // 'state 267' -> identifier -> shift (target=454, len=0)
 actionsTable[34309] = 80; // 'state 268' -> { -> shift (target=40, len=0)
@@ -4634,17 +4631,17 @@ actionsTable[34646] = 88; // 'state 270' -> relational_operator -> shift (target
 actionsTable[34647] = 114; // 'state 270' -> shift_operator -> shift (target=57, len=0)
 actionsTable[34648] = 90; // 'state 270' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[34649] = 866; // 'state 270' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 34688, 34693); // 'state 271' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 34688, 34693); // 'state 271' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[34693] = 68; // 'state 271' -> { -> shift (target=34, len=0)
 actionsTable[34696] = 4; // 'state 271' -> ( -> shift (target=2, len=0)
 actionsTable[34697] = 664; // 'state 271' -> ) -> shift (target=332, len=0)
-actionsTable[34706] = 806; // 'state 271' -> of -> shift (target=403, len=0)
-actionsTable[34720] = 806; // 'state 271' -> from -> shift (target=403, len=0)
-actionsTable[34724] = 806; // 'state 271' -> type -> shift (target=403, len=0)
+actionsTable[34706] = 33636; // 'state 271' -> of -> shift+reduce (target=178, len=1)
+actionsTable[34720] = 33636; // 'state 271' -> from -> shift+reduce (target=178, len=1)
+actionsTable[34724] = 33636; // 'state 271' -> type -> shift+reduce (target=178, len=1)
 actionsTable[34729] = 20; // 'state 271' -> [ -> shift (target=10, len=0)
 actionsTable[34731] = 70; // 'state 271' -> async -> shift (target=35, len=0)
 actionsTable[34732] = 72; // 'state 271' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 34735, 34737); // 'state 271' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 34735, 34737); // 'state 271' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[34737] = 74; // 'state 271' -> class -> shift (target=37, len=0)
 actionsTable[34742] = 28; // 'state 271' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 34747, 34749); // 'state 271' -> void..typeof -> shift (target=15, len=0)
@@ -4653,10 +4650,10 @@ actionsTable.fill(30, 34757, 34759); // 'state 271' -> +..- -> shift (target=15,
 actionsTable.fill(30, 34760, 34763); // 'state 271' -> !..delete -> shift (target=15, len=0)
 actionsTable[34763] = 34; // 'state 271' -> await -> shift (target=17, len=0)
 actionsTable[34766] = 818; // 'state 271' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 34768, 34771); // 'state 271' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 34768, 34771); // 'state 271' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[34777] = 36; // 'state 271' -> update_operator -> shift (target=18, len=0)
-actionsTable[34778] = 798; // 'state 271' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 34816, 34821); // 'state 272' -> true..super -> shift (target=399, len=0)
+actionsTable[34778] = 33638; // 'state 271' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 34816, 34821); // 'state 272' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[34821] = 2; // 'state 272' -> { -> shift (target=1, len=0)
 actionsTable[34823] = 800; // 'state 272' -> if -> shift (target=400, len=0)
 actionsTable[34824] = 4; // 'state 272' -> ( -> shift (target=2, len=0)
@@ -4664,7 +4661,7 @@ actionsTable[34827] = 802; // 'state 272' -> while -> shift (target=401, len=0)
 actionsTable[34828] = 6; // 'state 272' -> do -> shift (target=3, len=0)
 actionsTable[34830] = 804; // 'state 272' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 34831, 34834); // 'state 272' -> const..var -> shift (target=4, len=0)
-actionsTable[34834] = 806; // 'state 272' -> of -> shift (target=403, len=0)
+actionsTable[34834] = 33636; // 'state 272' -> of -> shift+reduce (target=178, len=1)
 actionsTable[34836] = 10; // 'state 272' -> return -> shift (target=5, len=0)
 actionsTable[34837] = 12; // 'state 272' -> throw -> shift (target=6, len=0)
 actionsTable[34838] = 14; // 'state 272' -> try -> shift (target=7, len=0)
@@ -4672,13 +4669,13 @@ actionsTable[34841] = 808; // 'state 272' -> switch -> shift (target=404, len=0)
 actionsTable[34845] = 810; // 'state 272' -> break -> shift (target=405, len=0)
 actionsTable[34846] = 812; // 'state 272' -> continue -> shift (target=406, len=0)
 actionsTable[34847] = 16; // 'state 272' -> import -> shift (target=8, len=0)
-actionsTable[34848] = 806; // 'state 272' -> from -> shift (target=403, len=0)
+actionsTable[34848] = 33636; // 'state 272' -> from -> shift+reduce (target=178, len=1)
 actionsTable[34852] = 814; // 'state 272' -> type -> shift (target=407, len=0)
 actionsTable[34853] = 18; // 'state 272' -> export -> shift (target=9, len=0)
 actionsTable[34857] = 20; // 'state 272' -> [ -> shift (target=10, len=0)
 actionsTable[34859] = 22; // 'state 272' -> async -> shift (target=11, len=0)
 actionsTable[34860] = 24; // 'state 272' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 34863, 34865); // 'state 272' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 34863, 34865); // 'state 272' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[34865] = 26; // 'state 272' -> class -> shift (target=13, len=0)
 actionsTable[34868] = 816; // 'state 272' -> interface -> shift (target=408, len=0)
 actionsTable[34870] = 28; // 'state 272' -> < -> shift (target=14, len=0)
@@ -4688,9 +4685,9 @@ actionsTable.fill(30, 34885, 34887); // 'state 272' -> +..- -> shift (target=15,
 actionsTable.fill(30, 34888, 34891); // 'state 272' -> !..delete -> shift (target=15, len=0)
 actionsTable[34891] = 34; // 'state 272' -> await -> shift (target=17, len=0)
 actionsTable[34894] = 818; // 'state 272' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 34896, 34899); // 'state 272' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 34896, 34899); // 'state 272' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[34905] = 36; // 'state 272' -> update_operator -> shift (target=18, len=0)
-actionsTable[34906] = 798; // 'state 272' -> regex -> shift (target=399, len=0)
+actionsTable[34906] = 33638; // 'state 272' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[34952] = 86; // 'state 273' -> ( -> shift (target=43, len=0)
 actionsTable[34953] = 664; // 'state 273' -> ) -> shift (target=332, len=0)
 actionsTable[34963] = 88; // 'state 273' -> in -> shift (target=44, len=0)
@@ -4714,16 +4711,16 @@ actionsTable[35030] = 88; // 'state 273' -> relational_operator -> shift (target
 actionsTable[35031] = 114; // 'state 273' -> shift_operator -> shift (target=57, len=0)
 actionsTable[35032] = 90; // 'state 273' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[35033] = 866; // 'state 273' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 35072, 35077); // 'state 274' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 35072, 35077); // 'state 274' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[35077] = 68; // 'state 274' -> { -> shift (target=34, len=0)
 actionsTable[35080] = 4; // 'state 274' -> ( -> shift (target=2, len=0)
-actionsTable[35090] = 806; // 'state 274' -> of -> shift (target=403, len=0)
-actionsTable[35104] = 806; // 'state 274' -> from -> shift (target=403, len=0)
-actionsTable[35108] = 806; // 'state 274' -> type -> shift (target=403, len=0)
+actionsTable[35090] = 33636; // 'state 274' -> of -> shift+reduce (target=178, len=1)
+actionsTable[35104] = 33636; // 'state 274' -> from -> shift+reduce (target=178, len=1)
+actionsTable[35108] = 33636; // 'state 274' -> type -> shift+reduce (target=178, len=1)
 actionsTable[35113] = 20; // 'state 274' -> [ -> shift (target=10, len=0)
 actionsTable[35115] = 70; // 'state 274' -> async -> shift (target=35, len=0)
 actionsTable[35116] = 72; // 'state 274' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 35119, 35121); // 'state 274' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 35119, 35121); // 'state 274' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[35121] = 74; // 'state 274' -> class -> shift (target=37, len=0)
 actionsTable[35126] = 28; // 'state 274' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 35131, 35133); // 'state 274' -> void..typeof -> shift (target=15, len=0)
@@ -4732,9 +4729,9 @@ actionsTable.fill(30, 35141, 35143); // 'state 274' -> +..- -> shift (target=15,
 actionsTable.fill(30, 35144, 35147); // 'state 274' -> !..delete -> shift (target=15, len=0)
 actionsTable[35147] = 34; // 'state 274' -> await -> shift (target=17, len=0)
 actionsTable[35150] = 818; // 'state 274' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 35152, 35155); // 'state 274' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 35152, 35155); // 'state 274' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[35161] = 36; // 'state 274' -> update_operator -> shift (target=18, len=0)
-actionsTable[35162] = 798; // 'state 274' -> regex -> shift (target=399, len=0)
+actionsTable[35162] = 33638; // 'state 274' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[35208] = 86; // 'state 275' -> ( -> shift (target=43, len=0)
 actionsTable[35213] = 670; // 'state 275' -> ; -> shift (target=335, len=0)
 actionsTable[35219] = 88; // 'state 275' -> in -> shift (target=44, len=0)
@@ -4801,31 +4798,31 @@ actionsTable[35928] = 90; // 'state 280' -> multiplicative_operator -> shift (ta
 actionsTable[35929] = 866; // 'state 280' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(2933, 35930, 35932); // 'state 280' -> regex..@par-gen.EOF -> reduce (target=186, len=5)
 actionsTable[35974] = 1354; // 'state 281' -> } -> shift (target=677, len=0)
-actionsTable[35986] = 806; // 'state 281' -> of -> shift (target=403, len=0)
-actionsTable[36000] = 806; // 'state 281' -> from -> shift (target=403, len=0)
-actionsTable[36004] = 806; // 'state 281' -> type -> shift (target=403, len=0)
+actionsTable[35986] = 33636; // 'state 281' -> of -> shift+reduce (target=178, len=1)
+actionsTable[36000] = 33636; // 'state 281' -> from -> shift+reduce (target=178, len=1)
+actionsTable[36004] = 33636; // 'state 281' -> type -> shift+reduce (target=178, len=1)
 actionsTable[36008] = 684; // 'state 281' -> ... -> shift (target=342, len=0)
 actionsTable[36009] = 198; // 'state 281' -> [ -> shift (target=99, len=0)
 actionsTable[36011] = 226; // 'state 281' -> async -> shift (target=113, len=0)
 actionsTable.fill(54, 36015, 36017); // 'state 281' -> get..set -> shift (target=27, len=0)
 actionsTable[36046] = 1356; // 'state 281' -> identifier -> shift (target=678, len=0)
-actionsTable.fill(848, 36048, 36050); // 'state 281' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 36048, 36050); // 'state 281' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[36101] = 562; // 'state 282' -> { -> shift (target=281, len=0)
 actionsTable[36137] = 566; // 'state 282' -> [ -> shift (target=283, len=0)
 actionsTable[36174] = 682; // 'state 282' -> identifier -> shift (target=341, len=0)
-actionsTable.fill(798, 36224, 36229); // 'state 283' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 36224, 36229); // 'state 283' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[36229] = 562; // 'state 283' -> { -> shift (target=281, len=0)
 actionsTable[36232] = 4; // 'state 283' -> ( -> shift (target=2, len=0)
-actionsTable[36242] = 806; // 'state 283' -> of -> shift (target=403, len=0)
-actionsTable[36256] = 806; // 'state 283' -> from -> shift (target=403, len=0)
+actionsTable[36242] = 33636; // 'state 283' -> of -> shift+reduce (target=178, len=1)
+actionsTable[36256] = 33636; // 'state 283' -> from -> shift+reduce (target=178, len=1)
 actionsTable[36257] = 688; // 'state 283' -> , -> shift (target=344, len=0)
-actionsTable[36260] = 806; // 'state 283' -> type -> shift (target=403, len=0)
+actionsTable[36260] = 33636; // 'state 283' -> type -> shift+reduce (target=178, len=1)
 actionsTable[36264] = 690; // 'state 283' -> ... -> shift (target=345, len=0)
 actionsTable[36265] = 566; // 'state 283' -> [ -> shift (target=283, len=0)
 actionsTable[36266] = 1358; // 'state 283' -> ] -> shift (target=679, len=0)
 actionsTable[36267] = 70; // 'state 283' -> async -> shift (target=35, len=0)
 actionsTable[36268] = 72; // 'state 283' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 36271, 36273); // 'state 283' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 36271, 36273); // 'state 283' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[36273] = 74; // 'state 283' -> class -> shift (target=37, len=0)
 actionsTable[36278] = 28; // 'state 283' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 36283, 36285); // 'state 283' -> void..typeof -> shift (target=15, len=0)
@@ -4834,24 +4831,24 @@ actionsTable.fill(30, 36293, 36295); // 'state 283' -> +..- -> shift (target=15,
 actionsTable.fill(30, 36296, 36299); // 'state 283' -> !..delete -> shift (target=15, len=0)
 actionsTable[36299] = 34; // 'state 283' -> await -> shift (target=17, len=0)
 actionsTable[36302] = 1360; // 'state 283' -> identifier -> shift (target=680, len=0)
-actionsTable.fill(798, 36304, 36307); // 'state 283' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 36304, 36307); // 'state 283' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[36313] = 36; // 'state 283' -> update_operator -> shift (target=18, len=0)
-actionsTable[36314] = 798; // 'state 283' -> regex -> shift (target=399, len=0)
+actionsTable[36314] = 33638; // 'state 283' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[36361] = 769; // 'state 284' -> ) -> reduce (target=128, len=1)
 actionsTable[36379] = 164; // 'state 284' -> : -> shift (target=82, len=0)
 actionsTable[36385] = 769; // 'state 284' -> , -> reduce (target=128, len=1)
 actionsTable[36391] = 769; // 'state 284' -> = -> reduce (target=128, len=1)
 actionsTable[36405] = 164; // 'state 284' -> ?: -> shift (target=82, len=0)
-actionsTable.fill(942, 36480, 36483); // 'state 285' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 36480, 36483); // 'state 285' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[36485] = 262; // 'state 285' -> { -> shift (target=131, len=0)
 actionsTable[36488] = 264; // 'state 285' -> ( -> shift (target=132, len=0)
 actionsTable[36521] = 266; // 'state 285' -> [ -> shift (target=133, len=0)
 actionsTable[36534] = 28; // 'state 285' -> < -> shift (target=14, len=0)
 actionsTable[36536] = 268; // 'state 285' -> | -> shift (target=134, len=0)
-actionsTable[36539] = 942; // 'state 285' -> void -> shift (target=471, len=0)
+actionsTable[36539] = 33606; // 'state 285' -> void -> shift+reduce (target=163, len=1)
 actionsTable[36540] = 944; // 'state 285' -> typeof -> shift (target=472, len=0)
 actionsTable[36558] = 270; // 'state 285' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 36560, 36562); // 'state 285' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 36560, 36562); // 'state 285' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[36635] = 164; // 'state 286' -> : -> shift (target=82, len=0)
 actionsTable[36661] = 164; // 'state 286' -> ?: -> shift (target=82, len=0)
 actionsTable[36744] = 138; // 'state 287' -> ( -> shift (target=69, len=0)
@@ -4859,18 +4856,18 @@ actionsTable[36763] = 692; // 'state 287' -> : -> shift (target=346, len=0)
 actionsTable[36789] = 164; // 'state 287' -> ?: -> shift (target=82, len=0)
 actionsTable[36790] = 28; // 'state 287' -> < -> shift (target=14, len=0)
 actionsTable.fill(1364, 36864, 36867); // 'state 288' -> true..null -> shift (target=682, len=0)
-actionsTable.fill(798, 36867, 36869); // 'state 288' -> this..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 36867, 36869); // 'state 288' -> this..super -> shift+reduce (target=179, len=1)
 actionsTable[36869] = 420; // 'state 288' -> { -> shift (target=210, len=0)
 actionsTable[36872] = 576; // 'state 288' -> ( -> shift (target=288, len=0)
 actionsTable[36873] = 698; // 'state 288' -> ) -> shift (target=349, len=0)
-actionsTable[36882] = 806; // 'state 288' -> of -> shift (target=403, len=0)
-actionsTable[36896] = 806; // 'state 288' -> from -> shift (target=403, len=0)
-actionsTable[36900] = 806; // 'state 288' -> type -> shift (target=403, len=0)
+actionsTable[36882] = 33636; // 'state 288' -> of -> shift+reduce (target=178, len=1)
+actionsTable[36896] = 33636; // 'state 288' -> from -> shift+reduce (target=178, len=1)
+actionsTable[36900] = 33636; // 'state 288' -> type -> shift+reduce (target=178, len=1)
 actionsTable[36904] = 170; // 'state 288' -> ... -> shift (target=85, len=0)
 actionsTable[36905] = 424; // 'state 288' -> [ -> shift (target=212, len=0)
 actionsTable[36907] = 70; // 'state 288' -> async -> shift (target=35, len=0)
 actionsTable[36908] = 72; // 'state 288' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 36911, 36913); // 'state 288' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 36911, 36913); // 'state 288' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[36913] = 74; // 'state 288' -> class -> shift (target=37, len=0)
 actionsTable[36918] = 28; // 'state 288' -> < -> shift (target=14, len=0)
 actionsTable[36920] = 268; // 'state 288' -> | -> shift (target=134, len=0)
@@ -4882,25 +4879,25 @@ actionsTable.fill(30, 36936, 36939); // 'state 288' -> !..delete -> shift (targe
 actionsTable[36939] = 34; // 'state 288' -> await -> shift (target=17, len=0)
 actionsTable[36942] = 700; // 'state 288' -> identifier -> shift (target=350, len=0)
 actionsTable.fill(1364, 36944, 36946); // 'state 288' -> number..string -> shift (target=682, len=0)
-actionsTable[36946] = 798; // 'state 288' -> template_string -> shift (target=399, len=0)
+actionsTable[36946] = 33638; // 'state 288' -> template_string -> shift+reduce (target=179, len=1)
 actionsTable[36953] = 36; // 'state 288' -> update_operator -> shift (target=18, len=0)
-actionsTable[36954] = 798; // 'state 288' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 36992, 36997); // 'state 289' -> true..super -> shift (target=399, len=0)
+actionsTable[36954] = 33638; // 'state 288' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 36992, 36997); // 'state 289' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[36997] = 68; // 'state 289' -> { -> shift (target=34, len=0)
 actionsTable[36998] = 839; // 'state 289' -> } -> reduce (target=163, len=1)
 actionsTable[37000] = 4; // 'state 289' -> ( -> shift (target=2, len=0)
 actionsTable[37001] = 839; // 'state 289' -> ) -> reduce (target=163, len=1)
 actionsTable[37005] = 839; // 'state 289' -> ; -> reduce (target=163, len=1)
-actionsTable[37010] = 806; // 'state 289' -> of -> shift (target=403, len=0)
-actionsTable[37024] = 806; // 'state 289' -> from -> shift (target=403, len=0)
+actionsTable[37010] = 33636; // 'state 289' -> of -> shift+reduce (target=178, len=1)
+actionsTable[37024] = 33636; // 'state 289' -> from -> shift+reduce (target=178, len=1)
 actionsTable[37025] = 839; // 'state 289' -> , -> reduce (target=163, len=1)
-actionsTable[37028] = 806; // 'state 289' -> type -> shift (target=403, len=0)
+actionsTable[37028] = 33636; // 'state 289' -> type -> shift+reduce (target=178, len=1)
 actionsTable[37033] = 20; // 'state 289' -> [ -> shift (target=10, len=0)
 actionsTable[37034] = 839; // 'state 289' -> ] -> reduce (target=163, len=1)
 actionsTable[37035] = 70; // 'state 289' -> async -> shift (target=35, len=0)
 actionsTable[37036] = 72; // 'state 289' -> function -> shift (target=36, len=0)
 actionsTable[37038] = 839; // 'state 289' -> readonly -> reduce (target=163, len=1)
-actionsTable.fill(806, 37039, 37041); // 'state 289' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 37039, 37041); // 'state 289' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[37041] = 74; // 'state 289' -> class -> shift (target=37, len=0)
 actionsTable[37046] = 28; // 'state 289' -> < -> shift (target=14, len=0)
 actionsTable.fill(839, 37048, 37050); // 'state 289' -> |..& -> reduce (target=163, len=1)
@@ -4910,19 +4907,19 @@ actionsTable.fill(30, 37061, 37063); // 'state 289' -> +..- -> shift (target=15,
 actionsTable.fill(30, 37064, 37067); // 'state 289' -> !..delete -> shift (target=15, len=0)
 actionsTable[37067] = 34; // 'state 289' -> await -> shift (target=17, len=0)
 actionsTable[37070] = 818; // 'state 289' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 37072, 37075); // 'state 289' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 37072, 37075); // 'state 289' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[37081] = 36; // 'state 289' -> update_operator -> shift (target=18, len=0)
-actionsTable[37082] = 798; // 'state 289' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 37120, 37125); // 'state 290' -> true..super -> shift (target=399, len=0)
+actionsTable[37082] = 33638; // 'state 289' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 37120, 37125); // 'state 290' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[37125] = 68; // 'state 290' -> { -> shift (target=34, len=0)
 actionsTable[37128] = 4; // 'state 290' -> ( -> shift (target=2, len=0)
-actionsTable[37138] = 806; // 'state 290' -> of -> shift (target=403, len=0)
-actionsTable[37152] = 806; // 'state 290' -> from -> shift (target=403, len=0)
-actionsTable[37156] = 806; // 'state 290' -> type -> shift (target=403, len=0)
+actionsTable[37138] = 33636; // 'state 290' -> of -> shift+reduce (target=178, len=1)
+actionsTable[37152] = 33636; // 'state 290' -> from -> shift+reduce (target=178, len=1)
+actionsTable[37156] = 33636; // 'state 290' -> type -> shift+reduce (target=178, len=1)
 actionsTable[37161] = 20; // 'state 290' -> [ -> shift (target=10, len=0)
 actionsTable[37163] = 70; // 'state 290' -> async -> shift (target=35, len=0)
 actionsTable[37164] = 72; // 'state 290' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 37167, 37169); // 'state 290' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 37167, 37169); // 'state 290' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[37169] = 74; // 'state 290' -> class -> shift (target=37, len=0)
 actionsTable[37174] = 28; // 'state 290' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 37179, 37181); // 'state 290' -> void..typeof -> shift (target=15, len=0)
@@ -4931,9 +4928,9 @@ actionsTable.fill(30, 37189, 37191); // 'state 290' -> +..- -> shift (target=15,
 actionsTable.fill(30, 37192, 37195); // 'state 290' -> !..delete -> shift (target=15, len=0)
 actionsTable[37195] = 34; // 'state 290' -> await -> shift (target=17, len=0)
 actionsTable[37198] = 1366; // 'state 290' -> identifier -> shift (target=683, len=0)
-actionsTable.fill(798, 37200, 37203); // 'state 290' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 37200, 37203); // 'state 290' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[37209] = 36; // 'state 290' -> update_operator -> shift (target=18, len=0)
-actionsTable[37210] = 798; // 'state 290' -> regex -> shift (target=399, len=0)
+actionsTable[37210] = 33638; // 'state 290' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[37254] = 839; // 'state 291' -> } -> reduce (target=163, len=1)
 actionsTable[37256] = 871; // 'state 291' -> ( -> reduce (target=179, len=1)
 actionsTable[37257] = 839; // 'state 291' -> ) -> reduce (target=163, len=1)
@@ -4962,27 +4959,27 @@ actionsTable[37403] = 164; // 'state 292' -> : -> shift (target=82, len=0)
 actionsTable[37429] = 164; // 'state 292' -> ?: -> shift (target=82, len=0)
 actionsTable[37434] = 702; // 'state 292' -> => -> shift (target=351, len=0)
 actionsTable[37512] = 418; // 'state 293' -> ( -> shift (target=209, len=0)
-actionsTable.fill(942, 37632, 37635); // 'state 294' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 37632, 37635); // 'state 294' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[37637] = 262; // 'state 294' -> { -> shift (target=131, len=0)
 actionsTable[37640] = 264; // 'state 294' -> ( -> shift (target=132, len=0)
 actionsTable[37673] = 266; // 'state 294' -> [ -> shift (target=133, len=0)
 actionsTable[37674] = 1368; // 'state 294' -> ] -> shift (target=684, len=0)
 actionsTable[37686] = 28; // 'state 294' -> < -> shift (target=14, len=0)
 actionsTable[37688] = 268; // 'state 294' -> | -> shift (target=134, len=0)
-actionsTable[37691] = 942; // 'state 294' -> void -> shift (target=471, len=0)
+actionsTable[37691] = 33606; // 'state 294' -> void -> shift+reduce (target=163, len=1)
 actionsTable[37692] = 944; // 'state 294' -> typeof -> shift (target=472, len=0)
 actionsTable[37710] = 270; // 'state 294' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 37712, 37714); // 'state 294' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(798, 37760, 37765); // 'state 295' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33606, 37712, 37714); // 'state 294' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33638, 37760, 37765); // 'state 295' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[37765] = 68; // 'state 295' -> { -> shift (target=34, len=0)
 actionsTable[37768] = 4; // 'state 295' -> ( -> shift (target=2, len=0)
-actionsTable[37778] = 806; // 'state 295' -> of -> shift (target=403, len=0)
-actionsTable[37792] = 806; // 'state 295' -> from -> shift (target=403, len=0)
-actionsTable[37796] = 806; // 'state 295' -> type -> shift (target=403, len=0)
+actionsTable[37778] = 33636; // 'state 295' -> of -> shift+reduce (target=178, len=1)
+actionsTable[37792] = 33636; // 'state 295' -> from -> shift+reduce (target=178, len=1)
+actionsTable[37796] = 33636; // 'state 295' -> type -> shift+reduce (target=178, len=1)
 actionsTable[37801] = 20; // 'state 295' -> [ -> shift (target=10, len=0)
 actionsTable[37803] = 70; // 'state 295' -> async -> shift (target=35, len=0)
 actionsTable[37804] = 72; // 'state 295' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 37807, 37809); // 'state 295' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 37807, 37809); // 'state 295' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[37809] = 74; // 'state 295' -> class -> shift (target=37, len=0)
 actionsTable[37814] = 28; // 'state 295' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 37819, 37821); // 'state 295' -> void..typeof -> shift (target=15, len=0)
@@ -4991,9 +4988,9 @@ actionsTable.fill(30, 37829, 37831); // 'state 295' -> +..- -> shift (target=15,
 actionsTable.fill(30, 37832, 37835); // 'state 295' -> !..delete -> shift (target=15, len=0)
 actionsTable[37835] = 34; // 'state 295' -> await -> shift (target=17, len=0)
 actionsTable[37838] = 1374; // 'state 295' -> identifier -> shift (target=687, len=0)
-actionsTable.fill(798, 37840, 37843); // 'state 295' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 37840, 37843); // 'state 295' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[37849] = 36; // 'state 295' -> update_operator -> shift (target=18, len=0)
-actionsTable[37850] = 798; // 'state 295' -> regex -> shift (target=399, len=0)
+actionsTable[37850] = 33638; // 'state 295' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[37915] = 164; // 'state 296' -> : -> shift (target=82, len=0)
 actionsTable[37941] = 164; // 'state 296' -> ?: -> shift (target=82, len=0)
 actionsTable[38022] = 1373; // 'state 297' -> } -> reduce (target=174, len=2)
@@ -5024,18 +5021,18 @@ actionsTable[38334] = 1375; // 'state 299' -> new -> reduce (target=175, len=2)
 actionsTable[38350] = 1375; // 'state 299' -> identifier -> reduce (target=175, len=2)
 actionsTable.fill(1375, 38352, 38354); // 'state 299' -> number..string -> reduce (target=175, len=2)
 actionsTable[38408] = 138; // 'state 300' -> ( -> shift (target=69, len=0)
-actionsTable.fill(798, 38528, 38533); // 'state 301' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 38528, 38533); // 'state 301' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[38533] = 68; // 'state 301' -> { -> shift (target=34, len=0)
 actionsTable[38536] = 4; // 'state 301' -> ( -> shift (target=2, len=0)
 actionsTable[38537] = 1380; // 'state 301' -> ) -> shift (target=690, len=0)
-actionsTable[38546] = 806; // 'state 301' -> of -> shift (target=403, len=0)
-actionsTable[38560] = 806; // 'state 301' -> from -> shift (target=403, len=0)
-actionsTable[38564] = 806; // 'state 301' -> type -> shift (target=403, len=0)
+actionsTable[38546] = 33636; // 'state 301' -> of -> shift+reduce (target=178, len=1)
+actionsTable[38560] = 33636; // 'state 301' -> from -> shift+reduce (target=178, len=1)
+actionsTable[38564] = 33636; // 'state 301' -> type -> shift+reduce (target=178, len=1)
 actionsTable[38568] = 48; // 'state 301' -> ... -> shift (target=24, len=0)
 actionsTable[38569] = 20; // 'state 301' -> [ -> shift (target=10, len=0)
 actionsTable[38571] = 70; // 'state 301' -> async -> shift (target=35, len=0)
 actionsTable[38572] = 72; // 'state 301' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 38575, 38577); // 'state 301' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 38575, 38577); // 'state 301' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[38577] = 74; // 'state 301' -> class -> shift (target=37, len=0)
 actionsTable[38582] = 28; // 'state 301' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 38587, 38589); // 'state 301' -> void..typeof -> shift (target=15, len=0)
@@ -5044,9 +5041,9 @@ actionsTable.fill(30, 38597, 38599); // 'state 301' -> +..- -> shift (target=15,
 actionsTable.fill(30, 38600, 38603); // 'state 301' -> !..delete -> shift (target=15, len=0)
 actionsTable[38603] = 34; // 'state 301' -> await -> shift (target=17, len=0)
 actionsTable[38606] = 818; // 'state 301' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 38608, 38611); // 'state 301' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 38608, 38611); // 'state 301' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[38617] = 36; // 'state 301' -> update_operator -> shift (target=18, len=0)
-actionsTable[38618] = 798; // 'state 301' -> regex -> shift (target=399, len=0)
+actionsTable[38618] = 33638; // 'state 301' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[38662] = 1382; // 'state 302' -> } -> shift (target=691, len=0)
 actionsTable[38692] = 966; // 'state 302' -> type -> shift (target=483, len=0)
 actionsTable[38734] = 968; // 'state 302' -> identifier -> shift (target=484, len=0)
@@ -5096,15 +5093,15 @@ actionsTable[39384] = 90; // 'state 307' -> multiplicative_operator -> shift (ta
 actionsTable[39385] = 866; // 'state 307' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(2303, 39386, 39388); // 'state 307' -> regex..@par-gen.EOF -> reduce (target=127, len=4)
 actionsTable[39430] = 1394; // 'state 308' -> } -> shift (target=697, len=0)
-actionsTable[39442] = 806; // 'state 308' -> of -> shift (target=403, len=0)
-actionsTable[39456] = 806; // 'state 308' -> from -> shift (target=403, len=0)
-actionsTable[39460] = 806; // 'state 308' -> type -> shift (target=403, len=0)
+actionsTable[39442] = 33636; // 'state 308' -> of -> shift+reduce (target=178, len=1)
+actionsTable[39456] = 33636; // 'state 308' -> from -> shift+reduce (target=178, len=1)
+actionsTable[39460] = 33636; // 'state 308' -> type -> shift+reduce (target=178, len=1)
 actionsTable[39464] = 294; // 'state 308' -> ... -> shift (target=147, len=0)
 actionsTable[39465] = 198; // 'state 308' -> [ -> shift (target=99, len=0)
 actionsTable[39467] = 914; // 'state 308' -> async -> shift (target=457, len=0)
-actionsTable.fill(806, 39471, 39473); // 'state 308' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 39471, 39473); // 'state 308' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[39502] = 992; // 'state 308' -> identifier -> shift (target=496, len=0)
-actionsTable.fill(848, 39504, 39506); // 'state 308' -> number..string -> shift (target=424, len=0)
+actionsTable.fill(33694, 39504, 39506); // 'state 308' -> number..string -> shift+reduce (target=207, len=1)
 actionsTable[39558] = 1799; // 'state 309' -> } -> reduce (target=131, len=3)
 actionsTable[39560] = 86; // 'state 309' -> ( -> shift (target=43, len=0)
 actionsTable[39571] = 88; // 'state 309' -> in -> shift (target=44, len=0)
@@ -5134,7 +5131,7 @@ actionsTable[39713] = 1289; // 'state 310' -> , -> reduce (target=132, len=2)
 actionsTable[39720] = 300; // 'state 310' -> ... -> shift (target=150, len=0)
 actionsTable[39721] = 124; // 'state 310' -> [ -> shift (target=62, len=0)
 actionsTable[39722] = 1289; // 'state 310' -> ] -> reduce (target=132, len=2)
-actionsTable[39758] = 894; // 'state 310' -> identifier -> shift (target=447, len=0)
+actionsTable[39758] = 33536; // 'state 310' -> identifier -> shift+reduce (target=128, len=1)
 actionsTable[39816] = 86; // 'state 311' -> ( -> shift (target=43, len=0)
 actionsTable[39827] = 88; // 'state 311' -> in -> shift (target=44, len=0)
 actionsTable[39841] = 1805; // 'state 311' -> , -> reduce (target=134, len=3)
@@ -5200,16 +5197,16 @@ actionsTable[40407] = 114; // 'state 315' -> shift_operator -> shift (target=57,
 actionsTable[40408] = 90; // 'state 315' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[40409] = 866; // 'state 315' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(2931, 40410, 40412); // 'state 315' -> regex..@par-gen.EOF -> reduce (target=185, len=5)
-actionsTable.fill(798, 40448, 40453); // 'state 316' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 40448, 40453); // 'state 316' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[40453] = 2; // 'state 316' -> { -> shift (target=1, len=0)
 actionsTable[40456] = 4; // 'state 316' -> ( -> shift (target=2, len=0)
-actionsTable[40466] = 806; // 'state 316' -> of -> shift (target=403, len=0)
-actionsTable[40480] = 806; // 'state 316' -> from -> shift (target=403, len=0)
-actionsTable[40484] = 806; // 'state 316' -> type -> shift (target=403, len=0)
+actionsTable[40466] = 33636; // 'state 316' -> of -> shift+reduce (target=178, len=1)
+actionsTable[40480] = 33636; // 'state 316' -> from -> shift+reduce (target=178, len=1)
+actionsTable[40484] = 33636; // 'state 316' -> type -> shift+reduce (target=178, len=1)
 actionsTable[40489] = 20; // 'state 316' -> [ -> shift (target=10, len=0)
 actionsTable[40491] = 70; // 'state 316' -> async -> shift (target=35, len=0)
 actionsTable[40492] = 72; // 'state 316' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 40495, 40497); // 'state 316' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 40495, 40497); // 'state 316' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[40497] = 74; // 'state 316' -> class -> shift (target=37, len=0)
 actionsTable[40502] = 28; // 'state 316' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 40507, 40509); // 'state 316' -> void..typeof -> shift (target=15, len=0)
@@ -5218,28 +5215,27 @@ actionsTable.fill(30, 40517, 40519); // 'state 316' -> +..- -> shift (target=15,
 actionsTable.fill(30, 40520, 40523); // 'state 316' -> !..delete -> shift (target=15, len=0)
 actionsTable[40523] = 34; // 'state 316' -> await -> shift (target=17, len=0)
 actionsTable[40526] = 818; // 'state 316' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 40528, 40531); // 'state 316' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 40528, 40531); // 'state 316' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[40537] = 36; // 'state 316' -> update_operator -> shift (target=18, len=0)
-actionsTable[40538] = 798; // 'state 316' -> regex -> shift (target=399, len=0)
+actionsTable[40538] = 33638; // 'state 316' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[40581] = 122; // 'state 317' -> { -> shift (target=61, len=0)
 actionsTable[40585] = 1412; // 'state 317' -> ) -> shift (target=706, len=0)
 actionsTable[40616] = 320; // 'state 317' -> ... -> shift (target=160, len=0)
 actionsTable[40617] = 124; // 'state 317' -> [ -> shift (target=62, len=0)
-actionsTable[40619] = 1006; // 'state 317' -> async -> shift (target=503, len=0)
-actionsTable.fill(1008, 40621, 40623); // 'state 317' -> static..readonly -> shift (target=504, len=0)
-actionsTable.fill(1006, 40623, 40625); // 'state 317' -> get..set -> shift (target=503, len=0)
-actionsTable[40654] = 894; // 'state 317' -> identifier -> shift (target=447, len=0)
-actionsTable[40659] = 1008; // 'state 317' -> accessibility_modifier -> shift (target=504, len=0)
-actionsTable.fill(798, 40704, 40709); // 'state 318' -> true..super -> shift (target=399, len=0)
+actionsTable[40619] = 33564; // 'state 317' -> async -> shift+reduce (target=142, len=1)
+actionsTable.fill(33564, 40621, 40625); // 'state 317' -> static..set -> shift+reduce (target=142, len=1)
+actionsTable[40654] = 33536; // 'state 317' -> identifier -> shift+reduce (target=128, len=1)
+actionsTable[40659] = 33564; // 'state 317' -> accessibility_modifier -> shift+reduce (target=142, len=1)
+actionsTable.fill(33638, 40704, 40709); // 'state 318' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[40709] = 68; // 'state 318' -> { -> shift (target=34, len=0)
 actionsTable[40712] = 4; // 'state 318' -> ( -> shift (target=2, len=0)
-actionsTable[40722] = 806; // 'state 318' -> of -> shift (target=403, len=0)
-actionsTable[40736] = 806; // 'state 318' -> from -> shift (target=403, len=0)
-actionsTable[40740] = 806; // 'state 318' -> type -> shift (target=403, len=0)
+actionsTable[40722] = 33636; // 'state 318' -> of -> shift+reduce (target=178, len=1)
+actionsTable[40736] = 33636; // 'state 318' -> from -> shift+reduce (target=178, len=1)
+actionsTable[40740] = 33636; // 'state 318' -> type -> shift+reduce (target=178, len=1)
 actionsTable[40745] = 20; // 'state 318' -> [ -> shift (target=10, len=0)
 actionsTable[40747] = 70; // 'state 318' -> async -> shift (target=35, len=0)
 actionsTable[40748] = 72; // 'state 318' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 40751, 40753); // 'state 318' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 40751, 40753); // 'state 318' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[40753] = 74; // 'state 318' -> class -> shift (target=37, len=0)
 actionsTable[40758] = 28; // 'state 318' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 40763, 40765); // 'state 318' -> void..typeof -> shift (target=15, len=0)
@@ -5248,9 +5244,9 @@ actionsTable.fill(30, 40773, 40775); // 'state 318' -> +..- -> shift (target=15,
 actionsTable.fill(30, 40776, 40779); // 'state 318' -> !..delete -> shift (target=15, len=0)
 actionsTable[40779] = 34; // 'state 318' -> await -> shift (target=17, len=0)
 actionsTable[40782] = 818; // 'state 318' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 40784, 40787); // 'state 318' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 40784, 40787); // 'state 318' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[40793] = 36; // 'state 318' -> update_operator -> shift (target=18, len=0)
-actionsTable[40794] = 798; // 'state 318' -> regex -> shift (target=399, len=0)
+actionsTable[40794] = 33638; // 'state 318' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[40840] = 86; // 'state 319' -> ( -> shift (target=43, len=0)
 actionsTable[40841] = 1813; // 'state 319' -> ) -> reduce (target=138, len=3)
 actionsTable[40851] = 88; // 'state 319' -> in -> shift (target=44, len=0)
@@ -5275,26 +5271,26 @@ actionsTable[40918] = 88; // 'state 319' -> relational_operator -> shift (target
 actionsTable[40919] = 114; // 'state 319' -> shift_operator -> shift (target=57, len=0)
 actionsTable[40920] = 90; // 'state 319' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[40921] = 866; // 'state 319' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(942, 40960, 40963); // 'state 320' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 40960, 40963); // 'state 320' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[40965] = 262; // 'state 320' -> { -> shift (target=131, len=0)
 actionsTable[40968] = 264; // 'state 320' -> ( -> shift (target=132, len=0)
 actionsTable[41001] = 266; // 'state 320' -> [ -> shift (target=133, len=0)
 actionsTable[41014] = 28; // 'state 320' -> < -> shift (target=14, len=0)
 actionsTable[41016] = 268; // 'state 320' -> | -> shift (target=134, len=0)
-actionsTable[41019] = 942; // 'state 320' -> void -> shift (target=471, len=0)
+actionsTable[41019] = 33606; // 'state 320' -> void -> shift+reduce (target=163, len=1)
 actionsTable[41020] = 944; // 'state 320' -> typeof -> shift (target=472, len=0)
 actionsTable[41038] = 270; // 'state 320' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 41040, 41042); // 'state 320' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(798, 41088, 41093); // 'state 321' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33606, 41040, 41042); // 'state 320' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33638, 41088, 41093); // 'state 321' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[41093] = 68; // 'state 321' -> { -> shift (target=34, len=0)
 actionsTable[41096] = 4; // 'state 321' -> ( -> shift (target=2, len=0)
-actionsTable[41106] = 806; // 'state 321' -> of -> shift (target=403, len=0)
-actionsTable[41120] = 806; // 'state 321' -> from -> shift (target=403, len=0)
-actionsTable[41124] = 806; // 'state 321' -> type -> shift (target=403, len=0)
+actionsTable[41106] = 33636; // 'state 321' -> of -> shift+reduce (target=178, len=1)
+actionsTable[41120] = 33636; // 'state 321' -> from -> shift+reduce (target=178, len=1)
+actionsTable[41124] = 33636; // 'state 321' -> type -> shift+reduce (target=178, len=1)
 actionsTable[41129] = 20; // 'state 321' -> [ -> shift (target=10, len=0)
 actionsTable[41131] = 70; // 'state 321' -> async -> shift (target=35, len=0)
 actionsTable[41132] = 72; // 'state 321' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 41135, 41137); // 'state 321' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 41135, 41137); // 'state 321' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[41137] = 74; // 'state 321' -> class -> shift (target=37, len=0)
 actionsTable[41142] = 28; // 'state 321' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 41147, 41149); // 'state 321' -> void..typeof -> shift (target=15, len=0)
@@ -5303,9 +5299,9 @@ actionsTable.fill(30, 41157, 41159); // 'state 321' -> +..- -> shift (target=15,
 actionsTable.fill(30, 41160, 41163); // 'state 321' -> !..delete -> shift (target=15, len=0)
 actionsTable[41163] = 34; // 'state 321' -> await -> shift (target=17, len=0)
 actionsTable[41166] = 818; // 'state 321' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 41168, 41171); // 'state 321' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 41168, 41171); // 'state 321' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[41177] = 36; // 'state 321' -> update_operator -> shift (target=18, len=0)
-actionsTable[41178] = 798; // 'state 321' -> regex -> shift (target=399, len=0)
+actionsTable[41178] = 33638; // 'state 321' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[41221] = 80; // 'state 322' -> { -> shift (target=40, len=0)
 actionsTable[41243] = 164; // 'state 322' -> : -> shift (target=82, len=0)
 actionsTable[41269] = 164; // 'state 322' -> ?: -> shift (target=82, len=0)
@@ -5342,16 +5338,16 @@ actionsTable[41686] = 88; // 'state 325' -> relational_operator -> shift (target
 actionsTable[41687] = 114; // 'state 325' -> shift_operator -> shift (target=57, len=0)
 actionsTable[41688] = 90; // 'state 325' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[41689] = 866; // 'state 325' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 41728, 41733); // 'state 326' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 41728, 41733); // 'state 326' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[41733] = 68; // 'state 326' -> { -> shift (target=34, len=0)
 actionsTable[41736] = 4; // 'state 326' -> ( -> shift (target=2, len=0)
-actionsTable[41746] = 806; // 'state 326' -> of -> shift (target=403, len=0)
-actionsTable[41760] = 806; // 'state 326' -> from -> shift (target=403, len=0)
-actionsTable[41764] = 806; // 'state 326' -> type -> shift (target=403, len=0)
+actionsTable[41746] = 33636; // 'state 326' -> of -> shift+reduce (target=178, len=1)
+actionsTable[41760] = 33636; // 'state 326' -> from -> shift+reduce (target=178, len=1)
+actionsTable[41764] = 33636; // 'state 326' -> type -> shift+reduce (target=178, len=1)
 actionsTable[41769] = 20; // 'state 326' -> [ -> shift (target=10, len=0)
 actionsTable[41771] = 70; // 'state 326' -> async -> shift (target=35, len=0)
 actionsTable[41772] = 72; // 'state 326' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 41775, 41777); // 'state 326' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 41775, 41777); // 'state 326' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[41777] = 74; // 'state 326' -> class -> shift (target=37, len=0)
 actionsTable[41782] = 28; // 'state 326' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 41787, 41789); // 'state 326' -> void..typeof -> shift (target=15, len=0)
@@ -5360,9 +5356,9 @@ actionsTable.fill(30, 41797, 41799); // 'state 326' -> +..- -> shift (target=15,
 actionsTable.fill(30, 41800, 41803); // 'state 326' -> !..delete -> shift (target=15, len=0)
 actionsTable[41803] = 34; // 'state 326' -> await -> shift (target=17, len=0)
 actionsTable[41806] = 818; // 'state 326' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 41808, 41811); // 'state 326' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 41808, 41811); // 'state 326' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[41817] = 36; // 'state 326' -> update_operator -> shift (target=18, len=0)
-actionsTable[41818] = 798; // 'state 326' -> regex -> shift (target=399, len=0)
+actionsTable[41818] = 33638; // 'state 326' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[41864] = 86; // 'state 327' -> ( -> shift (target=43, len=0)
 actionsTable[41865] = 2331; // 'state 327' -> ) -> reduce (target=141, len=4)
 actionsTable[41875] = 88; // 'state 327' -> in -> shift (target=44, len=0)
@@ -5387,29 +5383,29 @@ actionsTable[41942] = 88; // 'state 327' -> relational_operator -> shift (target
 actionsTable[41943] = 114; // 'state 327' -> shift_operator -> shift (target=57, len=0)
 actionsTable[41944] = 90; // 'state 327' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[41945] = 866; // 'state 327' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(942, 41984, 41987); // 'state 328' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 41984, 41987); // 'state 328' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[41989] = 262; // 'state 328' -> { -> shift (target=131, len=0)
 actionsTable[41992] = 264; // 'state 328' -> ( -> shift (target=132, len=0)
 actionsTable[42025] = 266; // 'state 328' -> [ -> shift (target=133, len=0)
 actionsTable[42038] = 28; // 'state 328' -> < -> shift (target=14, len=0)
 actionsTable[42039] = 1426; // 'state 328' -> > -> shift (target=713, len=0)
 actionsTable[42040] = 268; // 'state 328' -> | -> shift (target=134, len=0)
-actionsTable[42043] = 942; // 'state 328' -> void -> shift (target=471, len=0)
+actionsTable[42043] = 33606; // 'state 328' -> void -> shift+reduce (target=163, len=1)
 actionsTable[42044] = 944; // 'state 328' -> typeof -> shift (target=472, len=0)
 actionsTable[42062] = 270; // 'state 328' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 42064, 42066); // 'state 328' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(942, 42112, 42115); // 'state 329' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 42064, 42066); // 'state 328' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33606, 42112, 42115); // 'state 329' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[42117] = 262; // 'state 329' -> { -> shift (target=131, len=0)
 actionsTable[42120] = 264; // 'state 329' -> ( -> shift (target=132, len=0)
 actionsTable[42153] = 266; // 'state 329' -> [ -> shift (target=133, len=0)
 actionsTable[42166] = 28; // 'state 329' -> < -> shift (target=14, len=0)
 actionsTable[42168] = 268; // 'state 329' -> | -> shift (target=134, len=0)
-actionsTable[42171] = 942; // 'state 329' -> void -> shift (target=471, len=0)
+actionsTable[42171] = 33606; // 'state 329' -> void -> shift+reduce (target=163, len=1)
 actionsTable[42172] = 944; // 'state 329' -> typeof -> shift (target=472, len=0)
 actionsTable[42190] = 270; // 'state 329' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 42192, 42194); // 'state 329' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 42192, 42194); // 'state 329' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[42245] = 80; // 'state 330' -> { -> shift (target=40, len=0)
-actionsTable.fill(798, 42368, 42373); // 'state 331' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 42368, 42373); // 'state 331' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[42373] = 2; // 'state 331' -> { -> shift (target=1, len=0)
 actionsTable[42375] = 800; // 'state 331' -> if -> shift (target=400, len=0)
 actionsTable[42376] = 4; // 'state 331' -> ( -> shift (target=2, len=0)
@@ -5417,7 +5413,7 @@ actionsTable[42379] = 802; // 'state 331' -> while -> shift (target=401, len=0)
 actionsTable[42380] = 6; // 'state 331' -> do -> shift (target=3, len=0)
 actionsTable[42382] = 804; // 'state 331' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 42383, 42386); // 'state 331' -> const..var -> shift (target=4, len=0)
-actionsTable[42386] = 806; // 'state 331' -> of -> shift (target=403, len=0)
+actionsTable[42386] = 33636; // 'state 331' -> of -> shift+reduce (target=178, len=1)
 actionsTable[42388] = 10; // 'state 331' -> return -> shift (target=5, len=0)
 actionsTable[42389] = 12; // 'state 331' -> throw -> shift (target=6, len=0)
 actionsTable[42390] = 14; // 'state 331' -> try -> shift (target=7, len=0)
@@ -5425,13 +5421,13 @@ actionsTable[42393] = 808; // 'state 331' -> switch -> shift (target=404, len=0)
 actionsTable[42397] = 810; // 'state 331' -> break -> shift (target=405, len=0)
 actionsTable[42398] = 812; // 'state 331' -> continue -> shift (target=406, len=0)
 actionsTable[42399] = 16; // 'state 331' -> import -> shift (target=8, len=0)
-actionsTable[42400] = 806; // 'state 331' -> from -> shift (target=403, len=0)
+actionsTable[42400] = 33636; // 'state 331' -> from -> shift+reduce (target=178, len=1)
 actionsTable[42404] = 814; // 'state 331' -> type -> shift (target=407, len=0)
 actionsTable[42405] = 18; // 'state 331' -> export -> shift (target=9, len=0)
 actionsTable[42409] = 20; // 'state 331' -> [ -> shift (target=10, len=0)
 actionsTable[42411] = 22; // 'state 331' -> async -> shift (target=11, len=0)
 actionsTable[42412] = 24; // 'state 331' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 42415, 42417); // 'state 331' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 42415, 42417); // 'state 331' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[42417] = 26; // 'state 331' -> class -> shift (target=13, len=0)
 actionsTable[42420] = 816; // 'state 331' -> interface -> shift (target=408, len=0)
 actionsTable[42422] = 28; // 'state 331' -> < -> shift (target=14, len=0)
@@ -5441,10 +5437,10 @@ actionsTable.fill(30, 42437, 42439); // 'state 331' -> +..- -> shift (target=15,
 actionsTable.fill(30, 42440, 42443); // 'state 331' -> !..delete -> shift (target=15, len=0)
 actionsTable[42443] = 34; // 'state 331' -> await -> shift (target=17, len=0)
 actionsTable[42446] = 818; // 'state 331' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 42448, 42451); // 'state 331' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 42448, 42451); // 'state 331' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[42457] = 36; // 'state 331' -> update_operator -> shift (target=18, len=0)
-actionsTable[42458] = 798; // 'state 331' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 42496, 42501); // 'state 332' -> true..super -> shift (target=399, len=0)
+actionsTable[42458] = 33638; // 'state 331' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 42496, 42501); // 'state 332' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[42501] = 2; // 'state 332' -> { -> shift (target=1, len=0)
 actionsTable[42503] = 800; // 'state 332' -> if -> shift (target=400, len=0)
 actionsTable[42504] = 4; // 'state 332' -> ( -> shift (target=2, len=0)
@@ -5452,7 +5448,7 @@ actionsTable[42507] = 802; // 'state 332' -> while -> shift (target=401, len=0)
 actionsTable[42508] = 6; // 'state 332' -> do -> shift (target=3, len=0)
 actionsTable[42510] = 804; // 'state 332' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 42511, 42514); // 'state 332' -> const..var -> shift (target=4, len=0)
-actionsTable[42514] = 806; // 'state 332' -> of -> shift (target=403, len=0)
+actionsTable[42514] = 33636; // 'state 332' -> of -> shift+reduce (target=178, len=1)
 actionsTable[42516] = 10; // 'state 332' -> return -> shift (target=5, len=0)
 actionsTable[42517] = 12; // 'state 332' -> throw -> shift (target=6, len=0)
 actionsTable[42518] = 14; // 'state 332' -> try -> shift (target=7, len=0)
@@ -5460,13 +5456,13 @@ actionsTable[42521] = 808; // 'state 332' -> switch -> shift (target=404, len=0)
 actionsTable[42525] = 810; // 'state 332' -> break -> shift (target=405, len=0)
 actionsTable[42526] = 812; // 'state 332' -> continue -> shift (target=406, len=0)
 actionsTable[42527] = 16; // 'state 332' -> import -> shift (target=8, len=0)
-actionsTable[42528] = 806; // 'state 332' -> from -> shift (target=403, len=0)
+actionsTable[42528] = 33636; // 'state 332' -> from -> shift+reduce (target=178, len=1)
 actionsTable[42532] = 814; // 'state 332' -> type -> shift (target=407, len=0)
 actionsTable[42533] = 18; // 'state 332' -> export -> shift (target=9, len=0)
 actionsTable[42537] = 20; // 'state 332' -> [ -> shift (target=10, len=0)
 actionsTable[42539] = 22; // 'state 332' -> async -> shift (target=11, len=0)
 actionsTable[42540] = 24; // 'state 332' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 42543, 42545); // 'state 332' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 42543, 42545); // 'state 332' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[42545] = 26; // 'state 332' -> class -> shift (target=13, len=0)
 actionsTable[42548] = 816; // 'state 332' -> interface -> shift (target=408, len=0)
 actionsTable[42550] = 28; // 'state 332' -> < -> shift (target=14, len=0)
@@ -5476,9 +5472,9 @@ actionsTable.fill(30, 42565, 42567); // 'state 332' -> +..- -> shift (target=15,
 actionsTable.fill(30, 42568, 42571); // 'state 332' -> !..delete -> shift (target=15, len=0)
 actionsTable[42571] = 34; // 'state 332' -> await -> shift (target=17, len=0)
 actionsTable[42574] = 818; // 'state 332' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 42576, 42579); // 'state 332' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 42576, 42579); // 'state 332' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[42585] = 36; // 'state 332' -> update_operator -> shift (target=18, len=0)
-actionsTable[42586] = 798; // 'state 332' -> regex -> shift (target=399, len=0)
+actionsTable[42586] = 33638; // 'state 332' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[42632] = 86; // 'state 333' -> ( -> shift (target=43, len=0)
 actionsTable[42633] = 738; // 'state 333' -> ) -> shift (target=369, len=0)
 actionsTable[42643] = 88; // 'state 333' -> in -> shift (target=44, len=0)
@@ -5525,17 +5521,17 @@ actionsTable[42838] = 88; // 'state 334' -> relational_operator -> shift (target
 actionsTable[42839] = 114; // 'state 334' -> shift_operator -> shift (target=57, len=0)
 actionsTable[42840] = 90; // 'state 334' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[42841] = 866; // 'state 334' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 42880, 42885); // 'state 335' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 42880, 42885); // 'state 335' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[42885] = 68; // 'state 335' -> { -> shift (target=34, len=0)
 actionsTable[42888] = 4; // 'state 335' -> ( -> shift (target=2, len=0)
 actionsTable[42889] = 738; // 'state 335' -> ) -> shift (target=369, len=0)
-actionsTable[42898] = 806; // 'state 335' -> of -> shift (target=403, len=0)
-actionsTable[42912] = 806; // 'state 335' -> from -> shift (target=403, len=0)
-actionsTable[42916] = 806; // 'state 335' -> type -> shift (target=403, len=0)
+actionsTable[42898] = 33636; // 'state 335' -> of -> shift+reduce (target=178, len=1)
+actionsTable[42912] = 33636; // 'state 335' -> from -> shift+reduce (target=178, len=1)
+actionsTable[42916] = 33636; // 'state 335' -> type -> shift+reduce (target=178, len=1)
 actionsTable[42921] = 20; // 'state 335' -> [ -> shift (target=10, len=0)
 actionsTable[42923] = 70; // 'state 335' -> async -> shift (target=35, len=0)
 actionsTable[42924] = 72; // 'state 335' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 42927, 42929); // 'state 335' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 42927, 42929); // 'state 335' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[42929] = 74; // 'state 335' -> class -> shift (target=37, len=0)
 actionsTable[42934] = 28; // 'state 335' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 42939, 42941); // 'state 335' -> void..typeof -> shift (target=15, len=0)
@@ -5544,23 +5540,23 @@ actionsTable.fill(30, 42949, 42951); // 'state 335' -> +..- -> shift (target=15,
 actionsTable.fill(30, 42952, 42955); // 'state 335' -> !..delete -> shift (target=15, len=0)
 actionsTable[42955] = 34; // 'state 335' -> await -> shift (target=17, len=0)
 actionsTable[42958] = 818; // 'state 335' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 42960, 42963); // 'state 335' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 42960, 42963); // 'state 335' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[42969] = 36; // 'state 335' -> update_operator -> shift (target=18, len=0)
-actionsTable[42970] = 798; // 'state 335' -> regex -> shift (target=399, len=0)
+actionsTable[42970] = 33638; // 'state 335' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[43013] = 80; // 'state 336' -> { -> shift (target=40, len=0)
 actionsTable[43035] = 164; // 'state 336' -> : -> shift (target=82, len=0)
 actionsTable[43061] = 164; // 'state 336' -> ?: -> shift (target=82, len=0)
 actionsTable[43141] = 80; // 'state 337' -> { -> shift (target=40, len=0)
-actionsTable.fill(798, 43264, 43269); // 'state 338' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 43264, 43269); // 'state 338' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[43269] = 68; // 'state 338' -> { -> shift (target=34, len=0)
 actionsTable[43272] = 4; // 'state 338' -> ( -> shift (target=2, len=0)
-actionsTable[43282] = 806; // 'state 338' -> of -> shift (target=403, len=0)
-actionsTable[43296] = 806; // 'state 338' -> from -> shift (target=403, len=0)
-actionsTable[43300] = 806; // 'state 338' -> type -> shift (target=403, len=0)
+actionsTable[43282] = 33636; // 'state 338' -> of -> shift+reduce (target=178, len=1)
+actionsTable[43296] = 33636; // 'state 338' -> from -> shift+reduce (target=178, len=1)
+actionsTable[43300] = 33636; // 'state 338' -> type -> shift+reduce (target=178, len=1)
 actionsTable[43305] = 20; // 'state 338' -> [ -> shift (target=10, len=0)
 actionsTable[43307] = 70; // 'state 338' -> async -> shift (target=35, len=0)
 actionsTable[43308] = 72; // 'state 338' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 43311, 43313); // 'state 338' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 43311, 43313); // 'state 338' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[43313] = 74; // 'state 338' -> class -> shift (target=37, len=0)
 actionsTable[43318] = 28; // 'state 338' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 43323, 43325); // 'state 338' -> void..typeof -> shift (target=15, len=0)
@@ -5569,36 +5565,36 @@ actionsTable.fill(30, 43333, 43335); // 'state 338' -> +..- -> shift (target=15,
 actionsTable.fill(30, 43336, 43339); // 'state 338' -> !..delete -> shift (target=15, len=0)
 actionsTable[43339] = 34; // 'state 338' -> await -> shift (target=17, len=0)
 actionsTable[43342] = 818; // 'state 338' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 43344, 43347); // 'state 338' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 43344, 43347); // 'state 338' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[43353] = 36; // 'state 338' -> update_operator -> shift (target=18, len=0)
-actionsTable[43354] = 798; // 'state 338' -> regex -> shift (target=399, len=0)
+actionsTable[43354] = 33638; // 'state 338' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[43398] = 1440; // 'state 339' -> } -> shift (target=720, len=0)
 actionsTable[43418] = 676; // 'state 339' -> case -> shift (target=338, len=0)
 actionsTable[43420] = 1348; // 'state 339' -> default -> shift (target=674, len=0)
-actionsTable.fill(942, 43520, 43523); // 'state 340' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 43520, 43523); // 'state 340' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[43525] = 262; // 'state 340' -> { -> shift (target=131, len=0)
 actionsTable[43528] = 264; // 'state 340' -> ( -> shift (target=132, len=0)
 actionsTable[43561] = 266; // 'state 340' -> [ -> shift (target=133, len=0)
 actionsTable[43574] = 28; // 'state 340' -> < -> shift (target=14, len=0)
 actionsTable[43576] = 268; // 'state 340' -> | -> shift (target=134, len=0)
-actionsTable[43579] = 942; // 'state 340' -> void -> shift (target=471, len=0)
+actionsTable[43579] = 33606; // 'state 340' -> void -> shift+reduce (target=163, len=1)
 actionsTable[43580] = 944; // 'state 340' -> typeof -> shift (target=472, len=0)
 actionsTable[43598] = 270; // 'state 340' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 43600, 43602); // 'state 340' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 43600, 43602); // 'state 340' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[43657] = 769; // 'state 341' -> ) -> reduce (target=128, len=1)
 actionsTable[43675] = 164; // 'state 341' -> : -> shift (target=82, len=0)
 actionsTable[43681] = 769; // 'state 341' -> , -> reduce (target=128, len=1)
 actionsTable[43701] = 164; // 'state 341' -> ?: -> shift (target=82, len=0)
-actionsTable.fill(798, 43776, 43781); // 'state 342' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 43776, 43781); // 'state 342' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[43781] = 562; // 'state 342' -> { -> shift (target=281, len=0)
 actionsTable[43784] = 4; // 'state 342' -> ( -> shift (target=2, len=0)
-actionsTable[43794] = 806; // 'state 342' -> of -> shift (target=403, len=0)
-actionsTable[43808] = 806; // 'state 342' -> from -> shift (target=403, len=0)
-actionsTable[43812] = 806; // 'state 342' -> type -> shift (target=403, len=0)
+actionsTable[43794] = 33636; // 'state 342' -> of -> shift+reduce (target=178, len=1)
+actionsTable[43808] = 33636; // 'state 342' -> from -> shift+reduce (target=178, len=1)
+actionsTable[43812] = 33636; // 'state 342' -> type -> shift+reduce (target=178, len=1)
 actionsTable[43817] = 566; // 'state 342' -> [ -> shift (target=283, len=0)
 actionsTable[43819] = 70; // 'state 342' -> async -> shift (target=35, len=0)
 actionsTable[43820] = 72; // 'state 342' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 43823, 43825); // 'state 342' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 43823, 43825); // 'state 342' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[43825] = 74; // 'state 342' -> class -> shift (target=37, len=0)
 actionsTable[43830] = 28; // 'state 342' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 43835, 43837); // 'state 342' -> void..typeof -> shift (target=15, len=0)
@@ -5607,23 +5603,23 @@ actionsTable.fill(30, 43845, 43847); // 'state 342' -> +..- -> shift (target=15,
 actionsTable.fill(30, 43848, 43851); // 'state 342' -> !..delete -> shift (target=15, len=0)
 actionsTable[43851] = 34; // 'state 342' -> await -> shift (target=17, len=0)
 actionsTable[43854] = 1446; // 'state 342' -> identifier -> shift (target=723, len=0)
-actionsTable.fill(798, 43856, 43859); // 'state 342' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 43856, 43859); // 'state 342' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[43865] = 36; // 'state 342' -> update_operator -> shift (target=18, len=0)
-actionsTable[43866] = 798; // 'state 342' -> regex -> shift (target=399, len=0)
+actionsTable[43866] = 33638; // 'state 342' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[43912] = 138; // 'state 343' -> ( -> shift (target=69, len=0)
 actionsTable[43931] = 752; // 'state 343' -> : -> shift (target=376, len=0)
 actionsTable[43958] = 28; // 'state 343' -> < -> shift (target=14, len=0)
-actionsTable.fill(798, 44032, 44037); // 'state 344' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 44032, 44037); // 'state 344' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[44037] = 562; // 'state 344' -> { -> shift (target=281, len=0)
 actionsTable[44040] = 4; // 'state 344' -> ( -> shift (target=2, len=0)
-actionsTable[44050] = 806; // 'state 344' -> of -> shift (target=403, len=0)
-actionsTable[44064] = 806; // 'state 344' -> from -> shift (target=403, len=0)
-actionsTable[44068] = 806; // 'state 344' -> type -> shift (target=403, len=0)
+actionsTable[44050] = 33636; // 'state 344' -> of -> shift+reduce (target=178, len=1)
+actionsTable[44064] = 33636; // 'state 344' -> from -> shift+reduce (target=178, len=1)
+actionsTable[44068] = 33636; // 'state 344' -> type -> shift+reduce (target=178, len=1)
 actionsTable[44072] = 690; // 'state 344' -> ... -> shift (target=345, len=0)
 actionsTable[44073] = 566; // 'state 344' -> [ -> shift (target=283, len=0)
 actionsTable[44075] = 70; // 'state 344' -> async -> shift (target=35, len=0)
 actionsTable[44076] = 72; // 'state 344' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 44079, 44081); // 'state 344' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 44079, 44081); // 'state 344' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[44081] = 74; // 'state 344' -> class -> shift (target=37, len=0)
 actionsTable[44086] = 28; // 'state 344' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 44091, 44093); // 'state 344' -> void..typeof -> shift (target=15, len=0)
@@ -5632,19 +5628,19 @@ actionsTable.fill(30, 44101, 44103); // 'state 344' -> +..- -> shift (target=15,
 actionsTable.fill(30, 44104, 44107); // 'state 344' -> !..delete -> shift (target=15, len=0)
 actionsTable[44107] = 34; // 'state 344' -> await -> shift (target=17, len=0)
 actionsTable[44110] = 1360; // 'state 344' -> identifier -> shift (target=680, len=0)
-actionsTable.fill(798, 44112, 44115); // 'state 344' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 44112, 44115); // 'state 344' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[44121] = 36; // 'state 344' -> update_operator -> shift (target=18, len=0)
-actionsTable[44122] = 798; // 'state 344' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 44160, 44165); // 'state 345' -> true..super -> shift (target=399, len=0)
+actionsTable[44122] = 33638; // 'state 344' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 44160, 44165); // 'state 345' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[44165] = 562; // 'state 345' -> { -> shift (target=281, len=0)
 actionsTable[44168] = 4; // 'state 345' -> ( -> shift (target=2, len=0)
-actionsTable[44178] = 806; // 'state 345' -> of -> shift (target=403, len=0)
-actionsTable[44192] = 806; // 'state 345' -> from -> shift (target=403, len=0)
-actionsTable[44196] = 806; // 'state 345' -> type -> shift (target=403, len=0)
+actionsTable[44178] = 33636; // 'state 345' -> of -> shift+reduce (target=178, len=1)
+actionsTable[44192] = 33636; // 'state 345' -> from -> shift+reduce (target=178, len=1)
+actionsTable[44196] = 33636; // 'state 345' -> type -> shift+reduce (target=178, len=1)
 actionsTable[44201] = 566; // 'state 345' -> [ -> shift (target=283, len=0)
 actionsTable[44203] = 70; // 'state 345' -> async -> shift (target=35, len=0)
 actionsTable[44204] = 72; // 'state 345' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 44207, 44209); // 'state 345' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 44207, 44209); // 'state 345' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[44209] = 74; // 'state 345' -> class -> shift (target=37, len=0)
 actionsTable[44214] = 28; // 'state 345' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 44219, 44221); // 'state 345' -> void..typeof -> shift (target=15, len=0)
@@ -5653,20 +5649,20 @@ actionsTable.fill(30, 44229, 44231); // 'state 345' -> +..- -> shift (target=15,
 actionsTable.fill(30, 44232, 44235); // 'state 345' -> !..delete -> shift (target=15, len=0)
 actionsTable[44235] = 34; // 'state 345' -> await -> shift (target=17, len=0)
 actionsTable[44238] = 1360; // 'state 345' -> identifier -> shift (target=680, len=0)
-actionsTable.fill(798, 44240, 44243); // 'state 345' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 44240, 44243); // 'state 345' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[44249] = 36; // 'state 345' -> update_operator -> shift (target=18, len=0)
-actionsTable[44250] = 798; // 'state 345' -> regex -> shift (target=399, len=0)
+actionsTable[44250] = 33638; // 'state 345' -> regex -> shift+reduce (target=179, len=1)
 actionsTable.fill(1218, 44288, 44291); // 'state 346' -> true..null -> shift (target=609, len=0)
-actionsTable.fill(798, 44291, 44293); // 'state 346' -> this..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 44291, 44293); // 'state 346' -> this..super -> shift+reduce (target=179, len=1)
 actionsTable[44293] = 420; // 'state 346' -> { -> shift (target=210, len=0)
 actionsTable[44296] = 576; // 'state 346' -> ( -> shift (target=288, len=0)
-actionsTable[44306] = 806; // 'state 346' -> of -> shift (target=403, len=0)
-actionsTable[44320] = 806; // 'state 346' -> from -> shift (target=403, len=0)
-actionsTable[44324] = 806; // 'state 346' -> type -> shift (target=403, len=0)
+actionsTable[44306] = 33636; // 'state 346' -> of -> shift+reduce (target=178, len=1)
+actionsTable[44320] = 33636; // 'state 346' -> from -> shift+reduce (target=178, len=1)
+actionsTable[44324] = 33636; // 'state 346' -> type -> shift+reduce (target=178, len=1)
 actionsTable[44329] = 424; // 'state 346' -> [ -> shift (target=212, len=0)
 actionsTable[44331] = 70; // 'state 346' -> async -> shift (target=35, len=0)
 actionsTable[44332] = 72; // 'state 346' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 44335, 44337); // 'state 346' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 44335, 44337); // 'state 346' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[44337] = 74; // 'state 346' -> class -> shift (target=37, len=0)
 actionsTable[44342] = 28; // 'state 346' -> < -> shift (target=14, len=0)
 actionsTable[44344] = 268; // 'state 346' -> | -> shift (target=134, len=0)
@@ -5678,9 +5674,9 @@ actionsTable.fill(30, 44360, 44363); // 'state 346' -> !..delete -> shift (targe
 actionsTable[44363] = 34; // 'state 346' -> await -> shift (target=17, len=0)
 actionsTable[44366] = 582; // 'state 346' -> identifier -> shift (target=291, len=0)
 actionsTable.fill(1218, 44368, 44370); // 'state 346' -> number..string -> shift (target=609, len=0)
-actionsTable[44370] = 798; // 'state 346' -> template_string -> shift (target=399, len=0)
+actionsTable[44370] = 33638; // 'state 346' -> template_string -> shift+reduce (target=179, len=1)
 actionsTable[44377] = 36; // 'state 346' -> update_operator -> shift (target=18, len=0)
-actionsTable[44378] = 798; // 'state 346' -> regex -> shift (target=399, len=0)
+actionsTable[44378] = 33638; // 'state 346' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[44421] = 80; // 'state 347' -> { -> shift (target=40, len=0)
 actionsTable[44422] = 1373; // 'state 347' -> } -> reduce (target=174, len=2)
 actionsTable[44429] = 1373; // 'state 347' -> ; -> reduce (target=174, len=2)
@@ -5717,16 +5713,16 @@ actionsTable.fill(871, 44876, 44878); // 'state 350' -> ?.... -> reduce (target=
 actionsTable[44884] = 877; // 'state 350' -> compound_assignment_operator -> reduce (target=182, len=1)
 actionsTable.fill(871, 44885, 44890); // 'state 350' -> equality_operator..update_operator -> reduce (target=179, len=1)
 actionsTable.fill(1218, 44928, 44931); // 'state 351' -> true..null -> shift (target=609, len=0)
-actionsTable.fill(798, 44931, 44933); // 'state 351' -> this..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 44931, 44933); // 'state 351' -> this..super -> shift+reduce (target=179, len=1)
 actionsTable[44933] = 760; // 'state 351' -> { -> shift (target=380, len=0)
 actionsTable[44936] = 576; // 'state 351' -> ( -> shift (target=288, len=0)
-actionsTable[44946] = 806; // 'state 351' -> of -> shift (target=403, len=0)
-actionsTable[44960] = 806; // 'state 351' -> from -> shift (target=403, len=0)
-actionsTable[44964] = 806; // 'state 351' -> type -> shift (target=403, len=0)
+actionsTable[44946] = 33636; // 'state 351' -> of -> shift+reduce (target=178, len=1)
+actionsTable[44960] = 33636; // 'state 351' -> from -> shift+reduce (target=178, len=1)
+actionsTable[44964] = 33636; // 'state 351' -> type -> shift+reduce (target=178, len=1)
 actionsTable[44969] = 424; // 'state 351' -> [ -> shift (target=212, len=0)
 actionsTable[44971] = 70; // 'state 351' -> async -> shift (target=35, len=0)
 actionsTable[44972] = 72; // 'state 351' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 44975, 44977); // 'state 351' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 44975, 44977); // 'state 351' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[44977] = 74; // 'state 351' -> class -> shift (target=37, len=0)
 actionsTable[44982] = 28; // 'state 351' -> < -> shift (target=14, len=0)
 actionsTable[44984] = 268; // 'state 351' -> | -> shift (target=134, len=0)
@@ -5738,20 +5734,20 @@ actionsTable.fill(30, 45000, 45003); // 'state 351' -> !..delete -> shift (targe
 actionsTable[45003] = 34; // 'state 351' -> await -> shift (target=17, len=0)
 actionsTable[45006] = 582; // 'state 351' -> identifier -> shift (target=291, len=0)
 actionsTable.fill(1218, 45008, 45010); // 'state 351' -> number..string -> shift (target=609, len=0)
-actionsTable[45010] = 798; // 'state 351' -> template_string -> shift (target=399, len=0)
+actionsTable[45010] = 33638; // 'state 351' -> template_string -> shift+reduce (target=179, len=1)
 actionsTable[45017] = 36; // 'state 351' -> update_operator -> shift (target=18, len=0)
-actionsTable[45018] = 798; // 'state 351' -> regex -> shift (target=399, len=0)
-actionsTable.fill(942, 45056, 45059); // 'state 352' -> true..null -> shift (target=471, len=0)
+actionsTable[45018] = 33638; // 'state 351' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33606, 45056, 45059); // 'state 352' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[45061] = 262; // 'state 352' -> { -> shift (target=131, len=0)
 actionsTable[45064] = 264; // 'state 352' -> ( -> shift (target=132, len=0)
 actionsTable[45097] = 266; // 'state 352' -> [ -> shift (target=133, len=0)
 actionsTable[45098] = 1448; // 'state 352' -> ] -> shift (target=724, len=0)
 actionsTable[45110] = 28; // 'state 352' -> < -> shift (target=14, len=0)
 actionsTable[45112] = 268; // 'state 352' -> | -> shift (target=134, len=0)
-actionsTable[45115] = 942; // 'state 352' -> void -> shift (target=471, len=0)
+actionsTable[45115] = 33606; // 'state 352' -> void -> shift+reduce (target=163, len=1)
 actionsTable[45116] = 944; // 'state 352' -> typeof -> shift (target=472, len=0)
 actionsTable[45134] = 270; // 'state 352' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 45136, 45138); // 'state 352' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 45136, 45138); // 'state 352' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[45190] = 1885; // 'state 353' -> } -> reduce (target=174, len=3)
 actionsTable[45197] = 1885; // 'state 353' -> ; -> reduce (target=174, len=3)
 actionsTable[45202] = 1885; // 'state 353' -> of -> reduce (target=174, len=3)
@@ -5778,32 +5774,32 @@ actionsTable[45365] = 164; // 'state 354' -> ?: -> shift (target=82, len=0)
 actionsTable[45374] = 1887; // 'state 354' -> new -> reduce (target=175, len=3)
 actionsTable[45390] = 1887; // 'state 354' -> identifier -> reduce (target=175, len=3)
 actionsTable.fill(1887, 45392, 45394); // 'state 354' -> number..string -> reduce (target=175, len=3)
-actionsTable.fill(942, 45440, 45443); // 'state 355' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 45440, 45443); // 'state 355' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[45445] = 262; // 'state 355' -> { -> shift (target=131, len=0)
 actionsTable[45448] = 264; // 'state 355' -> ( -> shift (target=132, len=0)
 actionsTable[45481] = 266; // 'state 355' -> [ -> shift (target=133, len=0)
 actionsTable[45494] = 28; // 'state 355' -> < -> shift (target=14, len=0)
 actionsTable[45496] = 268; // 'state 355' -> | -> shift (target=134, len=0)
-actionsTable[45499] = 942; // 'state 355' -> void -> shift (target=471, len=0)
+actionsTable[45499] = 33606; // 'state 355' -> void -> shift+reduce (target=163, len=1)
 actionsTable[45500] = 944; // 'state 355' -> typeof -> shift (target=472, len=0)
 actionsTable[45518] = 270; // 'state 355' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 45520, 45522); // 'state 355' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 45520, 45522); // 'state 355' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[45573] = 80; // 'state 356' -> { -> shift (target=40, len=0)
 actionsTable[45581] = 1402; // 'state 356' -> ; -> shift (target=701, len=0)
 actionsTable[45595] = 164; // 'state 356' -> : -> shift (target=82, len=0)
 actionsTable[45621] = 164; // 'state 356' -> ?: -> shift (target=82, len=0)
 actionsTable[45701] = 80; // 'state 357' -> { -> shift (target=40, len=0)
 actionsTable[45709] = 1402; // 'state 357' -> ; -> shift (target=701, len=0)
-actionsTable.fill(798, 45824, 45829); // 'state 358' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 45824, 45829); // 'state 358' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[45829] = 68; // 'state 358' -> { -> shift (target=34, len=0)
 actionsTable[45832] = 4; // 'state 358' -> ( -> shift (target=2, len=0)
-actionsTable[45842] = 806; // 'state 358' -> of -> shift (target=403, len=0)
-actionsTable[45856] = 806; // 'state 358' -> from -> shift (target=403, len=0)
-actionsTable[45860] = 806; // 'state 358' -> type -> shift (target=403, len=0)
+actionsTable[45842] = 33636; // 'state 358' -> of -> shift+reduce (target=178, len=1)
+actionsTable[45856] = 33636; // 'state 358' -> from -> shift+reduce (target=178, len=1)
+actionsTable[45860] = 33636; // 'state 358' -> type -> shift+reduce (target=178, len=1)
 actionsTable[45865] = 20; // 'state 358' -> [ -> shift (target=10, len=0)
 actionsTable[45867] = 70; // 'state 358' -> async -> shift (target=35, len=0)
 actionsTable[45868] = 72; // 'state 358' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 45871, 45873); // 'state 358' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 45871, 45873); // 'state 358' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[45873] = 74; // 'state 358' -> class -> shift (target=37, len=0)
 actionsTable[45878] = 28; // 'state 358' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 45883, 45885); // 'state 358' -> void..typeof -> shift (target=15, len=0)
@@ -5812,9 +5808,9 @@ actionsTable.fill(30, 45893, 45895); // 'state 358' -> +..- -> shift (target=15,
 actionsTable.fill(30, 45896, 45899); // 'state 358' -> !..delete -> shift (target=15, len=0)
 actionsTable[45899] = 34; // 'state 358' -> await -> shift (target=17, len=0)
 actionsTable[45902] = 818; // 'state 358' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 45904, 45907); // 'state 358' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 45904, 45907); // 'state 358' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[45913] = 36; // 'state 358' -> update_operator -> shift (target=18, len=0)
-actionsTable[45914] = 798; // 'state 358' -> regex -> shift (target=399, len=0)
+actionsTable[45914] = 33638; // 'state 358' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[45957] = 80; // 'state 359' -> { -> shift (target=40, len=0)
 actionsTable[45965] = 1460; // 'state 359' -> ; -> shift (target=730, len=0)
 actionsTable.fill(3443, 46080, 46088); // 'state 360' -> true..if -> reduce (target=185, len=6)
@@ -5851,16 +5847,16 @@ actionsTable[46167] = 114; // 'state 360' -> shift_operator -> shift (target=57,
 actionsTable[46168] = 90; // 'state 360' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[46169] = 866; // 'state 360' -> update_operator -> shift (target=433, len=0)
 actionsTable.fill(3443, 46170, 46172); // 'state 360' -> regex..@par-gen.EOF -> reduce (target=185, len=6)
-actionsTable.fill(798, 46208, 46213); // 'state 361' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 46208, 46213); // 'state 361' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[46213] = 68; // 'state 361' -> { -> shift (target=34, len=0)
 actionsTable[46216] = 4; // 'state 361' -> ( -> shift (target=2, len=0)
-actionsTable[46226] = 806; // 'state 361' -> of -> shift (target=403, len=0)
-actionsTable[46240] = 806; // 'state 361' -> from -> shift (target=403, len=0)
-actionsTable[46244] = 806; // 'state 361' -> type -> shift (target=403, len=0)
+actionsTable[46226] = 33636; // 'state 361' -> of -> shift+reduce (target=178, len=1)
+actionsTable[46240] = 33636; // 'state 361' -> from -> shift+reduce (target=178, len=1)
+actionsTable[46244] = 33636; // 'state 361' -> type -> shift+reduce (target=178, len=1)
 actionsTable[46249] = 20; // 'state 361' -> [ -> shift (target=10, len=0)
 actionsTable[46251] = 70; // 'state 361' -> async -> shift (target=35, len=0)
 actionsTable[46252] = 72; // 'state 361' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 46255, 46257); // 'state 361' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 46255, 46257); // 'state 361' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[46257] = 74; // 'state 361' -> class -> shift (target=37, len=0)
 actionsTable[46262] = 28; // 'state 361' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 46267, 46269); // 'state 361' -> void..typeof -> shift (target=15, len=0)
@@ -5869,9 +5865,9 @@ actionsTable.fill(30, 46277, 46279); // 'state 361' -> +..- -> shift (target=15,
 actionsTable.fill(30, 46280, 46283); // 'state 361' -> !..delete -> shift (target=15, len=0)
 actionsTable[46283] = 34; // 'state 361' -> await -> shift (target=17, len=0)
 actionsTable[46286] = 818; // 'state 361' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 46288, 46291); // 'state 361' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 46288, 46291); // 'state 361' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[46297] = 36; // 'state 361' -> update_operator -> shift (target=18, len=0)
-actionsTable[46298] = 798; // 'state 361' -> regex -> shift (target=399, len=0)
+actionsTable[46298] = 33638; // 'state 361' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[46344] = 86; // 'state 362' -> ( -> shift (target=43, len=0)
 actionsTable[46345] = 2325; // 'state 362' -> ) -> reduce (target=138, len=4)
 actionsTable[46355] = 88; // 'state 362' -> in -> shift (target=44, len=0)
@@ -5900,16 +5896,16 @@ actionsTable[46469] = 80; // 'state 363' -> { -> shift (target=40, len=0)
 actionsTable[46491] = 164; // 'state 363' -> : -> shift (target=82, len=0)
 actionsTable[46517] = 164; // 'state 363' -> ?: -> shift (target=82, len=0)
 actionsTable[46597] = 80; // 'state 364' -> { -> shift (target=40, len=0)
-actionsTable.fill(798, 46720, 46725); // 'state 365' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 46720, 46725); // 'state 365' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[46725] = 68; // 'state 365' -> { -> shift (target=34, len=0)
 actionsTable[46728] = 4; // 'state 365' -> ( -> shift (target=2, len=0)
-actionsTable[46738] = 806; // 'state 365' -> of -> shift (target=403, len=0)
-actionsTable[46752] = 806; // 'state 365' -> from -> shift (target=403, len=0)
-actionsTable[46756] = 806; // 'state 365' -> type -> shift (target=403, len=0)
+actionsTable[46738] = 33636; // 'state 365' -> of -> shift+reduce (target=178, len=1)
+actionsTable[46752] = 33636; // 'state 365' -> from -> shift+reduce (target=178, len=1)
+actionsTable[46756] = 33636; // 'state 365' -> type -> shift+reduce (target=178, len=1)
 actionsTable[46761] = 20; // 'state 365' -> [ -> shift (target=10, len=0)
 actionsTable[46763] = 70; // 'state 365' -> async -> shift (target=35, len=0)
 actionsTable[46764] = 72; // 'state 365' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 46767, 46769); // 'state 365' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 46767, 46769); // 'state 365' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[46769] = 74; // 'state 365' -> class -> shift (target=37, len=0)
 actionsTable[46774] = 28; // 'state 365' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 46779, 46781); // 'state 365' -> void..typeof -> shift (target=15, len=0)
@@ -5918,9 +5914,9 @@ actionsTable.fill(30, 46789, 46791); // 'state 365' -> +..- -> shift (target=15,
 actionsTable.fill(30, 46792, 46795); // 'state 365' -> !..delete -> shift (target=15, len=0)
 actionsTable[46795] = 34; // 'state 365' -> await -> shift (target=17, len=0)
 actionsTable[46798] = 818; // 'state 365' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 46800, 46803); // 'state 365' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 46800, 46803); // 'state 365' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[46809] = 36; // 'state 365' -> update_operator -> shift (target=18, len=0)
-actionsTable[46810] = 798; // 'state 365' -> regex -> shift (target=399, len=0)
+actionsTable[46810] = 33638; // 'state 365' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[46854] = 2349; // 'state 366' -> } -> reduce (target=150, len=4)
 actionsTable[46856] = 86; // 'state 366' -> ( -> shift (target=43, len=0)
 actionsTable[46861] = 1468; // 'state 366' -> ; -> shift (target=734, len=0)
@@ -5976,18 +5972,18 @@ actionsTable[47062] = 88; // 'state 367' -> relational_operator -> shift (target
 actionsTable[47063] = 114; // 'state 367' -> shift_operator -> shift (target=57, len=0)
 actionsTable[47064] = 90; // 'state 367' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[47065] = 866; // 'state 367' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(942, 47104, 47107); // 'state 368' -> true..null -> shift (target=471, len=0)
+actionsTable.fill(33606, 47104, 47107); // 'state 368' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[47109] = 262; // 'state 368' -> { -> shift (target=131, len=0)
 actionsTable[47112] = 264; // 'state 368' -> ( -> shift (target=132, len=0)
 actionsTable[47145] = 266; // 'state 368' -> [ -> shift (target=133, len=0)
 actionsTable[47158] = 28; // 'state 368' -> < -> shift (target=14, len=0)
 actionsTable[47159] = 1470; // 'state 368' -> > -> shift (target=735, len=0)
 actionsTable[47160] = 268; // 'state 368' -> | -> shift (target=134, len=0)
-actionsTable[47163] = 942; // 'state 368' -> void -> shift (target=471, len=0)
+actionsTable[47163] = 33606; // 'state 368' -> void -> shift+reduce (target=163, len=1)
 actionsTable[47164] = 944; // 'state 368' -> typeof -> shift (target=472, len=0)
 actionsTable[47182] = 270; // 'state 368' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 47184, 47186); // 'state 368' -> number..string -> shift (target=471, len=0)
-actionsTable.fill(798, 47232, 47237); // 'state 369' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33606, 47184, 47186); // 'state 368' -> number..string -> shift+reduce (target=163, len=1)
+actionsTable.fill(33638, 47232, 47237); // 'state 369' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[47237] = 2; // 'state 369' -> { -> shift (target=1, len=0)
 actionsTable[47239] = 800; // 'state 369' -> if -> shift (target=400, len=0)
 actionsTable[47240] = 4; // 'state 369' -> ( -> shift (target=2, len=0)
@@ -5995,7 +5991,7 @@ actionsTable[47243] = 802; // 'state 369' -> while -> shift (target=401, len=0)
 actionsTable[47244] = 6; // 'state 369' -> do -> shift (target=3, len=0)
 actionsTable[47246] = 804; // 'state 369' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 47247, 47250); // 'state 369' -> const..var -> shift (target=4, len=0)
-actionsTable[47250] = 806; // 'state 369' -> of -> shift (target=403, len=0)
+actionsTable[47250] = 33636; // 'state 369' -> of -> shift+reduce (target=178, len=1)
 actionsTable[47252] = 10; // 'state 369' -> return -> shift (target=5, len=0)
 actionsTable[47253] = 12; // 'state 369' -> throw -> shift (target=6, len=0)
 actionsTable[47254] = 14; // 'state 369' -> try -> shift (target=7, len=0)
@@ -6003,13 +5999,13 @@ actionsTable[47257] = 808; // 'state 369' -> switch -> shift (target=404, len=0)
 actionsTable[47261] = 810; // 'state 369' -> break -> shift (target=405, len=0)
 actionsTable[47262] = 812; // 'state 369' -> continue -> shift (target=406, len=0)
 actionsTable[47263] = 16; // 'state 369' -> import -> shift (target=8, len=0)
-actionsTable[47264] = 806; // 'state 369' -> from -> shift (target=403, len=0)
+actionsTable[47264] = 33636; // 'state 369' -> from -> shift+reduce (target=178, len=1)
 actionsTable[47268] = 814; // 'state 369' -> type -> shift (target=407, len=0)
 actionsTable[47269] = 18; // 'state 369' -> export -> shift (target=9, len=0)
 actionsTable[47273] = 20; // 'state 369' -> [ -> shift (target=10, len=0)
 actionsTable[47275] = 22; // 'state 369' -> async -> shift (target=11, len=0)
 actionsTable[47276] = 24; // 'state 369' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 47279, 47281); // 'state 369' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 47279, 47281); // 'state 369' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[47281] = 26; // 'state 369' -> class -> shift (target=13, len=0)
 actionsTable[47284] = 816; // 'state 369' -> interface -> shift (target=408, len=0)
 actionsTable[47286] = 28; // 'state 369' -> < -> shift (target=14, len=0)
@@ -6019,10 +6015,10 @@ actionsTable.fill(30, 47301, 47303); // 'state 369' -> +..- -> shift (target=15,
 actionsTable.fill(30, 47304, 47307); // 'state 369' -> !..delete -> shift (target=15, len=0)
 actionsTable[47307] = 34; // 'state 369' -> await -> shift (target=17, len=0)
 actionsTable[47310] = 818; // 'state 369' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 47312, 47315); // 'state 369' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 47312, 47315); // 'state 369' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[47321] = 36; // 'state 369' -> update_operator -> shift (target=18, len=0)
-actionsTable[47322] = 798; // 'state 369' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 47360, 47365); // 'state 370' -> true..super -> shift (target=399, len=0)
+actionsTable[47322] = 33638; // 'state 369' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 47360, 47365); // 'state 370' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[47365] = 2; // 'state 370' -> { -> shift (target=1, len=0)
 actionsTable[47367] = 800; // 'state 370' -> if -> shift (target=400, len=0)
 actionsTable[47368] = 4; // 'state 370' -> ( -> shift (target=2, len=0)
@@ -6030,7 +6026,7 @@ actionsTable[47371] = 802; // 'state 370' -> while -> shift (target=401, len=0)
 actionsTable[47372] = 6; // 'state 370' -> do -> shift (target=3, len=0)
 actionsTable[47374] = 804; // 'state 370' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 47375, 47378); // 'state 370' -> const..var -> shift (target=4, len=0)
-actionsTable[47378] = 806; // 'state 370' -> of -> shift (target=403, len=0)
+actionsTable[47378] = 33636; // 'state 370' -> of -> shift+reduce (target=178, len=1)
 actionsTable[47380] = 10; // 'state 370' -> return -> shift (target=5, len=0)
 actionsTable[47381] = 12; // 'state 370' -> throw -> shift (target=6, len=0)
 actionsTable[47382] = 14; // 'state 370' -> try -> shift (target=7, len=0)
@@ -6038,13 +6034,13 @@ actionsTable[47385] = 808; // 'state 370' -> switch -> shift (target=404, len=0)
 actionsTable[47389] = 810; // 'state 370' -> break -> shift (target=405, len=0)
 actionsTable[47390] = 812; // 'state 370' -> continue -> shift (target=406, len=0)
 actionsTable[47391] = 16; // 'state 370' -> import -> shift (target=8, len=0)
-actionsTable[47392] = 806; // 'state 370' -> from -> shift (target=403, len=0)
+actionsTable[47392] = 33636; // 'state 370' -> from -> shift+reduce (target=178, len=1)
 actionsTable[47396] = 814; // 'state 370' -> type -> shift (target=407, len=0)
 actionsTable[47397] = 18; // 'state 370' -> export -> shift (target=9, len=0)
 actionsTable[47401] = 20; // 'state 370' -> [ -> shift (target=10, len=0)
 actionsTable[47403] = 22; // 'state 370' -> async -> shift (target=11, len=0)
 actionsTable[47404] = 24; // 'state 370' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 47407, 47409); // 'state 370' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 47407, 47409); // 'state 370' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[47409] = 26; // 'state 370' -> class -> shift (target=13, len=0)
 actionsTable[47412] = 816; // 'state 370' -> interface -> shift (target=408, len=0)
 actionsTable[47414] = 28; // 'state 370' -> < -> shift (target=14, len=0)
@@ -6054,9 +6050,9 @@ actionsTable.fill(30, 47429, 47431); // 'state 370' -> +..- -> shift (target=15,
 actionsTable.fill(30, 47432, 47435); // 'state 370' -> !..delete -> shift (target=15, len=0)
 actionsTable[47435] = 34; // 'state 370' -> await -> shift (target=17, len=0)
 actionsTable[47438] = 818; // 'state 370' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 47440, 47443); // 'state 370' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 47440, 47443); // 'state 370' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[47449] = 36; // 'state 370' -> update_operator -> shift (target=18, len=0)
-actionsTable[47450] = 798; // 'state 370' -> regex -> shift (target=399, len=0)
+actionsTable[47450] = 33638; // 'state 370' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[47496] = 86; // 'state 371' -> ( -> shift (target=43, len=0)
 actionsTable[47497] = 774; // 'state 371' -> ) -> shift (target=387, len=0)
 actionsTable[47507] = 88; // 'state 371' -> in -> shift (target=44, len=0)
@@ -6105,7 +6101,7 @@ actionsTable[47958] = 88; // 'state 374' -> relational_operator -> shift (target
 actionsTable[47959] = 114; // 'state 374' -> shift_operator -> shift (target=57, len=0)
 actionsTable[47960] = 90; // 'state 374' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[47961] = 866; // 'state 374' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 48000, 48005); // 'state 375' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 48000, 48005); // 'state 375' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[48005] = 2; // 'state 375' -> { -> shift (target=1, len=0)
 actionsTable[48006] = 1251; // 'state 375' -> } -> reduce (target=113, len=2)
 actionsTable[48007] = 800; // 'state 375' -> if -> shift (target=400, len=0)
@@ -6114,7 +6110,7 @@ actionsTable[48011] = 802; // 'state 375' -> while -> shift (target=401, len=0)
 actionsTable[48012] = 6; // 'state 375' -> do -> shift (target=3, len=0)
 actionsTable[48014] = 804; // 'state 375' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 48015, 48018); // 'state 375' -> const..var -> shift (target=4, len=0)
-actionsTable[48018] = 806; // 'state 375' -> of -> shift (target=403, len=0)
+actionsTable[48018] = 33636; // 'state 375' -> of -> shift+reduce (target=178, len=1)
 actionsTable[48020] = 10; // 'state 375' -> return -> shift (target=5, len=0)
 actionsTable[48021] = 12; // 'state 375' -> throw -> shift (target=6, len=0)
 actionsTable[48022] = 14; // 'state 375' -> try -> shift (target=7, len=0)
@@ -6124,13 +6120,13 @@ actionsTable[48028] = 1251; // 'state 375' -> default -> reduce (target=113, len
 actionsTable[48029] = 810; // 'state 375' -> break -> shift (target=405, len=0)
 actionsTable[48030] = 812; // 'state 375' -> continue -> shift (target=406, len=0)
 actionsTable[48031] = 16; // 'state 375' -> import -> shift (target=8, len=0)
-actionsTable[48032] = 806; // 'state 375' -> from -> shift (target=403, len=0)
+actionsTable[48032] = 33636; // 'state 375' -> from -> shift+reduce (target=178, len=1)
 actionsTable[48036] = 814; // 'state 375' -> type -> shift (target=407, len=0)
 actionsTable[48037] = 18; // 'state 375' -> export -> shift (target=9, len=0)
 actionsTable[48041] = 20; // 'state 375' -> [ -> shift (target=10, len=0)
 actionsTable[48043] = 22; // 'state 375' -> async -> shift (target=11, len=0)
 actionsTable[48044] = 24; // 'state 375' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 48047, 48049); // 'state 375' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 48047, 48049); // 'state 375' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[48049] = 26; // 'state 375' -> class -> shift (target=13, len=0)
 actionsTable[48052] = 816; // 'state 375' -> interface -> shift (target=408, len=0)
 actionsTable[48054] = 28; // 'state 375' -> < -> shift (target=14, len=0)
@@ -6140,19 +6136,19 @@ actionsTable.fill(30, 48069, 48071); // 'state 375' -> +..- -> shift (target=15,
 actionsTable.fill(30, 48072, 48075); // 'state 375' -> !..delete -> shift (target=15, len=0)
 actionsTable[48075] = 34; // 'state 375' -> await -> shift (target=17, len=0)
 actionsTable[48078] = 818; // 'state 375' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 48080, 48083); // 'state 375' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 48080, 48083); // 'state 375' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[48089] = 36; // 'state 375' -> update_operator -> shift (target=18, len=0)
-actionsTable[48090] = 798; // 'state 375' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 48128, 48133); // 'state 376' -> true..super -> shift (target=399, len=0)
+actionsTable[48090] = 33638; // 'state 375' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 48128, 48133); // 'state 376' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[48133] = 562; // 'state 376' -> { -> shift (target=281, len=0)
 actionsTable[48136] = 4; // 'state 376' -> ( -> shift (target=2, len=0)
-actionsTable[48146] = 806; // 'state 376' -> of -> shift (target=403, len=0)
-actionsTable[48160] = 806; // 'state 376' -> from -> shift (target=403, len=0)
-actionsTable[48164] = 806; // 'state 376' -> type -> shift (target=403, len=0)
+actionsTable[48146] = 33636; // 'state 376' -> of -> shift+reduce (target=178, len=1)
+actionsTable[48160] = 33636; // 'state 376' -> from -> shift+reduce (target=178, len=1)
+actionsTable[48164] = 33636; // 'state 376' -> type -> shift+reduce (target=178, len=1)
 actionsTable[48169] = 566; // 'state 376' -> [ -> shift (target=283, len=0)
 actionsTable[48171] = 70; // 'state 376' -> async -> shift (target=35, len=0)
 actionsTable[48172] = 72; // 'state 376' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 48175, 48177); // 'state 376' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 48175, 48177); // 'state 376' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[48177] = 74; // 'state 376' -> class -> shift (target=37, len=0)
 actionsTable[48182] = 28; // 'state 376' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 48187, 48189); // 'state 376' -> void..typeof -> shift (target=15, len=0)
@@ -6161,9 +6157,9 @@ actionsTable.fill(30, 48197, 48199); // 'state 376' -> +..- -> shift (target=15,
 actionsTable.fill(30, 48200, 48203); // 'state 376' -> !..delete -> shift (target=15, len=0)
 actionsTable[48203] = 34; // 'state 376' -> await -> shift (target=17, len=0)
 actionsTable[48206] = 1360; // 'state 376' -> identifier -> shift (target=680, len=0)
-actionsTable.fill(798, 48208, 48211); // 'state 376' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 48208, 48211); // 'state 376' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[48217] = 36; // 'state 376' -> update_operator -> shift (target=18, len=0)
-actionsTable[48218] = 798; // 'state 376' -> regex -> shift (target=399, len=0)
+actionsTable[48218] = 33638; // 'state 376' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[48261] = 80; // 'state 377' -> { -> shift (target=40, len=0)
 actionsTable[48262] = 1885; // 'state 377' -> } -> reduce (target=174, len=3)
 actionsTable[48269] = 1885; // 'state 377' -> ; -> reduce (target=174, len=3)
@@ -6191,16 +6187,16 @@ actionsTable[48446] = 1885; // 'state 378' -> new -> reduce (target=174, len=3)
 actionsTable[48462] = 1885; // 'state 378' -> identifier -> reduce (target=174, len=3)
 actionsTable.fill(1885, 48464, 48466); // 'state 378' -> number..string -> reduce (target=174, len=3)
 actionsTable.fill(1218, 48512, 48515); // 'state 379' -> true..null -> shift (target=609, len=0)
-actionsTable.fill(798, 48515, 48517); // 'state 379' -> this..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 48515, 48517); // 'state 379' -> this..super -> shift+reduce (target=179, len=1)
 actionsTable[48517] = 760; // 'state 379' -> { -> shift (target=380, len=0)
 actionsTable[48520] = 576; // 'state 379' -> ( -> shift (target=288, len=0)
-actionsTable[48530] = 806; // 'state 379' -> of -> shift (target=403, len=0)
-actionsTable[48544] = 806; // 'state 379' -> from -> shift (target=403, len=0)
-actionsTable[48548] = 806; // 'state 379' -> type -> shift (target=403, len=0)
+actionsTable[48530] = 33636; // 'state 379' -> of -> shift+reduce (target=178, len=1)
+actionsTable[48544] = 33636; // 'state 379' -> from -> shift+reduce (target=178, len=1)
+actionsTable[48548] = 33636; // 'state 379' -> type -> shift+reduce (target=178, len=1)
 actionsTable[48553] = 424; // 'state 379' -> [ -> shift (target=212, len=0)
 actionsTable[48555] = 70; // 'state 379' -> async -> shift (target=35, len=0)
 actionsTable[48556] = 72; // 'state 379' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 48559, 48561); // 'state 379' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 48559, 48561); // 'state 379' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[48561] = 74; // 'state 379' -> class -> shift (target=37, len=0)
 actionsTable[48566] = 28; // 'state 379' -> < -> shift (target=14, len=0)
 actionsTable[48568] = 268; // 'state 379' -> | -> shift (target=134, len=0)
@@ -6212,10 +6208,10 @@ actionsTable.fill(30, 48584, 48587); // 'state 379' -> !..delete -> shift (targe
 actionsTable[48587] = 34; // 'state 379' -> await -> shift (target=17, len=0)
 actionsTable[48590] = 582; // 'state 379' -> identifier -> shift (target=291, len=0)
 actionsTable.fill(1218, 48592, 48594); // 'state 379' -> number..string -> shift (target=609, len=0)
-actionsTable[48594] = 798; // 'state 379' -> template_string -> shift (target=399, len=0)
+actionsTable[48594] = 33638; // 'state 379' -> template_string -> shift+reduce (target=179, len=1)
 actionsTable[48601] = 36; // 'state 379' -> update_operator -> shift (target=18, len=0)
-actionsTable[48602] = 798; // 'state 379' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 48640, 48645); // 'state 380' -> true..super -> shift (target=399, len=0)
+actionsTable[48602] = 33638; // 'state 379' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 48640, 48645); // 'state 380' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[48645] = 2; // 'state 380' -> { -> shift (target=1, len=0)
 actionsTable[48646] = 1480; // 'state 380' -> } -> shift (target=740, len=0)
 actionsTable[48647] = 800; // 'state 380' -> if -> shift (target=400, len=0)
@@ -6224,7 +6220,7 @@ actionsTable[48651] = 802; // 'state 380' -> while -> shift (target=401, len=0)
 actionsTable[48652] = 6; // 'state 380' -> do -> shift (target=3, len=0)
 actionsTable[48654] = 804; // 'state 380' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 48655, 48658); // 'state 380' -> const..var -> shift (target=4, len=0)
-actionsTable[48658] = 806; // 'state 380' -> of -> shift (target=403, len=0)
+actionsTable[48658] = 33636; // 'state 380' -> of -> shift+reduce (target=178, len=1)
 actionsTable[48660] = 10; // 'state 380' -> return -> shift (target=5, len=0)
 actionsTable[48661] = 12; // 'state 380' -> throw -> shift (target=6, len=0)
 actionsTable[48662] = 14; // 'state 380' -> try -> shift (target=7, len=0)
@@ -6232,7 +6228,7 @@ actionsTable[48665] = 808; // 'state 380' -> switch -> shift (target=404, len=0)
 actionsTable[48669] = 810; // 'state 380' -> break -> shift (target=405, len=0)
 actionsTable[48670] = 812; // 'state 380' -> continue -> shift (target=406, len=0)
 actionsTable[48671] = 16; // 'state 380' -> import -> shift (target=8, len=0)
-actionsTable[48672] = 806; // 'state 380' -> from -> shift (target=403, len=0)
+actionsTable[48672] = 33636; // 'state 380' -> from -> shift+reduce (target=178, len=1)
 actionsTable[48676] = 814; // 'state 380' -> type -> shift (target=407, len=0)
 actionsTable[48677] = 18; // 'state 380' -> export -> shift (target=9, len=0)
 actionsTable[48680] = 48; // 'state 380' -> ... -> shift (target=24, len=0)
@@ -6251,19 +6247,19 @@ actionsTable.fill(30, 48712, 48715); // 'state 380' -> !..delete -> shift (targe
 actionsTable[48715] = 34; // 'state 380' -> await -> shift (target=17, len=0)
 actionsTable[48718] = 838; // 'state 380' -> identifier -> shift (target=419, len=0)
 actionsTable.fill(840, 48720, 48722); // 'state 380' -> number..string -> shift (target=420, len=0)
-actionsTable[48722] = 798; // 'state 380' -> template_string -> shift (target=399, len=0)
+actionsTable[48722] = 33638; // 'state 380' -> template_string -> shift+reduce (target=179, len=1)
 actionsTable[48729] = 36; // 'state 380' -> update_operator -> shift (target=18, len=0)
-actionsTable[48730] = 798; // 'state 380' -> regex -> shift (target=399, len=0)
-actionsTable.fill(942, 48768, 48771); // 'state 381' -> true..null -> shift (target=471, len=0)
+actionsTable[48730] = 33638; // 'state 380' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33606, 48768, 48771); // 'state 381' -> true..null -> shift+reduce (target=163, len=1)
 actionsTable[48773] = 262; // 'state 381' -> { -> shift (target=131, len=0)
 actionsTable[48776] = 264; // 'state 381' -> ( -> shift (target=132, len=0)
 actionsTable[48809] = 266; // 'state 381' -> [ -> shift (target=133, len=0)
 actionsTable[48822] = 28; // 'state 381' -> < -> shift (target=14, len=0)
 actionsTable[48824] = 268; // 'state 381' -> | -> shift (target=134, len=0)
-actionsTable[48827] = 942; // 'state 381' -> void -> shift (target=471, len=0)
+actionsTable[48827] = 33606; // 'state 381' -> void -> shift+reduce (target=163, len=1)
 actionsTable[48828] = 944; // 'state 381' -> typeof -> shift (target=472, len=0)
 actionsTable[48846] = 270; // 'state 381' -> identifier -> shift (target=135, len=0)
-actionsTable.fill(942, 48848, 48850); // 'state 381' -> number..string -> shift (target=471, len=0)
+actionsTable.fill(33606, 48848, 48850); // 'state 381' -> number..string -> shift+reduce (target=163, len=1)
 actionsTable[48901] = 80; // 'state 382' -> { -> shift (target=40, len=0)
 actionsTable[48909] = 1460; // 'state 382' -> ; -> shift (target=730, len=0)
 actionsTable[49030] = 2823; // 'state 383' -> } -> reduce (target=131, len=5)
@@ -6346,7 +6342,7 @@ actionsTable[49494] = 88; // 'state 386' -> relational_operator -> shift (target
 actionsTable[49495] = 114; // 'state 386' -> shift_operator -> shift (target=57, len=0)
 actionsTable[49496] = 90; // 'state 386' -> multiplicative_operator -> shift (target=45, len=0)
 actionsTable[49497] = 866; // 'state 386' -> update_operator -> shift (target=433, len=0)
-actionsTable.fill(798, 49536, 49541); // 'state 387' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 49536, 49541); // 'state 387' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[49541] = 2; // 'state 387' -> { -> shift (target=1, len=0)
 actionsTable[49543] = 800; // 'state 387' -> if -> shift (target=400, len=0)
 actionsTable[49544] = 4; // 'state 387' -> ( -> shift (target=2, len=0)
@@ -6354,7 +6350,7 @@ actionsTable[49547] = 802; // 'state 387' -> while -> shift (target=401, len=0)
 actionsTable[49548] = 6; // 'state 387' -> do -> shift (target=3, len=0)
 actionsTable[49550] = 804; // 'state 387' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 49551, 49554); // 'state 387' -> const..var -> shift (target=4, len=0)
-actionsTable[49554] = 806; // 'state 387' -> of -> shift (target=403, len=0)
+actionsTable[49554] = 33636; // 'state 387' -> of -> shift+reduce (target=178, len=1)
 actionsTable[49556] = 10; // 'state 387' -> return -> shift (target=5, len=0)
 actionsTable[49557] = 12; // 'state 387' -> throw -> shift (target=6, len=0)
 actionsTable[49558] = 14; // 'state 387' -> try -> shift (target=7, len=0)
@@ -6362,13 +6358,13 @@ actionsTable[49561] = 808; // 'state 387' -> switch -> shift (target=404, len=0)
 actionsTable[49565] = 810; // 'state 387' -> break -> shift (target=405, len=0)
 actionsTable[49566] = 812; // 'state 387' -> continue -> shift (target=406, len=0)
 actionsTable[49567] = 16; // 'state 387' -> import -> shift (target=8, len=0)
-actionsTable[49568] = 806; // 'state 387' -> from -> shift (target=403, len=0)
+actionsTable[49568] = 33636; // 'state 387' -> from -> shift+reduce (target=178, len=1)
 actionsTable[49572] = 814; // 'state 387' -> type -> shift (target=407, len=0)
 actionsTable[49573] = 18; // 'state 387' -> export -> shift (target=9, len=0)
 actionsTable[49577] = 20; // 'state 387' -> [ -> shift (target=10, len=0)
 actionsTable[49579] = 22; // 'state 387' -> async -> shift (target=11, len=0)
 actionsTable[49580] = 24; // 'state 387' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 49583, 49585); // 'state 387' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 49583, 49585); // 'state 387' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[49585] = 26; // 'state 387' -> class -> shift (target=13, len=0)
 actionsTable[49588] = 816; // 'state 387' -> interface -> shift (target=408, len=0)
 actionsTable[49590] = 28; // 'state 387' -> < -> shift (target=14, len=0)
@@ -6378,10 +6374,10 @@ actionsTable.fill(30, 49605, 49607); // 'state 387' -> +..- -> shift (target=15,
 actionsTable.fill(30, 49608, 49611); // 'state 387' -> !..delete -> shift (target=15, len=0)
 actionsTable[49611] = 34; // 'state 387' -> await -> shift (target=17, len=0)
 actionsTable[49614] = 818; // 'state 387' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 49616, 49619); // 'state 387' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 49616, 49619); // 'state 387' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[49625] = 36; // 'state 387' -> update_operator -> shift (target=18, len=0)
-actionsTable[49626] = 798; // 'state 387' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 49664, 49669); // 'state 388' -> true..super -> shift (target=399, len=0)
+actionsTable[49626] = 33638; // 'state 387' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 49664, 49669); // 'state 388' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[49669] = 2; // 'state 388' -> { -> shift (target=1, len=0)
 actionsTable[49670] = 1761; // 'state 388' -> } -> reduce (target=112, len=3)
 actionsTable[49671] = 800; // 'state 388' -> if -> shift (target=400, len=0)
@@ -6390,7 +6386,7 @@ actionsTable[49675] = 802; // 'state 388' -> while -> shift (target=401, len=0)
 actionsTable[49676] = 6; // 'state 388' -> do -> shift (target=3, len=0)
 actionsTable[49678] = 804; // 'state 388' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 49679, 49682); // 'state 388' -> const..var -> shift (target=4, len=0)
-actionsTable[49682] = 806; // 'state 388' -> of -> shift (target=403, len=0)
+actionsTable[49682] = 33636; // 'state 388' -> of -> shift+reduce (target=178, len=1)
 actionsTable[49684] = 10; // 'state 388' -> return -> shift (target=5, len=0)
 actionsTable[49685] = 12; // 'state 388' -> throw -> shift (target=6, len=0)
 actionsTable[49686] = 14; // 'state 388' -> try -> shift (target=7, len=0)
@@ -6400,13 +6396,13 @@ actionsTable[49692] = 1761; // 'state 388' -> default -> reduce (target=112, len
 actionsTable[49693] = 810; // 'state 388' -> break -> shift (target=405, len=0)
 actionsTable[49694] = 812; // 'state 388' -> continue -> shift (target=406, len=0)
 actionsTable[49695] = 16; // 'state 388' -> import -> shift (target=8, len=0)
-actionsTable[49696] = 806; // 'state 388' -> from -> shift (target=403, len=0)
+actionsTable[49696] = 33636; // 'state 388' -> from -> shift+reduce (target=178, len=1)
 actionsTable[49700] = 814; // 'state 388' -> type -> shift (target=407, len=0)
 actionsTable[49701] = 18; // 'state 388' -> export -> shift (target=9, len=0)
 actionsTable[49705] = 20; // 'state 388' -> [ -> shift (target=10, len=0)
 actionsTable[49707] = 22; // 'state 388' -> async -> shift (target=11, len=0)
 actionsTable[49708] = 24; // 'state 388' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 49711, 49713); // 'state 388' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 49711, 49713); // 'state 388' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[49713] = 26; // 'state 388' -> class -> shift (target=13, len=0)
 actionsTable[49716] = 816; // 'state 388' -> interface -> shift (target=408, len=0)
 actionsTable[49718] = 28; // 'state 388' -> < -> shift (target=14, len=0)
@@ -6416,10 +6412,10 @@ actionsTable.fill(30, 49733, 49735); // 'state 388' -> +..- -> shift (target=15,
 actionsTable.fill(30, 49736, 49739); // 'state 388' -> !..delete -> shift (target=15, len=0)
 actionsTable[49739] = 34; // 'state 388' -> await -> shift (target=17, len=0)
 actionsTable[49742] = 818; // 'state 388' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 49744, 49747); // 'state 388' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 49744, 49747); // 'state 388' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[49753] = 36; // 'state 388' -> update_operator -> shift (target=18, len=0)
-actionsTable[49754] = 798; // 'state 388' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 49792, 49797); // 'state 389' -> true..super -> shift (target=399, len=0)
+actionsTable[49754] = 33638; // 'state 388' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 49792, 49797); // 'state 389' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[49797] = 2; // 'state 389' -> { -> shift (target=1, len=0)
 actionsTable[49798] = 1763; // 'state 389' -> } -> reduce (target=113, len=3)
 actionsTable[49799] = 800; // 'state 389' -> if -> shift (target=400, len=0)
@@ -6428,7 +6424,7 @@ actionsTable[49803] = 802; // 'state 389' -> while -> shift (target=401, len=0)
 actionsTable[49804] = 6; // 'state 389' -> do -> shift (target=3, len=0)
 actionsTable[49806] = 804; // 'state 389' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 49807, 49810); // 'state 389' -> const..var -> shift (target=4, len=0)
-actionsTable[49810] = 806; // 'state 389' -> of -> shift (target=403, len=0)
+actionsTable[49810] = 33636; // 'state 389' -> of -> shift+reduce (target=178, len=1)
 actionsTable[49812] = 10; // 'state 389' -> return -> shift (target=5, len=0)
 actionsTable[49813] = 12; // 'state 389' -> throw -> shift (target=6, len=0)
 actionsTable[49814] = 14; // 'state 389' -> try -> shift (target=7, len=0)
@@ -6438,13 +6434,13 @@ actionsTable[49820] = 1763; // 'state 389' -> default -> reduce (target=113, len
 actionsTable[49821] = 810; // 'state 389' -> break -> shift (target=405, len=0)
 actionsTable[49822] = 812; // 'state 389' -> continue -> shift (target=406, len=0)
 actionsTable[49823] = 16; // 'state 389' -> import -> shift (target=8, len=0)
-actionsTable[49824] = 806; // 'state 389' -> from -> shift (target=403, len=0)
+actionsTable[49824] = 33636; // 'state 389' -> from -> shift+reduce (target=178, len=1)
 actionsTable[49828] = 814; // 'state 389' -> type -> shift (target=407, len=0)
 actionsTable[49829] = 18; // 'state 389' -> export -> shift (target=9, len=0)
 actionsTable[49833] = 20; // 'state 389' -> [ -> shift (target=10, len=0)
 actionsTable[49835] = 22; // 'state 389' -> async -> shift (target=11, len=0)
 actionsTable[49836] = 24; // 'state 389' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 49839, 49841); // 'state 389' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 49839, 49841); // 'state 389' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[49841] = 26; // 'state 389' -> class -> shift (target=13, len=0)
 actionsTable[49844] = 816; // 'state 389' -> interface -> shift (target=408, len=0)
 actionsTable[49846] = 28; // 'state 389' -> < -> shift (target=14, len=0)
@@ -6454,9 +6450,9 @@ actionsTable.fill(30, 49861, 49863); // 'state 389' -> +..- -> shift (target=15,
 actionsTable.fill(30, 49864, 49867); // 'state 389' -> !..delete -> shift (target=15, len=0)
 actionsTable[49867] = 34; // 'state 389' -> await -> shift (target=17, len=0)
 actionsTable[49870] = 818; // 'state 389' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 49872, 49875); // 'state 389' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 49872, 49875); // 'state 389' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[49881] = 36; // 'state 389' -> update_operator -> shift (target=18, len=0)
-actionsTable[49882] = 798; // 'state 389' -> regex -> shift (target=399, len=0)
+actionsTable[49882] = 33638; // 'state 389' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[49925] = 80; // 'state 390' -> { -> shift (target=40, len=0)
 actionsTable[49926] = 2397; // 'state 390' -> } -> reduce (target=174, len=4)
 actionsTable[49933] = 2397; // 'state 390' -> ; -> reduce (target=174, len=4)
@@ -6469,19 +6465,19 @@ actionsTable.fill(2397, 49966, 49969); // 'state 390' -> readonly..set -> reduce
 actionsTable[49982] = 2397; // 'state 390' -> new -> reduce (target=174, len=4)
 actionsTable[49998] = 2397; // 'state 390' -> identifier -> reduce (target=174, len=4)
 actionsTable.fill(2397, 50000, 50002); // 'state 390' -> number..string -> reduce (target=174, len=4)
-actionsTable.fill(798, 50048, 50053); // 'state 391' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 50048, 50053); // 'state 391' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[50053] = 68; // 'state 391' -> { -> shift (target=34, len=0)
 actionsTable[50056] = 4; // 'state 391' -> ( -> shift (target=2, len=0)
-actionsTable[50066] = 806; // 'state 391' -> of -> shift (target=403, len=0)
-actionsTable[50080] = 806; // 'state 391' -> from -> shift (target=403, len=0)
+actionsTable[50066] = 33636; // 'state 391' -> of -> shift+reduce (target=178, len=1)
+actionsTable[50080] = 33636; // 'state 391' -> from -> shift+reduce (target=178, len=1)
 actionsTable[50081] = 192; // 'state 391' -> , -> shift (target=96, len=0)
-actionsTable[50084] = 806; // 'state 391' -> type -> shift (target=403, len=0)
+actionsTable[50084] = 33636; // 'state 391' -> type -> shift+reduce (target=178, len=1)
 actionsTable[50088] = 48; // 'state 391' -> ... -> shift (target=24, len=0)
 actionsTable[50089] = 20; // 'state 391' -> [ -> shift (target=10, len=0)
 actionsTable[50090] = 906; // 'state 391' -> ] -> shift (target=453, len=0)
 actionsTable[50091] = 70; // 'state 391' -> async -> shift (target=35, len=0)
 actionsTable[50092] = 72; // 'state 391' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 50095, 50097); // 'state 391' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 50095, 50097); // 'state 391' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[50097] = 74; // 'state 391' -> class -> shift (target=37, len=0)
 actionsTable[50102] = 28; // 'state 391' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 50107, 50109); // 'state 391' -> void..typeof -> shift (target=15, len=0)
@@ -6490,27 +6486,27 @@ actionsTable.fill(30, 50117, 50119); // 'state 391' -> +..- -> shift (target=15,
 actionsTable.fill(30, 50120, 50123); // 'state 391' -> !..delete -> shift (target=15, len=0)
 actionsTable[50123] = 34; // 'state 391' -> await -> shift (target=17, len=0)
 actionsTable[50126] = 1240; // 'state 391' -> identifier -> shift (target=620, len=0)
-actionsTable.fill(798, 50128, 50131); // 'state 391' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 50128, 50131); // 'state 391' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[50137] = 36; // 'state 391' -> update_operator -> shift (target=18, len=0)
-actionsTable[50138] = 798; // 'state 391' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 50176, 50181); // 'state 392' -> true..super -> shift (target=399, len=0)
+actionsTable[50138] = 33638; // 'state 391' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 50176, 50181); // 'state 392' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[50181] = 68; // 'state 392' -> { -> shift (target=34, len=0)
 actionsTable[50184] = 790; // 'state 392' -> ( -> shift (target=395, len=0)
-actionsTable[50194] = 806; // 'state 392' -> of -> shift (target=403, len=0)
-actionsTable[50208] = 806; // 'state 392' -> from -> shift (target=403, len=0)
-actionsTable[50212] = 806; // 'state 392' -> type -> shift (target=403, len=0)
+actionsTable[50194] = 33636; // 'state 392' -> of -> shift+reduce (target=178, len=1)
+actionsTable[50208] = 33636; // 'state 392' -> from -> shift+reduce (target=178, len=1)
+actionsTable[50212] = 33636; // 'state 392' -> type -> shift+reduce (target=178, len=1)
 actionsTable[50217] = 20; // 'state 392' -> [ -> shift (target=10, len=0)
 actionsTable[50219] = 904; // 'state 392' -> async -> shift (target=452, len=0)
 actionsTable[50220] = 72; // 'state 392' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 50223, 50225); // 'state 392' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 50223, 50225); // 'state 392' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[50225] = 74; // 'state 392' -> class -> shift (target=37, len=0)
 actionsTable[50230] = 28; // 'state 392' -> < -> shift (target=14, len=0)
-actionsTable[50254] = 798; // 'state 392' -> identifier -> shift (target=399, len=0)
-actionsTable.fill(798, 50256, 50259); // 'state 392' -> number..template_string -> shift (target=399, len=0)
-actionsTable[50266] = 798; // 'state 392' -> regex -> shift (target=399, len=0)
+actionsTable[50254] = 33638; // 'state 392' -> identifier -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 50256, 50259); // 'state 392' -> number..template_string -> shift+reduce (target=179, len=1)
+actionsTable[50266] = 33638; // 'state 392' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[50331] = 164; // 'state 393' -> : -> shift (target=82, len=0)
 actionsTable[50357] = 164; // 'state 393' -> ?: -> shift (target=82, len=0)
-actionsTable.fill(798, 50432, 50437); // 'state 394' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 50432, 50437); // 'state 394' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[50437] = 2; // 'state 394' -> { -> shift (target=1, len=0)
 actionsTable[50438] = 2273; // 'state 394' -> } -> reduce (target=112, len=4)
 actionsTable[50439] = 800; // 'state 394' -> if -> shift (target=400, len=0)
@@ -6519,7 +6515,7 @@ actionsTable[50443] = 802; // 'state 394' -> while -> shift (target=401, len=0)
 actionsTable[50444] = 6; // 'state 394' -> do -> shift (target=3, len=0)
 actionsTable[50446] = 804; // 'state 394' -> for -> shift (target=402, len=0)
 actionsTable.fill(8, 50447, 50450); // 'state 394' -> const..var -> shift (target=4, len=0)
-actionsTable[50450] = 806; // 'state 394' -> of -> shift (target=403, len=0)
+actionsTable[50450] = 33636; // 'state 394' -> of -> shift+reduce (target=178, len=1)
 actionsTable[50452] = 10; // 'state 394' -> return -> shift (target=5, len=0)
 actionsTable[50453] = 12; // 'state 394' -> throw -> shift (target=6, len=0)
 actionsTable[50454] = 14; // 'state 394' -> try -> shift (target=7, len=0)
@@ -6529,13 +6525,13 @@ actionsTable[50460] = 2273; // 'state 394' -> default -> reduce (target=112, len
 actionsTable[50461] = 810; // 'state 394' -> break -> shift (target=405, len=0)
 actionsTable[50462] = 812; // 'state 394' -> continue -> shift (target=406, len=0)
 actionsTable[50463] = 16; // 'state 394' -> import -> shift (target=8, len=0)
-actionsTable[50464] = 806; // 'state 394' -> from -> shift (target=403, len=0)
+actionsTable[50464] = 33636; // 'state 394' -> from -> shift+reduce (target=178, len=1)
 actionsTable[50468] = 814; // 'state 394' -> type -> shift (target=407, len=0)
 actionsTable[50469] = 18; // 'state 394' -> export -> shift (target=9, len=0)
 actionsTable[50473] = 20; // 'state 394' -> [ -> shift (target=10, len=0)
 actionsTable[50475] = 22; // 'state 394' -> async -> shift (target=11, len=0)
 actionsTable[50476] = 24; // 'state 394' -> function -> shift (target=12, len=0)
-actionsTable.fill(806, 50479, 50481); // 'state 394' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 50479, 50481); // 'state 394' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[50481] = 26; // 'state 394' -> class -> shift (target=13, len=0)
 actionsTable[50484] = 816; // 'state 394' -> interface -> shift (target=408, len=0)
 actionsTable[50486] = 28; // 'state 394' -> < -> shift (target=14, len=0)
@@ -6545,21 +6541,21 @@ actionsTable.fill(30, 50501, 50503); // 'state 394' -> +..- -> shift (target=15,
 actionsTable.fill(30, 50504, 50507); // 'state 394' -> !..delete -> shift (target=15, len=0)
 actionsTable[50507] = 34; // 'state 394' -> await -> shift (target=17, len=0)
 actionsTable[50510] = 818; // 'state 394' -> identifier -> shift (target=409, len=0)
-actionsTable.fill(798, 50512, 50515); // 'state 394' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 50512, 50515); // 'state 394' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[50521] = 36; // 'state 394' -> update_operator -> shift (target=18, len=0)
-actionsTable[50522] = 798; // 'state 394' -> regex -> shift (target=399, len=0)
-actionsTable.fill(798, 50560, 50565); // 'state 395' -> true..super -> shift (target=399, len=0)
+actionsTable[50522] = 33638; // 'state 394' -> regex -> shift+reduce (target=179, len=1)
+actionsTable.fill(33638, 50560, 50565); // 'state 395' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[50565] = 562; // 'state 395' -> { -> shift (target=281, len=0)
 actionsTable[50568] = 4; // 'state 395' -> ( -> shift (target=2, len=0)
 actionsTable[50569] = 1004; // 'state 395' -> ) -> shift (target=502, len=0)
-actionsTable[50578] = 806; // 'state 395' -> of -> shift (target=403, len=0)
-actionsTable[50592] = 806; // 'state 395' -> from -> shift (target=403, len=0)
-actionsTable[50596] = 806; // 'state 395' -> type -> shift (target=403, len=0)
+actionsTable[50578] = 33636; // 'state 395' -> of -> shift+reduce (target=178, len=1)
+actionsTable[50592] = 33636; // 'state 395' -> from -> shift+reduce (target=178, len=1)
+actionsTable[50596] = 33636; // 'state 395' -> type -> shift+reduce (target=178, len=1)
 actionsTable[50600] = 794; // 'state 395' -> ... -> shift (target=397, len=0)
 actionsTable[50601] = 566; // 'state 395' -> [ -> shift (target=283, len=0)
 actionsTable[50603] = 796; // 'state 395' -> async -> shift (target=398, len=0)
 actionsTable[50604] = 72; // 'state 395' -> function -> shift (target=36, len=0)
-actionsTable.fill(1008, 50605, 50607); // 'state 395' -> static..readonly -> shift (target=504, len=0)
+actionsTable.fill(33564, 50605, 50607); // 'state 395' -> static..readonly -> shift+reduce (target=142, len=1)
 actionsTable.fill(1020, 50607, 50609); // 'state 395' -> get..set -> shift (target=510, len=0)
 actionsTable[50609] = 74; // 'state 395' -> class -> shift (target=37, len=0)
 actionsTable[50614] = 28; // 'state 395' -> < -> shift (target=14, len=0)
@@ -6569,22 +6565,22 @@ actionsTable.fill(30, 50629, 50631); // 'state 395' -> +..- -> shift (target=15,
 actionsTable.fill(30, 50632, 50635); // 'state 395' -> !..delete -> shift (target=15, len=0)
 actionsTable[50635] = 34; // 'state 395' -> await -> shift (target=17, len=0)
 actionsTable[50638] = 1360; // 'state 395' -> identifier -> shift (target=680, len=0)
-actionsTable.fill(798, 50640, 50643); // 'state 395' -> number..template_string -> shift (target=399, len=0)
-actionsTable[50643] = 1008; // 'state 395' -> accessibility_modifier -> shift (target=504, len=0)
+actionsTable.fill(33638, 50640, 50643); // 'state 395' -> number..template_string -> shift+reduce (target=179, len=1)
+actionsTable[50643] = 33564; // 'state 395' -> accessibility_modifier -> shift+reduce (target=142, len=1)
 actionsTable[50649] = 36; // 'state 395' -> update_operator -> shift (target=18, len=0)
-actionsTable[50650] = 798; // 'state 395' -> regex -> shift (target=399, len=0)
+actionsTable[50650] = 33638; // 'state 395' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[50715] = 164; // 'state 396' -> : -> shift (target=82, len=0)
 actionsTable[50741] = 164; // 'state 396' -> ?: -> shift (target=82, len=0)
-actionsTable.fill(798, 50816, 50821); // 'state 397' -> true..super -> shift (target=399, len=0)
+actionsTable.fill(33638, 50816, 50821); // 'state 397' -> true..super -> shift+reduce (target=179, len=1)
 actionsTable[50821] = 562; // 'state 397' -> { -> shift (target=281, len=0)
 actionsTable[50824] = 4; // 'state 397' -> ( -> shift (target=2, len=0)
-actionsTable[50834] = 806; // 'state 397' -> of -> shift (target=403, len=0)
-actionsTable[50848] = 806; // 'state 397' -> from -> shift (target=403, len=0)
-actionsTable[50852] = 806; // 'state 397' -> type -> shift (target=403, len=0)
+actionsTable[50834] = 33636; // 'state 397' -> of -> shift+reduce (target=178, len=1)
+actionsTable[50848] = 33636; // 'state 397' -> from -> shift+reduce (target=178, len=1)
+actionsTable[50852] = 33636; // 'state 397' -> type -> shift+reduce (target=178, len=1)
 actionsTable[50857] = 566; // 'state 397' -> [ -> shift (target=283, len=0)
 actionsTable[50859] = 70; // 'state 397' -> async -> shift (target=35, len=0)
 actionsTable[50860] = 72; // 'state 397' -> function -> shift (target=36, len=0)
-actionsTable.fill(806, 50863, 50865); // 'state 397' -> get..set -> shift (target=403, len=0)
+actionsTable.fill(33636, 50863, 50865); // 'state 397' -> get..set -> shift+reduce (target=178, len=1)
 actionsTable[50865] = 74; // 'state 397' -> class -> shift (target=37, len=0)
 actionsTable[50870] = 28; // 'state 397' -> < -> shift (target=14, len=0)
 actionsTable.fill(30, 50875, 50877); // 'state 397' -> void..typeof -> shift (target=15, len=0)
@@ -6593,9 +6589,9 @@ actionsTable.fill(30, 50885, 50887); // 'state 397' -> +..- -> shift (target=15,
 actionsTable.fill(30, 50888, 50891); // 'state 397' -> !..delete -> shift (target=15, len=0)
 actionsTable[50891] = 34; // 'state 397' -> await -> shift (target=17, len=0)
 actionsTable[50894] = 1360; // 'state 397' -> identifier -> shift (target=680, len=0)
-actionsTable.fill(798, 50896, 50899); // 'state 397' -> number..template_string -> shift (target=399, len=0)
+actionsTable.fill(33638, 50896, 50899); // 'state 397' -> number..template_string -> shift+reduce (target=179, len=1)
 actionsTable[50905] = 36; // 'state 397' -> update_operator -> shift (target=18, len=0)
-actionsTable[50906] = 798; // 'state 397' -> regex -> shift (target=399, len=0)
+actionsTable[50906] = 33638; // 'state 397' -> regex -> shift+reduce (target=179, len=1)
 actionsTable[50949] = 797; // 'state 398' -> { -> reduce (target=142, len=1)
 actionsTable[50952] = 130; // 'state 398' -> ( -> shift (target=65, len=0)
 actionsTable[50953] = 869; // 'state 398' -> ) -> reduce (target=178, len=1)
@@ -10182,2389 +10178,2389 @@ actionsTable[95806] = 3937; // 'state 748' -> new -> reduce (target=176, len=7)
 actionsTable[95822] = 3937; // 'state 748' -> identifier -> reduce (target=176, len=7)
 actionsTable.fill(3937, 95824, 95826); // 'state 748' -> number..string -> reduce (target=176, len=7)
 
-const gotoTable = new Uint16Array(51168);
-gotoTable[95] = 19; // 'state 19'
-gotoTable[96] = 410; // 'state 410'
-gotoTable.fill(411, 98, 107); // 'state 411'
-gotoTable[109] = 411; // 'state 411'
-gotoTable.fill(411, 114, 118); // 'state 411'
-gotoTable[118] = 412; // 'state 412'
-gotoTable[124] = 412; // 'state 412'
-gotoTable[126] = 412; // 'state 412'
-gotoTable[135] = 412; // 'state 412'
-gotoTable[140] = 20; // 'state 20'
-gotoTable[143] = 412; // 'state 412'
-gotoTable[151] = 412; // 'state 412'
-gotoTable[153] = 412; // 'state 412'
-gotoTable[156] = 21; // 'state 21'
-gotoTable[177] = 22; // 'state 22'
-gotoTable[178] = 413; // 'state 413'
-gotoTable[179] = 414; // 'state 414'
-gotoTable[181] = 23; // 'state 23'
-gotoTable[182] = 415; // 'state 415'
-gotoTable.fill(414, 183, 194); // 'state 414'
-gotoTable.fill(416, 194, 196); // 'state 416'
-gotoTable[200] = 413; // 'state 413'
-gotoTable[202] = 413; // 'state 413'
-gotoTable.fill(399, 209, 211); // 'state 399'
-gotoTable[224] = 421; // 'state 421'
-gotoTable[225] = 28; // 'state 28'
-gotoTable.fill(411, 226, 235); // 'state 411'
-gotoTable[237] = 411; // 'state 411'
-gotoTable.fill(411, 242, 246); // 'state 411'
-gotoTable[246] = 412; // 'state 412'
-gotoTable[252] = 412; // 'state 412'
-gotoTable[254] = 412; // 'state 412'
-gotoTable[263] = 412; // 'state 412'
-gotoTable[268] = 20; // 'state 20'
-gotoTable[271] = 412; // 'state 412'
-gotoTable[279] = 412; // 'state 412'
-gotoTable[281] = 412; // 'state 412'
-gotoTable[284] = 21; // 'state 21'
-gotoTable[305] = 22; // 'state 22'
-gotoTable[306] = 422; // 'state 422'
-gotoTable[307] = 414; // 'state 414'
-gotoTable[309] = 23; // 'state 23'
-gotoTable[310] = 415; // 'state 415'
-gotoTable.fill(414, 311, 322); // 'state 414'
-gotoTable.fill(416, 322, 324); // 'state 416'
-gotoTable[326] = 423; // 'state 423'
-gotoTable[328] = 413; // 'state 413'
-gotoTable[330] = 413; // 'state 413'
-gotoTable[331] = 29; // 'state 29'
-gotoTable.fill(423, 332, 335); // 'state 423'
-gotoTable[335] = 30; // 'state 30'
-gotoTable[336] = 424; // 'state 424'
-gotoTable.fill(399, 337, 339); // 'state 399'
-gotoTable[396] = 20; // 'state 20'
-gotoTable[397] = 87; // 'state 87'
-gotoTable[412] = 21; // 'state 21'
-gotoTable[433] = 88; // 'state 88'
-gotoTable[434] = 413; // 'state 413'
-gotoTable[435] = 414; // 'state 414'
-gotoTable[437] = 23; // 'state 23'
-gotoTable[438] = 415; // 'state 415'
-gotoTable.fill(414, 439, 450); // 'state 414'
-gotoTable.fill(416, 450, 452); // 'state 416'
-gotoTable[453] = 89; // 'state 89'
-gotoTable[454] = 451; // 'state 451'
-gotoTable[456] = 90; // 'state 90'
-gotoTable[458] = 90; // 'state 90'
-gotoTable.fill(399, 465, 467); // 'state 399'
-gotoTable[480] = 425; // 'state 425'
-gotoTable.fill(411, 482, 491); // 'state 411'
-gotoTable[493] = 411; // 'state 411'
-gotoTable.fill(411, 498, 502); // 'state 411'
-gotoTable[502] = 412; // 'state 412'
-gotoTable[508] = 412; // 'state 412'
-gotoTable[510] = 412; // 'state 412'
-gotoTable[519] = 412; // 'state 412'
-gotoTable[524] = 20; // 'state 20'
-gotoTable[527] = 412; // 'state 412'
-gotoTable[535] = 412; // 'state 412'
-gotoTable[537] = 412; // 'state 412'
-gotoTable[540] = 21; // 'state 21'
-gotoTable[561] = 22; // 'state 22'
-gotoTable[562] = 413; // 'state 413'
-gotoTable[563] = 414; // 'state 414'
-gotoTable[565] = 23; // 'state 23'
-gotoTable[566] = 415; // 'state 415'
-gotoTable.fill(414, 567, 578); // 'state 414'
-gotoTable.fill(416, 578, 580); // 'state 416'
-gotoTable[584] = 413; // 'state 413'
-gotoTable[586] = 413; // 'state 413'
-gotoTable.fill(399, 593, 595); // 'state 399'
-gotoTable[639] = 63; // 'state 63'
-gotoTable[640] = 64; // 'state 64'
-gotoTable[642] = 447; // 'state 447'
-gotoTable[645] = 447; // 'state 447'
-gotoTable[780] = 20; // 'state 20'
-gotoTable[796] = 21; // 'state 21'
-gotoTable[817] = 38; // 'state 38'
-gotoTable[818] = 413; // 'state 413'
-gotoTable[819] = 414; // 'state 414'
-gotoTable[821] = 23; // 'state 23'
-gotoTable[822] = 415; // 'state 415'
-gotoTable.fill(414, 823, 834); // 'state 414'
-gotoTable.fill(416, 834, 836); // 'state 416'
-gotoTable[840] = 413; // 'state 413'
-gotoTable[842] = 413; // 'state 413'
-gotoTable.fill(399, 849, 851); // 'state 399'
-gotoTable[908] = 20; // 'state 20'
-gotoTable[924] = 21; // 'state 21'
-gotoTable[945] = 39; // 'state 39'
-gotoTable[946] = 413; // 'state 413'
-gotoTable[947] = 414; // 'state 414'
-gotoTable[949] = 23; // 'state 23'
-gotoTable[950] = 415; // 'state 415'
-gotoTable.fill(414, 951, 962); // 'state 414'
-gotoTable.fill(416, 962, 964); // 'state 416'
-gotoTable[968] = 413; // 'state 413'
-gotoTable[970] = 413; // 'state 413'
-gotoTable.fill(399, 977, 979); // 'state 399'
-gotoTable[994] = 41; // 'state 41'
-gotoTable[1143] = 438; // 'state 438'
-gotoTable[1144] = 439; // 'state 439'
-gotoTable[1146] = 439; // 'state 439'
-gotoTable[1269] = 445; // 'state 445'
-gotoTable[1270] = 412; // 'state 412'
-gotoTable[1274] = 446; // 'state 446'
-gotoTable[1276] = 412; // 'state 412'
-gotoTable[1278] = 412; // 'state 412'
-gotoTable[1287] = 412; // 'state 412'
-gotoTable[1295] = 412; // 'state 412'
-gotoTable[1303] = 412; // 'state 412'
-gotoTable[1305] = 412; // 'state 412'
-gotoTable[1420] = 20; // 'state 20'
-gotoTable[1436] = 21; // 'state 21'
-gotoTable[1457] = 88; // 'state 88'
-gotoTable[1458] = 413; // 'state 413'
-gotoTable[1459] = 414; // 'state 414'
-gotoTable[1461] = 23; // 'state 23'
-gotoTable[1462] = 415; // 'state 415'
-gotoTable.fill(414, 1463, 1474); // 'state 414'
-gotoTable.fill(416, 1474, 1476); // 'state 416'
-gotoTable[1477] = 97; // 'state 97'
-gotoTable[1478] = 451; // 'state 451'
-gotoTable[1480] = 413; // 'state 413'
-gotoTable[1482] = 413; // 'state 413'
-gotoTable.fill(399, 1489, 1491); // 'state 399'
-gotoTable[1548] = 67; // 'state 67'
-gotoTable[1564] = 68; // 'state 68'
-gotoTable[1589] = 67; // 'state 67'
-gotoTable[1673] = 71; // 'state 71'
-gotoTable[1692] = 72; // 'state 72'
-gotoTable[1808] = 77; // 'state 77'
-gotoTable[1810] = 449; // 'state 449'
-gotoTable[1812] = 450; // 'state 450'
-gotoTable[1820] = 78; // 'state 78'
-gotoTable[1949] = 98; // 'state 98'
-gotoTable[2060] = 20; // 'state 20'
-gotoTable[2076] = 21; // 'state 21'
-gotoTable[2097] = 91; // 'state 91'
-gotoTable[2098] = 413; // 'state 413'
-gotoTable[2099] = 414; // 'state 414'
-gotoTable[2101] = 23; // 'state 23'
-gotoTable[2102] = 415; // 'state 415'
-gotoTable.fill(414, 2103, 2114); // 'state 414'
-gotoTable.fill(416, 2114, 2116); // 'state 416'
-gotoTable[2120] = 413; // 'state 413'
-gotoTable[2122] = 413; // 'state 413'
-gotoTable.fill(399, 2129, 2131); // 'state 399'
-gotoTable[2226] = 399; // 'state 399'
-gotoTable[2227] = 95; // 'state 95'
-gotoTable[2229] = 399; // 'state 399'
-gotoTable[2248] = 399; // 'state 399'
-gotoTable[2250] = 399; // 'state 399'
-gotoTable.fill(399, 2257, 2259); // 'state 399'
-gotoTable[2316] = 20; // 'state 20'
-gotoTable[2332] = 21; // 'state 21'
-gotoTable[2353] = 93; // 'state 93'
-gotoTable[2354] = 413; // 'state 413'
-gotoTable[2355] = 414; // 'state 414'
-gotoTable[2357] = 23; // 'state 23'
-gotoTable[2358] = 415; // 'state 415'
-gotoTable.fill(414, 2359, 2370); // 'state 414'
-gotoTable.fill(416, 2370, 2372); // 'state 416'
-gotoTable[2376] = 413; // 'state 413'
-gotoTable[2378] = 413; // 'state 413'
-gotoTable.fill(399, 2385, 2387); // 'state 399'
-gotoTable[2444] = 20; // 'state 20'
-gotoTable[2460] = 21; // 'state 21'
-gotoTable[2481] = 92; // 'state 92'
-gotoTable[2482] = 413; // 'state 413'
-gotoTable[2483] = 414; // 'state 414'
-gotoTable[2485] = 23; // 'state 23'
-gotoTable[2486] = 415; // 'state 415'
-gotoTable.fill(414, 2487, 2498); // 'state 414'
-gotoTable.fill(416, 2498, 2500); // 'state 416'
-gotoTable[2504] = 413; // 'state 413'
-gotoTable[2506] = 413; // 'state 413'
-gotoTable.fill(399, 2513, 2515); // 'state 399'
-gotoTable[2528] = 417; // 'state 417'
-gotoTable.fill(411, 2530, 2539); // 'state 411'
-gotoTable[2541] = 411; // 'state 411'
-gotoTable.fill(411, 2546, 2550); // 'state 411'
-gotoTable[2550] = 412; // 'state 412'
-gotoTable[2556] = 412; // 'state 412'
-gotoTable[2558] = 412; // 'state 412'
-gotoTable[2567] = 412; // 'state 412'
-gotoTable[2572] = 20; // 'state 20'
-gotoTable[2575] = 412; // 'state 412'
-gotoTable[2583] = 412; // 'state 412'
-gotoTable[2585] = 412; // 'state 412'
-gotoTable[2588] = 21; // 'state 21'
-gotoTable[2609] = 22; // 'state 22'
-gotoTable[2610] = 413; // 'state 413'
-gotoTable[2611] = 414; // 'state 414'
-gotoTable[2613] = 23; // 'state 23'
-gotoTable[2614] = 415; // 'state 415'
-gotoTable.fill(414, 2615, 2626); // 'state 414'
-gotoTable.fill(416, 2626, 2628); // 'state 416'
-gotoTable[2632] = 413; // 'state 413'
-gotoTable[2634] = 413; // 'state 413'
-gotoTable.fill(399, 2641, 2643); // 'state 399'
-gotoTable[2714] = 448; // 'state 448'
-gotoTable[2825] = 67; // 'state 67'
-gotoTable[3012] = 434; // 'state 434'
-gotoTable[3098] = 448; // 'state 448'
-gotoTable[3212] = 20; // 'state 20'
-gotoTable[3228] = 21; // 'state 21'
-gotoTable[3249] = 106; // 'state 106'
-gotoTable[3250] = 413; // 'state 413'
-gotoTable[3251] = 414; // 'state 414'
-gotoTable[3253] = 23; // 'state 23'
-gotoTable[3254] = 415; // 'state 415'
-gotoTable.fill(414, 3255, 3266); // 'state 414'
-gotoTable.fill(416, 3266, 3268); // 'state 416'
-gotoTable[3272] = 413; // 'state 413'
-gotoTable[3274] = 413; // 'state 413'
-gotoTable.fill(399, 3281, 3283); // 'state 399'
-gotoTable[3340] = 20; // 'state 20'
-gotoTable[3356] = 21; // 'state 21'
-gotoTable[3377] = 101; // 'state 101'
-gotoTable[3378] = 413; // 'state 413'
-gotoTable[3379] = 414; // 'state 414'
-gotoTable[3381] = 23; // 'state 23'
-gotoTable[3382] = 415; // 'state 415'
-gotoTable.fill(414, 3383, 3394); // 'state 414'
-gotoTable.fill(416, 3394, 3396); // 'state 416'
-gotoTable[3397] = 97; // 'state 97'
-gotoTable[3398] = 451; // 'state 451'
-gotoTable[3400] = 413; // 'state 413'
-gotoTable[3402] = 413; // 'state 413'
-gotoTable.fill(399, 3409, 3411); // 'state 399'
-gotoTable[3468] = 67; // 'state 67'
-gotoTable[3484] = 68; // 'state 68'
-gotoTable[3506] = 424; // 'state 424'
-gotoTable[3509] = 67; // 'state 67'
-gotoTable[3535] = 100; // 'state 100'
-gotoTable[3536] = 424; // 'state 424'
-gotoTable[3634] = 424; // 'state 424'
-gotoTable[3663] = 100; // 'state 100'
-gotoTable[3664] = 424; // 'state 424'
-gotoTable[3680] = 456; // 'state 456'
-gotoTable.fill(411, 3682, 3691); // 'state 411'
-gotoTable[3693] = 411; // 'state 411'
-gotoTable.fill(411, 3698, 3702); // 'state 411'
-gotoTable[3702] = 412; // 'state 412'
-gotoTable[3708] = 412; // 'state 412'
-gotoTable[3710] = 412; // 'state 412'
-gotoTable[3719] = 412; // 'state 412'
-gotoTable[3724] = 20; // 'state 20'
-gotoTable[3727] = 412; // 'state 412'
-gotoTable[3735] = 412; // 'state 412'
-gotoTable[3737] = 412; // 'state 412'
-gotoTable[3740] = 21; // 'state 21'
-gotoTable[3761] = 22; // 'state 22'
-gotoTable[3762] = 413; // 'state 413'
-gotoTable[3763] = 414; // 'state 414'
-gotoTable[3765] = 23; // 'state 23'
-gotoTable[3766] = 415; // 'state 415'
-gotoTable.fill(414, 3767, 3778); // 'state 414'
-gotoTable.fill(416, 3778, 3780); // 'state 416'
-gotoTable[3784] = 413; // 'state 413'
-gotoTable[3786] = 413; // 'state 413'
-gotoTable.fill(399, 3793, 3795); // 'state 399'
-gotoTable[3913] = 461; // 'state 461'
-gotoTable[3977] = 104; // 'state 104'
-gotoTable[3996] = 105; // 'state 105'
-gotoTable[4108] = 20; // 'state 20'
-gotoTable[4124] = 21; // 'state 21'
-gotoTable[4145] = 107; // 'state 107'
-gotoTable[4146] = 413; // 'state 413'
-gotoTable[4147] = 414; // 'state 414'
-gotoTable[4149] = 23; // 'state 23'
-gotoTable[4150] = 415; // 'state 415'
-gotoTable.fill(414, 4151, 4162); // 'state 414'
-gotoTable.fill(416, 4162, 4164); // 'state 416'
-gotoTable[4168] = 413; // 'state 413'
-gotoTable[4170] = 413; // 'state 413'
-gotoTable.fill(399, 4177, 4179); // 'state 399'
-gotoTable[4236] = 20; // 'state 20'
-gotoTable[4252] = 21; // 'state 21'
-gotoTable[4273] = 108; // 'state 108'
-gotoTable[4274] = 413; // 'state 413'
-gotoTable[4275] = 414; // 'state 414'
-gotoTable[4277] = 23; // 'state 23'
-gotoTable[4278] = 415; // 'state 415'
-gotoTable.fill(414, 4279, 4290); // 'state 414'
-gotoTable.fill(416, 4290, 4292); // 'state 416'
-gotoTable[4296] = 413; // 'state 413'
-gotoTable[4298] = 413; // 'state 413'
-gotoTable.fill(399, 4305, 4307); // 'state 399'
-gotoTable[4350] = 109; // 'state 109'
-gotoTable[4364] = 20; // 'state 20'
-gotoTable[4380] = 21; // 'state 21'
-gotoTable[4401] = 111; // 'state 111'
-gotoTable[4402] = 413; // 'state 413'
-gotoTable[4403] = 414; // 'state 414'
-gotoTable[4405] = 23; // 'state 23'
-gotoTable[4406] = 415; // 'state 415'
-gotoTable.fill(414, 4407, 4418); // 'state 414'
-gotoTable.fill(416, 4418, 4420); // 'state 416'
-gotoTable[4424] = 413; // 'state 413'
-gotoTable[4426] = 413; // 'state 413'
-gotoTable.fill(399, 4433, 4435); // 'state 399'
-gotoTable[4530] = 465; // 'state 465'
-gotoTable[4550] = 423; // 'state 423'
-gotoTable[4555] = 29; // 'state 29'
-gotoTable.fill(423, 4556, 4559); // 'state 423'
-gotoTable[4559] = 30; // 'state 30'
-gotoTable[4560] = 424; // 'state 424'
-gotoTable[4620] = 67; // 'state 67'
-gotoTable[4636] = 68; // 'state 68'
-gotoTable[4661] = 67; // 'state 67'
-gotoTable[4745] = 71; // 'state 71'
-gotoTable[4764] = 72; // 'state 72'
-gotoTable[4880] = 77; // 'state 77'
-gotoTable[4882] = 449; // 'state 449'
-gotoTable[4884] = 450; // 'state 450'
-gotoTable[4892] = 78; // 'state 78'
-gotoTable[5060] = 434; // 'state 434'
-gotoTable[5188] = 434; // 'state 434'
-gotoTable[5216] = 421; // 'state 421'
-gotoTable[5217] = 28; // 'state 28'
-gotoTable.fill(411, 5218, 5227); // 'state 411'
-gotoTable[5229] = 411; // 'state 411'
-gotoTable.fill(411, 5234, 5238); // 'state 411'
-gotoTable[5238] = 412; // 'state 412'
-gotoTable[5244] = 412; // 'state 412'
-gotoTable[5246] = 412; // 'state 412'
-gotoTable[5255] = 412; // 'state 412'
-gotoTable[5260] = 20; // 'state 20'
-gotoTable[5263] = 412; // 'state 412'
-gotoTable[5271] = 412; // 'state 412'
-gotoTable[5273] = 412; // 'state 412'
-gotoTable[5276] = 21; // 'state 21'
-gotoTable[5297] = 22; // 'state 22'
-gotoTable[5298] = 413; // 'state 413'
-gotoTable[5299] = 414; // 'state 414'
-gotoTable[5301] = 23; // 'state 23'
-gotoTable[5302] = 415; // 'state 415'
-gotoTable.fill(414, 5303, 5314); // 'state 414'
-gotoTable.fill(416, 5314, 5316); // 'state 416'
-gotoTable[5320] = 413; // 'state 413'
-gotoTable[5322] = 413; // 'state 413'
-gotoTable.fill(399, 5329, 5331); // 'state 399'
-gotoTable[5355] = 118; // 'state 118'
-gotoTable[5356] = 467; // 'state 467'
-gotoTable[5516] = 20; // 'state 20'
-gotoTable[5532] = 21; // 'state 21'
-gotoTable[5553] = 119; // 'state 119'
-gotoTable[5554] = 413; // 'state 413'
-gotoTable[5555] = 414; // 'state 414'
-gotoTable[5557] = 23; // 'state 23'
-gotoTable[5558] = 415; // 'state 415'
-gotoTable.fill(414, 5559, 5570); // 'state 414'
-gotoTable.fill(416, 5570, 5572); // 'state 416'
-gotoTable[5576] = 413; // 'state 413'
-gotoTable[5578] = 413; // 'state 413'
-gotoTable.fill(399, 5585, 5587); // 'state 399'
-gotoTable[5644] = 20; // 'state 20'
-gotoTable[5660] = 21; // 'state 21'
-gotoTable[5681] = 88; // 'state 88'
-gotoTable[5682] = 413; // 'state 413'
-gotoTable[5683] = 414; // 'state 414'
-gotoTable[5685] = 23; // 'state 23'
-gotoTable[5686] = 415; // 'state 415'
-gotoTable.fill(414, 5687, 5698); // 'state 414'
-gotoTable.fill(416, 5698, 5700); // 'state 416'
-gotoTable[5701] = 138; // 'state 138'
-gotoTable[5702] = 451; // 'state 451'
-gotoTable[5704] = 413; // 'state 413'
-gotoTable[5706] = 413; // 'state 413'
-gotoTable.fill(399, 5713, 5715); // 'state 399'
-gotoTable[5772] = 20; // 'state 20'
-gotoTable[5788] = 21; // 'state 21'
-gotoTable[5809] = 127; // 'state 127'
-gotoTable[5810] = 413; // 'state 413'
-gotoTable[5811] = 414; // 'state 414'
-gotoTable[5813] = 23; // 'state 23'
-gotoTable[5814] = 415; // 'state 415'
-gotoTable.fill(414, 5815, 5826); // 'state 414'
-gotoTable.fill(416, 5826, 5828); // 'state 416'
-gotoTable[5832] = 413; // 'state 413'
-gotoTable[5834] = 413; // 'state 413'
-gotoTable.fill(399, 5841, 5843); // 'state 399'
-gotoTable[5900] = 20; // 'state 20'
-gotoTable[5916] = 21; // 'state 21'
-gotoTable[5937] = 130; // 'state 130'
-gotoTable[5938] = 413; // 'state 413'
-gotoTable[5939] = 414; // 'state 414'
-gotoTable[5941] = 23; // 'state 23'
-gotoTable[5942] = 415; // 'state 415'
-gotoTable.fill(414, 5943, 5954); // 'state 414'
-gotoTable.fill(416, 5954, 5956); // 'state 416'
-gotoTable[5960] = 413; // 'state 413'
-gotoTable[5962] = 413; // 'state 413'
-gotoTable.fill(399, 5969, 5971); // 'state 399'
-gotoTable[6028] = 473; // 'state 473'
-gotoTable[6044] = 136; // 'state 136'
-gotoTable[6047] = 474; // 'state 474'
-gotoTable.fill(475, 6048, 6051); // 'state 475'
-gotoTable[6051] = 476; // 'state 476'
-gotoTable.fill(471, 6052, 6056); // 'state 471'
-gotoTable[6056] = 477; // 'state 477'
-gotoTable.fill(471, 6057, 6059); // 'state 471'
-gotoTable[6060] = 471; // 'state 471'
-gotoTable[6156] = 20; // 'state 20'
-gotoTable[6172] = 21; // 'state 21'
-gotoTable[6193] = 139; // 'state 139'
-gotoTable[6194] = 413; // 'state 413'
-gotoTable[6195] = 414; // 'state 414'
-gotoTable[6197] = 23; // 'state 23'
-gotoTable[6198] = 415; // 'state 415'
-gotoTable.fill(414, 6199, 6210); // 'state 414'
-gotoTable.fill(416, 6210, 6212); // 'state 416'
-gotoTable[6216] = 413; // 'state 413'
-gotoTable[6218] = 413; // 'state 413'
-gotoTable.fill(399, 6225, 6227); // 'state 399'
-gotoTable[6284] = 20; // 'state 20'
-gotoTable[6300] = 21; // 'state 21'
-gotoTable[6321] = 123; // 'state 123'
-gotoTable[6322] = 413; // 'state 413'
-gotoTable[6323] = 414; // 'state 414'
-gotoTable[6325] = 23; // 'state 23'
-gotoTable[6326] = 415; // 'state 415'
-gotoTable.fill(414, 6327, 6338); // 'state 414'
-gotoTable.fill(416, 6338, 6340); // 'state 416'
-gotoTable[6344] = 413; // 'state 413'
-gotoTable[6346] = 413; // 'state 413'
-gotoTable.fill(399, 6353, 6355); // 'state 399'
-gotoTable[6412] = 20; // 'state 20'
-gotoTable[6428] = 21; // 'state 21'
-gotoTable[6449] = 125; // 'state 125'
-gotoTable[6450] = 413; // 'state 413'
-gotoTable[6451] = 414; // 'state 414'
-gotoTable[6453] = 23; // 'state 23'
-gotoTable[6454] = 415; // 'state 415'
-gotoTable.fill(414, 6455, 6466); // 'state 414'
-gotoTable.fill(416, 6466, 6468); // 'state 416'
-gotoTable[6472] = 413; // 'state 413'
-gotoTable[6474] = 413; // 'state 413'
-gotoTable.fill(399, 6481, 6483); // 'state 399'
-gotoTable[6540] = 20; // 'state 20'
-gotoTable[6556] = 21; // 'state 21'
-gotoTable[6577] = 120; // 'state 120'
-gotoTable[6578] = 413; // 'state 413'
-gotoTable[6579] = 414; // 'state 414'
-gotoTable[6581] = 23; // 'state 23'
-gotoTable[6582] = 415; // 'state 415'
-gotoTable.fill(414, 6583, 6594); // 'state 414'
-gotoTable.fill(416, 6594, 6596); // 'state 416'
-gotoTable[6600] = 413; // 'state 413'
-gotoTable[6602] = 413; // 'state 413'
-gotoTable.fill(399, 6609, 6611); // 'state 399'
-gotoTable[6668] = 20; // 'state 20'
-gotoTable[6684] = 21; // 'state 21'
-gotoTable[6705] = 121; // 'state 121'
-gotoTable[6706] = 413; // 'state 413'
-gotoTable[6707] = 414; // 'state 414'
-gotoTable[6709] = 23; // 'state 23'
-gotoTable[6710] = 415; // 'state 415'
-gotoTable.fill(414, 6711, 6722); // 'state 414'
-gotoTable.fill(416, 6722, 6724); // 'state 416'
-gotoTable[6728] = 413; // 'state 413'
-gotoTable[6730] = 413; // 'state 413'
-gotoTable.fill(399, 6737, 6739); // 'state 399'
-gotoTable[6796] = 20; // 'state 20'
-gotoTable[6812] = 21; // 'state 21'
-gotoTable[6833] = 122; // 'state 122'
-gotoTable[6834] = 413; // 'state 413'
-gotoTable[6835] = 414; // 'state 414'
-gotoTable[6837] = 23; // 'state 23'
-gotoTable[6838] = 415; // 'state 415'
-gotoTable.fill(414, 6839, 6850); // 'state 414'
-gotoTable.fill(416, 6850, 6852); // 'state 416'
-gotoTable[6856] = 413; // 'state 413'
-gotoTable[6858] = 413; // 'state 413'
-gotoTable.fill(399, 6865, 6867); // 'state 399'
-gotoTable[6924] = 20; // 'state 20'
-gotoTable[6940] = 21; // 'state 21'
-gotoTable[6961] = 124; // 'state 124'
-gotoTable[6962] = 413; // 'state 413'
-gotoTable[6963] = 414; // 'state 414'
-gotoTable[6965] = 23; // 'state 23'
-gotoTable[6966] = 415; // 'state 415'
-gotoTable.fill(414, 6967, 6978); // 'state 414'
-gotoTable.fill(416, 6978, 6980); // 'state 416'
-gotoTable[6984] = 413; // 'state 413'
-gotoTable[6986] = 413; // 'state 413'
-gotoTable.fill(399, 6993, 6995); // 'state 399'
-gotoTable[7052] = 20; // 'state 20'
-gotoTable[7068] = 21; // 'state 21'
-gotoTable[7089] = 129; // 'state 129'
-gotoTable[7090] = 413; // 'state 413'
-gotoTable[7091] = 414; // 'state 414'
-gotoTable[7093] = 23; // 'state 23'
-gotoTable[7094] = 415; // 'state 415'
-gotoTable.fill(414, 7095, 7106); // 'state 414'
-gotoTable.fill(416, 7106, 7108); // 'state 416'
-gotoTable[7112] = 413; // 'state 413'
-gotoTable[7114] = 413; // 'state 413'
-gotoTable.fill(399, 7121, 7123); // 'state 399'
-gotoTable[7236] = 479; // 'state 479'
-gotoTable[7308] = 20; // 'state 20'
-gotoTable[7324] = 21; // 'state 21'
-gotoTable[7345] = 126; // 'state 126'
-gotoTable[7346] = 413; // 'state 413'
-gotoTable[7347] = 414; // 'state 414'
-gotoTable[7349] = 23; // 'state 23'
-gotoTable[7350] = 415; // 'state 415'
-gotoTable.fill(414, 7351, 7362); // 'state 414'
-gotoTable.fill(416, 7362, 7364); // 'state 416'
-gotoTable[7368] = 413; // 'state 413'
-gotoTable[7370] = 413; // 'state 413'
-gotoTable.fill(399, 7377, 7379); // 'state 399'
-gotoTable[7436] = 20; // 'state 20'
-gotoTable[7452] = 21; // 'state 21'
-gotoTable[7473] = 128; // 'state 128'
-gotoTable[7474] = 413; // 'state 413'
-gotoTable[7475] = 414; // 'state 414'
-gotoTable[7477] = 23; // 'state 23'
-gotoTable[7478] = 415; // 'state 415'
-gotoTable.fill(414, 7479, 7490); // 'state 414'
-gotoTable.fill(416, 7490, 7492); // 'state 416'
-gotoTable[7496] = 413; // 'state 413'
-gotoTable[7498] = 413; // 'state 413'
-gotoTable.fill(399, 7505, 7507); // 'state 399'
-gotoTable[7547] = 141; // 'state 141'
-gotoTable[7687] = 489; // 'state 489'
-gotoTable[7692] = 20; // 'state 20'
-gotoTable[7695] = 489; // 'state 489'
-gotoTable[7708] = 21; // 'state 21'
-gotoTable[7729] = 144; // 'state 144'
-gotoTable[7730] = 413; // 'state 413'
-gotoTable[7731] = 414; // 'state 414'
-gotoTable[7733] = 23; // 'state 23'
-gotoTable[7734] = 415; // 'state 415'
-gotoTable.fill(414, 7735, 7746); // 'state 414'
-gotoTable.fill(416, 7746, 7748); // 'state 416'
-gotoTable[7752] = 413; // 'state 413'
-gotoTable[7754] = 413; // 'state 413'
-gotoTable.fill(399, 7761, 7763); // 'state 399'
-gotoTable[7797] = 487; // 'state 487'
-gotoTable[7798] = 412; // 'state 412'
-gotoTable[7804] = 412; // 'state 412'
-gotoTable[7806] = 412; // 'state 412'
-gotoTable[7815] = 412; // 'state 412'
-gotoTable[7823] = 412; // 'state 412'
-gotoTable[7831] = 412; // 'state 412'
-gotoTable[7833] = 412; // 'state 412'
-gotoTable[7939] = 148; // 'state 148'
-gotoTable[7986] = 424; // 'state 424'
-gotoTable[8015] = 497; // 'state 497'
-gotoTable[8016] = 424; // 'state 424'
-gotoTable[8064] = 499; // 'state 499'
-gotoTable[8066] = 447; // 'state 447'
-gotoTable[8069] = 447; // 'state 447'
-gotoTable[8070] = 151; // 'state 151'
-gotoTable[8189] = 493; // 'state 493'
-gotoTable[8346] = 494; // 'state 494'
-gotoTable[8460] = 20; // 'state 20'
-gotoTable[8461] = 87; // 'state 87'
-gotoTable[8476] = 21; // 'state 21'
-gotoTable[8497] = 88; // 'state 88'
-gotoTable[8498] = 413; // 'state 413'
-gotoTable[8499] = 414; // 'state 414'
-gotoTable[8501] = 23; // 'state 23'
-gotoTable[8502] = 415; // 'state 415'
-gotoTable.fill(414, 8503, 8514); // 'state 414'
-gotoTable.fill(416, 8514, 8516); // 'state 416'
-gotoTable[8517] = 89; // 'state 89'
-gotoTable[8518] = 451; // 'state 451'
-gotoTable[8520] = 90; // 'state 90'
-gotoTable[8522] = 90; // 'state 90'
-gotoTable.fill(399, 8529, 8531); // 'state 399'
-gotoTable[8585] = 153; // 'state 153'
-gotoTable[8604] = 154; // 'state 154'
-gotoTable[8730] = 500; // 'state 500'
-gotoTable[8841] = 156; // 'state 156'
-gotoTable[8960] = 161; // 'state 161'
-gotoTable[8962] = 447; // 'state 447'
-gotoTable[8965] = 447; // 'state 447'
-gotoTable[8970] = 162; // 'state 162'
-gotoTable[8974] = 163; // 'state 163'
-gotoTable[9097] = 157; // 'state 157'
-gotoTable[9116] = 158; // 'state 158'
-gotoTable[9186] = 501; // 'state 501'
-gotoTable[9242] = 159; // 'state 159'
-gotoTable[9353] = 153; // 'state 153'
-gotoTable[9486] = 170; // 'state 170'
-gotoTable[9491] = 171; // 'state 171'
-gotoTable.fill(508, 9493, 9495); // 'state 508'
-gotoTable[9522] = 424; // 'state 424'
-gotoTable[9551] = 169; // 'state 169'
-gotoTable[9552] = 424; // 'state 424'
-gotoTable[9612] = 20; // 'state 20'
-gotoTable[9628] = 21; // 'state 21'
-gotoTable[9649] = 167; // 'state 167'
-gotoTable[9650] = 413; // 'state 413'
-gotoTable[9651] = 414; // 'state 414'
-gotoTable[9653] = 23; // 'state 23'
-gotoTable[9654] = 415; // 'state 415'
-gotoTable.fill(414, 9655, 9666); // 'state 414'
-gotoTable.fill(416, 9666, 9668); // 'state 416'
-gotoTable[9672] = 413; // 'state 413'
-gotoTable[9674] = 413; // 'state 413'
-gotoTable.fill(399, 9681, 9683); // 'state 399'
-gotoTable[9740] = 473; // 'state 473'
-gotoTable[9756] = 136; // 'state 136'
-gotoTable[9759] = 168; // 'state 168'
-gotoTable.fill(475, 9760, 9763); // 'state 475'
-gotoTable[9763] = 476; // 'state 476'
-gotoTable.fill(471, 9764, 9768); // 'state 471'
-gotoTable[9768] = 477; // 'state 477'
-gotoTable.fill(471, 9769, 9771); // 'state 471'
-gotoTable[9772] = 471; // 'state 471'
-gotoTable[9872] = 164; // 'state 164'
-gotoTable[9874] = 449; // 'state 449'
-gotoTable[9876] = 505; // 'state 505'
-gotoTable[9884] = 165; // 'state 165'
-gotoTable[10004] = 506; // 'state 506'
-gotoTable[10128] = 166; // 'state 166'
-gotoTable[10130] = 449; // 'state 449'
-gotoTable[10132] = 506; // 'state 506'
-gotoTable[10264] = 173; // 'state 173'
-gotoTable[10268] = 174; // 'state 174'
-gotoTable[10284] = 511; // 'state 511'
-gotoTable[10396] = 512; // 'state 512'
-gotoTable[10466] = 513; // 'state 513'
-gotoTable[10508] = 20; // 'state 20'
-gotoTable[10524] = 21; // 'state 21'
-gotoTable[10545] = 176; // 'state 176'
-gotoTable[10546] = 413; // 'state 413'
-gotoTable[10547] = 414; // 'state 414'
-gotoTable[10549] = 23; // 'state 23'
-gotoTable[10550] = 415; // 'state 415'
-gotoTable.fill(414, 10551, 10562); // 'state 414'
-gotoTable.fill(416, 10562, 10564); // 'state 416'
-gotoTable[10568] = 413; // 'state 413'
-gotoTable[10570] = 413; // 'state 413'
-gotoTable.fill(399, 10577, 10579); // 'state 399'
-gotoTable[10636] = 473; // 'state 473'
-gotoTable[10652] = 136; // 'state 136'
-gotoTable[10655] = 514; // 'state 514'
-gotoTable.fill(475, 10656, 10659); // 'state 475'
-gotoTable[10659] = 476; // 'state 476'
-gotoTable.fill(471, 10660, 10664); // 'state 471'
-gotoTable[10664] = 477; // 'state 477'
-gotoTable.fill(471, 10665, 10667); // 'state 471'
-gotoTable[10668] = 471; // 'state 471'
-gotoTable[10764] = 20; // 'state 20'
-gotoTable[10780] = 21; // 'state 21'
-gotoTable[10801] = 177; // 'state 177'
-gotoTable[10802] = 413; // 'state 413'
-gotoTable[10803] = 414; // 'state 414'
-gotoTable[10805] = 23; // 'state 23'
-gotoTable[10806] = 415; // 'state 415'
-gotoTable.fill(414, 10807, 10818); // 'state 414'
-gotoTable.fill(416, 10818, 10820); // 'state 416'
-gotoTable[10824] = 413; // 'state 413'
-gotoTable[10826] = 413; // 'state 413'
-gotoTable.fill(399, 10833, 10835); // 'state 399'
-gotoTable[10892] = 20; // 'state 20'
-gotoTable[10908] = 21; // 'state 21'
-gotoTable[10929] = 178; // 'state 178'
-gotoTable[10930] = 413; // 'state 413'
-gotoTable[10931] = 414; // 'state 414'
-gotoTable[10933] = 23; // 'state 23'
-gotoTable[10934] = 415; // 'state 415'
-gotoTable.fill(414, 10935, 10946); // 'state 414'
-gotoTable.fill(416, 10946, 10948); // 'state 416'
-gotoTable[10952] = 413; // 'state 413'
-gotoTable[10954] = 413; // 'state 413'
-gotoTable.fill(399, 10961, 10963); // 'state 399'
-gotoTable[11020] = 20; // 'state 20'
-gotoTable[11036] = 21; // 'state 21'
-gotoTable[11057] = 106; // 'state 106'
-gotoTable[11058] = 413; // 'state 413'
-gotoTable[11059] = 414; // 'state 414'
-gotoTable[11061] = 23; // 'state 23'
-gotoTable[11062] = 415; // 'state 415'
-gotoTable.fill(414, 11063, 11074); // 'state 414'
-gotoTable.fill(416, 11074, 11076); // 'state 416'
-gotoTable[11080] = 181; // 'state 181'
-gotoTable[11082] = 181; // 'state 181'
-gotoTable.fill(399, 11089, 11091); // 'state 399'
-gotoTable[11162] = 517; // 'state 517'
-gotoTable[11275] = 519; // 'state 519'
-gotoTable[11460] = 434; // 'state 434'
-gotoTable[11572] = 516; // 'state 516'
-gotoTable[11674] = 517; // 'state 517'
-gotoTable[11844] = 434; // 'state 434'
-gotoTable[11972] = 434; // 'state 434'
-gotoTable[12100] = 434; // 'state 434'
-gotoTable[12172] = 20; // 'state 20'
-gotoTable[12188] = 21; // 'state 21'
-gotoTable[12209] = 88; // 'state 88'
-gotoTable[12210] = 413; // 'state 413'
-gotoTable[12211] = 414; // 'state 414'
-gotoTable[12213] = 23; // 'state 23'
-gotoTable[12214] = 415; // 'state 415'
-gotoTable.fill(414, 12215, 12226); // 'state 414'
-gotoTable.fill(416, 12226, 12228); // 'state 416'
-gotoTable[12229] = 89; // 'state 89'
-gotoTable[12230] = 451; // 'state 451'
-gotoTable[12232] = 413; // 'state 413'
-gotoTable[12234] = 413; // 'state 413'
-gotoTable.fill(399, 12241, 12243); // 'state 399'
-gotoTable[12318] = 184; // 'state 184'
-gotoTable[12356] = 520; // 'state 520'
-gotoTable[12428] = 20; // 'state 20'
-gotoTable[12444] = 21; // 'state 21'
-gotoTable[12465] = 88; // 'state 88'
-gotoTable[12466] = 413; // 'state 413'
-gotoTable[12467] = 414; // 'state 414'
-gotoTable[12469] = 23; // 'state 23'
-gotoTable[12470] = 415; // 'state 415'
-gotoTable.fill(414, 12471, 12482); // 'state 414'
-gotoTable.fill(416, 12482, 12484); // 'state 416'
-gotoTable[12485] = 185; // 'state 185'
-gotoTable[12486] = 451; // 'state 451'
-gotoTable[12488] = 413; // 'state 413'
-gotoTable[12490] = 413; // 'state 413'
-gotoTable.fill(399, 12497, 12499); // 'state 399'
-gotoTable[12615] = 522; // 'state 522'
-gotoTable[12699] = 524; // 'state 524'
-gotoTable[12812] = 20; // 'state 20'
-gotoTable[12828] = 21; // 'state 21'
-gotoTable[12849] = 192; // 'state 192'
-gotoTable[12850] = 413; // 'state 413'
-gotoTable[12851] = 414; // 'state 414'
-gotoTable[12853] = 23; // 'state 23'
-gotoTable[12854] = 415; // 'state 415'
-gotoTable.fill(414, 12855, 12866); // 'state 414'
-gotoTable.fill(416, 12866, 12868); // 'state 416'
-gotoTable[12872] = 413; // 'state 413'
-gotoTable[12874] = 413; // 'state 413'
-gotoTable.fill(399, 12881, 12883); // 'state 399'
-gotoTable[12937] = 190; // 'state 190'
-gotoTable[12956] = 191; // 'state 191'
-gotoTable[13124] = 434; // 'state 434'
-gotoTable[13234] = 465; // 'state 465'
-gotoTable[13254] = 423; // 'state 423'
-gotoTable[13259] = 527; // 'state 527'
-gotoTable.fill(423, 13260, 13263); // 'state 423'
-gotoTable[13263] = 30; // 'state 30'
-gotoTable[13264] = 424; // 'state 424'
-gotoTable[13324] = 20; // 'state 20'
-gotoTable[13340] = 21; // 'state 21'
-gotoTable[13361] = 194; // 'state 194'
-gotoTable[13362] = 413; // 'state 413'
-gotoTable[13363] = 414; // 'state 414'
-gotoTable[13365] = 23; // 'state 23'
-gotoTable[13366] = 415; // 'state 415'
-gotoTable.fill(414, 13367, 13378); // 'state 414'
-gotoTable.fill(416, 13378, 13380); // 'state 416'
-gotoTable[13384] = 413; // 'state 413'
-gotoTable[13386] = 413; // 'state 413'
-gotoTable.fill(399, 13393, 13395); // 'state 399'
-gotoTable[13410] = 528; // 'state 528'
-gotoTable[13466] = 195; // 'state 195'
-gotoTable[13577] = 190; // 'state 190'
-gotoTable[13764] = 434; // 'state 434'
-gotoTable[13892] = 434; // 'state 434'
-gotoTable[14020] = 434; // 'state 434'
-gotoTable[14092] = 20; // 'state 20'
-gotoTable[14108] = 21; // 'state 21'
-gotoTable[14129] = 200; // 'state 200'
-gotoTable[14130] = 413; // 'state 413'
-gotoTable[14131] = 414; // 'state 414'
-gotoTable[14133] = 23; // 'state 23'
-gotoTable[14134] = 415; // 'state 415'
-gotoTable.fill(414, 14135, 14146); // 'state 414'
-gotoTable.fill(416, 14146, 14148); // 'state 416'
-gotoTable[14152] = 413; // 'state 413'
-gotoTable[14154] = 413; // 'state 413'
-gotoTable.fill(399, 14161, 14163); // 'state 399'
-gotoTable[14207] = 63; // 'state 63'
-gotoTable[14208] = 201; // 'state 201'
-gotoTable[14210] = 447; // 'state 447'
-gotoTable[14213] = 447; // 'state 447'
-gotoTable[14404] = 434; // 'state 434'
-gotoTable[14473] = 153; // 'state 153'
-gotoTable[14492] = 154; // 'state 154'
-gotoTable[14642] = 424; // 'state 424'
-gotoTable[14671] = 100; // 'state 100'
-gotoTable[14672] = 424; // 'state 424'
-gotoTable[14729] = 153; // 'state 153'
-gotoTable[14748] = 154; // 'state 154'
-gotoTable[14864] = 166; // 'state 166'
-gotoTable[14866] = 449; // 'state 449'
-gotoTable[14868] = 506; // 'state 506'
-gotoTable[14876] = 204; // 'state 204'
-gotoTable[14946] = 530; // 'state 530'
-gotoTable[15074] = 531; // 'state 531'
-gotoTable[15212] = 529; // 'state 529'
-gotoTable[15428] = 434; // 'state 434'
-gotoTable[15556] = 434; // 'state 434'
-gotoTable[15684] = 434; // 'state 434'
-gotoTable[15812] = 434; // 'state 434'
-gotoTable[15940] = 434; // 'state 434'
-gotoTable[16068] = 434; // 'state 434'
-gotoTable[16196] = 434; // 'state 434'
-gotoTable[16324] = 434; // 'state 434'
-gotoTable[16452] = 434; // 'state 434'
-gotoTable[16580] = 434; // 'state 434'
-gotoTable[16708] = 434; // 'state 434'
-gotoTable[16836] = 434; // 'state 434'
-gotoTable[16939] = 221; // 'state 221'
-gotoTable.fill(538, 16941, 16945); // 'state 538'
-gotoTable[16946] = 424; // 'state 424'
-gotoTable[16975] = 222; // 'state 222'
-gotoTable[16976] = 424; // 'state 424'
-gotoTable[17036] = 473; // 'state 473'
-gotoTable[17037] = 87; // 'state 87'
-gotoTable[17052] = 136; // 'state 136'
-gotoTable[17055] = 534; // 'state 534'
-gotoTable.fill(475, 17056, 17059); // 'state 475'
-gotoTable[17059] = 476; // 'state 476'
-gotoTable.fill(471, 17060, 17064); // 'state 471'
-gotoTable[17064] = 477; // 'state 477'
-gotoTable.fill(471, 17065, 17067); // 'state 471'
-gotoTable[17068] = 471; // 'state 471'
-gotoTable[17096] = 214; // 'state 214'
-gotoTable[17098] = 214; // 'state 214'
-gotoTable[17164] = 473; // 'state 473'
-gotoTable[17180] = 136; // 'state 136'
-gotoTable[17183] = 217; // 'state 217'
-gotoTable.fill(475, 17184, 17187); // 'state 475'
-gotoTable[17187] = 476; // 'state 476'
-gotoTable.fill(471, 17188, 17192); // 'state 471'
-gotoTable[17192] = 477; // 'state 477'
-gotoTable.fill(471, 17193, 17195); // 'state 471'
-gotoTable[17196] = 471; // 'state 471'
-gotoTable[17292] = 473; // 'state 473'
-gotoTable[17308] = 136; // 'state 136'
-gotoTable[17311] = 532; // 'state 532'
-gotoTable.fill(475, 17312, 17315); // 'state 475'
-gotoTable[17315] = 476; // 'state 476'
-gotoTable.fill(471, 17316, 17320); // 'state 471'
-gotoTable[17320] = 477; // 'state 477'
-gotoTable.fill(471, 17321, 17323); // 'state 471'
-gotoTable[17324] = 471; // 'state 471'
-gotoTable[17438] = 535; // 'state 535'
-gotoTable[17545] = 533; // 'state 533'
-gotoTable[17548] = 533; // 'state 533'
-gotoTable[17676] = 20; // 'state 20'
-gotoTable[17692] = 21; // 'state 21'
-gotoTable[17713] = 223; // 'state 223'
-gotoTable[17714] = 413; // 'state 413'
-gotoTable[17715] = 414; // 'state 414'
-gotoTable[17717] = 23; // 'state 23'
-gotoTable[17718] = 415; // 'state 415'
-gotoTable.fill(414, 17719, 17730); // 'state 414'
-gotoTable.fill(416, 17730, 17732); // 'state 416'
-gotoTable[17736] = 413; // 'state 413'
-gotoTable[17738] = 413; // 'state 413'
-gotoTable.fill(399, 17745, 17747); // 'state 399'
-gotoTable[17844] = 541; // 'state 541'
-gotoTable[17988] = 434; // 'state 434'
-gotoTable[18040] = 544; // 'state 544'
-gotoTable[18042] = 544; // 'state 544'
-gotoTable[18169] = 546; // 'state 546'
-gotoTable[18313] = 227; // 'state 227'
-gotoTable[18332] = 228; // 'state 228'
-gotoTable[18448] = 229; // 'state 229'
-gotoTable[18450] = 449; // 'state 449'
-gotoTable[18452] = 550; // 'state 550'
-gotoTable[18460] = 230; // 'state 230'
-gotoTable[18628] = 434; // 'state 434'
-gotoTable[18687] = 555; // 'state 555'
-gotoTable[18688] = 64; // 'state 64'
-gotoTable[18690] = 447; // 'state 447'
-gotoTable[18693] = 447; // 'state 447'
-gotoTable[18828] = 20; // 'state 20'
-gotoTable[18844] = 21; // 'state 21'
-gotoTable[18865] = 233; // 'state 233'
-gotoTable[18866] = 413; // 'state 413'
-gotoTable[18867] = 414; // 'state 414'
-gotoTable[18869] = 23; // 'state 23'
-gotoTable[18870] = 415; // 'state 415'
-gotoTable.fill(414, 18871, 18882); // 'state 414'
-gotoTable.fill(416, 18882, 18884); // 'state 416'
-gotoTable[18888] = 413; // 'state 413'
-gotoTable[18890] = 413; // 'state 413'
-gotoTable.fill(399, 18897, 18899); // 'state 399'
-gotoTable[18944] = 558; // 'state 558'
-gotoTable[18946] = 447; // 'state 447'
-gotoTable[18949] = 447; // 'state 447'
-gotoTable[19073] = 557; // 'state 557'
-gotoTable[19200] = 499; // 'state 499'
-gotoTable[19202] = 447; // 'state 447'
-gotoTable[19205] = 447; // 'state 447'
-gotoTable[19206] = 237; // 'state 237'
-gotoTable[19328] = 561; // 'state 561'
-gotoTable[19330] = 447; // 'state 447'
-gotoTable[19333] = 447; // 'state 447'
-gotoTable[19460] = 560; // 'state 560'
-gotoTable[19593] = 240; // 'state 240'
-gotoTable[19612] = 241; // 'state 241'
-gotoTable[19682] = 562; // 'state 562'
-gotoTable[19738] = 243; // 'state 243'
-gotoTable[19849] = 242; // 'state 242'
-gotoTable[19938] = 563; // 'state 563'
-gotoTable[19980] = 20; // 'state 20'
-gotoTable[19996] = 21; // 'state 21'
-gotoTable[20017] = 244; // 'state 244'
-gotoTable[20018] = 413; // 'state 413'
-gotoTable[20019] = 414; // 'state 414'
-gotoTable[20021] = 23; // 'state 23'
-gotoTable[20022] = 415; // 'state 415'
-gotoTable.fill(414, 20023, 20034); // 'state 414'
-gotoTable.fill(416, 20034, 20036); // 'state 416'
-gotoTable[20040] = 413; // 'state 413'
-gotoTable[20042] = 413; // 'state 413'
-gotoTable.fill(399, 20049, 20051); // 'state 399'
-gotoTable[20122] = 564; // 'state 564'
-gotoTable[20194] = 566; // 'state 566'
-gotoTable[20250] = 246; // 'state 246'
-gotoTable[20361] = 240; // 'state 240'
-gotoTable[20450] = 562; // 'state 562'
-gotoTable[20608] = 250; // 'state 250'
-gotoTable[20610] = 447; // 'state 447'
-gotoTable[20613] = 447; // 'state 447'
-gotoTable[20762] = 571; // 'state 571'
-gotoTable[20872] = 568; // 'state 568'
-gotoTable[20992] = 248; // 'state 248'
-gotoTable[20994] = 447; // 'state 447'
-gotoTable[20997] = 447; // 'state 447'
-gotoTable[21140] = 572; // 'state 572'
-gotoTable[21264] = 251; // 'state 251'
-gotoTable[21266] = 449; // 'state 449'
-gotoTable[21268] = 572; // 'state 572'
-gotoTable[21396] = 574; // 'state 574'
-gotoTable[21522] = 575; // 'state 575'
-gotoTable[21572] = 434; // 'state 434'
-gotoTable[21649] = 576; // 'state 576'
-gotoTable[21769] = 257; // 'state 257'
-gotoTable[21786] = 581; // 'state 581'
-gotoTable[21788] = 258; // 'state 258'
-gotoTable[21938] = 424; // 'state 424'
-gotoTable[21967] = 255; // 'state 255'
-gotoTable[21968] = 424; // 'state 424'
-gotoTable[22030] = 170; // 'state 170'
-gotoTable.fill(578, 22037, 22039); // 'state 578'
-gotoTable[22066] = 424; // 'state 424'
-gotoTable[22095] = 169; // 'state 169'
-gotoTable[22096] = 424; // 'state 424'
-gotoTable[22156] = 473; // 'state 473'
-gotoTable[22172] = 136; // 'state 136'
-gotoTable[22175] = 260; // 'state 260'
-gotoTable.fill(475, 22176, 22179); // 'state 475'
-gotoTable[22179] = 476; // 'state 476'
-gotoTable.fill(471, 22180, 22184); // 'state 471'
-gotoTable[22184] = 477; // 'state 477'
-gotoTable.fill(471, 22185, 22187); // 'state 471'
-gotoTable[22188] = 471; // 'state 471'
-gotoTable[22316] = 582; // 'state 582'
-gotoTable[22424] = 259; // 'state 259'
-gotoTable[22444] = 582; // 'state 582'
-gotoTable[22540] = 473; // 'state 473'
-gotoTable[22556] = 136; // 'state 136'
-gotoTable[22559] = 583; // 'state 583'
-gotoTable.fill(475, 22560, 22563); // 'state 475'
-gotoTable[22563] = 476; // 'state 476'
-gotoTable.fill(471, 22564, 22568); // 'state 471'
-gotoTable[22568] = 477; // 'state 477'
-gotoTable.fill(471, 22569, 22571); // 'state 471'
-gotoTable[22572] = 471; // 'state 471'
-gotoTable[22724] = 434; // 'state 434'
-gotoTable[22852] = 434; // 'state 434'
-gotoTable[22980] = 434; // 'state 434'
-gotoTable[23052] = 20; // 'state 20'
-gotoTable[23068] = 21; // 'state 21'
-gotoTable[23089] = 88; // 'state 88'
-gotoTable[23090] = 413; // 'state 413'
-gotoTable[23091] = 414; // 'state 414'
-gotoTable[23093] = 23; // 'state 23'
-gotoTable[23094] = 415; // 'state 415'
-gotoTable.fill(414, 23095, 23106); // 'state 414'
-gotoTable.fill(416, 23106, 23108); // 'state 416'
-gotoTable[23109] = 585; // 'state 585'
-gotoTable[23110] = 451; // 'state 451'
-gotoTable[23112] = 413; // 'state 413'
-gotoTable[23114] = 413; // 'state 413'
-gotoTable.fill(399, 23121, 23123); // 'state 399'
-gotoTable[23194] = 586; // 'state 586'
-gotoTable[23322] = 586; // 'state 586'
-gotoTable[23436] = 20; // 'state 20'
-gotoTable[23437] = 588; // 'state 588'
-gotoTable[23452] = 21; // 'state 21'
-gotoTable[23473] = 88; // 'state 88'
-gotoTable[23474] = 413; // 'state 413'
-gotoTable[23475] = 414; // 'state 414'
-gotoTable[23477] = 23; // 'state 23'
-gotoTable[23478] = 415; // 'state 415'
-gotoTable.fill(414, 23479, 23490); // 'state 414'
-gotoTable.fill(416, 23490, 23492); // 'state 416'
-gotoTable[23493] = 588; // 'state 588'
-gotoTable[23494] = 451; // 'state 451'
-gotoTable[23496] = 90; // 'state 90'
-gotoTable[23498] = 90; // 'state 90'
-gotoTable.fill(399, 23505, 23507); // 'state 399'
-gotoTable[23564] = 473; // 'state 473'
-gotoTable[23580] = 136; // 'state 136'
-gotoTable[23583] = 265; // 'state 265'
-gotoTable.fill(475, 23584, 23587); // 'state 475'
-gotoTable[23587] = 476; // 'state 476'
-gotoTable.fill(471, 23588, 23592); // 'state 471'
-gotoTable[23592] = 477; // 'state 477'
-gotoTable.fill(471, 23593, 23595); // 'state 471'
-gotoTable[23596] = 471; // 'state 471'
-gotoTable[23748] = 589; // 'state 589'
-gotoTable[23879] = 591; // 'state 591'
-gotoTable[23948] = 20; // 'state 20'
-gotoTable[23964] = 21; // 'state 21'
-gotoTable[23985] = 88; // 'state 88'
-gotoTable[23986] = 413; // 'state 413'
-gotoTable[23987] = 414; // 'state 414'
-gotoTable[23989] = 23; // 'state 23'
-gotoTable[23990] = 415; // 'state 415'
-gotoTable.fill(414, 23991, 24002); // 'state 414'
-gotoTable.fill(416, 24002, 24004); // 'state 416'
-gotoTable[24005] = 592; // 'state 592'
-gotoTable[24006] = 451; // 'state 451'
-gotoTable[24008] = 413; // 'state 413'
-gotoTable[24010] = 413; // 'state 413'
-gotoTable.fill(399, 24017, 24019); // 'state 399'
-gotoTable[24093] = 594; // 'state 594'
-gotoTable[24204] = 473; // 'state 473'
-gotoTable[24220] = 136; // 'state 136'
-gotoTable[24223] = 596; // 'state 596'
-gotoTable.fill(475, 24224, 24227); // 'state 475'
-gotoTable[24227] = 476; // 'state 476'
-gotoTable.fill(471, 24228, 24232); // 'state 471'
-gotoTable[24232] = 477; // 'state 477'
-gotoTable.fill(471, 24233, 24235); // 'state 471'
-gotoTable[24236] = 471; // 'state 471'
-gotoTable[24332] = 473; // 'state 473'
-gotoTable[24348] = 136; // 'state 136'
-gotoTable[24351] = 595; // 'state 595'
-gotoTable.fill(475, 24352, 24355); // 'state 475'
-gotoTable[24355] = 476; // 'state 476'
-gotoTable.fill(471, 24356, 24360); // 'state 471'
-gotoTable[24360] = 477; // 'state 477'
-gotoTable.fill(471, 24361, 24363); // 'state 471'
-gotoTable[24364] = 471; // 'state 471'
-gotoTable[24418] = 597; // 'state 597'
-gotoTable[24474] = 269; // 'state 269'
-gotoTable[24585] = 268; // 'state 268'
-gotoTable[24772] = 434; // 'state 434'
-gotoTable[24882] = 465; // 'state 465'
-gotoTable[24902] = 423; // 'state 423'
-gotoTable[24907] = 599; // 'state 599'
-gotoTable.fill(423, 24908, 24911); // 'state 423'
-gotoTable[24911] = 30; // 'state 30'
-gotoTable[24912] = 424; // 'state 424'
-gotoTable[25028] = 434; // 'state 434'
-gotoTable[25058] = 597; // 'state 597'
-gotoTable[25184] = 600; // 'state 600'
-gotoTable.fill(411, 25186, 25195); // 'state 411'
-gotoTable[25197] = 411; // 'state 411'
-gotoTable.fill(411, 25202, 25206); // 'state 411'
-gotoTable[25206] = 412; // 'state 412'
-gotoTable[25212] = 412; // 'state 412'
-gotoTable[25214] = 412; // 'state 412'
-gotoTable[25223] = 412; // 'state 412'
-gotoTable[25228] = 20; // 'state 20'
-gotoTable[25231] = 412; // 'state 412'
-gotoTable[25239] = 412; // 'state 412'
-gotoTable[25241] = 412; // 'state 412'
-gotoTable[25244] = 21; // 'state 21'
-gotoTable[25265] = 22; // 'state 22'
-gotoTable[25266] = 413; // 'state 413'
-gotoTable[25267] = 414; // 'state 414'
-gotoTable[25269] = 23; // 'state 23'
-gotoTable[25270] = 415; // 'state 415'
-gotoTable.fill(414, 25271, 25282); // 'state 414'
-gotoTable.fill(416, 25282, 25284); // 'state 416'
-gotoTable[25288] = 413; // 'state 413'
-gotoTable[25290] = 413; // 'state 413'
-gotoTable.fill(399, 25297, 25299); // 'state 399'
-gotoTable[25312] = 601; // 'state 601'
-gotoTable.fill(411, 25314, 25323); // 'state 411'
-gotoTable[25325] = 411; // 'state 411'
-gotoTable.fill(411, 25330, 25334); // 'state 411'
-gotoTable[25334] = 412; // 'state 412'
-gotoTable[25340] = 412; // 'state 412'
-gotoTable[25342] = 412; // 'state 412'
-gotoTable[25351] = 412; // 'state 412'
-gotoTable[25356] = 20; // 'state 20'
-gotoTable[25359] = 412; // 'state 412'
-gotoTable[25367] = 412; // 'state 412'
-gotoTable[25369] = 412; // 'state 412'
-gotoTable[25372] = 21; // 'state 21'
-gotoTable[25393] = 22; // 'state 22'
-gotoTable[25394] = 413; // 'state 413'
-gotoTable[25395] = 414; // 'state 414'
-gotoTable[25397] = 23; // 'state 23'
-gotoTable[25398] = 415; // 'state 415'
-gotoTable.fill(414, 25399, 25410); // 'state 414'
-gotoTable.fill(416, 25410, 25412); // 'state 416'
-gotoTable[25416] = 413; // 'state 413'
-gotoTable[25418] = 413; // 'state 413'
-gotoTable.fill(399, 25425, 25427); // 'state 399'
-gotoTable[25484] = 20; // 'state 20'
-gotoTable[25500] = 21; // 'state 21'
-gotoTable[25521] = 270; // 'state 270'
-gotoTable[25522] = 413; // 'state 413'
-gotoTable[25523] = 414; // 'state 414'
-gotoTable[25525] = 23; // 'state 23'
-gotoTable[25526] = 415; // 'state 415'
-gotoTable.fill(414, 25527, 25538); // 'state 414'
-gotoTable.fill(416, 25538, 25540); // 'state 416'
-gotoTable[25544] = 413; // 'state 413'
-gotoTable[25546] = 413; // 'state 413'
-gotoTable.fill(399, 25553, 25555); // 'state 399'
-gotoTable[25612] = 20; // 'state 20'
-gotoTable[25628] = 21; // 'state 21'
-gotoTable[25649] = 273; // 'state 273'
-gotoTable[25650] = 413; // 'state 413'
-gotoTable[25651] = 414; // 'state 414'
-gotoTable[25653] = 23; // 'state 23'
-gotoTable[25654] = 415; // 'state 415'
-gotoTable.fill(414, 25655, 25666); // 'state 414'
-gotoTable.fill(416, 25666, 25668); // 'state 416'
-gotoTable[25672] = 413; // 'state 413'
-gotoTable[25674] = 413; // 'state 413'
-gotoTable.fill(399, 25681, 25683); // 'state 399'
-gotoTable[25796] = 434; // 'state 434'
-gotoTable[25882] = 494; // 'state 494'
-gotoTable[25996] = 20; // 'state 20'
-gotoTable[26012] = 21; // 'state 21'
-gotoTable[26033] = 275; // 'state 275'
-gotoTable[26034] = 413; // 'state 413'
-gotoTable[26035] = 414; // 'state 414'
-gotoTable[26037] = 23; // 'state 23'
-gotoTable[26038] = 415; // 'state 415'
-gotoTable.fill(414, 26039, 26050); // 'state 414'
-gotoTable.fill(416, 26050, 26052); // 'state 416'
-gotoTable[26056] = 413; // 'state 413'
-gotoTable[26058] = 413; // 'state 413'
-gotoTable.fill(399, 26065, 26067); // 'state 399'
-gotoTable[26121] = 242; // 'state 242'
-gotoTable[26140] = 276; // 'state 276'
-gotoTable[26256] = 277; // 'state 277'
-gotoTable[26258] = 449; // 'state 449'
-gotoTable[26260] = 574; // 'state 574'
-gotoTable[26368] = 278; // 'state 278'
-gotoTable[26370] = 447; // 'state 447'
-gotoTable[26373] = 447; // 'state 447'
-gotoTable[26479] = 602; // 'state 602'
-gotoTable[26636] = 20; // 'state 20'
-gotoTable[26652] = 21; // 'state 21'
-gotoTable[26673] = 280; // 'state 280'
-gotoTable[26674] = 413; // 'state 413'
-gotoTable[26675] = 414; // 'state 414'
-gotoTable[26677] = 23; // 'state 23'
-gotoTable[26678] = 415; // 'state 415'
-gotoTable.fill(414, 26679, 26690); // 'state 414'
-gotoTable.fill(416, 26690, 26692); // 'state 416'
-gotoTable[26696] = 413; // 'state 413'
-gotoTable[26698] = 413; // 'state 413'
-gotoTable.fill(399, 26705, 26707); // 'state 399'
-gotoTable[26764] = 473; // 'state 473'
-gotoTable[26780] = 136; // 'state 136'
-gotoTable[26783] = 606; // 'state 606'
-gotoTable.fill(475, 26784, 26787); // 'state 475'
-gotoTable[26787] = 476; // 'state 476'
-gotoTable.fill(471, 26788, 26792); // 'state 471'
-gotoTable[26792] = 477; // 'state 477'
-gotoTable.fill(471, 26793, 26795); // 'state 471'
-gotoTable[26796] = 471; // 'state 471'
-gotoTable[26880] = 161; // 'state 161'
-gotoTable[26882] = 447; // 'state 447'
-gotoTable[26885] = 447; // 'state 447'
-gotoTable[26890] = 162; // 'state 162'
-gotoTable[26893] = 87; // 'state 87'
-gotoTable[26894] = 163; // 'state 163'
-gotoTable[26952] = 214; // 'state 214'
-gotoTable[26954] = 214; // 'state 214'
-gotoTable[27051] = 221; // 'state 221'
-gotoTable.fill(538, 27053, 27057); // 'state 538'
-gotoTable[27058] = 465; // 'state 465'
-gotoTable[27078] = 423; // 'state 423'
-gotoTable[27083] = 29; // 'state 29'
-gotoTable.fill(423, 27084, 27087); // 'state 423'
-gotoTable[27087] = 287; // 'state 287'
-gotoTable[27088] = 424; // 'state 424'
-gotoTable[27208] = 286; // 'state 286'
-gotoTable[27210] = 286; // 'state 286'
-gotoTable[27276] = 292; // 'state 292'
-gotoTable[27292] = 293; // 'state 293'
-gotoTable[27295] = 217; // 'state 217'
-gotoTable.fill(475, 27296, 27299); // 'state 475'
-gotoTable[27299] = 476; // 'state 476'
-gotoTable.fill(471, 27300, 27304); // 'state 471'
-gotoTable[27304] = 477; // 'state 477'
-gotoTable.fill(471, 27305, 27307); // 'state 471'
-gotoTable[27308] = 471; // 'state 471'
-gotoTable[27313] = 88; // 'state 88'
-gotoTable[27314] = 413; // 'state 413'
-gotoTable[27315] = 414; // 'state 414'
-gotoTable[27317] = 23; // 'state 23'
-gotoTable[27318] = 415; // 'state 415'
-gotoTable.fill(414, 27319, 27330); // 'state 414'
-gotoTable.fill(416, 27330, 27332); // 'state 416'
-gotoTable[27333] = 97; // 'state 97'
-gotoTable[27334] = 451; // 'state 451'
-gotoTable[27336] = 413; // 'state 413'
-gotoTable[27338] = 413; // 'state 413'
-gotoTable.fill(399, 27345, 27347); // 'state 399'
-gotoTable[27418] = 517; // 'state 517'
-gotoTable[27422] = 535; // 'state 535'
-gotoTable[27546] = 517; // 'state 517'
-gotoTable[27660] = 473; // 'state 473'
-gotoTable[27676] = 136; // 'state 136'
-gotoTable[27679] = 612; // 'state 612'
-gotoTable.fill(475, 27680, 27683); // 'state 475'
-gotoTable[27683] = 476; // 'state 476'
-gotoTable.fill(471, 27684, 27688); // 'state 471'
-gotoTable[27688] = 477; // 'state 477'
-gotoTable.fill(471, 27689, 27691); // 'state 471'
-gotoTable[27692] = 471; // 'state 471'
-gotoTable[27788] = 473; // 'state 473'
-gotoTable[27804] = 136; // 'state 136'
-gotoTable[27807] = 613; // 'state 613'
-gotoTable.fill(475, 27808, 27811); // 'state 475'
-gotoTable[27811] = 476; // 'state 476'
-gotoTable.fill(471, 27812, 27816); // 'state 471'
-gotoTable[27816] = 477; // 'state 477'
-gotoTable.fill(471, 27817, 27819); // 'state 471'
-gotoTable[27820] = 471; // 'state 471'
-gotoTable[27921] = 615; // 'state 615'
-gotoTable[28044] = 20; // 'state 20'
-gotoTable[28060] = 21; // 'state 21'
-gotoTable[28081] = 192; // 'state 192'
-gotoTable[28082] = 413; // 'state 413'
-gotoTable[28083] = 414; // 'state 414'
-gotoTable[28085] = 23; // 'state 23'
-gotoTable[28086] = 415; // 'state 415'
-gotoTable.fill(414, 28087, 28098); // 'state 414'
-gotoTable.fill(416, 28098, 28100); // 'state 416'
-gotoTable[28104] = 413; // 'state 413'
-gotoTable[28106] = 413; // 'state 413'
-gotoTable.fill(399, 28113, 28115); // 'state 399'
-gotoTable[28210] = 424; // 'state 424'
-gotoTable[28239] = 296; // 'state 296'
-gotoTable[28240] = 424; // 'state 424'
-gotoTable[28297] = 299; // 'state 299'
-gotoTable[28316] = 300; // 'state 300'
-gotoTable.fill(617, 28461, 28465); // 'state 617'
-gotoTable[28466] = 424; // 'state 424'
-gotoTable[28495] = 222; // 'state 222'
-gotoTable[28496] = 424; // 'state 424'
-gotoTable[28553] = 297; // 'state 297'
-gotoTable[28570] = 619; // 'state 619'
-gotoTable[28572] = 298; // 'state 298'
-gotoTable[28740] = 434; // 'state 434'
-gotoTable[28812] = 20; // 'state 20'
-gotoTable[28828] = 21; // 'state 21'
-gotoTable[28849] = 88; // 'state 88'
-gotoTable[28850] = 413; // 'state 413'
-gotoTable[28851] = 414; // 'state 414'
-gotoTable[28853] = 23; // 'state 23'
-gotoTable[28854] = 415; // 'state 415'
-gotoTable.fill(414, 28855, 28866); // 'state 414'
-gotoTable.fill(416, 28866, 28868); // 'state 416'
-gotoTable[28869] = 585; // 'state 585'
-gotoTable[28870] = 451; // 'state 451'
-gotoTable[28872] = 413; // 'state 413'
-gotoTable[28874] = 413; // 'state 413'
-gotoTable.fill(399, 28881, 28883); // 'state 399'
-gotoTable[28923] = 625; // 'state 625'
-gotoTable[29065] = 303; // 'state 303'
-gotoTable[29084] = 304; // 'state 304'
-gotoTable[29154] = 628; // 'state 628'
-gotoTable[29210] = 305; // 'state 305'
-gotoTable[29321] = 303; // 'state 303'
-gotoTable[29460] = 629; // 'state 629'
-gotoTable[29584] = 306; // 'state 306'
-gotoTable[29586] = 449; // 'state 449'
-gotoTable[29588] = 629; // 'state 629'
-gotoTable[29695] = 632; // 'state 632'
-gotoTable[29696] = 64; // 'state 64'
-gotoTable[29698] = 447; // 'state 447'
-gotoTable[29701] = 447; // 'state 447'
-gotoTable[29836] = 20; // 'state 20'
-gotoTable[29852] = 21; // 'state 21'
-gotoTable[29873] = 307; // 'state 307'
-gotoTable[29874] = 413; // 'state 413'
-gotoTable[29875] = 414; // 'state 414'
-gotoTable[29877] = 23; // 'state 23'
-gotoTable[29878] = 415; // 'state 415'
-gotoTable.fill(414, 29879, 29890); // 'state 414'
-gotoTable.fill(416, 29890, 29892); // 'state 416'
-gotoTable[29896] = 413; // 'state 413'
-gotoTable[29898] = 413; // 'state 413'
-gotoTable.fill(399, 29905, 29907); // 'state 399'
-gotoTable[30020] = 434; // 'state 434'
-gotoTable[30083] = 634; // 'state 634'
-gotoTable[30130] = 424; // 'state 424'
-gotoTable[30159] = 497; // 'state 497'
-gotoTable[30160] = 424; // 'state 424'
-gotoTable[30220] = 20; // 'state 20'
-gotoTable[30236] = 21; // 'state 21'
-gotoTable[30257] = 309; // 'state 309'
-gotoTable[30258] = 413; // 'state 413'
-gotoTable[30259] = 414; // 'state 414'
-gotoTable[30261] = 23; // 'state 23'
-gotoTable[30262] = 415; // 'state 415'
-gotoTable.fill(414, 30263, 30274); // 'state 414'
-gotoTable.fill(416, 30274, 30276); // 'state 416'
-gotoTable[30280] = 413; // 'state 413'
-gotoTable[30282] = 413; // 'state 413'
-gotoTable.fill(399, 30289, 30291); // 'state 399'
-gotoTable[30336] = 635; // 'state 635'
-gotoTable[30338] = 447; // 'state 447'
-gotoTable[30341] = 447; // 'state 447'
-gotoTable[30468] = 637; // 'state 637'
-gotoTable[30592] = 499; // 'state 499'
-gotoTable[30594] = 447; // 'state 447'
-gotoTable[30597] = 447; // 'state 447'
-gotoTable[30598] = 638; // 'state 638'
-gotoTable[30732] = 20; // 'state 20'
-gotoTable[30748] = 21; // 'state 21'
-gotoTable[30769] = 311; // 'state 311'
-gotoTable[30770] = 413; // 'state 413'
-gotoTable[30771] = 414; // 'state 414'
-gotoTable[30773] = 23; // 'state 23'
-gotoTable[30774] = 415; // 'state 415'
-gotoTable.fill(414, 30775, 30786); // 'state 414'
-gotoTable.fill(416, 30786, 30788); // 'state 416'
-gotoTable[30792] = 413; // 'state 413'
-gotoTable[30794] = 413; // 'state 413'
-gotoTable.fill(399, 30801, 30803); // 'state 399'
-gotoTable[30818] = 640; // 'state 640'
-gotoTable[30874] = 313; // 'state 313'
-gotoTable[30985] = 312; // 'state 312'
-gotoTable[31074] = 641; // 'state 641'
-gotoTable[31130] = 314; // 'state 314'
-gotoTable[31202] = 641; // 'state 641'
-gotoTable[31428] = 434; // 'state 434'
-gotoTable[31458] = 642; // 'state 642'
-gotoTable[31500] = 20; // 'state 20'
-gotoTable[31516] = 21; // 'state 21'
-gotoTable[31537] = 315; // 'state 315'
-gotoTable[31538] = 413; // 'state 413'
-gotoTable[31539] = 414; // 'state 414'
-gotoTable[31541] = 23; // 'state 23'
-gotoTable[31542] = 415; // 'state 415'
-gotoTable.fill(414, 31543, 31554); // 'state 414'
-gotoTable.fill(416, 31554, 31556); // 'state 416'
-gotoTable[31560] = 413; // 'state 413'
-gotoTable[31562] = 413; // 'state 413'
-gotoTable.fill(399, 31569, 31571); // 'state 399'
-gotoTable[31586] = 640; // 'state 640'
-gotoTable[31744] = 161; // 'state 161'
-gotoTable[31746] = 447; // 'state 447'
-gotoTable[31749] = 447; // 'state 447'
-gotoTable[31754] = 645; // 'state 645'
-gotoTable[31758] = 163; // 'state 163'
-gotoTable[31898] = 646; // 'state 646'
-gotoTable[32012] = 20; // 'state 20'
-gotoTable[32028] = 21; // 'state 21'
-gotoTable[32049] = 319; // 'state 319'
-gotoTable[32050] = 413; // 'state 413'
-gotoTable[32051] = 414; // 'state 414'
-gotoTable[32053] = 23; // 'state 23'
-gotoTable[32054] = 415; // 'state 415'
-gotoTable.fill(414, 32055, 32066); // 'state 414'
-gotoTable.fill(416, 32066, 32068); // 'state 416'
-gotoTable[32072] = 413; // 'state 413'
-gotoTable[32074] = 413; // 'state 413'
-gotoTable.fill(399, 32081, 32083); // 'state 399'
-gotoTable[32154] = 647; // 'state 647'
-gotoTable[32276] = 648; // 'state 648'
-gotoTable[32396] = 473; // 'state 473'
-gotoTable[32412] = 136; // 'state 136'
-gotoTable[32415] = 650; // 'state 650'
-gotoTable.fill(475, 32416, 32419); // 'state 475'
-gotoTable[32419] = 476; // 'state 476'
-gotoTable.fill(471, 32420, 32424); // 'state 471'
-gotoTable[32424] = 477; // 'state 477'
-gotoTable.fill(471, 32425, 32427); // 'state 471'
-gotoTable[32428] = 471; // 'state 471'
-gotoTable[32524] = 473; // 'state 473'
-gotoTable[32540] = 136; // 'state 136'
-gotoTable[32543] = 603; // 'state 603'
-gotoTable.fill(475, 32544, 32547); // 'state 475'
-gotoTable[32547] = 476; // 'state 476'
-gotoTable.fill(471, 32548, 32552); // 'state 471'
-gotoTable[32552] = 477; // 'state 477'
-gotoTable.fill(471, 32553, 32555); // 'state 471'
-gotoTable[32556] = 471; // 'state 471'
-gotoTable[32652] = 473; // 'state 473'
-gotoTable[32668] = 136; // 'state 136'
-gotoTable[32671] = 604; // 'state 604'
-gotoTable.fill(475, 32672, 32675); // 'state 475'
-gotoTable[32675] = 476; // 'state 476'
-gotoTable.fill(471, 32676, 32680); // 'state 471'
-gotoTable[32680] = 477; // 'state 477'
-gotoTable.fill(471, 32681, 32683); // 'state 471'
-gotoTable[32684] = 471; // 'state 471'
-gotoTable[32777] = 322; // 'state 322'
-gotoTable[32794] = 652; // 'state 652'
-gotoTable[32796] = 323; // 'state 323'
-gotoTable[32908] = 20; // 'state 20'
-gotoTable[32924] = 21; // 'state 21'
-gotoTable[32945] = 325; // 'state 325'
-gotoTable[32946] = 413; // 'state 413'
-gotoTable[32947] = 414; // 'state 414'
-gotoTable[32949] = 23; // 'state 23'
-gotoTable[32950] = 415; // 'state 415'
-gotoTable.fill(414, 32951, 32962); // 'state 414'
-gotoTable.fill(416, 32962, 32964); // 'state 416'
-gotoTable[32968] = 413; // 'state 413'
-gotoTable[32970] = 413; // 'state 413'
-gotoTable.fill(399, 32977, 32979); // 'state 399'
-gotoTable[32994] = 653; // 'state 653'
-gotoTable[33050] = 324; // 'state 324'
-gotoTable[33161] = 322; // 'state 322'
-gotoTable[33324] = 654; // 'state 654'
-gotoTable[33425] = 655; // 'state 655'
-gotoTable[33548] = 473; // 'state 473'
-gotoTable[33564] = 136; // 'state 136'
-gotoTable[33567] = 656; // 'state 656'
-gotoTable.fill(475, 33568, 33571); // 'state 475'
-gotoTable[33571] = 476; // 'state 476'
-gotoTable.fill(471, 33572, 33576); // 'state 471'
-gotoTable[33576] = 477; // 'state 477'
-gotoTable.fill(471, 33577, 33579); // 'state 471'
-gotoTable[33580] = 471; // 'state 471'
-gotoTable[33676] = 20; // 'state 20'
-gotoTable[33692] = 21; // 'state 21'
-gotoTable[33713] = 88; // 'state 88'
-gotoTable[33714] = 413; // 'state 413'
-gotoTable[33715] = 414; // 'state 414'
-gotoTable[33717] = 23; // 'state 23'
-gotoTable[33718] = 415; // 'state 415'
-gotoTable.fill(414, 33719, 33730); // 'state 414'
-gotoTable.fill(416, 33730, 33732); // 'state 416'
-gotoTable[33733] = 659; // 'state 659'
-gotoTable[33734] = 451; // 'state 451'
-gotoTable[33736] = 413; // 'state 413'
-gotoTable[33738] = 413; // 'state 413'
-gotoTable.fill(399, 33745, 33747); // 'state 399'
-gotoTable[33804] = 20; // 'state 20'
-gotoTable[33820] = 21; // 'state 21'
-gotoTable[33841] = 327; // 'state 327'
-gotoTable[33842] = 413; // 'state 413'
-gotoTable[33843] = 414; // 'state 414'
-gotoTable[33845] = 23; // 'state 23'
-gotoTable[33846] = 415; // 'state 415'
-gotoTable.fill(414, 33847, 33858); // 'state 414'
-gotoTable.fill(416, 33858, 33860); // 'state 416'
-gotoTable[33864] = 413; // 'state 413'
-gotoTable[33866] = 413; // 'state 413'
-gotoTable.fill(399, 33873, 33875); // 'state 399'
-gotoTable[33932] = 20; // 'state 20'
-gotoTable[33933] = 661; // 'state 661'
-gotoTable[33948] = 21; // 'state 21'
-gotoTable[33969] = 88; // 'state 88'
-gotoTable[33970] = 413; // 'state 413'
-gotoTable[33971] = 414; // 'state 414'
-gotoTable[33973] = 23; // 'state 23'
-gotoTable[33974] = 415; // 'state 415'
-gotoTable.fill(414, 33975, 33986); // 'state 414'
-gotoTable.fill(416, 33986, 33988); // 'state 416'
-gotoTable[33989] = 661; // 'state 661'
-gotoTable[33990] = 451; // 'state 451'
-gotoTable[33992] = 90; // 'state 90'
-gotoTable[33994] = 90; // 'state 90'
-gotoTable.fill(399, 34001, 34003); // 'state 399'
-gotoTable[34065] = 663; // 'state 663'
-gotoTable[34188] = 20; // 'state 20'
-gotoTable[34204] = 21; // 'state 21'
-gotoTable[34225] = 88; // 'state 88'
-gotoTable[34226] = 413; // 'state 413'
-gotoTable[34227] = 414; // 'state 414'
-gotoTable[34229] = 23; // 'state 23'
-gotoTable[34230] = 415; // 'state 415'
-gotoTable.fill(414, 34231, 34242); // 'state 414'
-gotoTable.fill(416, 34242, 34244); // 'state 416'
-gotoTable[34245] = 665; // 'state 665'
-gotoTable[34246] = 451; // 'state 451'
-gotoTable[34248] = 413; // 'state 413'
-gotoTable[34250] = 413; // 'state 413'
-gotoTable.fill(399, 34257, 34259); // 'state 399'
-gotoTable[34333] = 667; // 'state 667'
-gotoTable[34402] = 668; // 'state 668'
-gotoTable[34458] = 330; // 'state 330'
-gotoTable[34530] = 668; // 'state 668'
-gotoTable[34756] = 434; // 'state 434'
-gotoTable[34828] = 20; // 'state 20'
-gotoTable[34844] = 21; // 'state 21'
-gotoTable[34865] = 333; // 'state 333'
-gotoTable[34866] = 413; // 'state 413'
-gotoTable[34867] = 414; // 'state 414'
-gotoTable[34869] = 23; // 'state 23'
-gotoTable[34870] = 415; // 'state 415'
-gotoTable.fill(414, 34871, 34882); // 'state 414'
-gotoTable.fill(416, 34882, 34884); // 'state 416'
-gotoTable[34888] = 413; // 'state 413'
-gotoTable[34890] = 413; // 'state 413'
-gotoTable.fill(399, 34897, 34899); // 'state 399'
-gotoTable[34912] = 670; // 'state 670'
-gotoTable.fill(411, 34914, 34923); // 'state 411'
-gotoTable[34925] = 411; // 'state 411'
-gotoTable.fill(411, 34930, 34934); // 'state 411'
-gotoTable[34934] = 412; // 'state 412'
-gotoTable[34940] = 412; // 'state 412'
-gotoTable[34942] = 412; // 'state 412'
-gotoTable[34951] = 412; // 'state 412'
-gotoTable[34956] = 20; // 'state 20'
-gotoTable[34959] = 412; // 'state 412'
-gotoTable[34967] = 412; // 'state 412'
-gotoTable[34969] = 412; // 'state 412'
-gotoTable[34972] = 21; // 'state 21'
-gotoTable[34993] = 22; // 'state 22'
-gotoTable[34994] = 413; // 'state 413'
-gotoTable[34995] = 414; // 'state 414'
-gotoTable[34997] = 23; // 'state 23'
-gotoTable[34998] = 415; // 'state 415'
-gotoTable.fill(414, 34999, 35010); // 'state 414'
-gotoTable.fill(416, 35010, 35012); // 'state 416'
-gotoTable[35016] = 413; // 'state 413'
-gotoTable[35018] = 413; // 'state 413'
-gotoTable.fill(399, 35025, 35027); // 'state 399'
-gotoTable[35140] = 434; // 'state 434'
-gotoTable[35212] = 20; // 'state 20'
-gotoTable[35228] = 21; // 'state 21'
-gotoTable[35249] = 334; // 'state 334'
-gotoTable[35250] = 413; // 'state 413'
-gotoTable[35251] = 414; // 'state 414'
-gotoTable[35253] = 23; // 'state 23'
-gotoTable[35254] = 415; // 'state 415'
-gotoTable.fill(414, 35255, 35266); // 'state 414'
-gotoTable.fill(416, 35266, 35268); // 'state 416'
-gotoTable[35272] = 413; // 'state 413'
-gotoTable[35274] = 413; // 'state 413'
-gotoTable.fill(399, 35281, 35283); // 'state 399'
-gotoTable[35396] = 434; // 'state 434'
-gotoTable[35465] = 336; // 'state 336'
-gotoTable[35604] = 671; // 'state 671'
-gotoTable[35738] = 672; // 'state 672'
-gotoTable[35822] = 339; // 'state 339'
-gotoTable.fill(675, 35824, 35826); // 'state 675'
-gotoTable[36036] = 434; // 'state 434'
-gotoTable[36099] = 148; // 'state 148'
-gotoTable[36146] = 465; // 'state 465'
-gotoTable[36166] = 423; // 'state 423'
-gotoTable[36171] = 29; // 'state 29'
-gotoTable.fill(423, 36172, 36175); // 'state 423'
-gotoTable[36175] = 343; // 'state 343'
-gotoTable[36176] = 424; // 'state 424'
-gotoTable[36224] = 250; // 'state 250'
-gotoTable[36226] = 447; // 'state 447'
-gotoTable[36229] = 447; // 'state 447'
-gotoTable[36296] = 286; // 'state 286'
-gotoTable[36298] = 286; // 'state 286'
-gotoTable[36352] = 499; // 'state 499'
-gotoTable[36354] = 447; // 'state 447'
-gotoTable[36357] = 447; // 'state 447'
-gotoTable[36358] = 151; // 'state 151'
-gotoTable[36364] = 20; // 'state 20'
-gotoTable[36380] = 21; // 'state 21'
-gotoTable[36401] = 88; // 'state 88'
-gotoTable[36402] = 413; // 'state 413'
-gotoTable[36403] = 414; // 'state 414'
-gotoTable[36405] = 23; // 'state 23'
-gotoTable[36406] = 415; // 'state 415'
-gotoTable.fill(414, 36407, 36418); // 'state 414'
-gotoTable.fill(416, 36418, 36420); // 'state 416'
-gotoTable[36421] = 97; // 'state 97'
-gotoTable[36422] = 451; // 'state 451'
-gotoTable[36424] = 413; // 'state 413'
-gotoTable[36426] = 413; // 'state 413'
-gotoTable.fill(399, 36433, 36435); // 'state 399'
-gotoTable[36506] = 517; // 'state 517'
-gotoTable[36620] = 473; // 'state 473'
-gotoTable[36636] = 136; // 'state 136'
-gotoTable[36639] = 681; // 'state 681'
-gotoTable.fill(475, 36640, 36643); // 'state 475'
-gotoTable[36643] = 476; // 'state 476'
-gotoTable.fill(471, 36644, 36648); // 'state 471'
-gotoTable[36648] = 477; // 'state 477'
-gotoTable.fill(471, 36649, 36651); // 'state 471'
-gotoTable[36652] = 471; // 'state 471'
-gotoTable[36762] = 586; // 'state 586'
-gotoTable[36873] = 347; // 'state 347'
-gotoTable[36890] = 619; // 'state 619'
-gotoTable[36892] = 348; // 'state 348'
-gotoTable[37004] = 292; // 'state 292'
-gotoTable[37005] = 87; // 'state 87'
-gotoTable[37020] = 293; // 'state 293'
-gotoTable[37023] = 534; // 'state 534'
-gotoTable.fill(475, 37024, 37027); // 'state 475'
-gotoTable[37027] = 476; // 'state 476'
-gotoTable.fill(471, 37028, 37032); // 'state 471'
-gotoTable[37032] = 477; // 'state 477'
-gotoTable.fill(471, 37033, 37035); // 'state 471'
-gotoTable[37036] = 471; // 'state 471'
-gotoTable[37041] = 88; // 'state 88'
-gotoTable[37042] = 413; // 'state 413'
-gotoTable[37043] = 414; // 'state 414'
-gotoTable[37045] = 23; // 'state 23'
-gotoTable[37046] = 415; // 'state 415'
-gotoTable.fill(414, 37047, 37058); // 'state 414'
-gotoTable.fill(416, 37058, 37060); // 'state 416'
-gotoTable[37061] = 89; // 'state 89'
-gotoTable[37062] = 451; // 'state 451'
-gotoTable[37064] = 90; // 'state 90'
-gotoTable[37066] = 90; // 'state 90'
-gotoTable.fill(399, 37073, 37075); // 'state 399'
-gotoTable[37132] = 20; // 'state 20'
-gotoTable[37148] = 21; // 'state 21'
-gotoTable[37169] = 91; // 'state 91'
-gotoTable[37170] = 413; // 'state 413'
-gotoTable[37171] = 414; // 'state 414'
-gotoTable[37173] = 23; // 'state 23'
-gotoTable[37174] = 415; // 'state 415'
-gotoTable.fill(414, 37175, 37186); // 'state 414'
-gotoTable.fill(416, 37186, 37188); // 'state 416'
-gotoTable[37192] = 413; // 'state 413'
-gotoTable[37194] = 413; // 'state 413'
-gotoTable.fill(399, 37201, 37203); // 'state 399'
-gotoTable[37260] = 20; // 'state 20'
-gotoTable[37276] = 21; // 'state 21'
-gotoTable[37297] = 91; // 'state 91'
-gotoTable[37298] = 413; // 'state 413'
-gotoTable[37299] = 414; // 'state 414'
-gotoTable[37301] = 23; // 'state 23'
-gotoTable[37302] = 415; // 'state 415'
-gotoTable.fill(414, 37303, 37314); // 'state 414'
-gotoTable.fill(416, 37314, 37316); // 'state 416'
-gotoTable[37320] = 413; // 'state 413'
-gotoTable[37322] = 413; // 'state 413'
-gotoTable.fill(399, 37329, 37331); // 'state 399'
-gotoTable[37406] = 535; // 'state 535'
-gotoTable[37530] = 448; // 'state 448'
-gotoTable[37641] = 349; // 'state 349'
-gotoTable[37644] = 533; // 'state 533'
-gotoTable[37772] = 473; // 'state 473'
-gotoTable[37788] = 136; // 'state 136'
-gotoTable[37791] = 650; // 'state 650'
-gotoTable.fill(475, 37792, 37795); // 'state 475'
-gotoTable[37795] = 476; // 'state 476'
-gotoTable.fill(471, 37796, 37800); // 'state 471'
-gotoTable[37800] = 477; // 'state 477'
-gotoTable.fill(471, 37801, 37803); // 'state 471'
-gotoTable[37804] = 471; // 'state 471'
-gotoTable[37900] = 20; // 'state 20'
-gotoTable[37916] = 21; // 'state 21'
-gotoTable[37937] = 192; // 'state 192'
-gotoTable[37938] = 413; // 'state 413'
-gotoTable[37939] = 414; // 'state 414'
-gotoTable[37941] = 23; // 'state 23'
-gotoTable[37942] = 415; // 'state 415'
-gotoTable.fill(414, 37943, 37954); // 'state 414'
-gotoTable.fill(416, 37954, 37956); // 'state 416'
-gotoTable[37960] = 413; // 'state 413'
-gotoTable[37962] = 413; // 'state 413'
-gotoTable.fill(399, 37969, 37971); // 'state 399'
-gotoTable[38042] = 686; // 'state 686'
-gotoTable[38170] = 688; // 'state 688'
-gotoTable[38281] = 353; // 'state 353'
-gotoTable[38426] = 689; // 'state 689'
-gotoTable[38537] = 354; // 'state 354'
-gotoTable[38668] = 20; // 'state 20'
-gotoTable[38684] = 21; // 'state 21'
-gotoTable[38705] = 88; // 'state 88'
-gotoTable[38706] = 413; // 'state 413'
-gotoTable[38707] = 414; // 'state 414'
-gotoTable[38709] = 23; // 'state 23'
-gotoTable[38710] = 415; // 'state 415'
-gotoTable.fill(414, 38711, 38722); // 'state 414'
-gotoTable.fill(416, 38722, 38724); // 'state 416'
-gotoTable[38725] = 659; // 'state 659'
-gotoTable[38726] = 451; // 'state 451'
-gotoTable[38728] = 413; // 'state 413'
-gotoTable[38730] = 413; // 'state 413'
-gotoTable.fill(399, 38737, 38739); // 'state 399'
-gotoTable[38779] = 692; // 'state 692'
-gotoTable[38882] = 694; // 'state 694'
-gotoTable[38938] = 357; // 'state 357'
-gotoTable[39049] = 356; // 'state 356'
-gotoTable[39138] = 694; // 'state 694'
-gotoTable[39316] = 695; // 'state 695'
-gotoTable[39492] = 434; // 'state 434'
-gotoTable[39555] = 698; // 'state 698'
-gotoTable[39602] = 424; // 'state 424'
-gotoTable[39631] = 497; // 'state 497'
-gotoTable[39632] = 424; // 'state 424'
-gotoTable[39748] = 434; // 'state 434'
-gotoTable[39808] = 499; // 'state 499'
-gotoTable[39810] = 447; // 'state 447'
-gotoTable[39813] = 447; // 'state 447'
-gotoTable[39814] = 700; // 'state 700'
-gotoTable[40004] = 434; // 'state 434'
-gotoTable[40034] = 702; // 'state 702'
-gotoTable[40090] = 359; // 'state 359'
-gotoTable[40162] = 702; // 'state 702'
-gotoTable[40290] = 704; // 'state 704'
-gotoTable[40516] = 434; // 'state 434'
-gotoTable[40546] = 705; // 'state 705'
-gotoTable[40588] = 20; // 'state 20'
-gotoTable[40604] = 21; // 'state 21'
-gotoTable[40625] = 360; // 'state 360'
-gotoTable[40626] = 413; // 'state 413'
-gotoTable[40627] = 414; // 'state 414'
-gotoTable[40629] = 23; // 'state 23'
-gotoTable[40630] = 415; // 'state 415'
-gotoTable.fill(414, 40631, 40642); // 'state 414'
-gotoTable.fill(416, 40642, 40644); // 'state 416'
-gotoTable[40648] = 413; // 'state 413'
-gotoTable[40650] = 413; // 'state 413'
-gotoTable.fill(399, 40657, 40659); // 'state 399'
-gotoTable[40704] = 161; // 'state 161'
-gotoTable[40706] = 447; // 'state 447'
-gotoTable[40709] = 447; // 'state 447'
-gotoTable[40714] = 707; // 'state 707'
-gotoTable[40718] = 163; // 'state 163'
-gotoTable[40844] = 20; // 'state 20'
-gotoTable[40860] = 21; // 'state 21'
-gotoTable[40881] = 362; // 'state 362'
-gotoTable[40882] = 413; // 'state 413'
-gotoTable[40883] = 414; // 'state 414'
-gotoTable[40885] = 23; // 'state 23'
-gotoTable[40886] = 415; // 'state 415'
-gotoTable.fill(414, 40887, 40898); // 'state 414'
-gotoTable.fill(416, 40898, 40900); // 'state 416'
-gotoTable[40904] = 413; // 'state 413'
-gotoTable[40906] = 413; // 'state 413'
-gotoTable.fill(399, 40913, 40915); // 'state 399'
-gotoTable[41028] = 434; // 'state 434'
-gotoTable[41100] = 473; // 'state 473'
-gotoTable[41116] = 136; // 'state 136'
-gotoTable[41119] = 709; // 'state 709'
-gotoTable.fill(475, 41120, 41123); // 'state 475'
-gotoTable[41123] = 476; // 'state 476'
-gotoTable.fill(471, 41124, 41128); // 'state 471'
-gotoTable[41128] = 477; // 'state 477'
-gotoTable.fill(471, 41129, 41131); // 'state 471'
-gotoTable[41132] = 471; // 'state 471'
-gotoTable[41228] = 20; // 'state 20'
-gotoTable[41244] = 21; // 'state 21'
-gotoTable[41265] = 366; // 'state 366'
-gotoTable[41266] = 413; // 'state 413'
-gotoTable[41267] = 414; // 'state 414'
-gotoTable[41269] = 23; // 'state 23'
-gotoTable[41270] = 415; // 'state 415'
-gotoTable.fill(414, 41271, 41282); // 'state 414'
-gotoTable.fill(416, 41282, 41284); // 'state 416'
-gotoTable[41288] = 413; // 'state 413'
-gotoTable[41290] = 413; // 'state 413'
-gotoTable.fill(399, 41297, 41299); // 'state 399'
-gotoTable[41314] = 710; // 'state 710'
-gotoTable[41370] = 364; // 'state 364'
-gotoTable[41481] = 363; // 'state 363'
-gotoTable[41570] = 710; // 'state 710'
-gotoTable[41796] = 434; // 'state 434'
-gotoTable[41868] = 20; // 'state 20'
-gotoTable[41884] = 21; // 'state 21'
-gotoTable[41905] = 367; // 'state 367'
-gotoTable[41906] = 413; // 'state 413'
-gotoTable[41907] = 414; // 'state 414'
-gotoTable[41909] = 23; // 'state 23'
-gotoTable[41910] = 415; // 'state 415'
-gotoTable.fill(414, 41911, 41922); // 'state 414'
-gotoTable.fill(416, 41922, 41924); // 'state 416'
-gotoTable[41928] = 413; // 'state 413'
-gotoTable[41930] = 413; // 'state 413'
-gotoTable.fill(399, 41937, 41939); // 'state 399'
-gotoTable[42052] = 434; // 'state 434'
-gotoTable[42124] = 473; // 'state 473'
-gotoTable[42140] = 136; // 'state 136'
-gotoTable[42143] = 650; // 'state 650'
-gotoTable.fill(475, 42144, 42147); // 'state 475'
-gotoTable[42147] = 476; // 'state 476'
-gotoTable.fill(471, 42148, 42152); // 'state 471'
-gotoTable[42152] = 477; // 'state 477'
-gotoTable.fill(471, 42153, 42155); // 'state 471'
-gotoTable[42156] = 471; // 'state 471'
-gotoTable[42252] = 473; // 'state 473'
-gotoTable[42268] = 136; // 'state 136'
-gotoTable[42271] = 714; // 'state 714'
-gotoTable.fill(475, 42272, 42275); // 'state 475'
-gotoTable[42275] = 476; // 'state 476'
-gotoTable.fill(471, 42276, 42280); // 'state 471'
-gotoTable[42280] = 477; // 'state 477'
-gotoTable.fill(471, 42281, 42283); // 'state 471'
-gotoTable[42284] = 471; // 'state 471'
-gotoTable[42338] = 715; // 'state 715'
-gotoTable[42464] = 716; // 'state 716'
-gotoTable.fill(411, 42466, 42475); // 'state 411'
-gotoTable[42477] = 411; // 'state 411'
-gotoTable.fill(411, 42482, 42486); // 'state 411'
-gotoTable[42486] = 412; // 'state 412'
-gotoTable[42492] = 412; // 'state 412'
-gotoTable[42494] = 412; // 'state 412'
-gotoTable[42503] = 412; // 'state 412'
-gotoTable[42508] = 20; // 'state 20'
-gotoTable[42511] = 412; // 'state 412'
-gotoTable[42519] = 412; // 'state 412'
-gotoTable[42521] = 412; // 'state 412'
-gotoTable[42524] = 21; // 'state 21'
-gotoTable[42545] = 22; // 'state 22'
-gotoTable[42546] = 413; // 'state 413'
-gotoTable[42547] = 414; // 'state 414'
-gotoTable[42549] = 23; // 'state 23'
-gotoTable[42550] = 415; // 'state 415'
-gotoTable.fill(414, 42551, 42562); // 'state 414'
-gotoTable.fill(416, 42562, 42564); // 'state 416'
-gotoTable[42568] = 413; // 'state 413'
-gotoTable[42570] = 413; // 'state 413'
-gotoTable.fill(399, 42577, 42579); // 'state 399'
-gotoTable[42592] = 718; // 'state 718'
-gotoTable.fill(411, 42594, 42603); // 'state 411'
-gotoTable[42605] = 411; // 'state 411'
-gotoTable.fill(411, 42610, 42614); // 'state 411'
-gotoTable[42614] = 412; // 'state 412'
-gotoTable[42620] = 412; // 'state 412'
-gotoTable[42622] = 412; // 'state 412'
-gotoTable[42631] = 412; // 'state 412'
-gotoTable[42636] = 20; // 'state 20'
-gotoTable[42639] = 412; // 'state 412'
-gotoTable[42647] = 412; // 'state 412'
-gotoTable[42649] = 412; // 'state 412'
-gotoTable[42652] = 21; // 'state 21'
-gotoTable[42673] = 22; // 'state 22'
-gotoTable[42674] = 413; // 'state 413'
-gotoTable[42675] = 414; // 'state 414'
-gotoTable[42677] = 23; // 'state 23'
-gotoTable[42678] = 415; // 'state 415'
-gotoTable.fill(414, 42679, 42690); // 'state 414'
-gotoTable.fill(416, 42690, 42692); // 'state 416'
-gotoTable[42696] = 413; // 'state 413'
-gotoTable[42698] = 413; // 'state 413'
-gotoTable.fill(399, 42705, 42707); // 'state 399'
-gotoTable[42820] = 434; // 'state 434'
-gotoTable[42948] = 434; // 'state 434'
-gotoTable[43020] = 20; // 'state 20'
-gotoTable[43036] = 21; // 'state 21'
-gotoTable[43057] = 371; // 'state 371'
-gotoTable[43058] = 413; // 'state 413'
-gotoTable[43059] = 414; // 'state 414'
-gotoTable[43061] = 23; // 'state 23'
-gotoTable[43062] = 415; // 'state 415'
-gotoTable.fill(414, 43063, 43074); // 'state 414'
-gotoTable.fill(416, 43074, 43076); // 'state 416'
-gotoTable[43080] = 413; // 'state 413'
-gotoTable[43082] = 413; // 'state 413'
-gotoTable.fill(399, 43089, 43091); // 'state 399'
-gotoTable[43106] = 704; // 'state 704'
-gotoTable[43162] = 372; // 'state 372'
-gotoTable[43234] = 719; // 'state 719'
-gotoTable[43404] = 20; // 'state 20'
-gotoTable[43420] = 21; // 'state 21'
-gotoTable[43441] = 374; // 'state 374'
-gotoTable[43442] = 413; // 'state 413'
-gotoTable[43443] = 414; // 'state 414'
-gotoTable[43445] = 23; // 'state 23'
-gotoTable[43446] = 415; // 'state 415'
-gotoTable.fill(414, 43447, 43458); // 'state 414'
-gotoTable.fill(416, 43458, 43460); // 'state 416'
-gotoTable[43464] = 413; // 'state 413'
-gotoTable[43466] = 413; // 'state 413'
-gotoTable.fill(399, 43473, 43475); // 'state 399'
-gotoTable.fill(721, 43504, 43506); // 'state 721'
-gotoTable[43660] = 473; // 'state 473'
-gotoTable[43676] = 136; // 'state 136'
-gotoTable[43679] = 722; // 'state 722'
-gotoTable.fill(475, 43680, 43683); // 'state 475'
-gotoTable[43683] = 476; // 'state 476'
-gotoTable.fill(471, 43684, 43688); // 'state 471'
-gotoTable[43688] = 477; // 'state 477'
-gotoTable.fill(471, 43689, 43691); // 'state 471'
-gotoTable[43692] = 471; // 'state 471'
-gotoTable[43802] = 586; // 'state 586'
-gotoTable[43904] = 558; // 'state 558'
-gotoTable[43906] = 447; // 'state 447'
-gotoTable[43909] = 447; // 'state 447'
-gotoTable[43916] = 20; // 'state 20'
-gotoTable[43932] = 21; // 'state 21'
-gotoTable[43953] = 106; // 'state 106'
-gotoTable[43954] = 413; // 'state 413'
-gotoTable[43955] = 414; // 'state 414'
-gotoTable[43957] = 23; // 'state 23'
-gotoTable[43958] = 415; // 'state 415'
-gotoTable.fill(414, 43959, 43970); // 'state 414'
-gotoTable.fill(416, 43970, 43972); // 'state 416'
-gotoTable[43976] = 413; // 'state 413'
-gotoTable[43978] = 413; // 'state 413'
-gotoTable.fill(399, 43985, 43987); // 'state 399'
-gotoTable[44041] = 104; // 'state 104'
-gotoTable[44060] = 105; // 'state 105'
-gotoTable[44160] = 499; // 'state 499'
-gotoTable[44162] = 447; // 'state 447'
-gotoTable[44165] = 447; // 'state 447'
-gotoTable[44166] = 237; // 'state 237'
-gotoTable[44172] = 20; // 'state 20'
-gotoTable[44188] = 21; // 'state 21'
-gotoTable[44209] = 88; // 'state 88'
-gotoTable[44210] = 413; // 'state 413'
-gotoTable[44211] = 414; // 'state 414'
-gotoTable[44213] = 23; // 'state 23'
-gotoTable[44214] = 415; // 'state 415'
-gotoTable.fill(414, 44215, 44226); // 'state 414'
-gotoTable.fill(416, 44226, 44228); // 'state 416'
-gotoTable[44229] = 185; // 'state 185'
-gotoTable[44230] = 451; // 'state 451'
-gotoTable[44232] = 413; // 'state 413'
-gotoTable[44234] = 413; // 'state 413'
-gotoTable.fill(399, 44241, 44243); // 'state 399'
-gotoTable[44288] = 561; // 'state 561'
-gotoTable[44290] = 447; // 'state 447'
-gotoTable[44293] = 447; // 'state 447'
-gotoTable[44300] = 20; // 'state 20'
-gotoTable[44316] = 21; // 'state 21'
-gotoTable[44337] = 106; // 'state 106'
-gotoTable[44338] = 413; // 'state 413'
-gotoTable[44339] = 414; // 'state 414'
-gotoTable[44341] = 23; // 'state 23'
-gotoTable[44342] = 415; // 'state 415'
-gotoTable.fill(414, 44343, 44354); // 'state 414'
-gotoTable.fill(416, 44354, 44356); // 'state 416'
-gotoTable[44360] = 413; // 'state 413'
-gotoTable[44362] = 413; // 'state 413'
-gotoTable.fill(399, 44369, 44371); // 'state 399'
-gotoTable[44428] = 292; // 'state 292'
-gotoTable[44444] = 293; // 'state 293'
-gotoTable[44447] = 514; // 'state 514'
-gotoTable.fill(475, 44448, 44451); // 'state 475'
-gotoTable[44451] = 476; // 'state 476'
-gotoTable.fill(471, 44452, 44456); // 'state 471'
-gotoTable[44456] = 477; // 'state 477'
-gotoTable.fill(471, 44457, 44459); // 'state 471'
-gotoTable[44460] = 471; // 'state 471'
-gotoTable[44465] = 194; // 'state 194'
-gotoTable[44466] = 413; // 'state 413'
-gotoTable[44467] = 414; // 'state 414'
-gotoTable[44469] = 23; // 'state 23'
-gotoTable[44470] = 415; // 'state 415'
-gotoTable.fill(414, 44471, 44482); // 'state 414'
-gotoTable.fill(416, 44482, 44484); // 'state 416'
-gotoTable[44488] = 413; // 'state 413'
-gotoTable[44490] = 413; // 'state 413'
-gotoTable.fill(399, 44497, 44499); // 'state 399'
-gotoTable[44514] = 528; // 'state 528'
-gotoTable[44570] = 378; // 'state 378'
-gotoTable[44681] = 377; // 'state 377'
-gotoTable[44826] = 500; // 'state 500'
-gotoTable[44954] = 517; // 'state 517'
-gotoTable[44958] = 535; // 'state 535'
-gotoTable[45026] = 513; // 'state 513'
-gotoTable[45068] = 292; // 'state 292'
-gotoTable[45084] = 293; // 'state 293'
-gotoTable[45087] = 612; // 'state 612'
-gotoTable.fill(475, 45088, 45091); // 'state 475'
-gotoTable[45091] = 476; // 'state 476'
-gotoTable.fill(471, 45092, 45096); // 'state 471'
-gotoTable[45096] = 477; // 'state 477'
-gotoTable.fill(471, 45097, 45099); // 'state 471'
-gotoTable[45100] = 471; // 'state 471'
-gotoTable[45105] = 176; // 'state 176'
-gotoTable[45106] = 413; // 'state 413'
-gotoTable[45107] = 414; // 'state 414'
-gotoTable[45109] = 23; // 'state 23'
-gotoTable[45110] = 415; // 'state 415'
-gotoTable.fill(414, 45111, 45122); // 'state 414'
-gotoTable.fill(416, 45122, 45124); // 'state 416'
-gotoTable[45128] = 413; // 'state 413'
-gotoTable[45130] = 413; // 'state 413'
-gotoTable.fill(399, 45137, 45139); // 'state 399'
-gotoTable[45196] = 473; // 'state 473'
-gotoTable[45212] = 136; // 'state 136'
-gotoTable[45215] = 709; // 'state 709'
-gotoTable.fill(475, 45216, 45219); // 'state 475'
-gotoTable[45219] = 476; // 'state 476'
-gotoTable.fill(471, 45220, 45224); // 'state 471'
-gotoTable[45224] = 477; // 'state 477'
-gotoTable.fill(471, 45225, 45227); // 'state 471'
-gotoTable[45228] = 471; // 'state 471'
-gotoTable[45338] = 725; // 'state 725'
-gotoTable[45466] = 726; // 'state 726'
-gotoTable[45580] = 473; // 'state 473'
-gotoTable[45596] = 136; // 'state 136'
-gotoTable[45599] = 727; // 'state 727'
-gotoTable.fill(475, 45600, 45603); // 'state 475'
-gotoTable[45603] = 476; // 'state 476'
-gotoTable.fill(471, 45604, 45608); // 'state 471'
-gotoTable[45608] = 477; // 'state 477'
-gotoTable.fill(471, 45609, 45611); // 'state 471'
-gotoTable[45612] = 471; // 'state 471'
-gotoTable[45666] = 728; // 'state 728'
-gotoTable[45722] = 382; // 'state 382'
-gotoTable[45794] = 728; // 'state 728'
-gotoTable[45964] = 20; // 'state 20'
-gotoTable[45980] = 21; // 'state 21'
-gotoTable[46001] = 383; // 'state 383'
-gotoTable[46002] = 413; // 'state 413'
-gotoTable[46003] = 414; // 'state 414'
-gotoTable[46005] = 23; // 'state 23'
-gotoTable[46006] = 415; // 'state 415'
-gotoTable.fill(414, 46007, 46018); // 'state 414'
-gotoTable.fill(416, 46018, 46020); // 'state 416'
-gotoTable[46024] = 413; // 'state 413'
-gotoTable[46026] = 413; // 'state 413'
-gotoTable.fill(399, 46033, 46035); // 'state 399'
-gotoTable[46050] = 731; // 'state 731'
-gotoTable[46276] = 434; // 'state 434'
-gotoTable[46348] = 20; // 'state 20'
-gotoTable[46364] = 21; // 'state 21'
-gotoTable[46385] = 384; // 'state 384'
-gotoTable[46386] = 413; // 'state 413'
-gotoTable[46387] = 414; // 'state 414'
-gotoTable[46389] = 23; // 'state 23'
-gotoTable[46390] = 415; // 'state 415'
-gotoTable.fill(414, 46391, 46402); // 'state 414'
-gotoTable.fill(416, 46402, 46404); // 'state 416'
-gotoTable[46408] = 413; // 'state 413'
-gotoTable[46410] = 413; // 'state 413'
-gotoTable.fill(399, 46417, 46419); // 'state 399'
-gotoTable[46532] = 434; // 'state 434'
-gotoTable[46562] = 733; // 'state 733'
-gotoTable[46618] = 385; // 'state 385'
-gotoTable[46690] = 733; // 'state 733'
-gotoTable[46860] = 20; // 'state 20'
-gotoTable[46876] = 21; // 'state 21'
-gotoTable[46897] = 386; // 'state 386'
-gotoTable[46898] = 413; // 'state 413'
-gotoTable[46899] = 414; // 'state 414'
-gotoTable[46901] = 23; // 'state 23'
-gotoTable[46902] = 415; // 'state 415'
-gotoTable.fill(414, 46903, 46914); // 'state 414'
-gotoTable.fill(416, 46914, 46916); // 'state 416'
-gotoTable[46920] = 413; // 'state 413'
-gotoTable[46922] = 413; // 'state 413'
-gotoTable.fill(399, 46929, 46931); // 'state 399'
-gotoTable[47044] = 434; // 'state 434'
-gotoTable[47172] = 434; // 'state 434'
-gotoTable[47244] = 473; // 'state 473'
-gotoTable[47260] = 136; // 'state 136'
-gotoTable[47263] = 709; // 'state 709'
-gotoTable.fill(475, 47264, 47267); // 'state 475'
-gotoTable[47267] = 476; // 'state 476'
-gotoTable.fill(471, 47268, 47272); // 'state 471'
-gotoTable[47272] = 477; // 'state 477'
-gotoTable.fill(471, 47273, 47275); // 'state 471'
-gotoTable[47276] = 471; // 'state 471'
-gotoTable[47328] = 736; // 'state 736'
-gotoTable.fill(411, 47330, 47339); // 'state 411'
-gotoTable[47341] = 411; // 'state 411'
-gotoTable.fill(411, 47346, 47350); // 'state 411'
-gotoTable[47350] = 412; // 'state 412'
-gotoTable[47356] = 412; // 'state 412'
-gotoTable[47358] = 412; // 'state 412'
-gotoTable[47367] = 412; // 'state 412'
-gotoTable[47372] = 20; // 'state 20'
-gotoTable[47375] = 412; // 'state 412'
-gotoTable[47383] = 412; // 'state 412'
-gotoTable[47385] = 412; // 'state 412'
-gotoTable[47388] = 21; // 'state 21'
-gotoTable[47409] = 22; // 'state 22'
-gotoTable[47410] = 413; // 'state 413'
-gotoTable[47411] = 414; // 'state 414'
-gotoTable[47413] = 23; // 'state 23'
-gotoTable[47414] = 415; // 'state 415'
-gotoTable.fill(414, 47415, 47426); // 'state 414'
-gotoTable.fill(416, 47426, 47428); // 'state 416'
-gotoTable[47432] = 413; // 'state 413'
-gotoTable[47434] = 413; // 'state 413'
-gotoTable.fill(399, 47441, 47443); // 'state 399'
-gotoTable[47456] = 737; // 'state 737'
-gotoTable.fill(411, 47458, 47467); // 'state 411'
-gotoTable[47469] = 411; // 'state 411'
-gotoTable.fill(411, 47474, 47478); // 'state 411'
-gotoTable[47478] = 412; // 'state 412'
-gotoTable[47484] = 412; // 'state 412'
-gotoTable[47486] = 412; // 'state 412'
-gotoTable[47495] = 412; // 'state 412'
-gotoTable[47500] = 20; // 'state 20'
-gotoTable[47503] = 412; // 'state 412'
-gotoTable[47511] = 412; // 'state 412'
-gotoTable[47513] = 412; // 'state 412'
-gotoTable[47516] = 21; // 'state 21'
-gotoTable[47537] = 22; // 'state 22'
-gotoTable[47538] = 413; // 'state 413'
-gotoTable[47539] = 414; // 'state 414'
-gotoTable[47541] = 23; // 'state 23'
-gotoTable[47542] = 415; // 'state 415'
-gotoTable.fill(414, 47543, 47554); // 'state 414'
-gotoTable.fill(416, 47554, 47556); // 'state 416'
-gotoTable[47560] = 413; // 'state 413'
-gotoTable[47562] = 413; // 'state 413'
-gotoTable.fill(399, 47569, 47571); // 'state 399'
-gotoTable[47684] = 434; // 'state 434'
-gotoTable[47714] = 738; // 'state 738'
-gotoTable[47842] = 739; // 'state 739'
-gotoTable[48068] = 434; // 'state 434'
-gotoTable[48096] = 421; // 'state 421'
-gotoTable[48097] = 389; // 'state 389'
-gotoTable.fill(411, 48098, 48107); // 'state 411'
-gotoTable[48109] = 411; // 'state 411'
-gotoTable.fill(411, 48114, 48118); // 'state 411'
-gotoTable[48118] = 412; // 'state 412'
-gotoTable[48124] = 412; // 'state 412'
-gotoTable[48126] = 412; // 'state 412'
-gotoTable[48135] = 412; // 'state 412'
-gotoTable[48140] = 20; // 'state 20'
-gotoTable[48143] = 412; // 'state 412'
-gotoTable[48151] = 412; // 'state 412'
-gotoTable[48153] = 412; // 'state 412'
-gotoTable[48156] = 21; // 'state 21'
-gotoTable[48177] = 22; // 'state 22'
-gotoTable[48178] = 413; // 'state 413'
-gotoTable[48179] = 414; // 'state 414'
-gotoTable[48181] = 23; // 'state 23'
-gotoTable[48182] = 415; // 'state 415'
-gotoTable.fill(414, 48183, 48194); // 'state 414'
-gotoTable.fill(416, 48194, 48196); // 'state 416'
-gotoTable[48200] = 413; // 'state 413'
-gotoTable[48202] = 413; // 'state 413'
-gotoTable.fill(399, 48209, 48211); // 'state 399'
-gotoTable[48256] = 635; // 'state 635'
-gotoTable[48258] = 447; // 'state 447'
-gotoTable[48261] = 447; // 'state 447'
-gotoTable[48268] = 20; // 'state 20'
-gotoTable[48284] = 21; // 'state 21'
-gotoTable[48305] = 194; // 'state 194'
-gotoTable[48306] = 413; // 'state 413'
-gotoTable[48307] = 414; // 'state 414'
-gotoTable[48309] = 23; // 'state 23'
-gotoTable[48310] = 415; // 'state 415'
-gotoTable.fill(414, 48311, 48322); // 'state 414'
-gotoTable.fill(416, 48322, 48324); // 'state 416'
-gotoTable[48328] = 413; // 'state 413'
-gotoTable[48330] = 413; // 'state 413'
-gotoTable.fill(399, 48337, 48339); // 'state 399'
-gotoTable[48354] = 597; // 'state 597'
-gotoTable[48410] = 390; // 'state 390'
-gotoTable[48482] = 597; // 'state 597'
-gotoTable[48610] = 563; // 'state 563'
-gotoTable[48652] = 292; // 'state 292'
-gotoTable[48668] = 293; // 'state 293'
-gotoTable[48671] = 681; // 'state 681'
-gotoTable.fill(475, 48672, 48675); // 'state 475'
-gotoTable[48675] = 476; // 'state 476'
-gotoTable.fill(471, 48676, 48680); // 'state 471'
-gotoTable[48680] = 477; // 'state 477'
-gotoTable.fill(471, 48681, 48683); // 'state 471'
-gotoTable[48684] = 471; // 'state 471'
-gotoTable[48689] = 244; // 'state 244'
-gotoTable[48690] = 413; // 'state 413'
-gotoTable[48691] = 414; // 'state 414'
-gotoTable[48693] = 23; // 'state 23'
-gotoTable[48694] = 415; // 'state 415'
-gotoTable.fill(414, 48695, 48706); // 'state 414'
-gotoTable.fill(416, 48706, 48708); // 'state 416'
-gotoTable[48712] = 413; // 'state 413'
-gotoTable[48714] = 413; // 'state 413'
-gotoTable.fill(399, 48721, 48723); // 'state 399'
-gotoTable[48736] = 421; // 'state 421'
-gotoTable[48737] = 28; // 'state 28'
-gotoTable.fill(411, 48738, 48747); // 'state 411'
-gotoTable[48749] = 411; // 'state 411'
-gotoTable.fill(411, 48754, 48758); // 'state 411'
-gotoTable[48758] = 412; // 'state 412'
-gotoTable[48764] = 412; // 'state 412'
-gotoTable[48766] = 412; // 'state 412'
-gotoTable[48775] = 412; // 'state 412'
-gotoTable[48780] = 20; // 'state 20'
-gotoTable[48783] = 412; // 'state 412'
-gotoTable[48791] = 412; // 'state 412'
-gotoTable[48793] = 412; // 'state 412'
-gotoTable[48796] = 21; // 'state 21'
-gotoTable[48811] = 221; // 'state 221'
-gotoTable.fill(538, 48813, 48817); // 'state 538'
-gotoTable[48817] = 22; // 'state 22'
-gotoTable[48818] = 422; // 'state 422'
-gotoTable[48819] = 414; // 'state 414'
-gotoTable[48821] = 23; // 'state 23'
-gotoTable[48822] = 415; // 'state 415'
-gotoTable.fill(414, 48823, 48834); // 'state 414'
-gotoTable.fill(416, 48834, 48836); // 'state 416'
-gotoTable[48838] = 423; // 'state 423'
-gotoTable[48840] = 413; // 'state 413'
-gotoTable[48842] = 413; // 'state 413'
-gotoTable[48843] = 29; // 'state 29'
-gotoTable.fill(423, 48844, 48847); // 'state 423'
-gotoTable[48847] = 287; // 'state 287'
-gotoTable[48848] = 424; // 'state 424'
-gotoTable.fill(399, 48849, 48851); // 'state 399'
-gotoTable[48908] = 473; // 'state 473'
-gotoTable[48924] = 136; // 'state 136'
-gotoTable[48927] = 741; // 'state 741'
-gotoTable.fill(475, 48928, 48931); // 'state 475'
-gotoTable[48931] = 476; // 'state 476'
-gotoTable.fill(471, 48932, 48936); // 'state 471'
-gotoTable[48936] = 477; // 'state 477'
-gotoTable.fill(471, 48937, 48939); // 'state 471'
-gotoTable[48940] = 471; // 'state 471'
-gotoTable[48994] = 742; // 'state 742'
-gotoTable[49220] = 434; // 'state 434'
-gotoTable[49348] = 434; // 'state 434'
-gotoTable[49378] = 744; // 'state 744'
-gotoTable[49604] = 434; // 'state 434'
-gotoTable[49632] = 746; // 'state 746'
-gotoTable.fill(411, 49634, 49643); // 'state 411'
-gotoTable[49645] = 411; // 'state 411'
-gotoTable.fill(411, 49650, 49654); // 'state 411'
-gotoTable[49654] = 412; // 'state 412'
-gotoTable[49660] = 412; // 'state 412'
-gotoTable[49662] = 412; // 'state 412'
-gotoTable[49671] = 412; // 'state 412'
-gotoTable[49676] = 20; // 'state 20'
-gotoTable[49679] = 412; // 'state 412'
-gotoTable[49687] = 412; // 'state 412'
-gotoTable[49689] = 412; // 'state 412'
-gotoTable[49692] = 21; // 'state 21'
-gotoTable[49713] = 22; // 'state 22'
-gotoTable[49714] = 413; // 'state 413'
-gotoTable[49715] = 414; // 'state 414'
-gotoTable[49717] = 23; // 'state 23'
-gotoTable[49718] = 415; // 'state 415'
-gotoTable.fill(414, 49719, 49730); // 'state 414'
-gotoTable.fill(416, 49730, 49732); // 'state 416'
-gotoTable[49736] = 413; // 'state 413'
-gotoTable[49738] = 413; // 'state 413'
-gotoTable.fill(399, 49745, 49747); // 'state 399'
-gotoTable[49760] = 421; // 'state 421'
-gotoTable[49761] = 394; // 'state 394'
-gotoTable.fill(411, 49762, 49771); // 'state 411'
-gotoTable[49773] = 411; // 'state 411'
-gotoTable.fill(411, 49778, 49782); // 'state 411'
-gotoTable[49782] = 412; // 'state 412'
-gotoTable[49788] = 412; // 'state 412'
-gotoTable[49790] = 412; // 'state 412'
-gotoTable[49799] = 412; // 'state 412'
-gotoTable[49804] = 20; // 'state 20'
-gotoTable[49807] = 412; // 'state 412'
-gotoTable[49815] = 412; // 'state 412'
-gotoTable[49817] = 412; // 'state 412'
-gotoTable[49820] = 21; // 'state 21'
-gotoTable[49841] = 22; // 'state 22'
-gotoTable[49842] = 413; // 'state 413'
-gotoTable[49843] = 414; // 'state 414'
-gotoTable[49845] = 23; // 'state 23'
-gotoTable[49846] = 415; // 'state 415'
-gotoTable.fill(414, 49847, 49858); // 'state 414'
-gotoTable.fill(416, 49858, 49860); // 'state 416'
-gotoTable[49864] = 413; // 'state 413'
-gotoTable[49866] = 413; // 'state 413'
-gotoTable.fill(399, 49873, 49875); // 'state 399'
-gotoTable[49888] = 456; // 'state 456'
-gotoTable.fill(411, 49890, 49899); // 'state 411'
-gotoTable[49901] = 411; // 'state 411'
-gotoTable.fill(411, 49906, 49910); // 'state 411'
-gotoTable[49910] = 412; // 'state 412'
-gotoTable[49916] = 412; // 'state 412'
-gotoTable[49918] = 412; // 'state 412'
-gotoTable[49927] = 412; // 'state 412'
-gotoTable[49932] = 20; // 'state 20'
-gotoTable[49935] = 412; // 'state 412'
-gotoTable[49943] = 412; // 'state 412'
-gotoTable[49945] = 412; // 'state 412'
-gotoTable[49948] = 21; // 'state 21'
-gotoTable[49969] = 22; // 'state 22'
-gotoTable[49970] = 413; // 'state 413'
-gotoTable[49971] = 414; // 'state 414'
-gotoTable[49973] = 23; // 'state 23'
-gotoTable[49974] = 415; // 'state 415'
-gotoTable.fill(414, 49975, 49986); // 'state 414'
-gotoTable.fill(416, 49986, 49988); // 'state 416'
-gotoTable[49992] = 413; // 'state 413'
-gotoTable[49994] = 413; // 'state 413'
-gotoTable.fill(399, 50001, 50003); // 'state 399'
-gotoTable[50018] = 668; // 'state 668'
-gotoTable[50188] = 20; // 'state 20'
-gotoTable[50204] = 21; // 'state 21'
-gotoTable[50225] = 101; // 'state 101'
-gotoTable[50226] = 413; // 'state 413'
-gotoTable[50227] = 414; // 'state 414'
-gotoTable[50229] = 23; // 'state 23'
-gotoTable[50230] = 415; // 'state 415'
-gotoTable.fill(414, 50231, 50242); // 'state 414'
-gotoTable.fill(416, 50242, 50244); // 'state 416'
-gotoTable[50245] = 97; // 'state 97'
-gotoTable[50246] = 451; // 'state 451'
-gotoTable[50248] = 413; // 'state 413'
-gotoTable[50250] = 413; // 'state 413'
-gotoTable.fill(399, 50257, 50259); // 'state 399'
-gotoTable[50313] = 299; // 'state 299'
-gotoTable[50332] = 300; // 'state 300'
-gotoTable[50354] = 399; // 'state 399'
-gotoTable[50355] = 95; // 'state 95'
-gotoTable[50357] = 399; // 'state 399'
-gotoTable[50376] = 399; // 'state 399'
-gotoTable[50378] = 399; // 'state 399'
-gotoTable.fill(399, 50385, 50387); // 'state 399'
-gotoTable[50458] = 747; // 'state 747'
-gotoTable[50528] = 456; // 'state 456'
-gotoTable.fill(411, 50530, 50539); // 'state 411'
-gotoTable[50541] = 411; // 'state 411'
-gotoTable.fill(411, 50546, 50550); // 'state 411'
-gotoTable[50550] = 412; // 'state 412'
-gotoTable[50556] = 412; // 'state 412'
-gotoTable[50558] = 412; // 'state 412'
-gotoTable[50567] = 412; // 'state 412'
-gotoTable[50572] = 20; // 'state 20'
-gotoTable[50575] = 412; // 'state 412'
-gotoTable[50583] = 412; // 'state 412'
-gotoTable[50585] = 412; // 'state 412'
-gotoTable[50588] = 21; // 'state 21'
-gotoTable[50609] = 22; // 'state 22'
-gotoTable[50610] = 413; // 'state 413'
-gotoTable[50611] = 414; // 'state 414'
-gotoTable[50613] = 23; // 'state 23'
-gotoTable[50614] = 415; // 'state 415'
-gotoTable.fill(414, 50615, 50626); // 'state 414'
-gotoTable.fill(416, 50626, 50628); // 'state 416'
-gotoTable[50632] = 413; // 'state 413'
-gotoTable[50634] = 413; // 'state 413'
-gotoTable.fill(399, 50641, 50643); // 'state 399'
-gotoTable[50688] = 161; // 'state 161'
-gotoTable[50690] = 447; // 'state 447'
-gotoTable[50693] = 447; // 'state 447'
-gotoTable[50698] = 162; // 'state 162'
-gotoTable[50700] = 20; // 'state 20'
-gotoTable[50702] = 163; // 'state 163'
-gotoTable[50716] = 21; // 'state 21'
-gotoTable[50737] = 88; // 'state 88'
-gotoTable[50738] = 413; // 'state 413'
-gotoTable[50739] = 414; // 'state 414'
-gotoTable[50741] = 23; // 'state 23'
-gotoTable[50742] = 415; // 'state 415'
-gotoTable.fill(414, 50743, 50754); // 'state 414'
-gotoTable.fill(416, 50754, 50756); // 'state 416'
-gotoTable[50757] = 89; // 'state 89'
-gotoTable[50758] = 451; // 'state 451'
-gotoTable[50760] = 413; // 'state 413'
-gotoTable[50762] = 413; // 'state 413'
-gotoTable.fill(399, 50769, 50771); // 'state 399'
-gotoTable[50842] = 748; // 'state 748'
-gotoTable[50944] = 250; // 'state 250'
-gotoTable[50946] = 447; // 'state 447'
-gotoTable[50949] = 447; // 'state 447'
-gotoTable[50956] = 20; // 'state 20'
-gotoTable[50972] = 21; // 'state 21'
-gotoTable[50993] = 106; // 'state 106'
-gotoTable[50994] = 413; // 'state 413'
-gotoTable[50995] = 414; // 'state 414'
-gotoTable[50997] = 23; // 'state 23'
-gotoTable[50998] = 415; // 'state 415'
-gotoTable.fill(414, 50999, 51010); // 'state 414'
-gotoTable.fill(416, 51010, 51012); // 'state 416'
-gotoTable[51016] = 413; // 'state 413'
-gotoTable[51018] = 413; // 'state 413'
-gotoTable.fill(399, 51025, 51027); // 'state 399'
-gotoTable[51084] = 67; // 'state 67'
-gotoTable[51100] = 68; // 'state 68'
-gotoTable[51125] = 67; // 'state 67'
+const gotoTable = new Uint32Array(51168);
+gotoTable[95] = 79691776; // 'state 19'
+gotoTable[96] = 79692127; // 'state 19' (fused reduce program)
+gotoTable.fill(1719664992, 98, 107); // 'state 410' (fused reduce _statement)
+gotoTable[109] = 1719664992; // 'state 410' (fused reduce _statement)
+gotoTable.fill(1719664992, 114, 118); // 'state 410' (fused reduce _statement)
+gotoTable[118] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[124] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[126] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[135] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[140] = 83886080; // 'state 20'
+gotoTable[143] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[151] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[153] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[156] = 88080384; // 'state 21'
+gotoTable[177] = 92274688; // 'state 22'
+gotoTable[178] = 1732247552; // 'state 413'
+gotoTable[179] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[181] = 96468992; // 'state 23'
+gotoTable[182] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 183, 194); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 194, 196); // 'state 416'
+gotoTable[200] = 1732247552; // 'state 413'
+gotoTable[202] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 209, 211); // 'state 414' (fused reduce _primary_expression)
+gotoTable[224] = 117440865; // 'state 28' (fused reduce _statement_block_repeat1)
+gotoTable[225] = 117440512; // 'state 28'
+gotoTable.fill(1765802336, 226, 235); // 'state 421' (fused reduce _statement)
+gotoTable[237] = 1765802336; // 'state 421' (fused reduce _statement)
+gotoTable.fill(1765802336, 242, 246); // 'state 421' (fused reduce _statement)
+gotoTable[246] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[252] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[254] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[263] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[268] = 83886080; // 'state 20'
+gotoTable[271] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[279] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[281] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[284] = 88080384; // 'state 21'
+gotoTable[305] = 92274688; // 'state 22'
+gotoTable[306] = 1769996288; // 'state 422'
+gotoTable[307] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[309] = 96468992; // 'state 23'
+gotoTable[310] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 311, 322); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 322, 324); // 'state 416'
+gotoTable[326] = 121635275; // 'state 29' (fused reduce object_member)
+gotoTable[328] = 1732247552; // 'state 413'
+gotoTable[330] = 1732247552; // 'state 413'
+gotoTable[331] = 121634816; // 'state 29'
+gotoTable.fill(121635275, 332, 335); // 'state 29' (fused reduce object_member)
+gotoTable[335] = 125829120; // 'state 30'
+gotoTable[336] = 125829583; // 'state 30' (fused reduce _property_name)
+gotoTable.fill(1736442291, 337, 339); // 'state 414' (fused reduce _primary_expression)
+gotoTable[396] = 83886080; // 'state 20'
+gotoTable[397] = 364904448; // 'state 87'
+gotoTable[412] = 88080384; // 'state 21'
+gotoTable[433] = 369098752; // 'state 88'
+gotoTable[434] = 1732247552; // 'state 413'
+gotoTable[435] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[437] = 96468992; // 'state 23'
+gotoTable[438] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 439, 450); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 450, 452); // 'state 416'
+gotoTable[453] = 373293056; // 'state 89'
+gotoTable[454] = 373293509; // 'state 89' (fused reduce argument)
+gotoTable[456] = 377487360; // 'state 90'
+gotoTable[458] = 377487360; // 'state 90'
+gotoTable.fill(1736442291, 465, 467); // 'state 414' (fused reduce _primary_expression)
+gotoTable[480] = 1782579200; // 'state 425'
+gotoTable.fill(1782579552, 482, 491); // 'state 425' (fused reduce _statement)
+gotoTable[493] = 1782579552; // 'state 425' (fused reduce _statement)
+gotoTable.fill(1782579552, 498, 502); // 'state 425' (fused reduce _statement)
+gotoTable[502] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[508] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[510] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[519] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[524] = 83886080; // 'state 20'
+gotoTable[527] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[535] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[537] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[540] = 88080384; // 'state 21'
+gotoTable[561] = 92274688; // 'state 22'
+gotoTable[562] = 1732247552; // 'state 413'
+gotoTable[563] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[565] = 96468992; // 'state 23'
+gotoTable[566] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 567, 578); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 578, 580); // 'state 416'
+gotoTable[584] = 1732247552; // 'state 413'
+gotoTable[586] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 593, 595); // 'state 414' (fused reduce _primary_expression)
+gotoTable[639] = 264241152; // 'state 63'
+gotoTable[640] = 268435456; // 'state 64'
+gotoTable[642] = 268435840; // 'state 64' (fused reduce _binding_pattern)
+gotoTable[645] = 268435840; // 'state 64' (fused reduce _binding_pattern)
+gotoTable[780] = 83886080; // 'state 20'
+gotoTable[796] = 88080384; // 'state 21'
+gotoTable[817] = 159383552; // 'state 38'
+gotoTable[818] = 1732247552; // 'state 413'
+gotoTable[819] = 159383985; // 'state 38' (fused reduce _expression)
+gotoTable[821] = 96468992; // 'state 23'
+gotoTable[822] = 1740636160; // 'state 415'
+gotoTable.fill(159383985, 823, 834); // 'state 38' (fused reduce _expression)
+gotoTable.fill(1744830464, 834, 836); // 'state 416'
+gotoTable[840] = 1732247552; // 'state 413'
+gotoTable[842] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 849, 851); // 'state 414' (fused reduce _primary_expression)
+gotoTable[908] = 83886080; // 'state 20'
+gotoTable[924] = 88080384; // 'state 21'
+gotoTable[945] = 163577856; // 'state 39'
+gotoTable[946] = 1732247552; // 'state 413'
+gotoTable[947] = 163578289; // 'state 39' (fused reduce _expression)
+gotoTable[949] = 96468992; // 'state 23'
+gotoTable[950] = 1740636160; // 'state 415'
+gotoTable.fill(163578289, 951, 962); // 'state 39' (fused reduce _expression)
+gotoTable.fill(1744830464, 962, 964); // 'state 416'
+gotoTable[968] = 1732247552; // 'state 413'
+gotoTable[970] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 977, 979); // 'state 414' (fused reduce _primary_expression)
+gotoTable[994] = 171966464; // 'state 41'
+gotoTable[1143] = 1837105152; // 'state 438'
+gotoTable[1144] = 1837105527; // 'state 438' (fused reduce import_clause)
+gotoTable[1146] = 1837105527; // 'state 438' (fused reduce import_clause)
+gotoTable[1269] = 1866465280; // 'state 445'
+gotoTable[1270] = 1866465653; // 'state 445' (fused reduce _declaration)
+gotoTable[1274] = 1870659584; // 'state 446'
+gotoTable[1276] = 1866465653; // 'state 445' (fused reduce _declaration)
+gotoTable[1278] = 1866465653; // 'state 445' (fused reduce _declaration)
+gotoTable[1287] = 1866465653; // 'state 445' (fused reduce _declaration)
+gotoTable[1295] = 1866465653; // 'state 445' (fused reduce _declaration)
+gotoTable[1303] = 1866465653; // 'state 445' (fused reduce _declaration)
+gotoTable[1305] = 1866465653; // 'state 445' (fused reduce _declaration)
+gotoTable[1420] = 83886080; // 'state 20'
+gotoTable[1436] = 88080384; // 'state 21'
+gotoTable[1457] = 369098752; // 'state 88'
+gotoTable[1458] = 1732247552; // 'state 413'
+gotoTable[1459] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[1461] = 96468992; // 'state 23'
+gotoTable[1462] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 1463, 1474); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 1474, 1476); // 'state 416'
+gotoTable[1477] = 406847488; // 'state 97'
+gotoTable[1478] = 406847941; // 'state 97' (fused reduce argument)
+gotoTable[1480] = 1732247552; // 'state 413'
+gotoTable[1482] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 1489, 1491); // 'state 414' (fused reduce _primary_expression)
+gotoTable[1548] = 281018368; // 'state 67'
+gotoTable[1564] = 285212672; // 'state 68'
+gotoTable[1589] = 281018368; // 'state 67'
+gotoTable[1673] = 297795584; // 'state 71'
+gotoTable[1692] = 301989888; // 'state 72'
+gotoTable[1808] = 322961408; // 'state 77'
+gotoTable[1810] = 322961808; // 'state 77' (fused reduce class_heritage)
+gotoTable[1812] = 1887436800; // 'state 450'
+gotoTable[1820] = 327155712; // 'state 78'
+gotoTable[1949] = 411041792; // 'state 98'
+gotoTable[2060] = 83886080; // 'state 20'
+gotoTable[2076] = 88080384; // 'state 21'
+gotoTable[2097] = 381681664; // 'state 91'
+gotoTable[2098] = 1732247552; // 'state 413'
+gotoTable[2099] = 381682097; // 'state 91' (fused reduce _expression)
+gotoTable[2101] = 96468992; // 'state 23'
+gotoTable[2102] = 1740636160; // 'state 415'
+gotoTable.fill(381682097, 2103, 2114); // 'state 91' (fused reduce _expression)
+gotoTable.fill(1744830464, 2114, 2116); // 'state 416'
+gotoTable[2120] = 1732247552; // 'state 413'
+gotoTable[2122] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 2129, 2131); // 'state 414' (fused reduce _primary_expression)
+gotoTable[2226] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable[2227] = 398458880; // 'state 95'
+gotoTable[2229] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable[2248] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable[2250] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable.fill(398459315, 2257, 2259); // 'state 95' (fused reduce _primary_expression)
+gotoTable[2316] = 83886080; // 'state 20'
+gotoTable[2332] = 88080384; // 'state 21'
+gotoTable[2353] = 390070272; // 'state 93'
+gotoTable[2354] = 1732247552; // 'state 413'
+gotoTable[2355] = 390070705; // 'state 93' (fused reduce _expression)
+gotoTable[2357] = 96468992; // 'state 23'
+gotoTable[2358] = 1740636160; // 'state 415'
+gotoTable.fill(390070705, 2359, 2370); // 'state 93' (fused reduce _expression)
+gotoTable.fill(1744830464, 2370, 2372); // 'state 416'
+gotoTable[2376] = 1732247552; // 'state 413'
+gotoTable[2378] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 2385, 2387); // 'state 414' (fused reduce _primary_expression)
+gotoTable[2444] = 83886080; // 'state 20'
+gotoTable[2460] = 88080384; // 'state 21'
+gotoTable[2481] = 385875968; // 'state 92'
+gotoTable[2482] = 1732247552; // 'state 413'
+gotoTable[2483] = 385876401; // 'state 92' (fused reduce _expression)
+gotoTable[2485] = 96468992; // 'state 23'
+gotoTable[2486] = 1740636160; // 'state 415'
+gotoTable.fill(385876401, 2487, 2498); // 'state 92' (fused reduce _expression)
+gotoTable.fill(1744830464, 2498, 2500); // 'state 416'
+gotoTable[2504] = 1732247552; // 'state 413'
+gotoTable[2506] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 2513, 2515); // 'state 414' (fused reduce _primary_expression)
+gotoTable[2528] = 1749024768; // 'state 417'
+gotoTable.fill(1749025120, 2530, 2539); // 'state 417' (fused reduce _statement)
+gotoTable[2541] = 1749025120; // 'state 417' (fused reduce _statement)
+gotoTable.fill(1749025120, 2546, 2550); // 'state 417' (fused reduce _statement)
+gotoTable[2550] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[2556] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[2558] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[2567] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[2572] = 83886080; // 'state 20'
+gotoTable[2575] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[2583] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[2585] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[2588] = 88080384; // 'state 21'
+gotoTable[2609] = 92274688; // 'state 22'
+gotoTable[2610] = 1732247552; // 'state 413'
+gotoTable[2611] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[2613] = 96468992; // 'state 23'
+gotoTable[2614] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 2615, 2626); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 2626, 2628); // 'state 416'
+gotoTable[2632] = 1732247552; // 'state 413'
+gotoTable[2634] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 2641, 2643); // 'state 414' (fused reduce _primary_expression)
+gotoTable[2714] = 1879048192; // 'state 448'
+gotoTable[2825] = 281018368; // 'state 67'
+gotoTable[3012] = 1820327936; // 'state 434'
+gotoTable[3098] = 1879048192; // 'state 448'
+gotoTable[3212] = 83886080; // 'state 20'
+gotoTable[3228] = 88080384; // 'state 21'
+gotoTable[3249] = 444596224; // 'state 106'
+gotoTable[3250] = 1732247552; // 'state 413'
+gotoTable[3251] = 444596657; // 'state 106' (fused reduce _expression)
+gotoTable[3253] = 96468992; // 'state 23'
+gotoTable[3254] = 1740636160; // 'state 415'
+gotoTable.fill(444596657, 3255, 3266); // 'state 106' (fused reduce _expression)
+gotoTable.fill(1744830464, 3266, 3268); // 'state 416'
+gotoTable[3272] = 1732247552; // 'state 413'
+gotoTable[3274] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 3281, 3283); // 'state 414' (fused reduce _primary_expression)
+gotoTable[3340] = 83886080; // 'state 20'
+gotoTable[3356] = 88080384; // 'state 21'
+gotoTable[3377] = 423624704; // 'state 101'
+gotoTable[3378] = 1732247552; // 'state 413'
+gotoTable[3379] = 423625137; // 'state 101' (fused reduce _expression)
+gotoTable[3381] = 96468992; // 'state 23'
+gotoTable[3382] = 1740636160; // 'state 415'
+gotoTable.fill(423625137, 3383, 3394); // 'state 101' (fused reduce _expression)
+gotoTable.fill(1744830464, 3394, 3396); // 'state 416'
+gotoTable[3397] = 406847488; // 'state 97'
+gotoTable[3398] = 406847941; // 'state 97' (fused reduce argument)
+gotoTable[3400] = 1732247552; // 'state 413'
+gotoTable[3402] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 3409, 3411); // 'state 414' (fused reduce _primary_expression)
+gotoTable[3468] = 281018368; // 'state 67'
+gotoTable[3484] = 285212672; // 'state 68'
+gotoTable[3506] = 419430863; // 'state 100' (fused reduce _property_name)
+gotoTable[3509] = 281018368; // 'state 67'
+gotoTable[3535] = 419430400; // 'state 100'
+gotoTable[3536] = 419430863; // 'state 100' (fused reduce _property_name)
+gotoTable[3634] = 419430863; // 'state 100' (fused reduce _property_name)
+gotoTable[3663] = 419430400; // 'state 100'
+gotoTable[3664] = 419430863; // 'state 100' (fused reduce _property_name)
+gotoTable[3680] = 1912602624; // 'state 456'
+gotoTable.fill(1912602976, 3682, 3691); // 'state 456' (fused reduce _statement)
+gotoTable[3693] = 1912602976; // 'state 456' (fused reduce _statement)
+gotoTable.fill(1912602976, 3698, 3702); // 'state 456' (fused reduce _statement)
+gotoTable[3702] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[3708] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[3710] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[3719] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[3724] = 83886080; // 'state 20'
+gotoTable[3727] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[3735] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[3737] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[3740] = 88080384; // 'state 21'
+gotoTable[3761] = 92274688; // 'state 22'
+gotoTable[3762] = 1732247552; // 'state 413'
+gotoTable[3763] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[3765] = 96468992; // 'state 23'
+gotoTable[3766] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 3767, 3778); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 3778, 3780); // 'state 416'
+gotoTable[3784] = 1732247552; // 'state 413'
+gotoTable[3786] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 3793, 3795); // 'state 414' (fused reduce _primary_expression)
+gotoTable[3913] = 1933574144; // 'state 461'
+gotoTable[3977] = 436207616; // 'state 104'
+gotoTable[3996] = 440401920; // 'state 105'
+gotoTable[4108] = 83886080; // 'state 20'
+gotoTable[4124] = 88080384; // 'state 21'
+gotoTable[4145] = 448790528; // 'state 107'
+gotoTable[4146] = 1732247552; // 'state 413'
+gotoTable[4147] = 448790961; // 'state 107' (fused reduce _expression)
+gotoTable[4149] = 96468992; // 'state 23'
+gotoTable[4150] = 1740636160; // 'state 415'
+gotoTable.fill(448790961, 4151, 4162); // 'state 107' (fused reduce _expression)
+gotoTable.fill(1744830464, 4162, 4164); // 'state 416'
+gotoTable[4168] = 1732247552; // 'state 413'
+gotoTable[4170] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 4177, 4179); // 'state 414' (fused reduce _primary_expression)
+gotoTable[4236] = 83886080; // 'state 20'
+gotoTable[4252] = 88080384; // 'state 21'
+gotoTable[4273] = 452984832; // 'state 108'
+gotoTable[4274] = 1732247552; // 'state 413'
+gotoTable[4275] = 452985265; // 'state 108' (fused reduce _expression)
+gotoTable[4277] = 96468992; // 'state 23'
+gotoTable[4278] = 1740636160; // 'state 415'
+gotoTable.fill(452985265, 4279, 4290); // 'state 108' (fused reduce _expression)
+gotoTable.fill(1744830464, 4290, 4292); // 'state 416'
+gotoTable[4296] = 1732247552; // 'state 413'
+gotoTable[4298] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 4305, 4307); // 'state 414' (fused reduce _primary_expression)
+gotoTable[4350] = 457179136; // 'state 109'
+gotoTable[4364] = 83886080; // 'state 20'
+gotoTable[4380] = 88080384; // 'state 21'
+gotoTable[4401] = 465567744; // 'state 111'
+gotoTable[4402] = 1732247552; // 'state 413'
+gotoTable[4403] = 465568177; // 'state 111' (fused reduce _expression)
+gotoTable[4405] = 96468992; // 'state 23'
+gotoTable[4406] = 1740636160; // 'state 415'
+gotoTable.fill(465568177, 4407, 4418); // 'state 111' (fused reduce _expression)
+gotoTable.fill(1744830464, 4418, 4420); // 'state 416'
+gotoTable[4424] = 1732247552; // 'state 413'
+gotoTable[4426] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 4433, 4435); // 'state 414' (fused reduce _primary_expression)
+gotoTable[4530] = 1950351360; // 'state 465'
+gotoTable[4550] = 121635275; // 'state 29' (fused reduce object_member)
+gotoTable[4555] = 121634816; // 'state 29'
+gotoTable.fill(121635275, 4556, 4559); // 'state 29' (fused reduce object_member)
+gotoTable[4559] = 125829120; // 'state 30'
+gotoTable[4560] = 125829583; // 'state 30' (fused reduce _property_name)
+gotoTable[4620] = 281018368; // 'state 67'
+gotoTable[4636] = 285212672; // 'state 68'
+gotoTable[4661] = 281018368; // 'state 67'
+gotoTable[4745] = 297795584; // 'state 71'
+gotoTable[4764] = 301989888; // 'state 72'
+gotoTable[4880] = 322961408; // 'state 77'
+gotoTable[4882] = 322961808; // 'state 77' (fused reduce class_heritage)
+gotoTable[4884] = 1887436800; // 'state 450'
+gotoTable[4892] = 327155712; // 'state 78'
+gotoTable[5060] = 1820327936; // 'state 434'
+gotoTable[5188] = 1820327936; // 'state 434'
+gotoTable[5216] = 117440865; // 'state 28' (fused reduce _statement_block_repeat1)
+gotoTable[5217] = 117440512; // 'state 28'
+gotoTable.fill(1765802336, 5218, 5227); // 'state 421' (fused reduce _statement)
+gotoTable[5229] = 1765802336; // 'state 421' (fused reduce _statement)
+gotoTable.fill(1765802336, 5234, 5238); // 'state 421' (fused reduce _statement)
+gotoTable[5238] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[5244] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[5246] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[5255] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[5260] = 83886080; // 'state 20'
+gotoTable[5263] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[5271] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[5273] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[5276] = 88080384; // 'state 21'
+gotoTable[5297] = 92274688; // 'state 22'
+gotoTable[5298] = 1732247552; // 'state 413'
+gotoTable[5299] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[5301] = 96468992; // 'state 23'
+gotoTable[5302] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 5303, 5314); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 5314, 5316); // 'state 416'
+gotoTable[5320] = 1732247552; // 'state 413'
+gotoTable[5322] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 5329, 5331); // 'state 414' (fused reduce _primary_expression)
+gotoTable[5355] = 494927872; // 'state 118'
+gotoTable[5356] = 1958739968; // 'state 467'
+gotoTable[5516] = 83886080; // 'state 20'
+gotoTable[5532] = 88080384; // 'state 21'
+gotoTable[5553] = 499122176; // 'state 119'
+gotoTable[5554] = 1732247552; // 'state 413'
+gotoTable[5555] = 499122609; // 'state 119' (fused reduce _expression)
+gotoTable[5557] = 96468992; // 'state 23'
+gotoTable[5558] = 1740636160; // 'state 415'
+gotoTable.fill(499122609, 5559, 5570); // 'state 119' (fused reduce _expression)
+gotoTable.fill(1744830464, 5570, 5572); // 'state 416'
+gotoTable[5576] = 1732247552; // 'state 413'
+gotoTable[5578] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 5585, 5587); // 'state 414' (fused reduce _primary_expression)
+gotoTable[5644] = 83886080; // 'state 20'
+gotoTable[5660] = 88080384; // 'state 21'
+gotoTable[5681] = 369098752; // 'state 88'
+gotoTable[5682] = 1732247552; // 'state 413'
+gotoTable[5683] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[5685] = 96468992; // 'state 23'
+gotoTable[5686] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 5687, 5698); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 5698, 5700); // 'state 416'
+gotoTable[5701] = 578813952; // 'state 138'
+gotoTable[5702] = 578814405; // 'state 138' (fused reduce argument)
+gotoTable[5704] = 1732247552; // 'state 413'
+gotoTable[5706] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 5713, 5715); // 'state 414' (fused reduce _primary_expression)
+gotoTable[5772] = 83886080; // 'state 20'
+gotoTable[5788] = 88080384; // 'state 21'
+gotoTable[5809] = 532676608; // 'state 127'
+gotoTable[5810] = 1732247552; // 'state 413'
+gotoTable[5811] = 532677041; // 'state 127' (fused reduce _expression)
+gotoTable[5813] = 96468992; // 'state 23'
+gotoTable[5814] = 1740636160; // 'state 415'
+gotoTable.fill(532677041, 5815, 5826); // 'state 127' (fused reduce _expression)
+gotoTable.fill(1744830464, 5826, 5828); // 'state 416'
+gotoTable[5832] = 1732247552; // 'state 413'
+gotoTable[5834] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 5841, 5843); // 'state 414' (fused reduce _primary_expression)
+gotoTable[5900] = 83886080; // 'state 20'
+gotoTable[5916] = 88080384; // 'state 21'
+gotoTable[5937] = 545259520; // 'state 130'
+gotoTable[5938] = 1732247552; // 'state 413'
+gotoTable[5939] = 545259953; // 'state 130' (fused reduce _expression)
+gotoTable[5941] = 96468992; // 'state 23'
+gotoTable[5942] = 1740636160; // 'state 415'
+gotoTable.fill(545259953, 5943, 5954); // 'state 130' (fused reduce _expression)
+gotoTable.fill(1744830464, 5954, 5956); // 'state 416'
+gotoTable[5960] = 1732247552; // 'state 413'
+gotoTable[5962] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 5969, 5971); // 'state 414' (fused reduce _primary_expression)
+gotoTable[6028] = 1983905792; // 'state 473'
+gotoTable[6044] = 570425344; // 'state 136'
+gotoTable[6047] = 1988100096; // 'state 474'
+gotoTable.fill(1988100511, 6048, 6051); // 'state 474' (fused reduce _type)
+gotoTable[6051] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 6052, 6056); // 'state 476' (fused reduce _primary_type)
+gotoTable[6056] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 6057, 6059); // 'state 476' (fused reduce _primary_type)
+gotoTable[6060] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[6156] = 83886080; // 'state 20'
+gotoTable[6172] = 88080384; // 'state 21'
+gotoTable[6193] = 583008256; // 'state 139'
+gotoTable[6194] = 1732247552; // 'state 413'
+gotoTable[6195] = 583008689; // 'state 139' (fused reduce _expression)
+gotoTable[6197] = 96468992; // 'state 23'
+gotoTable[6198] = 1740636160; // 'state 415'
+gotoTable.fill(583008689, 6199, 6210); // 'state 139' (fused reduce _expression)
+gotoTable.fill(1744830464, 6210, 6212); // 'state 416'
+gotoTable[6216] = 1732247552; // 'state 413'
+gotoTable[6218] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 6225, 6227); // 'state 414' (fused reduce _primary_expression)
+gotoTable[6284] = 83886080; // 'state 20'
+gotoTable[6300] = 88080384; // 'state 21'
+gotoTable[6321] = 515899392; // 'state 123'
+gotoTable[6322] = 1732247552; // 'state 413'
+gotoTable[6323] = 515899825; // 'state 123' (fused reduce _expression)
+gotoTable[6325] = 96468992; // 'state 23'
+gotoTable[6326] = 1740636160; // 'state 415'
+gotoTable.fill(515899825, 6327, 6338); // 'state 123' (fused reduce _expression)
+gotoTable.fill(1744830464, 6338, 6340); // 'state 416'
+gotoTable[6344] = 1732247552; // 'state 413'
+gotoTable[6346] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 6353, 6355); // 'state 414' (fused reduce _primary_expression)
+gotoTable[6412] = 83886080; // 'state 20'
+gotoTable[6428] = 88080384; // 'state 21'
+gotoTable[6449] = 524288000; // 'state 125'
+gotoTable[6450] = 1732247552; // 'state 413'
+gotoTable[6451] = 524288433; // 'state 125' (fused reduce _expression)
+gotoTable[6453] = 96468992; // 'state 23'
+gotoTable[6454] = 1740636160; // 'state 415'
+gotoTable.fill(524288433, 6455, 6466); // 'state 125' (fused reduce _expression)
+gotoTable.fill(1744830464, 6466, 6468); // 'state 416'
+gotoTable[6472] = 1732247552; // 'state 413'
+gotoTable[6474] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 6481, 6483); // 'state 414' (fused reduce _primary_expression)
+gotoTable[6540] = 83886080; // 'state 20'
+gotoTable[6556] = 88080384; // 'state 21'
+gotoTable[6577] = 503316480; // 'state 120'
+gotoTable[6578] = 1732247552; // 'state 413'
+gotoTable[6579] = 503316913; // 'state 120' (fused reduce _expression)
+gotoTable[6581] = 96468992; // 'state 23'
+gotoTable[6582] = 1740636160; // 'state 415'
+gotoTable.fill(503316913, 6583, 6594); // 'state 120' (fused reduce _expression)
+gotoTable.fill(1744830464, 6594, 6596); // 'state 416'
+gotoTable[6600] = 1732247552; // 'state 413'
+gotoTable[6602] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 6609, 6611); // 'state 414' (fused reduce _primary_expression)
+gotoTable[6668] = 83886080; // 'state 20'
+gotoTable[6684] = 88080384; // 'state 21'
+gotoTable[6705] = 507510784; // 'state 121'
+gotoTable[6706] = 1732247552; // 'state 413'
+gotoTable[6707] = 507511217; // 'state 121' (fused reduce _expression)
+gotoTable[6709] = 96468992; // 'state 23'
+gotoTable[6710] = 1740636160; // 'state 415'
+gotoTable.fill(507511217, 6711, 6722); // 'state 121' (fused reduce _expression)
+gotoTable.fill(1744830464, 6722, 6724); // 'state 416'
+gotoTable[6728] = 1732247552; // 'state 413'
+gotoTable[6730] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 6737, 6739); // 'state 414' (fused reduce _primary_expression)
+gotoTable[6796] = 83886080; // 'state 20'
+gotoTable[6812] = 88080384; // 'state 21'
+gotoTable[6833] = 511705088; // 'state 122'
+gotoTable[6834] = 1732247552; // 'state 413'
+gotoTable[6835] = 511705521; // 'state 122' (fused reduce _expression)
+gotoTable[6837] = 96468992; // 'state 23'
+gotoTable[6838] = 1740636160; // 'state 415'
+gotoTable.fill(511705521, 6839, 6850); // 'state 122' (fused reduce _expression)
+gotoTable.fill(1744830464, 6850, 6852); // 'state 416'
+gotoTable[6856] = 1732247552; // 'state 413'
+gotoTable[6858] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 6865, 6867); // 'state 414' (fused reduce _primary_expression)
+gotoTable[6924] = 83886080; // 'state 20'
+gotoTable[6940] = 88080384; // 'state 21'
+gotoTable[6961] = 520093696; // 'state 124'
+gotoTable[6962] = 1732247552; // 'state 413'
+gotoTable[6963] = 520094129; // 'state 124' (fused reduce _expression)
+gotoTable[6965] = 96468992; // 'state 23'
+gotoTable[6966] = 1740636160; // 'state 415'
+gotoTable.fill(520094129, 6967, 6978); // 'state 124' (fused reduce _expression)
+gotoTable.fill(1744830464, 6978, 6980); // 'state 416'
+gotoTable[6984] = 1732247552; // 'state 413'
+gotoTable[6986] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 6993, 6995); // 'state 414' (fused reduce _primary_expression)
+gotoTable[7052] = 83886080; // 'state 20'
+gotoTable[7068] = 88080384; // 'state 21'
+gotoTable[7089] = 541065216; // 'state 129'
+gotoTable[7090] = 1732247552; // 'state 413'
+gotoTable[7091] = 541065649; // 'state 129' (fused reduce _expression)
+gotoTable[7093] = 96468992; // 'state 23'
+gotoTable[7094] = 1740636160; // 'state 415'
+gotoTable.fill(541065649, 7095, 7106); // 'state 129' (fused reduce _expression)
+gotoTable.fill(1744830464, 7106, 7108); // 'state 416'
+gotoTable[7112] = 1732247552; // 'state 413'
+gotoTable[7114] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 7121, 7123); // 'state 414' (fused reduce _primary_expression)
+gotoTable[7236] = 2009071616; // 'state 479'
+gotoTable[7308] = 83886080; // 'state 20'
+gotoTable[7324] = 88080384; // 'state 21'
+gotoTable[7345] = 528482304; // 'state 126'
+gotoTable[7346] = 1732247552; // 'state 413'
+gotoTable[7347] = 528482737; // 'state 126' (fused reduce _expression)
+gotoTable[7349] = 96468992; // 'state 23'
+gotoTable[7350] = 1740636160; // 'state 415'
+gotoTable.fill(528482737, 7351, 7362); // 'state 126' (fused reduce _expression)
+gotoTable.fill(1744830464, 7362, 7364); // 'state 416'
+gotoTable[7368] = 1732247552; // 'state 413'
+gotoTable[7370] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 7377, 7379); // 'state 414' (fused reduce _primary_expression)
+gotoTable[7436] = 83886080; // 'state 20'
+gotoTable[7452] = 88080384; // 'state 21'
+gotoTable[7473] = 536870912; // 'state 128'
+gotoTable[7474] = 1732247552; // 'state 413'
+gotoTable[7475] = 536871345; // 'state 128' (fused reduce _expression)
+gotoTable[7477] = 96468992; // 'state 23'
+gotoTable[7478] = 1740636160; // 'state 415'
+gotoTable.fill(536871345, 7479, 7490); // 'state 128' (fused reduce _expression)
+gotoTable.fill(1744830464, 7490, 7492); // 'state 416'
+gotoTable[7496] = 1732247552; // 'state 413'
+gotoTable[7498] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 7505, 7507); // 'state 414' (fused reduce _primary_expression)
+gotoTable[7547] = 591396864; // 'state 141'
+gotoTable[7687] = 2051014656; // 'state 489'
+gotoTable[7692] = 83886080; // 'state 20'
+gotoTable[7695] = 2051014656; // 'state 489'
+gotoTable[7708] = 88080384; // 'state 21'
+gotoTable[7729] = 603979776; // 'state 144'
+gotoTable[7730] = 1732247552; // 'state 413'
+gotoTable[7731] = 603980209; // 'state 144' (fused reduce _expression)
+gotoTable[7733] = 96468992; // 'state 23'
+gotoTable[7734] = 1740636160; // 'state 415'
+gotoTable.fill(603980209, 7735, 7746); // 'state 144' (fused reduce _expression)
+gotoTable.fill(1744830464, 7746, 7748); // 'state 416'
+gotoTable[7752] = 1732247552; // 'state 413'
+gotoTable[7754] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 7761, 7763); // 'state 414' (fused reduce _primary_expression)
+gotoTable[7797] = 2042626048; // 'state 487'
+gotoTable[7798] = 2042626421; // 'state 487' (fused reduce _declaration)
+gotoTable[7804] = 2042626421; // 'state 487' (fused reduce _declaration)
+gotoTable[7806] = 2042626421; // 'state 487' (fused reduce _declaration)
+gotoTable[7815] = 2042626421; // 'state 487' (fused reduce _declaration)
+gotoTable[7823] = 2042626421; // 'state 487' (fused reduce _declaration)
+gotoTable[7831] = 2042626421; // 'state 487' (fused reduce _declaration)
+gotoTable[7833] = 2042626421; // 'state 487' (fused reduce _declaration)
+gotoTable[7939] = 620756992; // 'state 148'
+gotoTable[7986] = 2084569551; // 'state 497' (fused reduce _property_name)
+gotoTable[8015] = 2084569088; // 'state 497'
+gotoTable[8016] = 2084569551; // 'state 497' (fused reduce _property_name)
+gotoTable[8064] = 2092957696; // 'state 499'
+gotoTable[8066] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[8069] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[8070] = 633339904; // 'state 151'
+gotoTable[8189] = 2067791872; // 'state 493'
+gotoTable[8346] = 2071986176; // 'state 494'
+gotoTable[8460] = 83886080; // 'state 20'
+gotoTable[8461] = 364904448; // 'state 87'
+gotoTable[8476] = 88080384; // 'state 21'
+gotoTable[8497] = 369098752; // 'state 88'
+gotoTable[8498] = 1732247552; // 'state 413'
+gotoTable[8499] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[8501] = 96468992; // 'state 23'
+gotoTable[8502] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 8503, 8514); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 8514, 8516); // 'state 416'
+gotoTable[8517] = 373293056; // 'state 89'
+gotoTable[8518] = 373293509; // 'state 89' (fused reduce argument)
+gotoTable[8520] = 377487360; // 'state 90'
+gotoTable[8522] = 377487360; // 'state 90'
+gotoTable.fill(1736442291, 8529, 8531); // 'state 414' (fused reduce _primary_expression)
+gotoTable[8585] = 641728512; // 'state 153'
+gotoTable[8604] = 645922816; // 'state 154'
+gotoTable[8730] = 2097152000; // 'state 500'
+gotoTable[8841] = 654311424; // 'state 156'
+gotoTable[8960] = 675282944; // 'state 161'
+gotoTable[8962] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[8965] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[8970] = 679477248; // 'state 162'
+gotoTable[8974] = 683671552; // 'state 163'
+gotoTable[9097] = 658505728; // 'state 157'
+gotoTable[9116] = 662700032; // 'state 158'
+gotoTable[9186] = 2101346304; // 'state 501'
+gotoTable[9242] = 666894336; // 'state 159'
+gotoTable[9353] = 641728512; // 'state 153'
+gotoTable[9486] = 713031680; // 'state 170'
+gotoTable[9491] = 717225984; // 'state 171'
+gotoTable.fill(717226387, 9493, 9495); // 'state 171' (fused reduce _class_body_repeat10)
+gotoTable[9522] = 708837839; // 'state 169' (fused reduce _property_name)
+gotoTable[9551] = 708837376; // 'state 169'
+gotoTable[9552] = 708837839; // 'state 169' (fused reduce _property_name)
+gotoTable[9612] = 83886080; // 'state 20'
+gotoTable[9628] = 88080384; // 'state 21'
+gotoTable[9649] = 700448768; // 'state 167'
+gotoTable[9650] = 1732247552; // 'state 413'
+gotoTable[9651] = 700449201; // 'state 167' (fused reduce _expression)
+gotoTable[9653] = 96468992; // 'state 23'
+gotoTable[9654] = 1740636160; // 'state 415'
+gotoTable.fill(700449201, 9655, 9666); // 'state 167' (fused reduce _expression)
+gotoTable.fill(1744830464, 9666, 9668); // 'state 416'
+gotoTable[9672] = 1732247552; // 'state 413'
+gotoTable[9674] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 9681, 9683); // 'state 414' (fused reduce _primary_expression)
+gotoTable[9740] = 1983905792; // 'state 473'
+gotoTable[9756] = 570425344; // 'state 136'
+gotoTable[9759] = 704643072; // 'state 168'
+gotoTable.fill(704643487, 9760, 9763); // 'state 168' (fused reduce _type)
+gotoTable[9763] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 9764, 9768); // 'state 476' (fused reduce _primary_type)
+gotoTable[9768] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 9769, 9771); // 'state 476' (fused reduce _primary_type)
+gotoTable[9772] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[9872] = 687865856; // 'state 164'
+gotoTable[9874] = 687866256; // 'state 164' (fused reduce class_heritage)
+gotoTable[9876] = 2118123520; // 'state 505'
+gotoTable[9884] = 692060160; // 'state 165'
+gotoTable[10004] = 2122317824; // 'state 506'
+gotoTable[10128] = 696254464; // 'state 166'
+gotoTable[10130] = 696254864; // 'state 166' (fused reduce class_heritage)
+gotoTable[10132] = 2122317824; // 'state 506'
+gotoTable[10264] = 725614592; // 'state 173'
+gotoTable[10268] = 729808896; // 'state 174'
+gotoTable[10284] = 2143289344; // 'state 511'
+gotoTable[10396] = 2147483648; // 'state 512'
+gotoTable[10466] = 2151677952; // 'state 513'
+gotoTable[10508] = 83886080; // 'state 20'
+gotoTable[10524] = 88080384; // 'state 21'
+gotoTable[10545] = 738197504; // 'state 176'
+gotoTable[10546] = 1732247552; // 'state 413'
+gotoTable[10547] = 738197937; // 'state 176' (fused reduce _expression)
+gotoTable[10549] = 96468992; // 'state 23'
+gotoTable[10550] = 1740636160; // 'state 415'
+gotoTable.fill(738197937, 10551, 10562); // 'state 176' (fused reduce _expression)
+gotoTable.fill(1744830464, 10562, 10564); // 'state 416'
+gotoTable[10568] = 1732247552; // 'state 413'
+gotoTable[10570] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 10577, 10579); // 'state 414' (fused reduce _primary_expression)
+gotoTable[10636] = 1983905792; // 'state 473'
+gotoTable[10652] = 570425344; // 'state 136'
+gotoTable[10655] = 2155872256; // 'state 514'
+gotoTable.fill(2155872671, 10656, 10659); // 'state 514' (fused reduce _type)
+gotoTable[10659] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 10660, 10664); // 'state 476' (fused reduce _primary_type)
+gotoTable[10664] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 10665, 10667); // 'state 476' (fused reduce _primary_type)
+gotoTable[10668] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[10764] = 83886080; // 'state 20'
+gotoTable[10780] = 88080384; // 'state 21'
+gotoTable[10801] = 742391808; // 'state 177'
+gotoTable[10802] = 1732247552; // 'state 413'
+gotoTable[10803] = 742392241; // 'state 177' (fused reduce _expression)
+gotoTable[10805] = 96468992; // 'state 23'
+gotoTable[10806] = 1740636160; // 'state 415'
+gotoTable.fill(742392241, 10807, 10818); // 'state 177' (fused reduce _expression)
+gotoTable.fill(1744830464, 10818, 10820); // 'state 416'
+gotoTable[10824] = 1732247552; // 'state 413'
+gotoTable[10826] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 10833, 10835); // 'state 414' (fused reduce _primary_expression)
+gotoTable[10892] = 83886080; // 'state 20'
+gotoTable[10908] = 88080384; // 'state 21'
+gotoTable[10929] = 746586112; // 'state 178'
+gotoTable[10930] = 1732247552; // 'state 413'
+gotoTable[10931] = 746586545; // 'state 178' (fused reduce _expression)
+gotoTable[10933] = 96468992; // 'state 23'
+gotoTable[10934] = 1740636160; // 'state 415'
+gotoTable.fill(746586545, 10935, 10946); // 'state 178' (fused reduce _expression)
+gotoTable.fill(1744830464, 10946, 10948); // 'state 416'
+gotoTable[10952] = 1732247552; // 'state 413'
+gotoTable[10954] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 10961, 10963); // 'state 414' (fused reduce _primary_expression)
+gotoTable[11020] = 83886080; // 'state 20'
+gotoTable[11036] = 88080384; // 'state 21'
+gotoTable[11057] = 444596224; // 'state 106'
+gotoTable[11058] = 1732247552; // 'state 413'
+gotoTable[11059] = 444596657; // 'state 106' (fused reduce _expression)
+gotoTable[11061] = 96468992; // 'state 23'
+gotoTable[11062] = 1740636160; // 'state 415'
+gotoTable.fill(444596657, 11063, 11074); // 'state 106' (fused reduce _expression)
+gotoTable.fill(1744830464, 11074, 11076); // 'state 416'
+gotoTable[11080] = 759169024; // 'state 181'
+gotoTable[11082] = 759169024; // 'state 181'
+gotoTable.fill(1736442291, 11089, 11091); // 'state 414' (fused reduce _primary_expression)
+gotoTable[11162] = 2168455168; // 'state 517'
+gotoTable[11275] = 2176843776; // 'state 519'
+gotoTable[11460] = 1820327936; // 'state 434'
+gotoTable[11572] = 2164260864; // 'state 516'
+gotoTable[11674] = 2168455168; // 'state 517'
+gotoTable[11844] = 1820327936; // 'state 434'
+gotoTable[11972] = 1820327936; // 'state 434'
+gotoTable[12100] = 1820327936; // 'state 434'
+gotoTable[12172] = 83886080; // 'state 20'
+gotoTable[12188] = 88080384; // 'state 21'
+gotoTable[12209] = 369098752; // 'state 88'
+gotoTable[12210] = 1732247552; // 'state 413'
+gotoTable[12211] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[12213] = 96468992; // 'state 23'
+gotoTable[12214] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 12215, 12226); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 12226, 12228); // 'state 416'
+gotoTable[12229] = 373293056; // 'state 89'
+gotoTable[12230] = 373293509; // 'state 89' (fused reduce argument)
+gotoTable[12232] = 1732247552; // 'state 413'
+gotoTable[12234] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 12241, 12243); // 'state 414' (fused reduce _primary_expression)
+gotoTable[12318] = 771751936; // 'state 184'
+gotoTable[12356] = 2181038080; // 'state 520'
+gotoTable[12428] = 83886080; // 'state 20'
+gotoTable[12444] = 88080384; // 'state 21'
+gotoTable[12465] = 369098752; // 'state 88'
+gotoTable[12466] = 1732247552; // 'state 413'
+gotoTable[12467] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[12469] = 96468992; // 'state 23'
+gotoTable[12470] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 12471, 12482); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 12482, 12484); // 'state 416'
+gotoTable[12485] = 775946240; // 'state 185'
+gotoTable[12486] = 775946693; // 'state 185' (fused reduce argument)
+gotoTable[12488] = 1732247552; // 'state 413'
+gotoTable[12490] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 12497, 12499); // 'state 414' (fused reduce _primary_expression)
+gotoTable[12615] = 2189426688; // 'state 522'
+gotoTable[12699] = 2197815296; // 'state 524'
+gotoTable[12812] = 83886080; // 'state 20'
+gotoTable[12828] = 88080384; // 'state 21'
+gotoTable[12849] = 805306368; // 'state 192'
+gotoTable[12850] = 1732247552; // 'state 413'
+gotoTable[12851] = 805306801; // 'state 192' (fused reduce _expression)
+gotoTable[12853] = 96468992; // 'state 23'
+gotoTable[12854] = 1740636160; // 'state 415'
+gotoTable.fill(805306801, 12855, 12866); // 'state 192' (fused reduce _expression)
+gotoTable.fill(1744830464, 12866, 12868); // 'state 416'
+gotoTable[12872] = 1732247552; // 'state 413'
+gotoTable[12874] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 12881, 12883); // 'state 414' (fused reduce _primary_expression)
+gotoTable[12937] = 796917760; // 'state 190'
+gotoTable[12956] = 801112064; // 'state 191'
+gotoTable[13124] = 1820327936; // 'state 434'
+gotoTable[13234] = 1950351360; // 'state 465'
+gotoTable[13254] = 2210398667; // 'state 527' (fused reduce object_member)
+gotoTable[13259] = 2210398208; // 'state 527'
+gotoTable.fill(2210398667, 13260, 13263); // 'state 527' (fused reduce object_member)
+gotoTable[13263] = 125829120; // 'state 30'
+gotoTable[13264] = 125829583; // 'state 30' (fused reduce _property_name)
+gotoTable[13324] = 83886080; // 'state 20'
+gotoTable[13340] = 88080384; // 'state 21'
+gotoTable[13361] = 813694976; // 'state 194'
+gotoTable[13362] = 1732247552; // 'state 413'
+gotoTable[13363] = 813695409; // 'state 194' (fused reduce _expression)
+gotoTable[13365] = 96468992; // 'state 23'
+gotoTable[13366] = 1740636160; // 'state 415'
+gotoTable.fill(813695409, 13367, 13378); // 'state 194' (fused reduce _expression)
+gotoTable.fill(1744830464, 13378, 13380); // 'state 416'
+gotoTable[13384] = 1732247552; // 'state 413'
+gotoTable[13386] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 13393, 13395); // 'state 414' (fused reduce _primary_expression)
+gotoTable[13410] = 2214592512; // 'state 528'
+gotoTable[13466] = 817889280; // 'state 195'
+gotoTable[13577] = 796917760; // 'state 190'
+gotoTable[13764] = 1820327936; // 'state 434'
+gotoTable[13892] = 1820327936; // 'state 434'
+gotoTable[14020] = 1820327936; // 'state 434'
+gotoTable[14092] = 83886080; // 'state 20'
+gotoTable[14108] = 88080384; // 'state 21'
+gotoTable[14129] = 838860800; // 'state 200'
+gotoTable[14130] = 1732247552; // 'state 413'
+gotoTable[14131] = 838861233; // 'state 200' (fused reduce _expression)
+gotoTable[14133] = 96468992; // 'state 23'
+gotoTable[14134] = 1740636160; // 'state 415'
+gotoTable.fill(838861233, 14135, 14146); // 'state 200' (fused reduce _expression)
+gotoTable.fill(1744830464, 14146, 14148); // 'state 416'
+gotoTable[14152] = 1732247552; // 'state 413'
+gotoTable[14154] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 14161, 14163); // 'state 414' (fused reduce _primary_expression)
+gotoTable[14207] = 264241152; // 'state 63'
+gotoTable[14208] = 843055104; // 'state 201'
+gotoTable[14210] = 843055488; // 'state 201' (fused reduce _binding_pattern)
+gotoTable[14213] = 843055488; // 'state 201' (fused reduce _binding_pattern)
+gotoTable[14404] = 1820327936; // 'state 434'
+gotoTable[14473] = 641728512; // 'state 153'
+gotoTable[14492] = 645922816; // 'state 154'
+gotoTable[14642] = 419430863; // 'state 100' (fused reduce _property_name)
+gotoTable[14671] = 419430400; // 'state 100'
+gotoTable[14672] = 419430863; // 'state 100' (fused reduce _property_name)
+gotoTable[14729] = 641728512; // 'state 153'
+gotoTable[14748] = 645922816; // 'state 154'
+gotoTable[14864] = 696254464; // 'state 166'
+gotoTable[14866] = 696254864; // 'state 166' (fused reduce class_heritage)
+gotoTable[14868] = 2122317824; // 'state 506'
+gotoTable[14876] = 855638016; // 'state 204'
+gotoTable[14946] = 2222981120; // 'state 530'
+gotoTable[15074] = 2227175424; // 'state 531'
+gotoTable[15212] = 2218786816; // 'state 529'
+gotoTable[15428] = 1820327936; // 'state 434'
+gotoTable[15556] = 1820327936; // 'state 434'
+gotoTable[15684] = 1820327936; // 'state 434'
+gotoTable[15812] = 1820327936; // 'state 434'
+gotoTable[15940] = 1820327936; // 'state 434'
+gotoTable[16068] = 1820327936; // 'state 434'
+gotoTable[16196] = 1820327936; // 'state 434'
+gotoTable[16324] = 1820327936; // 'state 434'
+gotoTable[16452] = 1820327936; // 'state 434'
+gotoTable[16580] = 1820327936; // 'state 434'
+gotoTable[16708] = 1820327936; // 'state 434'
+gotoTable[16836] = 1820327936; // 'state 434'
+gotoTable[16939] = 926941184; // 'state 221'
+gotoTable.fill(2256535552, 16941, 16945); // 'state 538'
+gotoTable[16946] = 931135951; // 'state 222' (fused reduce _property_name)
+gotoTable[16975] = 931135488; // 'state 222'
+gotoTable[16976] = 931135951; // 'state 222' (fused reduce _property_name)
+gotoTable[17036] = 1983905792; // 'state 473'
+gotoTable[17037] = 364904448; // 'state 87'
+gotoTable[17052] = 570425344; // 'state 136'
+gotoTable[17055] = 2239758336; // 'state 534'
+gotoTable.fill(2239758751, 17056, 17059); // 'state 534' (fused reduce _type)
+gotoTable[17059] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 17060, 17064); // 'state 476' (fused reduce _primary_type)
+gotoTable[17064] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 17065, 17067); // 'state 476' (fused reduce _primary_type)
+gotoTable[17068] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[17096] = 897581056; // 'state 214'
+gotoTable[17098] = 897581056; // 'state 214'
+gotoTable[17164] = 1983905792; // 'state 473'
+gotoTable[17180] = 570425344; // 'state 136'
+gotoTable[17183] = 910163968; // 'state 217'
+gotoTable.fill(910164383, 17184, 17187); // 'state 217' (fused reduce _type)
+gotoTable[17187] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 17188, 17192); // 'state 476' (fused reduce _primary_type)
+gotoTable[17192] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 17193, 17195); // 'state 476' (fused reduce _primary_type)
+gotoTable[17196] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[17292] = 1983905792; // 'state 473'
+gotoTable[17308] = 570425344; // 'state 136'
+gotoTable[17311] = 2231369728; // 'state 532'
+gotoTable.fill(2231370143, 17312, 17315); // 'state 532' (fused reduce _type)
+gotoTable[17315] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 17316, 17320); // 'state 476' (fused reduce _primary_type)
+gotoTable[17320] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 17321, 17323); // 'state 476' (fused reduce _primary_type)
+gotoTable[17324] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[17438] = 2243952640; // 'state 535'
+gotoTable[17545] = 2235564032; // 'state 533'
+gotoTable[17548] = 2235564032; // 'state 533'
+gotoTable[17676] = 83886080; // 'state 20'
+gotoTable[17692] = 88080384; // 'state 21'
+gotoTable[17713] = 935329792; // 'state 223'
+gotoTable[17714] = 1732247552; // 'state 413'
+gotoTable[17715] = 935330225; // 'state 223' (fused reduce _expression)
+gotoTable[17717] = 96468992; // 'state 23'
+gotoTable[17718] = 1740636160; // 'state 415'
+gotoTable.fill(935330225, 17719, 17730); // 'state 223' (fused reduce _expression)
+gotoTable.fill(1744830464, 17730, 17732); // 'state 416'
+gotoTable[17736] = 1732247552; // 'state 413'
+gotoTable[17738] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 17745, 17747); // 'state 414' (fused reduce _primary_expression)
+gotoTable[17844] = 2269118464; // 'state 541'
+gotoTable[17988] = 1820327936; // 'state 434'
+gotoTable[18040] = 2281701376; // 'state 544'
+gotoTable[18042] = 2281701376; // 'state 544'
+gotoTable[18169] = 2290089984; // 'state 546'
+gotoTable[18313] = 952107008; // 'state 227'
+gotoTable[18332] = 956301312; // 'state 228'
+gotoTable[18448] = 960495616; // 'state 229'
+gotoTable[18450] = 960496016; // 'state 229' (fused reduce class_heritage)
+gotoTable[18452] = 2306867200; // 'state 550'
+gotoTable[18460] = 964689920; // 'state 230'
+gotoTable[18628] = 1820327936; // 'state 434'
+gotoTable[18687] = 2327838720; // 'state 555'
+gotoTable[18688] = 268435456; // 'state 64'
+gotoTable[18690] = 268435840; // 'state 64' (fused reduce _binding_pattern)
+gotoTable[18693] = 268435840; // 'state 64' (fused reduce _binding_pattern)
+gotoTable[18828] = 83886080; // 'state 20'
+gotoTable[18844] = 88080384; // 'state 21'
+gotoTable[18865] = 977272832; // 'state 233'
+gotoTable[18866] = 1732247552; // 'state 413'
+gotoTable[18867] = 977273265; // 'state 233' (fused reduce _expression)
+gotoTable[18869] = 96468992; // 'state 23'
+gotoTable[18870] = 1740636160; // 'state 415'
+gotoTable.fill(977273265, 18871, 18882); // 'state 233' (fused reduce _expression)
+gotoTable.fill(1744830464, 18882, 18884); // 'state 416'
+gotoTable[18888] = 1732247552; // 'state 413'
+gotoTable[18890] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 18897, 18899); // 'state 414' (fused reduce _primary_expression)
+gotoTable[18944] = 2340421632; // 'state 558'
+gotoTable[18946] = 2340422016; // 'state 558' (fused reduce _binding_pattern)
+gotoTable[18949] = 2340422016; // 'state 558' (fused reduce _binding_pattern)
+gotoTable[19073] = 2336227328; // 'state 557'
+gotoTable[19200] = 2092957696; // 'state 499'
+gotoTable[19202] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[19205] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[19206] = 994050048; // 'state 237'
+gotoTable[19328] = 2353004544; // 'state 561'
+gotoTable[19330] = 2353004928; // 'state 561' (fused reduce _binding_pattern)
+gotoTable[19333] = 2353004928; // 'state 561' (fused reduce _binding_pattern)
+gotoTable[19460] = 2348810240; // 'state 560'
+gotoTable[19593] = 1006632960; // 'state 240'
+gotoTable[19612] = 1010827264; // 'state 241'
+gotoTable[19682] = 2357198848; // 'state 562'
+gotoTable[19738] = 1019215872; // 'state 243'
+gotoTable[19849] = 1015021568; // 'state 242'
+gotoTable[19938] = 2361393152; // 'state 563'
+gotoTable[19980] = 83886080; // 'state 20'
+gotoTable[19996] = 88080384; // 'state 21'
+gotoTable[20017] = 1023410176; // 'state 244'
+gotoTable[20018] = 1732247552; // 'state 413'
+gotoTable[20019] = 1023410609; // 'state 244' (fused reduce _expression)
+gotoTable[20021] = 96468992; // 'state 23'
+gotoTable[20022] = 1740636160; // 'state 415'
+gotoTable.fill(1023410609, 20023, 20034); // 'state 244' (fused reduce _expression)
+gotoTable.fill(1744830464, 20034, 20036); // 'state 416'
+gotoTable[20040] = 1732247552; // 'state 413'
+gotoTable[20042] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 20049, 20051); // 'state 414' (fused reduce _primary_expression)
+gotoTable[20122] = 2365587456; // 'state 564'
+gotoTable[20194] = 2373976064; // 'state 566'
+gotoTable[20250] = 1031798784; // 'state 246'
+gotoTable[20361] = 1006632960; // 'state 240'
+gotoTable[20450] = 2357198848; // 'state 562'
+gotoTable[20608] = 1048576000; // 'state 250'
+gotoTable[20610] = 1048576384; // 'state 250' (fused reduce _binding_pattern)
+gotoTable[20613] = 1048576384; // 'state 250' (fused reduce _binding_pattern)
+gotoTable[20762] = 2394947584; // 'state 571'
+gotoTable[20872] = 2382364672; // 'state 568'
+gotoTable[20992] = 1040187392; // 'state 248'
+gotoTable[20994] = 1040187776; // 'state 248' (fused reduce _binding_pattern)
+gotoTable[20997] = 1040187776; // 'state 248' (fused reduce _binding_pattern)
+gotoTable[21140] = 2399141888; // 'state 572'
+gotoTable[21264] = 1052770304; // 'state 251'
+gotoTable[21266] = 1052770704; // 'state 251' (fused reduce class_heritage)
+gotoTable[21268] = 2399141888; // 'state 572'
+gotoTable[21396] = 2407530496; // 'state 574'
+gotoTable[21522] = 2411724800; // 'state 575'
+gotoTable[21572] = 1820327936; // 'state 434'
+gotoTable[21649] = 2415919104; // 'state 576'
+gotoTable[21769] = 1077936128; // 'state 257'
+gotoTable[21786] = 2436890624; // 'state 581'
+gotoTable[21788] = 1082130432; // 'state 258'
+gotoTable[21938] = 1069547983; // 'state 255' (fused reduce _property_name)
+gotoTable[21967] = 1069547520; // 'state 255'
+gotoTable[21968] = 1069547983; // 'state 255' (fused reduce _property_name)
+gotoTable[22030] = 713031680; // 'state 170'
+gotoTable.fill(2424307712, 22037, 22039); // 'state 578'
+gotoTable[22066] = 708837839; // 'state 169' (fused reduce _property_name)
+gotoTable[22095] = 708837376; // 'state 169'
+gotoTable[22096] = 708837839; // 'state 169' (fused reduce _property_name)
+gotoTable[22156] = 1983905792; // 'state 473'
+gotoTable[22172] = 570425344; // 'state 136'
+gotoTable[22175] = 1090519040; // 'state 260'
+gotoTable.fill(1090519455, 22176, 22179); // 'state 260' (fused reduce _type)
+gotoTable[22179] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 22180, 22184); // 'state 476' (fused reduce _primary_type)
+gotoTable[22184] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 22185, 22187); // 'state 476' (fused reduce _primary_type)
+gotoTable[22188] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[22316] = 2441084928; // 'state 582'
+gotoTable[22424] = 1086324736; // 'state 259'
+gotoTable[22444] = 2441084928; // 'state 582'
+gotoTable[22540] = 1983905792; // 'state 473'
+gotoTable[22556] = 570425344; // 'state 136'
+gotoTable[22559] = 2445279232; // 'state 583'
+gotoTable.fill(2445279647, 22560, 22563); // 'state 583' (fused reduce _type)
+gotoTable[22563] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 22564, 22568); // 'state 476' (fused reduce _primary_type)
+gotoTable[22568] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 22569, 22571); // 'state 476' (fused reduce _primary_type)
+gotoTable[22572] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[22724] = 1820327936; // 'state 434'
+gotoTable[22852] = 1820327936; // 'state 434'
+gotoTable[22980] = 1820327936; // 'state 434'
+gotoTable[23052] = 83886080; // 'state 20'
+gotoTable[23068] = 88080384; // 'state 21'
+gotoTable[23089] = 369098752; // 'state 88'
+gotoTable[23090] = 1732247552; // 'state 413'
+gotoTable[23091] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[23093] = 96468992; // 'state 23'
+gotoTable[23094] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 23095, 23106); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 23106, 23108); // 'state 416'
+gotoTable[23109] = 2453667840; // 'state 585'
+gotoTable[23110] = 2453668293; // 'state 585' (fused reduce argument)
+gotoTable[23112] = 1732247552; // 'state 413'
+gotoTable[23114] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 23121, 23123); // 'state 414' (fused reduce _primary_expression)
+gotoTable[23194] = 2457862144; // 'state 586'
+gotoTable[23322] = 2457862144; // 'state 586'
+gotoTable[23436] = 83886080; // 'state 20'
+gotoTable[23437] = 2466250752; // 'state 588'
+gotoTable[23452] = 88080384; // 'state 21'
+gotoTable[23473] = 369098752; // 'state 88'
+gotoTable[23474] = 1732247552; // 'state 413'
+gotoTable[23475] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[23477] = 96468992; // 'state 23'
+gotoTable[23478] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 23479, 23490); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 23490, 23492); // 'state 416'
+gotoTable[23493] = 2466250752; // 'state 588'
+gotoTable[23494] = 2466251205; // 'state 588' (fused reduce argument)
+gotoTable[23496] = 377487360; // 'state 90'
+gotoTable[23498] = 377487360; // 'state 90'
+gotoTable.fill(1736442291, 23505, 23507); // 'state 414' (fused reduce _primary_expression)
+gotoTable[23564] = 1983905792; // 'state 473'
+gotoTable[23580] = 570425344; // 'state 136'
+gotoTable[23583] = 1111490560; // 'state 265'
+gotoTable.fill(1111490975, 23584, 23587); // 'state 265' (fused reduce _type)
+gotoTable[23587] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 23588, 23592); // 'state 476' (fused reduce _primary_type)
+gotoTable[23592] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 23593, 23595); // 'state 476' (fused reduce _primary_type)
+gotoTable[23596] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[23748] = 2470445056; // 'state 589'
+gotoTable[23879] = 2478833664; // 'state 591'
+gotoTable[23948] = 83886080; // 'state 20'
+gotoTable[23964] = 88080384; // 'state 21'
+gotoTable[23985] = 369098752; // 'state 88'
+gotoTable[23986] = 1732247552; // 'state 413'
+gotoTable[23987] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[23989] = 96468992; // 'state 23'
+gotoTable[23990] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 23991, 24002); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 24002, 24004); // 'state 416'
+gotoTable[24005] = 2483027968; // 'state 592'
+gotoTable[24006] = 2483028421; // 'state 592' (fused reduce argument)
+gotoTable[24008] = 1732247552; // 'state 413'
+gotoTable[24010] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 24017, 24019); // 'state 414' (fused reduce _primary_expression)
+gotoTable[24093] = 2491416576; // 'state 594'
+gotoTable[24204] = 1983905792; // 'state 473'
+gotoTable[24220] = 570425344; // 'state 136'
+gotoTable[24223] = 2499805184; // 'state 596'
+gotoTable.fill(2499805599, 24224, 24227); // 'state 596' (fused reduce _type)
+gotoTable[24227] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 24228, 24232); // 'state 476' (fused reduce _primary_type)
+gotoTable[24232] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 24233, 24235); // 'state 476' (fused reduce _primary_type)
+gotoTable[24236] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[24332] = 1983905792; // 'state 473'
+gotoTable[24348] = 570425344; // 'state 136'
+gotoTable[24351] = 2495610880; // 'state 595'
+gotoTable.fill(2495611295, 24352, 24355); // 'state 595' (fused reduce _type)
+gotoTable[24355] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 24356, 24360); // 'state 476' (fused reduce _primary_type)
+gotoTable[24360] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 24361, 24363); // 'state 476' (fused reduce _primary_type)
+gotoTable[24364] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[24418] = 2503999488; // 'state 597'
+gotoTable[24474] = 1128267776; // 'state 269'
+gotoTable[24585] = 1124073472; // 'state 268'
+gotoTable[24772] = 1820327936; // 'state 434'
+gotoTable[24882] = 1950351360; // 'state 465'
+gotoTable[24902] = 2512388555; // 'state 599' (fused reduce object_member)
+gotoTable[24907] = 2512388096; // 'state 599'
+gotoTable.fill(2512388555, 24908, 24911); // 'state 599' (fused reduce object_member)
+gotoTable[24911] = 125829120; // 'state 30'
+gotoTable[24912] = 125829583; // 'state 30' (fused reduce _property_name)
+gotoTable[25028] = 1820327936; // 'state 434'
+gotoTable[25058] = 2503999488; // 'state 597'
+gotoTable[25184] = 2516582400; // 'state 600'
+gotoTable.fill(2516582752, 25186, 25195); // 'state 600' (fused reduce _statement)
+gotoTable[25197] = 2516582752; // 'state 600' (fused reduce _statement)
+gotoTable.fill(2516582752, 25202, 25206); // 'state 600' (fused reduce _statement)
+gotoTable[25206] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25212] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25214] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25223] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25228] = 83886080; // 'state 20'
+gotoTable[25231] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25239] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25241] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25244] = 88080384; // 'state 21'
+gotoTable[25265] = 92274688; // 'state 22'
+gotoTable[25266] = 1732247552; // 'state 413'
+gotoTable[25267] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[25269] = 96468992; // 'state 23'
+gotoTable[25270] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 25271, 25282); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 25282, 25284); // 'state 416'
+gotoTable[25288] = 1732247552; // 'state 413'
+gotoTable[25290] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 25297, 25299); // 'state 414' (fused reduce _primary_expression)
+gotoTable[25312] = 2520776704; // 'state 601'
+gotoTable.fill(2520777056, 25314, 25323); // 'state 601' (fused reduce _statement)
+gotoTable[25325] = 2520777056; // 'state 601' (fused reduce _statement)
+gotoTable.fill(2520777056, 25330, 25334); // 'state 601' (fused reduce _statement)
+gotoTable[25334] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25340] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25342] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25351] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25356] = 83886080; // 'state 20'
+gotoTable[25359] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25367] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25369] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[25372] = 88080384; // 'state 21'
+gotoTable[25393] = 92274688; // 'state 22'
+gotoTable[25394] = 1732247552; // 'state 413'
+gotoTable[25395] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[25397] = 96468992; // 'state 23'
+gotoTable[25398] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 25399, 25410); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 25410, 25412); // 'state 416'
+gotoTable[25416] = 1732247552; // 'state 413'
+gotoTable[25418] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 25425, 25427); // 'state 414' (fused reduce _primary_expression)
+gotoTable[25484] = 83886080; // 'state 20'
+gotoTable[25500] = 88080384; // 'state 21'
+gotoTable[25521] = 1132462080; // 'state 270'
+gotoTable[25522] = 1732247552; // 'state 413'
+gotoTable[25523] = 1132462513; // 'state 270' (fused reduce _expression)
+gotoTable[25525] = 96468992; // 'state 23'
+gotoTable[25526] = 1740636160; // 'state 415'
+gotoTable.fill(1132462513, 25527, 25538); // 'state 270' (fused reduce _expression)
+gotoTable.fill(1744830464, 25538, 25540); // 'state 416'
+gotoTable[25544] = 1732247552; // 'state 413'
+gotoTable[25546] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 25553, 25555); // 'state 414' (fused reduce _primary_expression)
+gotoTable[25612] = 83886080; // 'state 20'
+gotoTable[25628] = 88080384; // 'state 21'
+gotoTable[25649] = 1145044992; // 'state 273'
+gotoTable[25650] = 1732247552; // 'state 413'
+gotoTable[25651] = 1145045425; // 'state 273' (fused reduce _expression)
+gotoTable[25653] = 96468992; // 'state 23'
+gotoTable[25654] = 1740636160; // 'state 415'
+gotoTable.fill(1145045425, 25655, 25666); // 'state 273' (fused reduce _expression)
+gotoTable.fill(1744830464, 25666, 25668); // 'state 416'
+gotoTable[25672] = 1732247552; // 'state 413'
+gotoTable[25674] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 25681, 25683); // 'state 414' (fused reduce _primary_expression)
+gotoTable[25796] = 1820327936; // 'state 434'
+gotoTable[25882] = 2071986176; // 'state 494'
+gotoTable[25996] = 83886080; // 'state 20'
+gotoTable[26012] = 88080384; // 'state 21'
+gotoTable[26033] = 1153433600; // 'state 275'
+gotoTable[26034] = 1732247552; // 'state 413'
+gotoTable[26035] = 1153434033; // 'state 275' (fused reduce _expression)
+gotoTable[26037] = 96468992; // 'state 23'
+gotoTable[26038] = 1740636160; // 'state 415'
+gotoTable.fill(1153434033, 26039, 26050); // 'state 275' (fused reduce _expression)
+gotoTable.fill(1744830464, 26050, 26052); // 'state 416'
+gotoTable[26056] = 1732247552; // 'state 413'
+gotoTable[26058] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 26065, 26067); // 'state 414' (fused reduce _primary_expression)
+gotoTable[26121] = 1015021568; // 'state 242'
+gotoTable[26140] = 1157627904; // 'state 276'
+gotoTable[26256] = 1161822208; // 'state 277'
+gotoTable[26258] = 1161822608; // 'state 277' (fused reduce class_heritage)
+gotoTable[26260] = 2407530496; // 'state 574'
+gotoTable[26368] = 1166016512; // 'state 278'
+gotoTable[26370] = 1166016896; // 'state 278' (fused reduce _binding_pattern)
+gotoTable[26373] = 1166016896; // 'state 278' (fused reduce _binding_pattern)
+gotoTable[26479] = 2524971008; // 'state 602'
+gotoTable[26636] = 83886080; // 'state 20'
+gotoTable[26652] = 88080384; // 'state 21'
+gotoTable[26673] = 1174405120; // 'state 280'
+gotoTable[26674] = 1732247552; // 'state 413'
+gotoTable[26675] = 1174405553; // 'state 280' (fused reduce _expression)
+gotoTable[26677] = 96468992; // 'state 23'
+gotoTable[26678] = 1740636160; // 'state 415'
+gotoTable.fill(1174405553, 26679, 26690); // 'state 280' (fused reduce _expression)
+gotoTable.fill(1744830464, 26690, 26692); // 'state 416'
+gotoTable[26696] = 1732247552; // 'state 413'
+gotoTable[26698] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 26705, 26707); // 'state 414' (fused reduce _primary_expression)
+gotoTable[26764] = 1983905792; // 'state 473'
+gotoTable[26780] = 570425344; // 'state 136'
+gotoTable[26783] = 2541748224; // 'state 606'
+gotoTable.fill(2541748639, 26784, 26787); // 'state 606' (fused reduce _type)
+gotoTable[26787] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 26788, 26792); // 'state 476' (fused reduce _primary_type)
+gotoTable[26792] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 26793, 26795); // 'state 476' (fused reduce _primary_type)
+gotoTable[26796] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[26880] = 675282944; // 'state 161'
+gotoTable[26882] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[26885] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[26890] = 679477248; // 'state 162'
+gotoTable[26893] = 364904448; // 'state 87'
+gotoTable[26894] = 683671552; // 'state 163'
+gotoTable[26952] = 897581056; // 'state 214'
+gotoTable[26954] = 897581056; // 'state 214'
+gotoTable[27051] = 926941184; // 'state 221'
+gotoTable.fill(2256535552, 27053, 27057); // 'state 538'
+gotoTable[27058] = 1950351360; // 'state 465'
+gotoTable[27078] = 121635275; // 'state 29' (fused reduce object_member)
+gotoTable[27083] = 121634816; // 'state 29'
+gotoTable.fill(121635275, 27084, 27087); // 'state 29' (fused reduce object_member)
+gotoTable[27087] = 1203765248; // 'state 287'
+gotoTable[27088] = 1203765711; // 'state 287' (fused reduce _property_name)
+gotoTable[27208] = 1199570944; // 'state 286'
+gotoTable[27210] = 1199570944; // 'state 286'
+gotoTable[27276] = 1224736768; // 'state 292'
+gotoTable[27292] = 1228931072; // 'state 293'
+gotoTable[27295] = 910163968; // 'state 217'
+gotoTable.fill(910164383, 27296, 27299); // 'state 217' (fused reduce _type)
+gotoTable[27299] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 27300, 27304); // 'state 476' (fused reduce _primary_type)
+gotoTable[27304] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 27305, 27307); // 'state 476' (fused reduce _primary_type)
+gotoTable[27308] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[27313] = 369098752; // 'state 88'
+gotoTable[27314] = 1732247552; // 'state 413'
+gotoTable[27315] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[27317] = 96468992; // 'state 23'
+gotoTable[27318] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 27319, 27330); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 27330, 27332); // 'state 416'
+gotoTable[27333] = 406847488; // 'state 97'
+gotoTable[27334] = 406847941; // 'state 97' (fused reduce argument)
+gotoTable[27336] = 1732247552; // 'state 413'
+gotoTable[27338] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 27345, 27347); // 'state 414' (fused reduce _primary_expression)
+gotoTable[27418] = 2168455168; // 'state 517'
+gotoTable[27422] = 2243952640; // 'state 535'
+gotoTable[27546] = 2168455168; // 'state 517'
+gotoTable[27660] = 1983905792; // 'state 473'
+gotoTable[27676] = 570425344; // 'state 136'
+gotoTable[27679] = 2566914048; // 'state 612'
+gotoTable.fill(2566914463, 27680, 27683); // 'state 612' (fused reduce _type)
+gotoTable[27683] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 27684, 27688); // 'state 476' (fused reduce _primary_type)
+gotoTable[27688] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 27689, 27691); // 'state 476' (fused reduce _primary_type)
+gotoTable[27692] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[27788] = 1983905792; // 'state 473'
+gotoTable[27804] = 570425344; // 'state 136'
+gotoTable[27807] = 2571108352; // 'state 613'
+gotoTable.fill(2571108767, 27808, 27811); // 'state 613' (fused reduce _type)
+gotoTable[27811] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 27812, 27816); // 'state 476' (fused reduce _primary_type)
+gotoTable[27816] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 27817, 27819); // 'state 476' (fused reduce _primary_type)
+gotoTable[27820] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[27921] = 2579496960; // 'state 615'
+gotoTable[28044] = 83886080; // 'state 20'
+gotoTable[28060] = 88080384; // 'state 21'
+gotoTable[28081] = 805306368; // 'state 192'
+gotoTable[28082] = 1732247552; // 'state 413'
+gotoTable[28083] = 805306801; // 'state 192' (fused reduce _expression)
+gotoTable[28085] = 96468992; // 'state 23'
+gotoTable[28086] = 1740636160; // 'state 415'
+gotoTable.fill(805306801, 28087, 28098); // 'state 192' (fused reduce _expression)
+gotoTable.fill(1744830464, 28098, 28100); // 'state 416'
+gotoTable[28104] = 1732247552; // 'state 413'
+gotoTable[28106] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 28113, 28115); // 'state 414' (fused reduce _primary_expression)
+gotoTable[28210] = 1241514447; // 'state 296' (fused reduce _property_name)
+gotoTable[28239] = 1241513984; // 'state 296'
+gotoTable[28240] = 1241514447; // 'state 296' (fused reduce _property_name)
+gotoTable[28297] = 1254096896; // 'state 299'
+gotoTable[28316] = 1258291200; // 'state 300'
+gotoTable.fill(2587885568, 28461, 28465); // 'state 617'
+gotoTable[28466] = 931135951; // 'state 222' (fused reduce _property_name)
+gotoTable[28495] = 931135488; // 'state 222'
+gotoTable[28496] = 931135951; // 'state 222' (fused reduce _property_name)
+gotoTable[28553] = 1245708288; // 'state 297'
+gotoTable[28570] = 2596274176; // 'state 619'
+gotoTable[28572] = 1249902592; // 'state 298'
+gotoTable[28740] = 1820327936; // 'state 434'
+gotoTable[28812] = 83886080; // 'state 20'
+gotoTable[28828] = 88080384; // 'state 21'
+gotoTable[28849] = 369098752; // 'state 88'
+gotoTable[28850] = 1732247552; // 'state 413'
+gotoTable[28851] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[28853] = 96468992; // 'state 23'
+gotoTable[28854] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 28855, 28866); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 28866, 28868); // 'state 416'
+gotoTable[28869] = 2453667840; // 'state 585'
+gotoTable[28870] = 2453668293; // 'state 585' (fused reduce argument)
+gotoTable[28872] = 1732247552; // 'state 413'
+gotoTable[28874] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 28881, 28883); // 'state 414' (fused reduce _primary_expression)
+gotoTable[28923] = 2621440000; // 'state 625'
+gotoTable[29065] = 1270874112; // 'state 303'
+gotoTable[29084] = 1275068416; // 'state 304'
+gotoTable[29154] = 2634022912; // 'state 628'
+gotoTable[29210] = 1279262720; // 'state 305'
+gotoTable[29321] = 1270874112; // 'state 303'
+gotoTable[29460] = 2638217216; // 'state 629'
+gotoTable[29584] = 1283457024; // 'state 306'
+gotoTable[29586] = 1283457424; // 'state 306' (fused reduce class_heritage)
+gotoTable[29588] = 2638217216; // 'state 629'
+gotoTable[29695] = 2650800128; // 'state 632'
+gotoTable[29696] = 268435456; // 'state 64'
+gotoTable[29698] = 268435840; // 'state 64' (fused reduce _binding_pattern)
+gotoTable[29701] = 268435840; // 'state 64' (fused reduce _binding_pattern)
+gotoTable[29836] = 83886080; // 'state 20'
+gotoTable[29852] = 88080384; // 'state 21'
+gotoTable[29873] = 1287651328; // 'state 307'
+gotoTable[29874] = 1732247552; // 'state 413'
+gotoTable[29875] = 1287651761; // 'state 307' (fused reduce _expression)
+gotoTable[29877] = 96468992; // 'state 23'
+gotoTable[29878] = 1740636160; // 'state 415'
+gotoTable.fill(1287651761, 29879, 29890); // 'state 307' (fused reduce _expression)
+gotoTable.fill(1744830464, 29890, 29892); // 'state 416'
+gotoTable[29896] = 1732247552; // 'state 413'
+gotoTable[29898] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 29905, 29907); // 'state 414' (fused reduce _primary_expression)
+gotoTable[30020] = 1820327936; // 'state 434'
+gotoTable[30083] = 2659188736; // 'state 634'
+gotoTable[30130] = 2084569551; // 'state 497' (fused reduce _property_name)
+gotoTable[30159] = 2084569088; // 'state 497'
+gotoTable[30160] = 2084569551; // 'state 497' (fused reduce _property_name)
+gotoTable[30220] = 83886080; // 'state 20'
+gotoTable[30236] = 88080384; // 'state 21'
+gotoTable[30257] = 1296039936; // 'state 309'
+gotoTable[30258] = 1732247552; // 'state 413'
+gotoTable[30259] = 1296040369; // 'state 309' (fused reduce _expression)
+gotoTable[30261] = 96468992; // 'state 23'
+gotoTable[30262] = 1740636160; // 'state 415'
+gotoTable.fill(1296040369, 30263, 30274); // 'state 309' (fused reduce _expression)
+gotoTable.fill(1744830464, 30274, 30276); // 'state 416'
+gotoTable[30280] = 1732247552; // 'state 413'
+gotoTable[30282] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 30289, 30291); // 'state 414' (fused reduce _primary_expression)
+gotoTable[30336] = 2663383040; // 'state 635'
+gotoTable[30338] = 2663383424; // 'state 635' (fused reduce _binding_pattern)
+gotoTable[30341] = 2663383424; // 'state 635' (fused reduce _binding_pattern)
+gotoTable[30468] = 2671771648; // 'state 637'
+gotoTable[30592] = 2092957696; // 'state 499'
+gotoTable[30594] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[30597] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[30598] = 2675965952; // 'state 638'
+gotoTable[30732] = 83886080; // 'state 20'
+gotoTable[30748] = 88080384; // 'state 21'
+gotoTable[30769] = 1304428544; // 'state 311'
+gotoTable[30770] = 1732247552; // 'state 413'
+gotoTable[30771] = 1304428977; // 'state 311' (fused reduce _expression)
+gotoTable[30773] = 96468992; // 'state 23'
+gotoTable[30774] = 1740636160; // 'state 415'
+gotoTable.fill(1304428977, 30775, 30786); // 'state 311' (fused reduce _expression)
+gotoTable.fill(1744830464, 30786, 30788); // 'state 416'
+gotoTable[30792] = 1732247552; // 'state 413'
+gotoTable[30794] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 30801, 30803); // 'state 414' (fused reduce _primary_expression)
+gotoTable[30818] = 2684354560; // 'state 640'
+gotoTable[30874] = 1312817152; // 'state 313'
+gotoTable[30985] = 1308622848; // 'state 312'
+gotoTable[31074] = 2688548864; // 'state 641'
+gotoTable[31130] = 1317011456; // 'state 314'
+gotoTable[31202] = 2688548864; // 'state 641'
+gotoTable[31428] = 1820327936; // 'state 434'
+gotoTable[31458] = 2692743168; // 'state 642'
+gotoTable[31500] = 83886080; // 'state 20'
+gotoTable[31516] = 88080384; // 'state 21'
+gotoTable[31537] = 1321205760; // 'state 315'
+gotoTable[31538] = 1732247552; // 'state 413'
+gotoTable[31539] = 1321206193; // 'state 315' (fused reduce _expression)
+gotoTable[31541] = 96468992; // 'state 23'
+gotoTable[31542] = 1740636160; // 'state 415'
+gotoTable.fill(1321206193, 31543, 31554); // 'state 315' (fused reduce _expression)
+gotoTable.fill(1744830464, 31554, 31556); // 'state 416'
+gotoTable[31560] = 1732247552; // 'state 413'
+gotoTable[31562] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 31569, 31571); // 'state 414' (fused reduce _primary_expression)
+gotoTable[31586] = 2684354560; // 'state 640'
+gotoTable[31744] = 675282944; // 'state 161'
+gotoTable[31746] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[31749] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[31754] = 2705326080; // 'state 645'
+gotoTable[31758] = 683671552; // 'state 163'
+gotoTable[31898] = 2709520384; // 'state 646'
+gotoTable[32012] = 83886080; // 'state 20'
+gotoTable[32028] = 88080384; // 'state 21'
+gotoTable[32049] = 1337982976; // 'state 319'
+gotoTable[32050] = 1732247552; // 'state 413'
+gotoTable[32051] = 1337983409; // 'state 319' (fused reduce _expression)
+gotoTable[32053] = 96468992; // 'state 23'
+gotoTable[32054] = 1740636160; // 'state 415'
+gotoTable.fill(1337983409, 32055, 32066); // 'state 319' (fused reduce _expression)
+gotoTable.fill(1744830464, 32066, 32068); // 'state 416'
+gotoTable[32072] = 1732247552; // 'state 413'
+gotoTable[32074] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 32081, 32083); // 'state 414' (fused reduce _primary_expression)
+gotoTable[32154] = 2713714688; // 'state 647'
+gotoTable[32276] = 2717908992; // 'state 648'
+gotoTable[32396] = 1983905792; // 'state 473'
+gotoTable[32412] = 570425344; // 'state 136'
+gotoTable[32415] = 2726297600; // 'state 650'
+gotoTable.fill(2726298015, 32416, 32419); // 'state 650' (fused reduce _type)
+gotoTable[32419] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 32420, 32424); // 'state 476' (fused reduce _primary_type)
+gotoTable[32424] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 32425, 32427); // 'state 476' (fused reduce _primary_type)
+gotoTable[32428] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[32524] = 1983905792; // 'state 473'
+gotoTable[32540] = 570425344; // 'state 136'
+gotoTable[32543] = 2529165312; // 'state 603'
+gotoTable.fill(2529165727, 32544, 32547); // 'state 603' (fused reduce _type)
+gotoTable[32547] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 32548, 32552); // 'state 476' (fused reduce _primary_type)
+gotoTable[32552] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 32553, 32555); // 'state 476' (fused reduce _primary_type)
+gotoTable[32556] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[32652] = 1983905792; // 'state 473'
+gotoTable[32668] = 570425344; // 'state 136'
+gotoTable[32671] = 2533359616; // 'state 604'
+gotoTable.fill(2533360031, 32672, 32675); // 'state 604' (fused reduce _type)
+gotoTable[32675] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 32676, 32680); // 'state 476' (fused reduce _primary_type)
+gotoTable[32680] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 32681, 32683); // 'state 476' (fused reduce _primary_type)
+gotoTable[32684] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[32777] = 1350565888; // 'state 322'
+gotoTable[32794] = 2734686208; // 'state 652'
+gotoTable[32796] = 1354760192; // 'state 323'
+gotoTable[32908] = 83886080; // 'state 20'
+gotoTable[32924] = 88080384; // 'state 21'
+gotoTable[32945] = 1363148800; // 'state 325'
+gotoTable[32946] = 1732247552; // 'state 413'
+gotoTable[32947] = 1363149233; // 'state 325' (fused reduce _expression)
+gotoTable[32949] = 96468992; // 'state 23'
+gotoTable[32950] = 1740636160; // 'state 415'
+gotoTable.fill(1363149233, 32951, 32962); // 'state 325' (fused reduce _expression)
+gotoTable.fill(1744830464, 32962, 32964); // 'state 416'
+gotoTable[32968] = 1732247552; // 'state 413'
+gotoTable[32970] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 32977, 32979); // 'state 414' (fused reduce _primary_expression)
+gotoTable[32994] = 2738880512; // 'state 653'
+gotoTable[33050] = 1358954496; // 'state 324'
+gotoTable[33161] = 1350565888; // 'state 322'
+gotoTable[33324] = 2743074816; // 'state 654'
+gotoTable[33425] = 2747269120; // 'state 655'
+gotoTable[33548] = 1983905792; // 'state 473'
+gotoTable[33564] = 570425344; // 'state 136'
+gotoTable[33567] = 2751463424; // 'state 656'
+gotoTable.fill(2751463839, 33568, 33571); // 'state 656' (fused reduce _type)
+gotoTable[33571] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 33572, 33576); // 'state 476' (fused reduce _primary_type)
+gotoTable[33576] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 33577, 33579); // 'state 476' (fused reduce _primary_type)
+gotoTable[33580] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[33676] = 83886080; // 'state 20'
+gotoTable[33692] = 88080384; // 'state 21'
+gotoTable[33713] = 369098752; // 'state 88'
+gotoTable[33714] = 1732247552; // 'state 413'
+gotoTable[33715] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[33717] = 96468992; // 'state 23'
+gotoTable[33718] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 33719, 33730); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 33730, 33732); // 'state 416'
+gotoTable[33733] = 2764046336; // 'state 659'
+gotoTable[33734] = 2764046789; // 'state 659' (fused reduce argument)
+gotoTable[33736] = 1732247552; // 'state 413'
+gotoTable[33738] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 33745, 33747); // 'state 414' (fused reduce _primary_expression)
+gotoTable[33804] = 83886080; // 'state 20'
+gotoTable[33820] = 88080384; // 'state 21'
+gotoTable[33841] = 1371537408; // 'state 327'
+gotoTable[33842] = 1732247552; // 'state 413'
+gotoTable[33843] = 1371537841; // 'state 327' (fused reduce _expression)
+gotoTable[33845] = 96468992; // 'state 23'
+gotoTable[33846] = 1740636160; // 'state 415'
+gotoTable.fill(1371537841, 33847, 33858); // 'state 327' (fused reduce _expression)
+gotoTable.fill(1744830464, 33858, 33860); // 'state 416'
+gotoTable[33864] = 1732247552; // 'state 413'
+gotoTable[33866] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 33873, 33875); // 'state 414' (fused reduce _primary_expression)
+gotoTable[33932] = 83886080; // 'state 20'
+gotoTable[33933] = 2772434944; // 'state 661'
+gotoTable[33948] = 88080384; // 'state 21'
+gotoTable[33969] = 369098752; // 'state 88'
+gotoTable[33970] = 1732247552; // 'state 413'
+gotoTable[33971] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[33973] = 96468992; // 'state 23'
+gotoTable[33974] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 33975, 33986); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 33986, 33988); // 'state 416'
+gotoTable[33989] = 2772434944; // 'state 661'
+gotoTable[33990] = 2772435397; // 'state 661' (fused reduce argument)
+gotoTable[33992] = 377487360; // 'state 90'
+gotoTable[33994] = 377487360; // 'state 90'
+gotoTable.fill(1736442291, 34001, 34003); // 'state 414' (fused reduce _primary_expression)
+gotoTable[34065] = 2780823552; // 'state 663'
+gotoTable[34188] = 83886080; // 'state 20'
+gotoTable[34204] = 88080384; // 'state 21'
+gotoTable[34225] = 369098752; // 'state 88'
+gotoTable[34226] = 1732247552; // 'state 413'
+gotoTable[34227] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[34229] = 96468992; // 'state 23'
+gotoTable[34230] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 34231, 34242); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 34242, 34244); // 'state 416'
+gotoTable[34245] = 2789212160; // 'state 665'
+gotoTable[34246] = 2789212613; // 'state 665' (fused reduce argument)
+gotoTable[34248] = 1732247552; // 'state 413'
+gotoTable[34250] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 34257, 34259); // 'state 414' (fused reduce _primary_expression)
+gotoTable[34333] = 2797600768; // 'state 667'
+gotoTable[34402] = 2801795072; // 'state 668'
+gotoTable[34458] = 1384120320; // 'state 330'
+gotoTable[34530] = 2801795072; // 'state 668'
+gotoTable[34756] = 1820327936; // 'state 434'
+gotoTable[34828] = 83886080; // 'state 20'
+gotoTable[34844] = 88080384; // 'state 21'
+gotoTable[34865] = 1396703232; // 'state 333'
+gotoTable[34866] = 1732247552; // 'state 413'
+gotoTable[34867] = 1396703665; // 'state 333' (fused reduce _expression)
+gotoTable[34869] = 96468992; // 'state 23'
+gotoTable[34870] = 1740636160; // 'state 415'
+gotoTable.fill(1396703665, 34871, 34882); // 'state 333' (fused reduce _expression)
+gotoTable.fill(1744830464, 34882, 34884); // 'state 416'
+gotoTable[34888] = 1732247552; // 'state 413'
+gotoTable[34890] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 34897, 34899); // 'state 414' (fused reduce _primary_expression)
+gotoTable[34912] = 2810183680; // 'state 670'
+gotoTable.fill(2810184032, 34914, 34923); // 'state 670' (fused reduce _statement)
+gotoTable[34925] = 2810184032; // 'state 670' (fused reduce _statement)
+gotoTable.fill(2810184032, 34930, 34934); // 'state 670' (fused reduce _statement)
+gotoTable[34934] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[34940] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[34942] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[34951] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[34956] = 83886080; // 'state 20'
+gotoTable[34959] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[34967] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[34969] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[34972] = 88080384; // 'state 21'
+gotoTable[34993] = 92274688; // 'state 22'
+gotoTable[34994] = 1732247552; // 'state 413'
+gotoTable[34995] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[34997] = 96468992; // 'state 23'
+gotoTable[34998] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 34999, 35010); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 35010, 35012); // 'state 416'
+gotoTable[35016] = 1732247552; // 'state 413'
+gotoTable[35018] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 35025, 35027); // 'state 414' (fused reduce _primary_expression)
+gotoTable[35140] = 1820327936; // 'state 434'
+gotoTable[35212] = 83886080; // 'state 20'
+gotoTable[35228] = 88080384; // 'state 21'
+gotoTable[35249] = 1400897536; // 'state 334'
+gotoTable[35250] = 1732247552; // 'state 413'
+gotoTable[35251] = 1400897969; // 'state 334' (fused reduce _expression)
+gotoTable[35253] = 96468992; // 'state 23'
+gotoTable[35254] = 1740636160; // 'state 415'
+gotoTable.fill(1400897969, 35255, 35266); // 'state 334' (fused reduce _expression)
+gotoTable.fill(1744830464, 35266, 35268); // 'state 416'
+gotoTable[35272] = 1732247552; // 'state 413'
+gotoTable[35274] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 35281, 35283); // 'state 414' (fused reduce _primary_expression)
+gotoTable[35396] = 1820327936; // 'state 434'
+gotoTable[35465] = 1409286144; // 'state 336'
+gotoTable[35604] = 2814377984; // 'state 671'
+gotoTable[35738] = 2818572288; // 'state 672'
+gotoTable[35822] = 1421869056; // 'state 339'
+gotoTable.fill(1421869422, 35824, 35826); // 'state 339' (fused reduce _switch_body_repeat2)
+gotoTable[36036] = 1820327936; // 'state 434'
+gotoTable[36099] = 620756992; // 'state 148'
+gotoTable[36146] = 1950351360; // 'state 465'
+gotoTable[36166] = 121635275; // 'state 29' (fused reduce object_member)
+gotoTable[36171] = 121634816; // 'state 29'
+gotoTable.fill(121635275, 36172, 36175); // 'state 29' (fused reduce object_member)
+gotoTable[36175] = 1438646272; // 'state 343'
+gotoTable[36176] = 1438646735; // 'state 343' (fused reduce _property_name)
+gotoTable[36224] = 1048576000; // 'state 250'
+gotoTable[36226] = 1048576384; // 'state 250' (fused reduce _binding_pattern)
+gotoTable[36229] = 1048576384; // 'state 250' (fused reduce _binding_pattern)
+gotoTable[36296] = 1199570944; // 'state 286'
+gotoTable[36298] = 1199570944; // 'state 286'
+gotoTable[36352] = 2092957696; // 'state 499'
+gotoTable[36354] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[36357] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[36358] = 633339904; // 'state 151'
+gotoTable[36364] = 83886080; // 'state 20'
+gotoTable[36380] = 88080384; // 'state 21'
+gotoTable[36401] = 369098752; // 'state 88'
+gotoTable[36402] = 1732247552; // 'state 413'
+gotoTable[36403] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[36405] = 96468992; // 'state 23'
+gotoTable[36406] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 36407, 36418); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 36418, 36420); // 'state 416'
+gotoTable[36421] = 406847488; // 'state 97'
+gotoTable[36422] = 406847941; // 'state 97' (fused reduce argument)
+gotoTable[36424] = 1732247552; // 'state 413'
+gotoTable[36426] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 36433, 36435); // 'state 414' (fused reduce _primary_expression)
+gotoTable[36506] = 2168455168; // 'state 517'
+gotoTable[36620] = 1983905792; // 'state 473'
+gotoTable[36636] = 570425344; // 'state 136'
+gotoTable[36639] = 2856321024; // 'state 681'
+gotoTable.fill(2856321439, 36640, 36643); // 'state 681' (fused reduce _type)
+gotoTable[36643] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 36644, 36648); // 'state 476' (fused reduce _primary_type)
+gotoTable[36648] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 36649, 36651); // 'state 476' (fused reduce _primary_type)
+gotoTable[36652] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[36762] = 2457862144; // 'state 586'
+gotoTable[36873] = 1455423488; // 'state 347'
+gotoTable[36890] = 2596274176; // 'state 619'
+gotoTable[36892] = 1459617792; // 'state 348'
+gotoTable[37004] = 1224736768; // 'state 292'
+gotoTable[37005] = 364904448; // 'state 87'
+gotoTable[37020] = 1228931072; // 'state 293'
+gotoTable[37023] = 2239758336; // 'state 534'
+gotoTable.fill(2239758751, 37024, 37027); // 'state 534' (fused reduce _type)
+gotoTable[37027] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 37028, 37032); // 'state 476' (fused reduce _primary_type)
+gotoTable[37032] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 37033, 37035); // 'state 476' (fused reduce _primary_type)
+gotoTable[37036] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[37041] = 369098752; // 'state 88'
+gotoTable[37042] = 1732247552; // 'state 413'
+gotoTable[37043] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[37045] = 96468992; // 'state 23'
+gotoTable[37046] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 37047, 37058); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 37058, 37060); // 'state 416'
+gotoTable[37061] = 373293056; // 'state 89'
+gotoTable[37062] = 373293509; // 'state 89' (fused reduce argument)
+gotoTable[37064] = 377487360; // 'state 90'
+gotoTable[37066] = 377487360; // 'state 90'
+gotoTable.fill(1736442291, 37073, 37075); // 'state 414' (fused reduce _primary_expression)
+gotoTable[37132] = 83886080; // 'state 20'
+gotoTable[37148] = 88080384; // 'state 21'
+gotoTable[37169] = 381681664; // 'state 91'
+gotoTable[37170] = 1732247552; // 'state 413'
+gotoTable[37171] = 381682097; // 'state 91' (fused reduce _expression)
+gotoTable[37173] = 96468992; // 'state 23'
+gotoTable[37174] = 1740636160; // 'state 415'
+gotoTable.fill(381682097, 37175, 37186); // 'state 91' (fused reduce _expression)
+gotoTable.fill(1744830464, 37186, 37188); // 'state 416'
+gotoTable[37192] = 1732247552; // 'state 413'
+gotoTable[37194] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 37201, 37203); // 'state 414' (fused reduce _primary_expression)
+gotoTable[37260] = 83886080; // 'state 20'
+gotoTable[37276] = 88080384; // 'state 21'
+gotoTable[37297] = 381681664; // 'state 91'
+gotoTable[37298] = 1732247552; // 'state 413'
+gotoTable[37299] = 381682097; // 'state 91' (fused reduce _expression)
+gotoTable[37301] = 96468992; // 'state 23'
+gotoTable[37302] = 1740636160; // 'state 415'
+gotoTable.fill(381682097, 37303, 37314); // 'state 91' (fused reduce _expression)
+gotoTable.fill(1744830464, 37314, 37316); // 'state 416'
+gotoTable[37320] = 1732247552; // 'state 413'
+gotoTable[37322] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 37329, 37331); // 'state 414' (fused reduce _primary_expression)
+gotoTable[37406] = 2243952640; // 'state 535'
+gotoTable[37530] = 1879048192; // 'state 448'
+gotoTable[37641] = 1463812096; // 'state 349'
+gotoTable[37644] = 2235564032; // 'state 533'
+gotoTable[37772] = 1983905792; // 'state 473'
+gotoTable[37788] = 570425344; // 'state 136'
+gotoTable[37791] = 2726297600; // 'state 650'
+gotoTable.fill(2726298015, 37792, 37795); // 'state 650' (fused reduce _type)
+gotoTable[37795] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 37796, 37800); // 'state 476' (fused reduce _primary_type)
+gotoTable[37800] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 37801, 37803); // 'state 476' (fused reduce _primary_type)
+gotoTable[37804] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[37900] = 83886080; // 'state 20'
+gotoTable[37916] = 88080384; // 'state 21'
+gotoTable[37937] = 805306368; // 'state 192'
+gotoTable[37938] = 1732247552; // 'state 413'
+gotoTable[37939] = 805306801; // 'state 192' (fused reduce _expression)
+gotoTable[37941] = 96468992; // 'state 23'
+gotoTable[37942] = 1740636160; // 'state 415'
+gotoTable.fill(805306801, 37943, 37954); // 'state 192' (fused reduce _expression)
+gotoTable.fill(1744830464, 37954, 37956); // 'state 416'
+gotoTable[37960] = 1732247552; // 'state 413'
+gotoTable[37962] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 37969, 37971); // 'state 414' (fused reduce _primary_expression)
+gotoTable[38042] = 2877292544; // 'state 686'
+gotoTable[38170] = 2885681152; // 'state 688'
+gotoTable[38281] = 1480589312; // 'state 353'
+gotoTable[38426] = 2889875456; // 'state 689'
+gotoTable[38537] = 1484783616; // 'state 354'
+gotoTable[38668] = 83886080; // 'state 20'
+gotoTable[38684] = 88080384; // 'state 21'
+gotoTable[38705] = 369098752; // 'state 88'
+gotoTable[38706] = 1732247552; // 'state 413'
+gotoTable[38707] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[38709] = 96468992; // 'state 23'
+gotoTable[38710] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 38711, 38722); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 38722, 38724); // 'state 416'
+gotoTable[38725] = 2764046336; // 'state 659'
+gotoTable[38726] = 2764046789; // 'state 659' (fused reduce argument)
+gotoTable[38728] = 1732247552; // 'state 413'
+gotoTable[38730] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 38737, 38739); // 'state 414' (fused reduce _primary_expression)
+gotoTable[38779] = 2902458368; // 'state 692'
+gotoTable[38882] = 2910846976; // 'state 694'
+gotoTable[38938] = 1497366528; // 'state 357'
+gotoTable[39049] = 1493172224; // 'state 356'
+gotoTable[39138] = 2910846976; // 'state 694'
+gotoTable[39316] = 2915041280; // 'state 695'
+gotoTable[39492] = 1820327936; // 'state 434'
+gotoTable[39555] = 2927624192; // 'state 698'
+gotoTable[39602] = 2084569551; // 'state 497' (fused reduce _property_name)
+gotoTable[39631] = 2084569088; // 'state 497'
+gotoTable[39632] = 2084569551; // 'state 497' (fused reduce _property_name)
+gotoTable[39748] = 1820327936; // 'state 434'
+gotoTable[39808] = 2092957696; // 'state 499'
+gotoTable[39810] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[39813] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[39814] = 2936012800; // 'state 700'
+gotoTable[40004] = 1820327936; // 'state 434'
+gotoTable[40034] = 2944401408; // 'state 702'
+gotoTable[40090] = 1505755136; // 'state 359'
+gotoTable[40162] = 2944401408; // 'state 702'
+gotoTable[40290] = 2952790016; // 'state 704'
+gotoTable[40516] = 1820327936; // 'state 434'
+gotoTable[40546] = 2956984320; // 'state 705'
+gotoTable[40588] = 83886080; // 'state 20'
+gotoTable[40604] = 88080384; // 'state 21'
+gotoTable[40625] = 1509949440; // 'state 360'
+gotoTable[40626] = 1732247552; // 'state 413'
+gotoTable[40627] = 1509949873; // 'state 360' (fused reduce _expression)
+gotoTable[40629] = 96468992; // 'state 23'
+gotoTable[40630] = 1740636160; // 'state 415'
+gotoTable.fill(1509949873, 40631, 40642); // 'state 360' (fused reduce _expression)
+gotoTable.fill(1744830464, 40642, 40644); // 'state 416'
+gotoTable[40648] = 1732247552; // 'state 413'
+gotoTable[40650] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 40657, 40659); // 'state 414' (fused reduce _primary_expression)
+gotoTable[40704] = 675282944; // 'state 161'
+gotoTable[40706] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[40709] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[40714] = 2965372928; // 'state 707'
+gotoTable[40718] = 683671552; // 'state 163'
+gotoTable[40844] = 83886080; // 'state 20'
+gotoTable[40860] = 88080384; // 'state 21'
+gotoTable[40881] = 1518338048; // 'state 362'
+gotoTable[40882] = 1732247552; // 'state 413'
+gotoTable[40883] = 1518338481; // 'state 362' (fused reduce _expression)
+gotoTable[40885] = 96468992; // 'state 23'
+gotoTable[40886] = 1740636160; // 'state 415'
+gotoTable.fill(1518338481, 40887, 40898); // 'state 362' (fused reduce _expression)
+gotoTable.fill(1744830464, 40898, 40900); // 'state 416'
+gotoTable[40904] = 1732247552; // 'state 413'
+gotoTable[40906] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 40913, 40915); // 'state 414' (fused reduce _primary_expression)
+gotoTable[41028] = 1820327936; // 'state 434'
+gotoTable[41100] = 1983905792; // 'state 473'
+gotoTable[41116] = 570425344; // 'state 136'
+gotoTable[41119] = 2973761536; // 'state 709'
+gotoTable.fill(2973761951, 41120, 41123); // 'state 709' (fused reduce _type)
+gotoTable[41123] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 41124, 41128); // 'state 476' (fused reduce _primary_type)
+gotoTable[41128] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 41129, 41131); // 'state 476' (fused reduce _primary_type)
+gotoTable[41132] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[41228] = 83886080; // 'state 20'
+gotoTable[41244] = 88080384; // 'state 21'
+gotoTable[41265] = 1535115264; // 'state 366'
+gotoTable[41266] = 1732247552; // 'state 413'
+gotoTable[41267] = 1535115697; // 'state 366' (fused reduce _expression)
+gotoTable[41269] = 96468992; // 'state 23'
+gotoTable[41270] = 1740636160; // 'state 415'
+gotoTable.fill(1535115697, 41271, 41282); // 'state 366' (fused reduce _expression)
+gotoTable.fill(1744830464, 41282, 41284); // 'state 416'
+gotoTable[41288] = 1732247552; // 'state 413'
+gotoTable[41290] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 41297, 41299); // 'state 414' (fused reduce _primary_expression)
+gotoTable[41314] = 2977955840; // 'state 710'
+gotoTable[41370] = 1526726656; // 'state 364'
+gotoTable[41481] = 1522532352; // 'state 363'
+gotoTable[41570] = 2977955840; // 'state 710'
+gotoTable[41796] = 1820327936; // 'state 434'
+gotoTable[41868] = 83886080; // 'state 20'
+gotoTable[41884] = 88080384; // 'state 21'
+gotoTable[41905] = 1539309568; // 'state 367'
+gotoTable[41906] = 1732247552; // 'state 413'
+gotoTable[41907] = 1539310001; // 'state 367' (fused reduce _expression)
+gotoTable[41909] = 96468992; // 'state 23'
+gotoTable[41910] = 1740636160; // 'state 415'
+gotoTable.fill(1539310001, 41911, 41922); // 'state 367' (fused reduce _expression)
+gotoTable.fill(1744830464, 41922, 41924); // 'state 416'
+gotoTable[41928] = 1732247552; // 'state 413'
+gotoTable[41930] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 41937, 41939); // 'state 414' (fused reduce _primary_expression)
+gotoTable[42052] = 1820327936; // 'state 434'
+gotoTable[42124] = 1983905792; // 'state 473'
+gotoTable[42140] = 570425344; // 'state 136'
+gotoTable[42143] = 2726297600; // 'state 650'
+gotoTable.fill(2726298015, 42144, 42147); // 'state 650' (fused reduce _type)
+gotoTable[42147] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 42148, 42152); // 'state 476' (fused reduce _primary_type)
+gotoTable[42152] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 42153, 42155); // 'state 476' (fused reduce _primary_type)
+gotoTable[42156] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[42252] = 1983905792; // 'state 473'
+gotoTable[42268] = 570425344; // 'state 136'
+gotoTable[42271] = 2994733056; // 'state 714'
+gotoTable.fill(2994733471, 42272, 42275); // 'state 714' (fused reduce _type)
+gotoTable[42275] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 42276, 42280); // 'state 476' (fused reduce _primary_type)
+gotoTable[42280] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 42281, 42283); // 'state 476' (fused reduce _primary_type)
+gotoTable[42284] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[42338] = 2998927360; // 'state 715'
+gotoTable[42464] = 3003121664; // 'state 716'
+gotoTable.fill(3003122016, 42466, 42475); // 'state 716' (fused reduce _statement)
+gotoTable[42477] = 3003122016; // 'state 716' (fused reduce _statement)
+gotoTable.fill(3003122016, 42482, 42486); // 'state 716' (fused reduce _statement)
+gotoTable[42486] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42492] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42494] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42503] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42508] = 83886080; // 'state 20'
+gotoTable[42511] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42519] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42521] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42524] = 88080384; // 'state 21'
+gotoTable[42545] = 92274688; // 'state 22'
+gotoTable[42546] = 1732247552; // 'state 413'
+gotoTable[42547] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[42549] = 96468992; // 'state 23'
+gotoTable[42550] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 42551, 42562); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 42562, 42564); // 'state 416'
+gotoTable[42568] = 1732247552; // 'state 413'
+gotoTable[42570] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 42577, 42579); // 'state 414' (fused reduce _primary_expression)
+gotoTable[42592] = 3011510272; // 'state 718'
+gotoTable.fill(3011510624, 42594, 42603); // 'state 718' (fused reduce _statement)
+gotoTable[42605] = 3011510624; // 'state 718' (fused reduce _statement)
+gotoTable.fill(3011510624, 42610, 42614); // 'state 718' (fused reduce _statement)
+gotoTable[42614] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42620] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42622] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42631] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42636] = 83886080; // 'state 20'
+gotoTable[42639] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42647] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42649] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[42652] = 88080384; // 'state 21'
+gotoTable[42673] = 92274688; // 'state 22'
+gotoTable[42674] = 1732247552; // 'state 413'
+gotoTable[42675] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[42677] = 96468992; // 'state 23'
+gotoTable[42678] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 42679, 42690); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 42690, 42692); // 'state 416'
+gotoTable[42696] = 1732247552; // 'state 413'
+gotoTable[42698] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 42705, 42707); // 'state 414' (fused reduce _primary_expression)
+gotoTable[42820] = 1820327936; // 'state 434'
+gotoTable[42948] = 1820327936; // 'state 434'
+gotoTable[43020] = 83886080; // 'state 20'
+gotoTable[43036] = 88080384; // 'state 21'
+gotoTable[43057] = 1556086784; // 'state 371'
+gotoTable[43058] = 1732247552; // 'state 413'
+gotoTable[43059] = 1556087217; // 'state 371' (fused reduce _expression)
+gotoTable[43061] = 96468992; // 'state 23'
+gotoTable[43062] = 1740636160; // 'state 415'
+gotoTable.fill(1556087217, 43063, 43074); // 'state 371' (fused reduce _expression)
+gotoTable.fill(1744830464, 43074, 43076); // 'state 416'
+gotoTable[43080] = 1732247552; // 'state 413'
+gotoTable[43082] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 43089, 43091); // 'state 414' (fused reduce _primary_expression)
+gotoTable[43106] = 2952790016; // 'state 704'
+gotoTable[43162] = 1560281088; // 'state 372'
+gotoTable[43234] = 3015704576; // 'state 719'
+gotoTable[43404] = 83886080; // 'state 20'
+gotoTable[43420] = 88080384; // 'state 21'
+gotoTable[43441] = 1568669696; // 'state 374'
+gotoTable[43442] = 1732247552; // 'state 413'
+gotoTable[43443] = 1568670129; // 'state 374' (fused reduce _expression)
+gotoTable[43445] = 96468992; // 'state 23'
+gotoTable[43446] = 1740636160; // 'state 415'
+gotoTable.fill(1568670129, 43447, 43458); // 'state 374' (fused reduce _expression)
+gotoTable.fill(1744830464, 43458, 43460); // 'state 416'
+gotoTable[43464] = 1732247552; // 'state 413'
+gotoTable[43466] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 43473, 43475); // 'state 414' (fused reduce _primary_expression)
+gotoTable.fill(3024093184, 43504, 43506); // 'state 721'
+gotoTable[43660] = 1983905792; // 'state 473'
+gotoTable[43676] = 570425344; // 'state 136'
+gotoTable[43679] = 3028287488; // 'state 722'
+gotoTable.fill(3028287903, 43680, 43683); // 'state 722' (fused reduce _type)
+gotoTable[43683] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 43684, 43688); // 'state 476' (fused reduce _primary_type)
+gotoTable[43688] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 43689, 43691); // 'state 476' (fused reduce _primary_type)
+gotoTable[43692] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[43802] = 2457862144; // 'state 586'
+gotoTable[43904] = 2340421632; // 'state 558'
+gotoTable[43906] = 2340422016; // 'state 558' (fused reduce _binding_pattern)
+gotoTable[43909] = 2340422016; // 'state 558' (fused reduce _binding_pattern)
+gotoTable[43916] = 83886080; // 'state 20'
+gotoTable[43932] = 88080384; // 'state 21'
+gotoTable[43953] = 444596224; // 'state 106'
+gotoTable[43954] = 1732247552; // 'state 413'
+gotoTable[43955] = 444596657; // 'state 106' (fused reduce _expression)
+gotoTable[43957] = 96468992; // 'state 23'
+gotoTable[43958] = 1740636160; // 'state 415'
+gotoTable.fill(444596657, 43959, 43970); // 'state 106' (fused reduce _expression)
+gotoTable.fill(1744830464, 43970, 43972); // 'state 416'
+gotoTable[43976] = 1732247552; // 'state 413'
+gotoTable[43978] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 43985, 43987); // 'state 414' (fused reduce _primary_expression)
+gotoTable[44041] = 436207616; // 'state 104'
+gotoTable[44060] = 440401920; // 'state 105'
+gotoTable[44160] = 2092957696; // 'state 499'
+gotoTable[44162] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[44165] = 2092958080; // 'state 499' (fused reduce _binding_pattern)
+gotoTable[44166] = 994050048; // 'state 237'
+gotoTable[44172] = 83886080; // 'state 20'
+gotoTable[44188] = 88080384; // 'state 21'
+gotoTable[44209] = 369098752; // 'state 88'
+gotoTable[44210] = 1732247552; // 'state 413'
+gotoTable[44211] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[44213] = 96468992; // 'state 23'
+gotoTable[44214] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 44215, 44226); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 44226, 44228); // 'state 416'
+gotoTable[44229] = 775946240; // 'state 185'
+gotoTable[44230] = 775946693; // 'state 185' (fused reduce argument)
+gotoTable[44232] = 1732247552; // 'state 413'
+gotoTable[44234] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 44241, 44243); // 'state 414' (fused reduce _primary_expression)
+gotoTable[44288] = 2353004544; // 'state 561'
+gotoTable[44290] = 2353004928; // 'state 561' (fused reduce _binding_pattern)
+gotoTable[44293] = 2353004928; // 'state 561' (fused reduce _binding_pattern)
+gotoTable[44300] = 83886080; // 'state 20'
+gotoTable[44316] = 88080384; // 'state 21'
+gotoTable[44337] = 444596224; // 'state 106'
+gotoTable[44338] = 1732247552; // 'state 413'
+gotoTable[44339] = 444596657; // 'state 106' (fused reduce _expression)
+gotoTable[44341] = 96468992; // 'state 23'
+gotoTable[44342] = 1740636160; // 'state 415'
+gotoTable.fill(444596657, 44343, 44354); // 'state 106' (fused reduce _expression)
+gotoTable.fill(1744830464, 44354, 44356); // 'state 416'
+gotoTable[44360] = 1732247552; // 'state 413'
+gotoTable[44362] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 44369, 44371); // 'state 414' (fused reduce _primary_expression)
+gotoTable[44428] = 1224736768; // 'state 292'
+gotoTable[44444] = 1228931072; // 'state 293'
+gotoTable[44447] = 2155872256; // 'state 514'
+gotoTable.fill(2155872671, 44448, 44451); // 'state 514' (fused reduce _type)
+gotoTable[44451] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 44452, 44456); // 'state 476' (fused reduce _primary_type)
+gotoTable[44456] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 44457, 44459); // 'state 476' (fused reduce _primary_type)
+gotoTable[44460] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[44465] = 813694976; // 'state 194'
+gotoTable[44466] = 1732247552; // 'state 413'
+gotoTable[44467] = 813695409; // 'state 194' (fused reduce _expression)
+gotoTable[44469] = 96468992; // 'state 23'
+gotoTable[44470] = 1740636160; // 'state 415'
+gotoTable.fill(813695409, 44471, 44482); // 'state 194' (fused reduce _expression)
+gotoTable.fill(1744830464, 44482, 44484); // 'state 416'
+gotoTable[44488] = 1732247552; // 'state 413'
+gotoTable[44490] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 44497, 44499); // 'state 414' (fused reduce _primary_expression)
+gotoTable[44514] = 2214592512; // 'state 528'
+gotoTable[44570] = 1585446912; // 'state 378'
+gotoTable[44681] = 1581252608; // 'state 377'
+gotoTable[44826] = 2097152000; // 'state 500'
+gotoTable[44954] = 2168455168; // 'state 517'
+gotoTable[44958] = 2243952640; // 'state 535'
+gotoTable[45026] = 2151677952; // 'state 513'
+gotoTable[45068] = 1224736768; // 'state 292'
+gotoTable[45084] = 1228931072; // 'state 293'
+gotoTable[45087] = 2566914048; // 'state 612'
+gotoTable.fill(2566914463, 45088, 45091); // 'state 612' (fused reduce _type)
+gotoTable[45091] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 45092, 45096); // 'state 476' (fused reduce _primary_type)
+gotoTable[45096] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 45097, 45099); // 'state 476' (fused reduce _primary_type)
+gotoTable[45100] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[45105] = 738197504; // 'state 176'
+gotoTable[45106] = 1732247552; // 'state 413'
+gotoTable[45107] = 738197937; // 'state 176' (fused reduce _expression)
+gotoTable[45109] = 96468992; // 'state 23'
+gotoTable[45110] = 1740636160; // 'state 415'
+gotoTable.fill(738197937, 45111, 45122); // 'state 176' (fused reduce _expression)
+gotoTable.fill(1744830464, 45122, 45124); // 'state 416'
+gotoTable[45128] = 1732247552; // 'state 413'
+gotoTable[45130] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 45137, 45139); // 'state 414' (fused reduce _primary_expression)
+gotoTable[45196] = 1983905792; // 'state 473'
+gotoTable[45212] = 570425344; // 'state 136'
+gotoTable[45215] = 2973761536; // 'state 709'
+gotoTable.fill(2973761951, 45216, 45219); // 'state 709' (fused reduce _type)
+gotoTable[45219] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 45220, 45224); // 'state 476' (fused reduce _primary_type)
+gotoTable[45224] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 45225, 45227); // 'state 476' (fused reduce _primary_type)
+gotoTable[45228] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[45338] = 3040870400; // 'state 725'
+gotoTable[45466] = 3045064704; // 'state 726'
+gotoTable[45580] = 1983905792; // 'state 473'
+gotoTable[45596] = 570425344; // 'state 136'
+gotoTable[45599] = 3049259008; // 'state 727'
+gotoTable.fill(3049259423, 45600, 45603); // 'state 727' (fused reduce _type)
+gotoTable[45603] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 45604, 45608); // 'state 476' (fused reduce _primary_type)
+gotoTable[45608] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 45609, 45611); // 'state 476' (fused reduce _primary_type)
+gotoTable[45612] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[45666] = 3053453312; // 'state 728'
+gotoTable[45722] = 1602224128; // 'state 382'
+gotoTable[45794] = 3053453312; // 'state 728'
+gotoTable[45964] = 83886080; // 'state 20'
+gotoTable[45980] = 88080384; // 'state 21'
+gotoTable[46001] = 1606418432; // 'state 383'
+gotoTable[46002] = 1732247552; // 'state 413'
+gotoTable[46003] = 1606418865; // 'state 383' (fused reduce _expression)
+gotoTable[46005] = 96468992; // 'state 23'
+gotoTable[46006] = 1740636160; // 'state 415'
+gotoTable.fill(1606418865, 46007, 46018); // 'state 383' (fused reduce _expression)
+gotoTable.fill(1744830464, 46018, 46020); // 'state 416'
+gotoTable[46024] = 1732247552; // 'state 413'
+gotoTable[46026] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 46033, 46035); // 'state 414' (fused reduce _primary_expression)
+gotoTable[46050] = 3066036224; // 'state 731'
+gotoTable[46276] = 1820327936; // 'state 434'
+gotoTable[46348] = 83886080; // 'state 20'
+gotoTable[46364] = 88080384; // 'state 21'
+gotoTable[46385] = 1610612736; // 'state 384'
+gotoTable[46386] = 1732247552; // 'state 413'
+gotoTable[46387] = 1610613169; // 'state 384' (fused reduce _expression)
+gotoTable[46389] = 96468992; // 'state 23'
+gotoTable[46390] = 1740636160; // 'state 415'
+gotoTable.fill(1610613169, 46391, 46402); // 'state 384' (fused reduce _expression)
+gotoTable.fill(1744830464, 46402, 46404); // 'state 416'
+gotoTable[46408] = 1732247552; // 'state 413'
+gotoTable[46410] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 46417, 46419); // 'state 414' (fused reduce _primary_expression)
+gotoTable[46532] = 1820327936; // 'state 434'
+gotoTable[46562] = 3074424832; // 'state 733'
+gotoTable[46618] = 1614807040; // 'state 385'
+gotoTable[46690] = 3074424832; // 'state 733'
+gotoTable[46860] = 83886080; // 'state 20'
+gotoTable[46876] = 88080384; // 'state 21'
+gotoTable[46897] = 1619001344; // 'state 386'
+gotoTable[46898] = 1732247552; // 'state 413'
+gotoTable[46899] = 1619001777; // 'state 386' (fused reduce _expression)
+gotoTable[46901] = 96468992; // 'state 23'
+gotoTable[46902] = 1740636160; // 'state 415'
+gotoTable.fill(1619001777, 46903, 46914); // 'state 386' (fused reduce _expression)
+gotoTable.fill(1744830464, 46914, 46916); // 'state 416'
+gotoTable[46920] = 1732247552; // 'state 413'
+gotoTable[46922] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 46929, 46931); // 'state 414' (fused reduce _primary_expression)
+gotoTable[47044] = 1820327936; // 'state 434'
+gotoTable[47172] = 1820327936; // 'state 434'
+gotoTable[47244] = 1983905792; // 'state 473'
+gotoTable[47260] = 570425344; // 'state 136'
+gotoTable[47263] = 2973761536; // 'state 709'
+gotoTable.fill(2973761951, 47264, 47267); // 'state 709' (fused reduce _type)
+gotoTable[47267] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 47268, 47272); // 'state 476' (fused reduce _primary_type)
+gotoTable[47272] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 47273, 47275); // 'state 476' (fused reduce _primary_type)
+gotoTable[47276] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[47328] = 3087007744; // 'state 736'
+gotoTable.fill(3087008096, 47330, 47339); // 'state 736' (fused reduce _statement)
+gotoTable[47341] = 3087008096; // 'state 736' (fused reduce _statement)
+gotoTable.fill(3087008096, 47346, 47350); // 'state 736' (fused reduce _statement)
+gotoTable[47350] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47356] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47358] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47367] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47372] = 83886080; // 'state 20'
+gotoTable[47375] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47383] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47385] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47388] = 88080384; // 'state 21'
+gotoTable[47409] = 92274688; // 'state 22'
+gotoTable[47410] = 1732247552; // 'state 413'
+gotoTable[47411] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[47413] = 96468992; // 'state 23'
+gotoTable[47414] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 47415, 47426); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 47426, 47428); // 'state 416'
+gotoTable[47432] = 1732247552; // 'state 413'
+gotoTable[47434] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 47441, 47443); // 'state 414' (fused reduce _primary_expression)
+gotoTable[47456] = 3091202048; // 'state 737'
+gotoTable.fill(3091202400, 47458, 47467); // 'state 737' (fused reduce _statement)
+gotoTable[47469] = 3091202400; // 'state 737' (fused reduce _statement)
+gotoTable.fill(3091202400, 47474, 47478); // 'state 737' (fused reduce _statement)
+gotoTable[47478] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47484] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47486] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47495] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47500] = 83886080; // 'state 20'
+gotoTable[47503] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47511] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47513] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[47516] = 88080384; // 'state 21'
+gotoTable[47537] = 92274688; // 'state 22'
+gotoTable[47538] = 1732247552; // 'state 413'
+gotoTable[47539] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[47541] = 96468992; // 'state 23'
+gotoTable[47542] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 47543, 47554); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 47554, 47556); // 'state 416'
+gotoTable[47560] = 1732247552; // 'state 413'
+gotoTable[47562] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 47569, 47571); // 'state 414' (fused reduce _primary_expression)
+gotoTable[47684] = 1820327936; // 'state 434'
+gotoTable[47714] = 3095396352; // 'state 738'
+gotoTable[47842] = 3099590656; // 'state 739'
+gotoTable[48068] = 1820327936; // 'state 434'
+gotoTable[48096] = 1631584609; // 'state 389' (fused reduce _statement_block_repeat1)
+gotoTable[48097] = 1631584256; // 'state 389'
+gotoTable.fill(1765802336, 48098, 48107); // 'state 421' (fused reduce _statement)
+gotoTable[48109] = 1765802336; // 'state 421' (fused reduce _statement)
+gotoTable.fill(1765802336, 48114, 48118); // 'state 421' (fused reduce _statement)
+gotoTable[48118] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48124] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48126] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48135] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48140] = 83886080; // 'state 20'
+gotoTable[48143] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48151] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48153] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48156] = 88080384; // 'state 21'
+gotoTable[48177] = 92274688; // 'state 22'
+gotoTable[48178] = 1732247552; // 'state 413'
+gotoTable[48179] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[48181] = 96468992; // 'state 23'
+gotoTable[48182] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 48183, 48194); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 48194, 48196); // 'state 416'
+gotoTable[48200] = 1732247552; // 'state 413'
+gotoTable[48202] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 48209, 48211); // 'state 414' (fused reduce _primary_expression)
+gotoTable[48256] = 2663383040; // 'state 635'
+gotoTable[48258] = 2663383424; // 'state 635' (fused reduce _binding_pattern)
+gotoTable[48261] = 2663383424; // 'state 635' (fused reduce _binding_pattern)
+gotoTable[48268] = 83886080; // 'state 20'
+gotoTable[48284] = 88080384; // 'state 21'
+gotoTable[48305] = 813694976; // 'state 194'
+gotoTable[48306] = 1732247552; // 'state 413'
+gotoTable[48307] = 813695409; // 'state 194' (fused reduce _expression)
+gotoTable[48309] = 96468992; // 'state 23'
+gotoTable[48310] = 1740636160; // 'state 415'
+gotoTable.fill(813695409, 48311, 48322); // 'state 194' (fused reduce _expression)
+gotoTable.fill(1744830464, 48322, 48324); // 'state 416'
+gotoTable[48328] = 1732247552; // 'state 413'
+gotoTable[48330] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 48337, 48339); // 'state 414' (fused reduce _primary_expression)
+gotoTable[48354] = 2503999488; // 'state 597'
+gotoTable[48410] = 1635778560; // 'state 390'
+gotoTable[48482] = 2503999488; // 'state 597'
+gotoTable[48610] = 2361393152; // 'state 563'
+gotoTable[48652] = 1224736768; // 'state 292'
+gotoTable[48668] = 1228931072; // 'state 293'
+gotoTable[48671] = 2856321024; // 'state 681'
+gotoTable.fill(2856321439, 48672, 48675); // 'state 681' (fused reduce _type)
+gotoTable[48675] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 48676, 48680); // 'state 476' (fused reduce _primary_type)
+gotoTable[48680] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 48681, 48683); // 'state 476' (fused reduce _primary_type)
+gotoTable[48684] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[48689] = 1023410176; // 'state 244'
+gotoTable[48690] = 1732247552; // 'state 413'
+gotoTable[48691] = 1023410609; // 'state 244' (fused reduce _expression)
+gotoTable[48693] = 96468992; // 'state 23'
+gotoTable[48694] = 1740636160; // 'state 415'
+gotoTable.fill(1023410609, 48695, 48706); // 'state 244' (fused reduce _expression)
+gotoTable.fill(1744830464, 48706, 48708); // 'state 416'
+gotoTable[48712] = 1732247552; // 'state 413'
+gotoTable[48714] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 48721, 48723); // 'state 414' (fused reduce _primary_expression)
+gotoTable[48736] = 117440865; // 'state 28' (fused reduce _statement_block_repeat1)
+gotoTable[48737] = 117440512; // 'state 28'
+gotoTable.fill(1765802336, 48738, 48747); // 'state 421' (fused reduce _statement)
+gotoTable[48749] = 1765802336; // 'state 421' (fused reduce _statement)
+gotoTable.fill(1765802336, 48754, 48758); // 'state 421' (fused reduce _statement)
+gotoTable[48758] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48764] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48766] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48775] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48780] = 83886080; // 'state 20'
+gotoTable[48783] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48791] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48793] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[48796] = 88080384; // 'state 21'
+gotoTable[48811] = 926941184; // 'state 221'
+gotoTable.fill(2256535552, 48813, 48817); // 'state 538'
+gotoTable[48817] = 92274688; // 'state 22'
+gotoTable[48818] = 1769996288; // 'state 422'
+gotoTable[48819] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[48821] = 96468992; // 'state 23'
+gotoTable[48822] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 48823, 48834); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 48834, 48836); // 'state 416'
+gotoTable[48838] = 121635275; // 'state 29' (fused reduce object_member)
+gotoTable[48840] = 1732247552; // 'state 413'
+gotoTable[48842] = 1732247552; // 'state 413'
+gotoTable[48843] = 121634816; // 'state 29'
+gotoTable.fill(121635275, 48844, 48847); // 'state 29' (fused reduce object_member)
+gotoTable[48847] = 1203765248; // 'state 287'
+gotoTable[48848] = 1203765711; // 'state 287' (fused reduce _property_name)
+gotoTable.fill(1736442291, 48849, 48851); // 'state 414' (fused reduce _primary_expression)
+gotoTable[48908] = 1983905792; // 'state 473'
+gotoTable[48924] = 570425344; // 'state 136'
+gotoTable[48927] = 3107979264; // 'state 741'
+gotoTable.fill(3107979679, 48928, 48931); // 'state 741' (fused reduce _type)
+gotoTable[48931] = 1996488704; // 'state 476'
+gotoTable.fill(1996489123, 48932, 48936); // 'state 476' (fused reduce _primary_type)
+gotoTable[48936] = 2000683008; // 'state 477'
+gotoTable.fill(1996489123, 48937, 48939); // 'state 476' (fused reduce _primary_type)
+gotoTable[48940] = 1996489123; // 'state 476' (fused reduce _primary_type)
+gotoTable[48994] = 3112173568; // 'state 742'
+gotoTable[49220] = 1820327936; // 'state 434'
+gotoTable[49348] = 1820327936; // 'state 434'
+gotoTable[49378] = 3120562176; // 'state 744'
+gotoTable[49604] = 1820327936; // 'state 434'
+gotoTable[49632] = 3128950784; // 'state 746'
+gotoTable.fill(3128951136, 49634, 49643); // 'state 746' (fused reduce _statement)
+gotoTable[49645] = 3128951136; // 'state 746' (fused reduce _statement)
+gotoTable.fill(3128951136, 49650, 49654); // 'state 746' (fused reduce _statement)
+gotoTable[49654] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49660] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49662] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49671] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49676] = 83886080; // 'state 20'
+gotoTable[49679] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49687] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49689] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49692] = 88080384; // 'state 21'
+gotoTable[49713] = 92274688; // 'state 22'
+gotoTable[49714] = 1732247552; // 'state 413'
+gotoTable[49715] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[49717] = 96468992; // 'state 23'
+gotoTable[49718] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 49719, 49730); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 49730, 49732); // 'state 416'
+gotoTable[49736] = 1732247552; // 'state 413'
+gotoTable[49738] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 49745, 49747); // 'state 414' (fused reduce _primary_expression)
+gotoTable[49760] = 1652556129; // 'state 394' (fused reduce _statement_block_repeat1)
+gotoTable[49761] = 1652555776; // 'state 394'
+gotoTable.fill(1765802336, 49762, 49771); // 'state 421' (fused reduce _statement)
+gotoTable[49773] = 1765802336; // 'state 421' (fused reduce _statement)
+gotoTable.fill(1765802336, 49778, 49782); // 'state 421' (fused reduce _statement)
+gotoTable[49782] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49788] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49790] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49799] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49804] = 83886080; // 'state 20'
+gotoTable[49807] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49815] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49817] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49820] = 88080384; // 'state 21'
+gotoTable[49841] = 92274688; // 'state 22'
+gotoTable[49842] = 1732247552; // 'state 413'
+gotoTable[49843] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[49845] = 96468992; // 'state 23'
+gotoTable[49846] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 49847, 49858); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 49858, 49860); // 'state 416'
+gotoTable[49864] = 1732247552; // 'state 413'
+gotoTable[49866] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 49873, 49875); // 'state 414' (fused reduce _primary_expression)
+gotoTable[49888] = 1912602624; // 'state 456'
+gotoTable.fill(1912602976, 49890, 49899); // 'state 456' (fused reduce _statement)
+gotoTable[49901] = 1912602976; // 'state 456' (fused reduce _statement)
+gotoTable.fill(1912602976, 49906, 49910); // 'state 456' (fused reduce _statement)
+gotoTable[49910] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49916] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49918] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49927] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49932] = 83886080; // 'state 20'
+gotoTable[49935] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49943] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49945] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[49948] = 88080384; // 'state 21'
+gotoTable[49969] = 92274688; // 'state 22'
+gotoTable[49970] = 1732247552; // 'state 413'
+gotoTable[49971] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[49973] = 96468992; // 'state 23'
+gotoTable[49974] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 49975, 49986); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 49986, 49988); // 'state 416'
+gotoTable[49992] = 1732247552; // 'state 413'
+gotoTable[49994] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 50001, 50003); // 'state 414' (fused reduce _primary_expression)
+gotoTable[50018] = 2801795072; // 'state 668'
+gotoTable[50188] = 83886080; // 'state 20'
+gotoTable[50204] = 88080384; // 'state 21'
+gotoTable[50225] = 423624704; // 'state 101'
+gotoTable[50226] = 1732247552; // 'state 413'
+gotoTable[50227] = 423625137; // 'state 101' (fused reduce _expression)
+gotoTable[50229] = 96468992; // 'state 23'
+gotoTable[50230] = 1740636160; // 'state 415'
+gotoTable.fill(423625137, 50231, 50242); // 'state 101' (fused reduce _expression)
+gotoTable.fill(1744830464, 50242, 50244); // 'state 416'
+gotoTable[50245] = 406847488; // 'state 97'
+gotoTable[50246] = 406847941; // 'state 97' (fused reduce argument)
+gotoTable[50248] = 1732247552; // 'state 413'
+gotoTable[50250] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 50257, 50259); // 'state 414' (fused reduce _primary_expression)
+gotoTable[50313] = 1254096896; // 'state 299'
+gotoTable[50332] = 1258291200; // 'state 300'
+gotoTable[50354] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable[50355] = 398458880; // 'state 95'
+gotoTable[50357] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable[50376] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable[50378] = 398459315; // 'state 95' (fused reduce _primary_expression)
+gotoTable.fill(398459315, 50385, 50387); // 'state 95' (fused reduce _primary_expression)
+gotoTable[50458] = 3133145088; // 'state 747'
+gotoTable[50528] = 1912602624; // 'state 456'
+gotoTable.fill(1912602976, 50530, 50539); // 'state 456' (fused reduce _statement)
+gotoTable[50541] = 1912602976; // 'state 456' (fused reduce _statement)
+gotoTable.fill(1912602976, 50546, 50550); // 'state 456' (fused reduce _statement)
+gotoTable[50550] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[50556] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[50558] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[50567] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[50572] = 83886080; // 'state 20'
+gotoTable[50575] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[50583] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[50585] = 1723859317; // 'state 411' (fused reduce _declaration)
+gotoTable[50588] = 88080384; // 'state 21'
+gotoTable[50609] = 92274688; // 'state 22'
+gotoTable[50610] = 1732247552; // 'state 413'
+gotoTable[50611] = 92275121; // 'state 22' (fused reduce _expression)
+gotoTable[50613] = 96468992; // 'state 23'
+gotoTable[50614] = 1740636160; // 'state 415'
+gotoTable.fill(92275121, 50615, 50626); // 'state 22' (fused reduce _expression)
+gotoTable.fill(1744830464, 50626, 50628); // 'state 416'
+gotoTable[50632] = 1732247552; // 'state 413'
+gotoTable[50634] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 50641, 50643); // 'state 414' (fused reduce _primary_expression)
+gotoTable[50688] = 675282944; // 'state 161'
+gotoTable[50690] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[50693] = 675283328; // 'state 161' (fused reduce _binding_pattern)
+gotoTable[50698] = 679477248; // 'state 162'
+gotoTable[50700] = 83886080; // 'state 20'
+gotoTable[50702] = 683671552; // 'state 163'
+gotoTable[50716] = 88080384; // 'state 21'
+gotoTable[50737] = 369098752; // 'state 88'
+gotoTable[50738] = 1732247552; // 'state 413'
+gotoTable[50739] = 369099185; // 'state 88' (fused reduce _expression)
+gotoTable[50741] = 96468992; // 'state 23'
+gotoTable[50742] = 1740636160; // 'state 415'
+gotoTable.fill(369099185, 50743, 50754); // 'state 88' (fused reduce _expression)
+gotoTable.fill(1744830464, 50754, 50756); // 'state 416'
+gotoTable[50757] = 373293056; // 'state 89'
+gotoTable[50758] = 373293509; // 'state 89' (fused reduce argument)
+gotoTable[50760] = 1732247552; // 'state 413'
+gotoTable[50762] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 50769, 50771); // 'state 414' (fused reduce _primary_expression)
+gotoTable[50842] = 3137339392; // 'state 748'
+gotoTable[50944] = 1048576000; // 'state 250'
+gotoTable[50946] = 1048576384; // 'state 250' (fused reduce _binding_pattern)
+gotoTable[50949] = 1048576384; // 'state 250' (fused reduce _binding_pattern)
+gotoTable[50956] = 83886080; // 'state 20'
+gotoTable[50972] = 88080384; // 'state 21'
+gotoTable[50993] = 444596224; // 'state 106'
+gotoTable[50994] = 1732247552; // 'state 413'
+gotoTable[50995] = 444596657; // 'state 106' (fused reduce _expression)
+gotoTable[50997] = 96468992; // 'state 23'
+gotoTable[50998] = 1740636160; // 'state 415'
+gotoTable.fill(444596657, 50999, 51010); // 'state 106' (fused reduce _expression)
+gotoTable.fill(1744830464, 51010, 51012); // 'state 416'
+gotoTable[51016] = 1732247552; // 'state 413'
+gotoTable[51018] = 1732247552; // 'state 413'
+gotoTable.fill(1736442291, 51025, 51027); // 'state 414' (fused reduce _primary_expression)
+gotoTable[51084] = 281018368; // 'state 67'
+gotoTable[51100] = 285212672; // 'state 68'
+gotoTable[51125] = 281018368; // 'state 67'
 
 const wordFallbackTable = new Uint8Array(96);
 wordFallbackTable.fill(1, 0, 5); // true..super
@@ -13251,12 +13247,38 @@ function parseLarge(stream) {
         nextT.set(stackTps);
         stackTps = nextT;
       }
-      tree[tp] = lookahead;
-      tree[tp + 1] = lookaheadEnd;
-      sp += 1;
-      topState = actionLookup >>> 1;
-      stackStates[sp] = topState;
-      stackTps[sp] = tp;
+      if (actionLookup >= 0x8000) {
+        if (tp + 6 >= treeCap) {
+          treeCap <<= 1;
+          const nextTree = new Uint32Array(treeCap);
+          nextTree.set(tree);
+          tree = nextTree;
+        }
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        const word0 = (actionLookup & 0x7fff) >>> 1;
+        const rtopTp = stackTps[sp];
+        tp += 2;
+        tree[tp] = word0;
+        tree[tp + 1] = rtopTp;
+        const rawNextState = goto[(currentState << 7) + (word0 & 0xff)];
+        if ((rawNextState & 0xffff) !== 0) {
+          tp += 2;
+          tree[tp] = rawNextState & 0xffff;
+          tree[tp + 1] = rtopTp;
+        }
+        topState = rawNextState >>> 22;
+        sp += 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+      } else {
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        sp += 1;
+        topState = actionLookup >>> 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+      }
       const res = nextToken(stream, lookaheadEnd);
       lookahead = res.state;
       lookaheadStart = res.start;
@@ -13294,7 +13316,12 @@ function parseLarge(stream) {
       tree[tp] = word0;
       tree[tp + 1] = rtopTp;
       const rawNextState = goto[(rtopState << 7) + (word0 & 0xff)];
-      topState = rawNextState;
+      if ((rawNextState & 0xffff) !== 0) {
+        tp += 2;
+        tree[tp] = rawNextState & 0xffff;
+        tree[tp + 1] = rtopTp;
+      }
+      topState = rawNextState >>> 22;
       sp += 1;
       if (sp >= stackCap) {
         stackCap <<= 1;
@@ -13309,7 +13336,7 @@ function parseLarge(stream) {
       stackTps[sp] = tp;
     }
     tp += 2;
-    if (tp >= treeCap - 2) {
+    if (tp >= treeCap - 6) {
       treeCap <<= 1;
       const nextTree = new Uint32Array(treeCap);
       nextTree.set(tree);
@@ -13361,17 +13388,35 @@ function parse(input) {
       const actionLookup = actions[(currentState << 7) + lookahead];
       if ((actionLookup & 1) === 0) {
         // shift
-        if (actionLookup === 0xfffe) {
-          tree[1] = tp - 2;
-          return new CstNode(stream, tree, tp - 2);
+        if (actionLookup >= 0x8000) {
+          if (actionLookup === 0xfffe) {
+            tree[1] = tp - 2;
+            return new CstNode(stream, tree, tp - 2);
+          }
+          tree[tp] = lookahead;
+          tree[tp + 1] = lookaheadSpan;
+          const word0 = (actionLookup & 0x7fff) >>> 1;
+          tp += 2;
+          tree[tp] = word0;
+          tree[tp + 1] = top;
+          const nextState = goto[(currentState << 7) + (word0 & 0xff)];
+          sp += 1;
+          if ((nextState & 0xffff) !== 0) {
+            tp += 2;
+            tree[tp] = nextState & 0xffff;
+            tree[tp + 1] = top;
+            top = tp | (nextState & -4194304);
+          } else {
+            top = tp | nextState;
+          }
+          stack[sp] = top;
+        } else {
+          tree[tp] = lookahead;
+          tree[tp + 1] = lookaheadSpan;
+          sp += 1;
+          top = tp | (actionLookup << 21);
+          stack[sp] = top;
         }
-
-        tree[tp] = lookahead; // name (and nChildren = 0)
-        tree[tp + 1] = lookaheadSpan;
-
-        sp += 1;
-        top = tp | (actionLookup << 21);
-        stack[sp] = top;
 
         const res = nextToken(stream, lookaheadSpan & 0x3fffff);
         lookahead = res.state;
@@ -13406,12 +13451,19 @@ function parse(input) {
         tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
 
         sp += 1;
-        top = tp | (nextState << 22);
+        if ((nextState & 0xffff) !== 0) {
+          tp += 2;
+          tree[tp] = nextState & 0xffff;
+          tree[tp + 1] = rtop;
+          top = tp | (nextState & -4194304);
+        } else {
+          top = tp | nextState;
+        }
         stack[sp] = top;
       }
 
       tp += 2;
-      if (tp >= tree.length - 1) {
+      if (tp >= tree.length - 6) {
         break;
       }
     }

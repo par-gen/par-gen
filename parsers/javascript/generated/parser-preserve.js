@@ -13334,6 +13334,7 @@ function parseLarge(stream) {
       tree[tp] = word0;
       tree[tp + 1] = rtopTp;
       const rawNextState = goto[(rtopState << 7) + (word0 & 0xff)];
+
       topState = rawNextState;
       sp += 1;
       if (sp >= stackCap) {
@@ -13349,7 +13350,7 @@ function parseLarge(stream) {
       stackTps[sp] = tp;
     }
     tp += 2;
-    if (tp >= treeCap - 2) {
+    if (tp >= treeCap - 6) {
       treeCap <<= 1;
       const nextTree = new Uint32Array(treeCap);
       nextTree.set(tree);
@@ -13514,7 +13515,7 @@ function parse(input) {
       }
 
       tp += 2;
-      if (tp >= tree.length - 1) {
+      if (tp >= tree.length - 6) {
         break;
       }
     }

@@ -530,6 +530,50 @@ export class JavaScriptBaseCodegen {
       ? (totalRows - 1) * columns + origColumns
       : columns * totalRows;
 
+    const fuseStartSkipBytes =
+      directDeadEndTokenIds &&
+      !useEquivalenceClasses &&
+      skipTokenIds.length === 0 &&
+      skipBytes.length > 0 &&
+      pointerSize === "Uint16Array" &&
+      tableLength < 65535;
+
+    /** @type {Map<number, { s: number, minHex: string, exHexes: string[] }>} */
+    const swarSelfLoopInfo = new Map();
+    if (directDeadEndTokenIds && !useEquivalenceClasses && origColumns === 256) {
+      for (const origState of selfLoopNonFinals) {
+        const transEntry = transitions.find(([from]) => from === origState);
+        if (!transEntry) continue;
+        /** @type {Set<number>} */
+        const selfSet = new Set();
+        for (const [sym, to] of transEntry[1]) {
+          if (to === origState) selfSet.add(sym);
+        }
+        let minAscii = -1;
+        for (let b = 1; b <= 64; b++) {
+          if (selfSet.has(b)) {
+            minAscii = b;
+            break;
+          }
+        }
+        if (minAscii > 0) {
+          /** @type {number[]} */
+          const exBytes = [];
+          for (let b = minAscii; b < 128; b++) {
+            if (!selfSet.has(b)) exBytes.push(b);
+          }
+          if (exBytes.length >= 2 && exBytes.length <= 3) {
+            const s = remapState(origState);
+            const minHex = `0x${((minAscii * 0x01010101) >>> 0).toString(16)}`;
+            const exHexes = exBytes.map(
+              (d) => `0x${((d * 0x01010101) >>> 0).toString(16)}`
+            );
+            swarSelfLoopInfo.set(origState, { s, minHex, exHexes });
+          }
+        }
+      }
+    }
+
     const code = `${this._lexerPreCode()}
       // @ts-nocheck
 
@@ -537,7 +581,7 @@ export class JavaScriptBaseCodegen {
       const ERROR = "${ERROR}";
 
       ${
-        skipBytes.length > 0
+        skipBytes.length > 0 && !fuseStartSkipBytes
           ? `const skipTable = new Uint8Array(256);
       ${this._formatTableRuns(
         "skipTable",
@@ -603,9 +647,62 @@ export class JavaScriptBaseCodegen {
               comment: mappedStateNames.get(mappedTo),
             });
           }
+          if (fuseStartSkipBytes && from === start) {
+            for (const b of skipBytes) {
+              entries.push({
+                index: mappedFrom + b,
+                value: 65535,
+                comment: "SKIP",
+              });
+            }
+          }
           return entries;
         })
       )}
+
+      ${Array.from(swarSelfLoopInfo.values())
+        .map(({ s, minHex, exHexes }) => {
+          const w0Expr = [
+            `(w0 - ${minHex})`,
+            ...exHexes.map((h) => `((w0 ^ ${h}) - 0x01010101)`),
+            "w0",
+          ].join(" | ");
+          const w1Expr = [
+            `(w1 - ${minHex})`,
+            ...exHexes.map((h) => `((w1 ^ ${h}) - 0x01010101)`),
+            "w1",
+          ].join(" | ");
+          return `const fast_${s} = new Uint8Array(256);
+      for (let j = 0; j < 256; j++) fast_${s}[j] = table[${s} + j] === ${s} ? 0 : 1;
+      let cachedInput_${s} = null;
+      let cachedDv_${s} = null;
+      const scan_${s} = (input, i, l) => {
+        const dv =
+          input === cachedInput_${s}
+            ? cachedDv_${s}
+            : ((cachedInput_${s} = input),
+              (cachedDv_${s} = new DataView(
+                input.buffer,
+                input.byteOffset,
+                input.byteLength
+              )));
+        const l8 = l - 7;
+        while (i < l8) {
+          const w0 = dv.getUint32(i, true);
+          if (((${w0Expr}) & 0x80808080) !== 0) break;
+          const w1 = dv.getUint32(i + 4, true);
+          if (((${w1Expr}) & 0x80808080) !== 0) {
+            i += 4;
+            break;
+          }
+          i += 8;
+        }
+        const f = fast_${s};
+        while (i < l && f[input[i]] === 0) i++;
+        return i;
+      };`;
+        })
+        .join("\n")}
 
       /**
        * @param {Uint8Array} input
@@ -614,7 +711,11 @@ export class JavaScriptBaseCodegen {
        */
       const next = (input, offset) => {
         const t = table;
-        ${skipBytes.length > 0 ? "const s = skipTable;" : ""}
+        ${
+          skipBytes.length > 0 && !fuseStartSkipBytes
+            ? "const s = skipTable;"
+            : ""
+        }
         ${useEquivalenceClasses ? "const e = ec;" : ""}
         ${hasTokenIdsTable ? "const ti = tokenIds;" : ""}
         ${
@@ -733,20 +834,25 @@ export class JavaScriptBaseCodegen {
                     .join("\n")} else `
                 : ""
             }while (true) {
+              ${selfLoopNonFinals
+                .map((origState) => {
+                  const s = remapState(origState);
+                  return swarSelfLoopInfo.has(origState)
+                    ? `if (state === ${s}) {
+                i = scan_${s}(input, i, l);
+                if (i < l) state = t[input[i++] + ${s}];
+              }`
+                    : `if (state === ${s}) {
+                while (i < l && (state = t[input[i++] + ${s}]) === ${s});
+              }`;
+                })
+                .join("\n")}
               if (state > ${remappedLastSelfLoop}) {
                 while (
                   i < l &&
                   (state = t[state + input[i++]]) > ${remappedLastSelfLoop}
                 );
               }
-              ${selfLoopNonFinals
-                .map((origState) => {
-                  const s = remapState(origState);
-                  return `if (state === ${s}) {
-                while (i < l && (state = t[input[i++] + ${s}]) === ${s});
-              }`;
-                })
-                .join("\n")}
               if (state <= ${remappedLastDeadEndFinal}) {
                 break;
               }
@@ -855,7 +961,7 @@ export class JavaScriptBaseCodegen {
         let i = offset & 0x7fffffff;
         const l = input.length;
         ${
-          skipBytes.length > 0
+          skipBytes.length > 0 && !fuseStartSkipBytes
             ? `while (i < l && s[input[i]]) {
           i++;
         }
@@ -866,6 +972,14 @@ export class JavaScriptBaseCodegen {
           i < l &&
           (state = t[input[i++] + ${remappedStart}]) > ${remappedLastDeadEndFinal}
         ) {
+          ${
+            fuseStartSkipBytes
+              ? `if (state === 65535) {
+            while (i < l && 65535 === (state = t[input[i++] + ${remappedStart}]));
+            offset = i - 1;
+          }`
+              : ""
+          }
           ${
             pureSelfLoopFinals.length > 0
               ? `${pureSelfLoopFinals
@@ -882,20 +996,25 @@ export class JavaScriptBaseCodegen {
                   .join("\n")} else `
               : ""
           }while (true) {
+            ${selfLoopNonFinals
+              .map((origState) => {
+                const s = remapState(origState);
+                return swarSelfLoopInfo.has(origState)
+                  ? `if (state === ${s}) {
+              i = scan_${s}(input, i, l);
+              if (i < l) state = t[input[i++] + ${s}];
+            }`
+                  : `if (state === ${s}) {
+              while (i < l && (state = t[input[i++] + ${s}]) === ${s});
+            }`;
+              })
+              .join("\n")}
             if (state > ${remappedLastSelfLoop}) {
               while (
                 i < l &&
                 (state = t[state + input[i++]]) > ${remappedLastSelfLoop}
               );
             }
-            ${selfLoopNonFinals
-              .map((origState) => {
-                const s = remapState(origState);
-                return `if (state === ${s}) {
-              while (i < l && (state = t[input[i++] + ${s}]) === ${s});
-            }`;
-              })
-              .join("\n")}
             if (state <= ${remappedLastDeadEndFinal}) {
               break;
             }
@@ -1564,7 +1683,19 @@ export class JavaScriptBaseCodegen {
     const ACTION_DONE_HEX = useUint32Actions ? "0xfffffffe" : "0xfffe";
     const ACTION_ERROR_HEX = useUint32Actions ? "0xffffffff" : "0xffff";
 
-    const compactGoto = gotoTableSize > 4096;
+    const canFuseShiftUnitReduce =
+      !useUint32Actions &&
+      !preserveExtras &&
+      !hasShiftSemanticActions &&
+      !this.options.debug &&
+      maxShiftAction < 0x8000;
+    const canFuseGotoUnitReduce =
+      canFuseShiftUnitReduce &&
+      !useSplitStack &&
+      !hasEpsilonRules &&
+      symBits <= 14;
+
+    const compactGoto = !canFuseGotoUnitReduce && gotoTableSize > 4096;
     const gotoArrayType = compactGoto
       ? maxStateVal <= 0xff
         ? "Uint8Array"
@@ -1680,6 +1811,55 @@ export class JavaScriptBaseCodegen {
       ? `(tree[q] & ${symMaskHex}) >= ${minNonTerminalIndex} && (tree[q] & ${symMaskHex}) <= ${maxNonTerminalIndex}`
       : "false";
 
+    /** @type {Map<*, { targetSym: number, word0: number, lookaheads: Set<string> }>} */
+    const pureUnitReduceStateInfo = new Map();
+    if (canFuseShiftUnitReduce) {
+      for (const [state, action] of actions.entries()) {
+        const items = Array.from(state.values());
+        /** @type {string | undefined} */
+        let commonSymbol;
+        let isPureUnit = true;
+        /** @type {Set<string>} */
+        const lookaheads = new Set();
+        for (const [symbol, to] of action.entries()) {
+          if (ruleNamesSet.has(symbol)) continue;
+          if (to.op !== "reduce" || !to.symbol) {
+            isPureUnit = false;
+            break;
+          }
+          if (commonSymbol === undefined) {
+            commonSymbol = to.symbol;
+          } else if (commonSymbol !== to.symbol) {
+            isPureUnit = false;
+            break;
+          }
+          const matchedItem = items.find(
+            (item) =>
+              item.name === to.symbol &&
+              item.marker === item.tokens.length &&
+              item.lookahead === symbol
+          );
+          const rLen = matchedItem ? matchedItem.tokens.length : 0;
+          if (rLen !== 1) {
+            isPureUnit = false;
+            break;
+          }
+          lookaheads.add(symbol);
+        }
+        if (isPureUnit && commonSymbol !== undefined && lookaheads.size > 0) {
+          const targetSym = parserSymbols.indexOf(commonSymbol);
+          const word0 = (1 << symBits) | targetSym;
+          if ((0x8000 | (word0 << 1)) < 0xfffe) {
+            pureUnitReduceStateInfo.set(state, {
+              targetSym,
+              word0,
+              lookaheads,
+            });
+          }
+        }
+      }
+    }
+
     const code = `// @ts-nocheck
       ${this._parserImports(lexerData)}
 
@@ -1726,11 +1906,45 @@ export class JavaScriptBaseCodegen {
               let packedAction = ACTION_ERROR;
               let target = 0;
               let reduceLen = 0;
+              /** @type {string} */
+              let opLabel = to.op;
               if (to.op === "shift" && to.state) {
-                target =
-                  /** @type {number} */ (stateToIndex.get(to.state)) *
-                  stateMultiplier;
-                packedAction = target * 2;
+                const unitInfo = canFuseShiftUnitReduce
+                  ? pureUnitReduceStateInfo.get(to.state)
+                  : undefined;
+                let fused = false;
+                if (unitInfo !== undefined) {
+                  const reducedSymName = parserSymbols[unitInfo.targetSym];
+                  const postGotoState = goto.get(from)?.get(reducedSymName);
+                  const postGotoActions = postGotoState
+                    ? actions.get(postGotoState)
+                    : undefined;
+                  if (postGotoActions) {
+                    let postTerminalCount = 0;
+                    let allMatch = true;
+                    for (const [sym] of postGotoActions.entries()) {
+                      if (ruleNamesSet.has(sym)) continue;
+                      postTerminalCount++;
+                      if (!unitInfo.lookaheads.has(sym)) {
+                        allMatch = false;
+                        break;
+                      }
+                    }
+                    if (allMatch && postTerminalCount > 0) {
+                      packedAction = 0x8000 | (unitInfo.word0 << 1);
+                      target = unitInfo.targetSym;
+                      reduceLen = 1;
+                      opLabel = "shift+reduce";
+                      fused = true;
+                    }
+                  }
+                }
+                if (!fused) {
+                  target =
+                    /** @type {number} */ (stateToIndex.get(to.state)) *
+                    stateMultiplier;
+                  packedAction = target * 2;
+                }
               } else if (to.op === "reduce" && to.symbol) {
                 target = parserSymbols.indexOf(to.symbol);
                 const matchedItem = items.find(
@@ -1750,9 +1964,9 @@ export class JavaScriptBaseCodegen {
                 value: packedAction,
                 groupKey: stateIndex,
                 symbol,
-                comment: `'state ${stateIndex}' -> ${symbol} -> ${to.op} (target=${target}, len=${reduceLen})`,
+                comment: `'state ${stateIndex}' -> ${symbol} -> ${opLabel} (target=${target}, len=${reduceLen})`,
                 runComment: (first, last) =>
-                  `'state ${stateIndex}' -> ${first.symbol}..${last.symbol} -> ${to.op} (target=${target}, len=${reduceLen})`,
+                  `'state ${stateIndex}' -> ${first.symbol}..${last.symbol} -> ${opLabel} (target=${target}, len=${reduceLen})`,
               };
             });
         })
@@ -1782,14 +1996,48 @@ export class JavaScriptBaseCodegen {
         Array.from(goto.entries()).flatMap(([from, target]) => {
           const fromIndex = /** @type {number} */ (stateToIndex.get(from));
           return Array.from(target.entries()).map(([symbol, to]) => {
-            const toIndex = /** @type {number} */ (stateToIndex.get(to));
+            let toIndex = /** @type {number} */ (stateToIndex.get(to));
+            let fusedWord0 = 0;
+            if (canFuseGotoUnitReduce) {
+              const unitInfo = pureUnitReduceStateInfo.get(to);
+              if (unitInfo !== undefined) {
+                const reducedSymName = parserSymbols[unitInfo.targetSym];
+                const postGotoState = goto.get(from)?.get(reducedSymName);
+                const postGotoActions = postGotoState
+                  ? actions.get(postGotoState)
+                  : undefined;
+                if (postGotoState && postGotoActions) {
+                  let postTerminalCount = 0;
+                  let allMatch = true;
+                  for (const [sym] of postGotoActions.entries()) {
+                    if (ruleNamesSet.has(sym)) continue;
+                    postTerminalCount++;
+                    if (!unitInfo.lookaheads.has(sym)) {
+                      allMatch = false;
+                      break;
+                    }
+                  }
+                  if (allMatch && postTerminalCount > 0) {
+                    toIndex = /** @type {number} */ (
+                      stateToIndex.get(postGotoState)
+                    );
+                    fusedWord0 = unitInfo.word0;
+                  }
+                }
+              }
+            }
             return {
               index:
                 fromIndex * tableStride + parserSymbols.indexOf(symbol),
               value: compactGoto
                 ? toIndex * stateMultiplier
-                : toIndex * stateMultiplier * tpShiftMul,
-              comment: `'state ${toIndex}'`,
+                : toIndex * stateMultiplier * tpShiftMul + fusedWord0,
+              comment:
+                fusedWord0 !== 0
+                  ? `'state ${toIndex}' (fused reduce ${
+                      parserSymbols[fusedWord0 & symMask]
+                    })`
+                  : `'state ${toIndex}'`,
             };
           });
         })
@@ -2645,6 +2893,45 @@ export class JavaScriptBaseCodegen {
               stackTps[sp] = tp;
               prevEnd = lookaheadEnd;
             }`
+                : canFuseShiftUnitReduce
+                ? `if (actionLookup >= 0x8000) {
+              if (tp + 6 >= treeCap) {
+                treeCap <<= 1;
+                const nextTree = new Uint32Array(treeCap);
+                nextTree.set(tree);
+                tree = nextTree;
+              }
+              tree[tp] = lookahead;
+              tree[tp + 1] = lookaheadEnd;
+              const word0 = (actionLookup & 0x7fff) >>> 1;
+              const rtopTp = stackTps[sp];
+              tp += 2;
+              tree[tp] = word0;
+              tree[tp + 1] = rtopTp;
+              const rawNextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
+              ${
+                canFuseGotoUnitReduce
+                  ? `if ((rawNextState & 0xffff) !== 0) {
+                tp += 2;
+                tree[tp] = rawNextState & 0xffff;
+                tree[tp + 1] = rtopTp;
+              }`
+                  : ""
+              }
+              topState = ${
+                compactGoto ? "rawNextState" : `rawNextState >>> ${tpBits}`
+              };
+              sp += 1;
+              stackStates[sp] = topState;
+              stackTps[sp] = tp;
+            } else {
+              tree[tp] = lookahead;
+              tree[tp + 1] = lookaheadEnd;
+              sp += 1;
+              topState = actionLookup >>> 1;
+              stackStates[sp] = topState;
+              stackTps[sp] = tp;
+            }`
                 : `tree[tp] = lookahead;
             tree[tp + 1] = lookaheadEnd;
             sp += 1;
@@ -2719,6 +3006,15 @@ export class JavaScriptBaseCodegen {
                 ? `(rtopState << ${tableStrideShift})`
                 : `rtopState * ${tableStride}`
             } + (word0 & ${symMaskHex})];
+            ${
+              canFuseGotoUnitReduce
+                ? `if ((rawNextState & 0xffff) !== 0) {
+              tp += 2;
+              tree[tp] = rawNextState & 0xffff;
+              tree[tp + 1] = rtopTp;
+            }`
+                : ""
+            }
             topState = ${
               compactGoto ? "rawNextState" : `rawNextState >>> ${tpBits}`
             };
@@ -2736,7 +3032,7 @@ export class JavaScriptBaseCodegen {
             stackTps[sp] = tp;
           }
           tp += 2;
-          if (tp >= treeCap - 2) {
+          if (tp >= treeCap - 6) {
             treeCap <<= 1;
             const nextTree = new Uint32Array(treeCap);
             nextTree.set(tree);
@@ -2841,7 +3137,44 @@ export class JavaScriptBaseCodegen {
             ${actionLookupCode}
             if ((actionLookup & 1) === 0) {
               // shift
-              if (actionLookup === ${ACTION_DONE_HEX}) {
+              ${
+                canFuseShiftUnitReduce
+                  ? `if (actionLookup >= 0x8000) {
+                if (actionLookup === ${ACTION_DONE_HEX}) {
+                  tree[1] = tp - 2;
+                  return new CstNode(stream, tree, tp - 2);
+                }
+                tree[tp] = lookahead;
+                tree[tp + 1] = lookaheadSpan;
+                const word0 = (actionLookup & 0x7fff) >>> 1;
+                tp += 2;
+                tree[tp] = word0;
+                tree[tp + 1] = top;
+                const nextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
+                sp += 1;
+                ${
+                  canFuseGotoUnitReduce
+                    ? `if ((nextState & 0xffff) !== 0) {
+                  tp += 2;
+                  tree[tp] = nextState & 0xffff;
+                  tree[tp + 1] = top;
+                  top = tp | (nextState & ${~tpMask});
+                } else {
+                  top = tp | nextState;
+                }`
+                    : `top = tp | ${
+                        compactGoto ? `(nextState << ${tpBits})` : "nextState"
+                      };`
+                }
+                stack[sp] = top;
+              } else {
+                tree[tp] = lookahead;
+                tree[tp + 1] = lookaheadSpan;
+                sp += 1;
+                top = tp | (actionLookup << ${tpBits - 1});
+                stack[sp] = top;
+              }`
+                  : `if (actionLookup === ${ACTION_DONE_HEX}) {
                 ${
                   preserveExtras
                     ? `if (prevEnd < stream.length) {
@@ -2933,6 +3266,7 @@ export class JavaScriptBaseCodegen {
               sp += 1;
               top = tp | (actionLookup << ${tpBits - 1});
               stack[sp] = top;`
+              }`
               }
 
               ${
@@ -3053,7 +3387,20 @@ export class JavaScriptBaseCodegen {
               }
 
               sp += 1;
-              top = tp | ${compactGoto ? `(nextState << ${tpBits})` : "nextState"};
+              ${
+                canFuseGotoUnitReduce
+                  ? `if ((nextState & 0xffff) !== 0) {
+                tp += 2;
+                tree[tp] = nextState & 0xffff;
+                tree[tp + 1] = rtop;
+                top = tp | (nextState & ${~tpMask});
+              } else {
+                top = tp | nextState;
+              }`
+                  : `top = tp | ${
+                      compactGoto ? `(nextState << ${tpBits})` : "nextState"
+                    };`
+              }
               stack[sp] = top;
 
               ${debug(
@@ -3065,7 +3412,7 @@ export class JavaScriptBaseCodegen {
             }
 
             tp += 2;
-            if (tp >= tree.length - 1) {
+            if (tp >= tree.length - 6) {
               break;
             }
           }

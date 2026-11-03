@@ -3,7 +3,8 @@ import path from "path";
 import { performance } from "perf_hooks";
 import { fileURLToPath } from "url";
 
-import { parse as pargenParse } from "./generated/parser.js";
+import { parse as pargenParsePreserveWs } from "./generated/parser.js";
+import { parse as pargenParseSkipWs } from "./generated-skipws/parser.js";
 import {
   parseChevrotainCst,
   parseChevrotainNoCst,
@@ -15,6 +16,7 @@ import {
   parseTypeScriptJson,
   parseJson5,
 } from "./competitors.js";
+import { runNativeJsonBenchmarks } from "../../benchmarks/native/index.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "../..");
@@ -61,8 +63,21 @@ const mediumStr = JSON.stringify(
   2
 );
 
+// Synthetic ~1.5 MB JSON document (5,300 package entries, ~265,000 CST nodes)
+const synthEntries = new Array(5300);
+for (let i = 0; i < 5300; i++) {
+  synthEntries[i] =
+    `{"id":${i},"name":"@par-gen/synthetic-pkg-${i}",` +
+    `"version":"1.${i % 20}.${i % 100}",` +
+    `"resolved":"https://registry.npmjs.org/@par-gen/synthetic-pkg-${i}/-/synthetic-pkg-${i}-1.0.0.tgz",` +
+    `"integrity":"sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",` +
+    `"dev":true}`;
+}
+const synthStr = `[\n${synthEntries.join(",\n")}\n]\n`;
+
 const workloads = [
   {
+    key: "small",
     name: "Small JSON (package.json)",
     str: smallPkgStr,
     buf: Buffer.from(smallPkgStr, "utf8"),
@@ -70,6 +85,7 @@ const workloads = [
     iters: 500,
   },
   {
+    key: "medium",
     name: "Medium JSON (60 packages)",
     str: mediumStr,
     buf: Buffer.from(mediumStr, "utf8"),
@@ -77,11 +93,20 @@ const workloads = [
     iters: 50,
   },
   {
+    key: "large",
     name: "Large JSON (package-lock.json)",
     str: lockFileStr,
     buf: Buffer.from(lockFileStr, "utf8"),
     jsExpr: `var a = ${lockFileStr};`,
     iters: 10,
+  },
+  {
+    key: "synth_1_5mb",
+    name: "1.5 MB Synthetic JSON (5,300 packages)",
+    str: synthStr,
+    buf: Buffer.from(synthStr, "utf8"),
+    jsExpr: `var a = ${synthStr};`,
+    iters: 5,
   },
 ];
 
@@ -94,25 +119,36 @@ function median(arr) {
 const ROUNDS = 7;
 
 console.log(
-  "=== Interleaved JSON Benchmark: par-gen vs V8 JSON.parse vs Chevrotain vs Peggy vs Nearley vs ANTLR4 vs Babel vs TypeScript vs JSON5 ===\n"
+  "=== Interleaved JSON Benchmark: @par-gen/json (SkipWS & PreserveWS) vs V8 JSON.parse vs Pure Native (simdjson, sonic-rs, yyjson, serde_json, Zig, Go) vs Pure JS (Chevrotain, Peggy, Nearley, ANTLR4, Acorn, Babel, TS, JSON5) ===\n"
 );
 
+const nativeResultsByWorkload = runNativeJsonBenchmarks(workloads, ROUNDS);
+
 for (const w of workloads) {
+  const slowMaxIters = w.key === "synth_1_5mb" ? 2 : 20;
   const candidates = [
     {
-      name: "par-gen (Buffer)",
-      fn: () => pargenParse(w.buf),
+      name: "@par-gen/json (SkipWS, Buffer)",
+      fn: () => pargenParseSkipWs(w.buf),
     },
     {
-      name: "par-gen (string)",
-      fn: () => pargenParse(w.str),
+      name: "@par-gen/json (SkipWS, string)",
+      fn: () => pargenParseSkipWs(w.str),
     },
     {
-      name: "par-gen (Buffer + TreeCursor)",
-      fn: () => traverseCursor(pargenParse(w.buf)),
+      name: "@par-gen/json (PreserveWS, Buffer)",
+      fn: () => pargenParsePreserveWs(w.buf),
     },
     {
-      name: "V8 JSON.parse (native)",
+      name: "@par-gen/json (PreserveWS, string)",
+      fn: () => pargenParsePreserveWs(w.str),
+    },
+    {
+      name: "@par-gen/json (PreserveWS + TreeCursor)",
+      fn: () => traverseCursor(pargenParsePreserveWs(w.buf)),
+    },
+    {
+      name: "V8 JSON.parse (C++ native)",
       fn: () => JSON.parse(w.str),
     },
     {
@@ -130,12 +166,12 @@ for (const w of workloads) {
     {
       name: "Nearley (v2.20 + moo)",
       fn: () => parseNearley(w.str),
-      maxIters: 20,
+      maxIters: slowMaxIters,
     },
     {
       name: "ANTLR4 (v4.13)",
       fn: () => parseAntlr4(w.str),
-      maxIters: 20,
+      maxIters: slowMaxIters,
     },
     {
       name: "acorn (v8.19)",
@@ -184,14 +220,29 @@ for (const w of workloads) {
   console.log(
     `### ${w.name} (${(w.buf.length / 1024).toFixed(2)} KiB, ${w.iters} iters x ${ROUNDS} rounds)`
   );
-  const baseMs = median(samples.get("par-gen (Buffer)"));
-  for (const c of candidates) {
+  const baseMs = median(samples.get("@par-gen/json (SkipWS, Buffer)"));
+  const baseUs = baseMs * 1000;
+
+  // Print par-gen + V8 JSON.parse first, then Pure Native (Zero N-API), then JS competitors
+  const jsRows = candidates.map((c) => {
     const medMs = median(samples.get(c.name));
+    const medianUs = medMs * 1000;
     const opsPerSec = 1000 / medMs;
     const mbPerSec = (w.buf.length / (1024 * 1024)) * opsPerSec;
-    const ratio = medMs / baseMs;
+    return { name: c.name, medianUs, opsPerSec, mbPerSec };
+  });
+
+  const nativeRows = nativeResultsByWorkload.get(w.key) || [];
+  const allRows = [
+    ...jsRows.slice(0, 6),
+    ...nativeRows,
+    ...jsRows.slice(6),
+  ];
+
+  for (const row of allRows) {
+    const ratio = row.medianUs / baseUs;
     console.log(
-      `  ${c.name.padEnd(34)} | ${(medMs * 1000).toFixed(1).padStart(9)} us | ${opsPerSec.toFixed(0).padStart(8)} ops/s | ${mbPerSec.toFixed(2).padStart(7)} MB/s | ${ratio.toFixed(2)}x`
+      `  ${row.name.padEnd(44)} | ${row.medianUs.toFixed(1).padStart(9)} us | ${row.opsPerSec.toFixed(0).padStart(8)} ops/s | ${row.mbPerSec.toFixed(2).padStart(7)} MB/s | ${ratio.toFixed(2)}x`
     );
   }
   console.log("");

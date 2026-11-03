@@ -1,0 +1,41 @@
+#######################################
+#
+# Initial Tokens
+#
+WS := '( |\n|\r|\t)( |\n|\r|\t)*' @ skip;
+TRUE := 'true';
+FALSE := 'false';
+NULL := 'null';
+CURLY_OPEN := '{';
+CURLY_CLOSE := '}';
+COMMA := ',';
+COLON := ':';
+STRING := '"([^"\\]|\\["\\/bfnrt]|\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])*"';
+BRACKET_OPEN := '\[';
+BRACKET_CLOSE := '\]';
+
+# NUMBER: '-'? INT ('.' [0-9] +)? EXP?
+# INT: '0' | [1-9] [0-9]*
+# EXP: [Ee] [+\-]? INT
+NUMBER := '(-|)(0|[1-9][0-9]*)(\.[0-9][0-9]*|)([Ee]([\-+]|)(0|[1-9][0-9]*)|)';
+
+#######################################
+#
+# Rules
+#
+
+Json := Element;
+
+Element := Value;
+
+Value := Object | Array | STRING | NUMBER | TRUE | FALSE | NULL;
+
+Object := CURLY_OPEN CURLY_CLOSE | CURLY_OPEN Members CURLY_CLOSE;
+
+Members := Member | Members COMMA Member;
+
+Member := STRING COLON Element;
+
+Array := BRACKET_OPEN BRACKET_CLOSE | BRACKET_OPEN Elements BRACKET_CLOSE;
+
+Elements := Element | Elements COMMA Element;

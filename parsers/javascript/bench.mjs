@@ -14,6 +14,7 @@ import { API as TsGoAPI } from "tsgo/sync";
 import { API as TsRsAPI } from "tsrs/sync";
 import { API as TscRsAPI } from "tsc-rs/unstable/sync";
 import { parse, parsePreserveExtras } from "./index.js";
+import { runNativeJsBenchmarks } from "../../benchmarks/native/index.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "../..");
@@ -195,6 +196,7 @@ const largeTsBundle = new Array(80)
 
 const workloads = [
   {
+    key: "small_js",
     name: "Small JS (generator.js)",
     fileName: "bench.js",
     code: smallJsCode,
@@ -204,6 +206,7 @@ const workloads = [
     iters: 500,
   },
   {
+    key: "small_ts",
     name: "Small TS (parser.d.ts)",
     fileName: "bench.d.ts",
     code: smallDtsCode,
@@ -213,6 +216,7 @@ const workloads = [
     iters: 500,
   },
   {
+    key: "med_js",
     name: "Medium JS (hopcroft.js)",
     fileName: "bench.js",
     code: medHopcroftCode,
@@ -222,6 +226,7 @@ const workloads = [
     iters: 150,
   },
   {
+    key: "med_large_js",
     name: "Medium-Large JS (parser.js)",
     fileName: "bench.js",
     code: medParserCode,
@@ -231,6 +236,7 @@ const workloads = [
     iters: 30,
   },
   {
+    key: "large_ts",
     name: "Large TS Corpus (80x modules)",
     fileName: "bench.ts",
     code: largeTsBundle,
@@ -240,6 +246,7 @@ const workloads = [
     iters: 15,
   },
   {
+    key: "large_js",
     name: "Large JS Bundle (2x codebase)",
     fileName: "bench.js",
     code: largeJsBundle,
@@ -259,8 +266,10 @@ function median(arr) {
 const ROUNDS = 7;
 
 console.log(
-  "=== Interleaved Head-to-Head Benchmark: par-gen vs Native Rust (oxc, swc, tsrs, tsc-rs) vs Native Go (tsgo 7.1, esbuild) vs Pure JS (meriyah, acorn, babel, typescript 5.9) ===\n"
+  "=== Interleaved Head-to-Head Benchmark: par-gen vs Pure Native Zero-NAPI (oxc_parser, swc_ecma_parser, biome_js_parser, esbuild Go) vs N-API/RPC (oxc, swc, tsrs, tsc-rs, tsgo, esbuild) vs Pure JS (meriyah, acorn, babel, typescript 5.9) ===\n"
 );
+
+const nativeResultsByWorkload = runNativeJsBenchmarks(workloads, ROUNDS);
 
 for (const w of workloads) {
   const ts7Harness = createNativeTs7Harness(w.fileName, w.code);
@@ -283,11 +292,11 @@ for (const w of workloads) {
       fn: () => parsePreserveExtras(w.buf),
     },
     {
-      name: "oxc-parser (v0.157, Native Rust)",
+      name: "oxc-parser (v0.157, N-API)",
       fn: () => oxc.parseSync(w.fileName, w.code),
     },
     {
-      name: "@swc/core (v1.16, Native Rust)",
+      name: "@swc/core (v1.16, N-API)",
       fn: () =>
         swc.parseSync(w.code, {
           syntax: w.isTsOnly ? "typescript" : "ecmascript",
@@ -310,7 +319,7 @@ for (const w of workloads) {
       maxIters: 10,
     },
     {
-      name: "esbuild (v0.28, Native Go)",
+      name: "esbuild (v0.28, N-API/IPC)",
       fn: () =>
         esbuild.transformSync(w.code, { loader: w.isTsOnly ? "ts" : "js" }),
     },
@@ -377,13 +386,27 @@ for (const w of workloads) {
       `### ${w.name} (${(w.buf.length / 1024).toFixed(2)} KiB, ${w.iters} iters x ${ROUNDS} rounds)`
     );
     const baseMs = median(samples.get("par-gen (SkipExtras, Buffer)"));
-    for (const c of candidates) {
+    const baseUs = baseMs * 1000;
+
+    const jsRows = candidates.map((c) => {
       const medMs = median(samples.get(c.name));
+      const medianUs = medMs * 1000;
       const opsPerSec = 1000 / medMs;
       const mbPerSec = (w.buf.length / (1024 * 1024)) * opsPerSec;
-      const ratio = medMs / baseMs;
+      return { name: c.name, medianUs, opsPerSec, mbPerSec };
+    });
+
+    const nativeRows = nativeResultsByWorkload.get(w.key) || [];
+    const allRows = [
+      ...jsRows.slice(0, 4),
+      ...nativeRows,
+      ...jsRows.slice(4),
+    ];
+
+    for (const row of allRows) {
+      const ratio = row.medianUs / baseUs;
       console.log(
-        `  ${c.name.padEnd(36)} | ${(medMs * 1000).toFixed(1).padStart(9)} us | ${opsPerSec.toFixed(0).padStart(8)} ops/s | ${mbPerSec.toFixed(2).padStart(7)} MB/s | ${ratio.toFixed(2)}x`
+        `  ${row.name.padEnd(46)} | ${row.medianUs.toFixed(1).padStart(9)} us | ${row.opsPerSec.toFixed(0).padStart(8)} ops/s | ${row.mbPerSec.toFixed(2).padStart(7)} MB/s | ${ratio.toFixed(2)}x`
       );
     }
     console.log("");

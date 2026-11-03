@@ -1,0 +1,32 @@
+[package]
+name = "r11-rust-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+simd-json = "0.19.0"
+sonic-rs = "0.5.10"
+jiter = "0.18.0"
+oxc_allocator = "0.157.0"
+oxc_parser = "0.157.0"
+oxc_span = "0.157.0"
+swc_common = "27.0.0"
+swc_ecma_ast = "30.0.0"
+swc_ecma_parser = "47.0.0"
+biome_js_parser = "=0.5.7"
+biome_js_syntax = "=0.5.7"
+biome_rowan = "=0.5.7"
+biome_diagnostics = "=0.5.7"
+biome_console = "=0.5.7"
+biome_text_size = "=0.5.7"
+biome_text_edit = "=0.5.7"
+biome_unicode_table = "=0.5.7"
+biome_parser = "=0.5.7"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"

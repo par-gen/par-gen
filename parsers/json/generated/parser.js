@@ -87,58 +87,58 @@ const SymbolIds = Object.freeze({
 
 const actionsTable = new Uint16Array(576).fill(0xffff);
 actionsTable[0] = 32; // 'state 0' -> WS -> shift (target=16, len=0)
-actionsTable.fill(320, 1, 4); // 'state 0' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable.fill(33314, 1, 4); // 'state 0' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[4] = 64; // 'state 0' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[8] = 320; // 'state 0' -> STRING -> shift (target=160, len=0)
+actionsTable[8] = 33314; // 'state 0' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[9] = 96; // 'state 0' -> BRACKET_OPEN -> shift (target=48, len=0)
-actionsTable[11] = 320; // 'state 0' -> NUMBER -> shift (target=160, len=0)
-actionsTable.fill(320, 17, 20); // 'state 1' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable[11] = 33314; // 'state 0' -> NUMBER -> shift+reduce (target=17, len=1)
+actionsTable.fill(33314, 17, 20); // 'state 1' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[20] = 64; // 'state 1' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[24] = 320; // 'state 1' -> STRING -> shift (target=160, len=0)
+actionsTable[24] = 33314; // 'state 1' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[25] = 96; // 'state 1' -> BRACKET_OPEN -> shift (target=48, len=0)
-actionsTable[27] = 320; // 'state 1' -> NUMBER -> shift (target=160, len=0)
+actionsTable[27] = 33314; // 'state 1' -> NUMBER -> shift+reduce (target=17, len=1)
 actionsTable[32] = 512; // 'state 2' -> WS -> shift (target=256, len=0)
 actionsTable[37] = 544; // 'state 2' -> CURLY_CLOSE -> shift (target=272, len=0)
 actionsTable[40] = 576; // 'state 2' -> STRING -> shift (target=288, len=0)
 actionsTable[48] = 128; // 'state 3' -> WS -> shift (target=64, len=0)
-actionsTable.fill(320, 49, 52); // 'state 3' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable.fill(33314, 49, 52); // 'state 3' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[52] = 64; // 'state 3' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[56] = 320; // 'state 3' -> STRING -> shift (target=160, len=0)
+actionsTable[56] = 33314; // 'state 3' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[57] = 96; // 'state 3' -> BRACKET_OPEN -> shift (target=48, len=0)
 actionsTable[58] = 672; // 'state 3' -> BRACKET_CLOSE -> shift (target=336, len=0)
-actionsTable[59] = 320; // 'state 3' -> NUMBER -> shift (target=160, len=0)
-actionsTable.fill(320, 65, 68); // 'state 4' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable[59] = 33314; // 'state 3' -> NUMBER -> shift+reduce (target=17, len=1)
+actionsTable.fill(33314, 65, 68); // 'state 4' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[68] = 64; // 'state 4' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[72] = 320; // 'state 4' -> STRING -> shift (target=160, len=0)
+actionsTable[72] = 33314; // 'state 4' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[73] = 96; // 'state 4' -> BRACKET_OPEN -> shift (target=48, len=0)
 actionsTable[74] = 896; // 'state 4' -> BRACKET_CLOSE -> shift (target=448, len=0)
-actionsTable[75] = 320; // 'state 4' -> NUMBER -> shift (target=160, len=0)
+actionsTable[75] = 33314; // 'state 4' -> NUMBER -> shift+reduce (target=17, len=1)
 actionsTable[80] = 960; // 'state 5' -> WS -> shift (target=480, len=0)
 actionsTable[88] = 576; // 'state 5' -> STRING -> shift (target=288, len=0)
 actionsTable[96] = 32; // 'state 6' -> WS -> shift (target=16, len=0)
-actionsTable.fill(320, 97, 100); // 'state 6' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable.fill(33314, 97, 100); // 'state 6' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[100] = 64; // 'state 6' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[104] = 320; // 'state 6' -> STRING -> shift (target=160, len=0)
+actionsTable[104] = 33314; // 'state 6' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[105] = 96; // 'state 6' -> BRACKET_OPEN -> shift (target=48, len=0)
-actionsTable[107] = 320; // 'state 6' -> NUMBER -> shift (target=160, len=0)
+actionsTable[107] = 33314; // 'state 6' -> NUMBER -> shift+reduce (target=17, len=1)
 actionsTable[112] = 32; // 'state 7' -> WS -> shift (target=16, len=0)
-actionsTable.fill(320, 113, 116); // 'state 7' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable.fill(33314, 113, 116); // 'state 7' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[116] = 64; // 'state 7' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[120] = 320; // 'state 7' -> STRING -> shift (target=160, len=0)
+actionsTable[120] = 33314; // 'state 7' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[121] = 96; // 'state 7' -> BRACKET_OPEN -> shift (target=48, len=0)
-actionsTable[123] = 320; // 'state 7' -> NUMBER -> shift (target=160, len=0)
+actionsTable[123] = 33314; // 'state 7' -> NUMBER -> shift+reduce (target=17, len=1)
 actionsTable[128] = 32; // 'state 8' -> WS -> shift (target=16, len=0)
-actionsTable.fill(320, 129, 132); // 'state 8' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable.fill(33314, 129, 132); // 'state 8' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[132] = 64; // 'state 8' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[136] = 320; // 'state 8' -> STRING -> shift (target=160, len=0)
+actionsTable[136] = 33314; // 'state 8' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[137] = 96; // 'state 8' -> BRACKET_OPEN -> shift (target=48, len=0)
-actionsTable[139] = 320; // 'state 8' -> NUMBER -> shift (target=160, len=0)
+actionsTable[139] = 33314; // 'state 8' -> NUMBER -> shift+reduce (target=17, len=1)
 actionsTable[144] = 32; // 'state 9' -> WS -> shift (target=16, len=0)
-actionsTable.fill(320, 145, 148); // 'state 9' -> TRUE..NULL -> shift (target=160, len=0)
+actionsTable.fill(33314, 145, 148); // 'state 9' -> TRUE..NULL -> shift+reduce (target=17, len=1)
 actionsTable[148] = 64; // 'state 9' -> CURLY_OPEN -> shift (target=32, len=0)
-actionsTable[152] = 320; // 'state 9' -> STRING -> shift (target=160, len=0)
+actionsTable[152] = 33314; // 'state 9' -> STRING -> shift+reduce (target=17, len=1)
 actionsTable[153] = 96; // 'state 9' -> BRACKET_OPEN -> shift (target=48, len=0)
-actionsTable[155] = 320; // 'state 9' -> NUMBER -> shift (target=160, len=0)
+actionsTable[155] = 33314; // 'state 9' -> NUMBER -> shift+reduce (target=17, len=1)
 actionsTable[160] = 547; // 'state 10' -> WS -> reduce (target=17, len=1)
 actionsTable.fill(547, 165, 167); // 'state 10' -> CURLY_CLOSE..COMMA -> reduce (target=17, len=1)
 actionsTable[170] = 547; // 'state 10' -> BRACKET_CLOSE -> reduce (target=17, len=1)
@@ -200,40 +200,40 @@ actionsTable.fill(2601, 565, 567); // 'state 35' -> CURLY_CLOSE..COMMA -> reduce
 
 const gotoTable = new Uint32Array(176);
 gotoTable[15] = 738197504; // 'state 11'
-gotoTable[16] = 805306368; // 'state 12'
+gotoTable[16] = 738197775; // 'state 11' (fused reduce Json)
 gotoTable[17] = 872415232; // 'state 13'
-gotoTable[18] = 671088640; // 'state 10'
-gotoTable[21] = 671088640; // 'state 10'
+gotoTable[18] = 872415505; // 'state 13' (fused reduce Value)
+gotoTable[21] = 872415505; // 'state 13' (fused reduce Value)
 gotoTable[33] = 1006632960; // 'state 15'
-gotoTable[34] = 671088640; // 'state 10'
-gotoTable[37] = 671088640; // 'state 10'
+gotoTable[34] = 1006633233; // 'state 15' (fused reduce Value)
+gotoTable[37] = 1006633233; // 'state 15' (fused reduce Value)
 gotoTable[51] = 1275068416; // 'state 19'
-gotoTable[52] = 1342177280; // 'state 20'
-gotoTable[64] = 1476395008; // 'state 22'
+gotoTable[52] = 1275068691; // 'state 19' (fused reduce Members)
+gotoTable[64] = 1543504150; // 'state 23' (fused reduce Elements)
 gotoTable[65] = 872415232; // 'state 13'
-gotoTable[66] = 671088640; // 'state 10'
-gotoTable[69] = 671088640; // 'state 10'
+gotoTable[66] = 872415505; // 'state 13' (fused reduce Value)
+gotoTable[69] = 872415505; // 'state 13' (fused reduce Value)
 gotoTable[70] = 1543503872; // 'state 23'
 gotoTable[81] = 1006632960; // 'state 15'
-gotoTable[82] = 671088640; // 'state 10'
-gotoTable[85] = 671088640; // 'state 10'
+gotoTable[82] = 1006633233; // 'state 15' (fused reduce Value)
+gotoTable[85] = 1006633233; // 'state 15' (fused reduce Value)
 gotoTable[100] = 2080374784; // 'state 31'
 gotoTable[112] = 2147483648; // 'state 32'
 gotoTable[113] = 872415232; // 'state 13'
-gotoTable[114] = 671088640; // 'state 10'
-gotoTable[117] = 671088640; // 'state 10'
+gotoTable[114] = 872415505; // 'state 13' (fused reduce Value)
+gotoTable[117] = 872415505; // 'state 13' (fused reduce Value)
 gotoTable[128] = 2214592512; // 'state 33'
 gotoTable[129] = 872415232; // 'state 13'
-gotoTable[130] = 671088640; // 'state 10'
-gotoTable[133] = 671088640; // 'state 10'
+gotoTable[130] = 872415505; // 'state 13' (fused reduce Value)
+gotoTable[133] = 872415505; // 'state 13' (fused reduce Value)
 gotoTable[144] = 2281701376; // 'state 34'
 gotoTable[145] = 872415232; // 'state 13'
-gotoTable[146] = 671088640; // 'state 10'
-gotoTable[149] = 671088640; // 'state 10'
+gotoTable[146] = 872415505; // 'state 13' (fused reduce Value)
+gotoTable[149] = 872415505; // 'state 13' (fused reduce Value)
 gotoTable[160] = 2348810240; // 'state 35'
 gotoTable[161] = 872415232; // 'state 13'
-gotoTable[162] = 671088640; // 'state 10'
-gotoTable[165] = 671088640; // 'state 10'
+gotoTable[162] = 872415505; // 'state 13' (fused reduce Value)
+gotoTable[165] = 872415505; // 'state 13' (fused reduce Value)
 
 const nextToken = nextTokenInitial;
 
@@ -905,12 +905,38 @@ function parseLarge(stream) {
         nextT.set(stackTps);
         stackTps = nextT;
       }
-      tree[tp] = lookahead;
-      tree[tp + 1] = lookaheadEnd;
-      sp += 1;
-      topState = actionLookup >>> 1;
-      stackStates[sp] = topState;
-      stackTps[sp] = tp;
+      if (actionLookup >= 0x8000) {
+        if (tp + 6 >= treeCap) {
+          treeCap <<= 1;
+          const nextTree = new Uint32Array(treeCap);
+          nextTree.set(tree);
+          tree = nextTree;
+        }
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        const word0 = (actionLookup & 0x7fff) >>> 1;
+        const rtopTp = stackTps[sp];
+        tp += 2;
+        tree[tp] = word0;
+        tree[tp + 1] = rtopTp;
+        const rawNextState = goto[currentState + (word0 & 0xff)];
+        if ((rawNextState & 0xffff) !== 0) {
+          tp += 2;
+          tree[tp] = rawNextState & 0xffff;
+          tree[tp + 1] = rtopTp;
+        }
+        topState = rawNextState >>> 22;
+        sp += 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+      } else {
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        sp += 1;
+        topState = actionLookup >>> 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+      }
       const res = nextToken(stream, lookaheadEnd);
       lookahead = res.state;
       lookaheadStart = res.start;
@@ -933,6 +959,11 @@ function parseLarge(stream) {
       tree[tp] = word0;
       tree[tp + 1] = rtopTp;
       const rawNextState = goto[rtopState + (word0 & 0xff)];
+      if ((rawNextState & 0xffff) !== 0) {
+        tp += 2;
+        tree[tp] = rawNextState & 0xffff;
+        tree[tp + 1] = rtopTp;
+      }
       topState = rawNextState >>> 22;
       sp += 1;
       if (sp >= stackCap) {
@@ -948,7 +979,7 @@ function parseLarge(stream) {
       stackTps[sp] = tp;
     }
     tp += 2;
-    if (tp >= treeCap - 2) {
+    if (tp >= treeCap - 6) {
       treeCap <<= 1;
       const nextTree = new Uint32Array(treeCap);
       nextTree.set(tree);
@@ -999,17 +1030,35 @@ function parse(input) {
       const actionLookup = actions[currentState + lookahead];
       if ((actionLookup & 1) === 0) {
         // shift
-        if (actionLookup === 0xfffe) {
-          tree[1] = tp - 2;
-          return new CstNode(stream, tree, tp - 2);
+        if (actionLookup >= 0x8000) {
+          if (actionLookup === 0xfffe) {
+            tree[1] = tp - 2;
+            return new CstNode(stream, tree, tp - 2);
+          }
+          tree[tp] = lookahead;
+          tree[tp + 1] = lookaheadSpan;
+          const word0 = (actionLookup & 0x7fff) >>> 1;
+          tp += 2;
+          tree[tp] = word0;
+          tree[tp + 1] = top;
+          const nextState = goto[currentState + (word0 & 0xff)];
+          sp += 1;
+          if ((nextState & 0xffff) !== 0) {
+            tp += 2;
+            tree[tp] = nextState & 0xffff;
+            tree[tp + 1] = top;
+            top = tp | (nextState & -4194304);
+          } else {
+            top = tp | nextState;
+          }
+          stack[sp] = top;
+        } else {
+          tree[tp] = lookahead;
+          tree[tp + 1] = lookaheadSpan;
+          sp += 1;
+          top = tp | (actionLookup << 21);
+          stack[sp] = top;
         }
-
-        tree[tp] = lookahead; // name (and nChildren = 0)
-        tree[tp + 1] = lookaheadSpan;
-
-        sp += 1;
-        top = tp | (actionLookup << 21);
-        stack[sp] = top;
 
         const res = nextToken(stream, lookaheadSpan & 0x3fffff);
         lookahead = res.state;
@@ -1036,12 +1085,19 @@ function parse(input) {
         tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
 
         sp += 1;
-        top = tp | nextState;
+        if ((nextState & 0xffff) !== 0) {
+          tp += 2;
+          tree[tp] = nextState & 0xffff;
+          tree[tp + 1] = rtop;
+          top = tp | (nextState & -4194304);
+        } else {
+          top = tp | nextState;
+        }
         stack[sp] = top;
       }
 
       tp += 2;
-      if (tp >= tree.length - 1) {
+      if (tp >= tree.length - 6) {
         break;
       }
     }
