@@ -47,10 +47,6 @@ cli
     "--scanner",
     "Path to an external scanner overrides module for Tree-sitter grammars"
   )
-  .option(
-    "--max-states",
-    "Maximum LR state budget when compiling a Tree-sitter grammar"
-  )
   .example("codegen ./json.pargen ./generated")
   .example("codegen ./grammar.json ./generated --preserve-extras")
   .action(
@@ -64,8 +60,7 @@ cli
      *   skip?: string,
      *   scanner?: string,
      *   "from-treesitter"?: boolean,
-     *   "preserve-extras"?: boolean,
-     *   "max-states"?: number | string
+     *   "preserve-extras"?: boolean
      * }} opts
      */
     async (grammarFile, targetDirectory, opts) => {
@@ -93,12 +88,6 @@ cli
       }
       if (opts.scanner) {
         execOptions.scanner = String(opts.scanner);
-      }
-      if (opts["max-states"] !== undefined) {
-        const parsedMaxStates = Number(opts["max-states"]);
-        if (!Number.isNaN(parsedMaxStates)) {
-          execOptions.maxStates = parsedMaxStates;
-        }
       }
 
       if (Object.keys(execOptions).length > 0) {

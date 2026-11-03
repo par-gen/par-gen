@@ -1,4 +1,4 @@
-import { DFA, fromNFA, minimize } from "@par-gen/dfa";
+import { DFA, fromNFA, minimize, partitionMatrixColumns } from "@par-gen/dfa";
 import { EOF, ERROR, parse } from "@par-gen/grammar";
 import {
   Epsilon,
@@ -328,58 +328,12 @@ export function computeEquivalenceClasses(data) {
     }
   }
 
-  const rawClassMap = new Uint8Array(256);
-  /** @type {number[]} */
-  const rawClassRep = [];
-  /** @type {number[]} */
-  const rawClassCount = [];
-  let numClasses = 0;
-  let lastMatchedC = 0;
-
-  for (let b = 0; b < 256; b++) {
-    let matchedC = -1;
-    if (numClasses > 0) {
-      const rep0 = rawClassRep[lastMatchedC];
-      let eq0 = true;
-      for (let r = 0; r < numTransRows; r++) {
-        const rowOffset = r * 256;
-        if (dense[rowOffset + b] !== dense[rowOffset + rep0]) {
-          eq0 = false;
-          break;
-        }
-      }
-      if (eq0) {
-        matchedC = lastMatchedC;
-      } else {
-        for (let c = 0; c < numClasses; c++) {
-          if (c === lastMatchedC) {
-            continue;
-          }
-          const rep = rawClassRep[c];
-          let eq = true;
-          for (let r = 0; r < numTransRows; r++) {
-            const rowOffset = r * 256;
-            if (dense[rowOffset + b] !== dense[rowOffset + rep]) {
-              eq = false;
-              break;
-            }
-          }
-          if (eq) {
-            matchedC = c;
-            break;
-          }
-        }
-      }
-    }
-    if (matchedC === -1) {
-      matchedC = numClasses++;
-      rawClassRep.push(b);
-      rawClassCount.push(0);
-    }
-    rawClassMap[b] = matchedC;
-    rawClassCount[matchedC]++;
-    lastMatchedC = matchedC;
-  }
+  const {
+    colToClass: rawClassMap,
+    classCol: rawClassRep,
+    classCount: rawClassCount,
+    numClasses,
+  } = partitionMatrixColumns(dense, numTransRows, 256);
 
   let maxCountClass = 0;
   for (let c = 1; c < numClasses; c++) {

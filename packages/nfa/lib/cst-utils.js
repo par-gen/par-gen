@@ -24,19 +24,10 @@ export function getSymbolId(name) {
   return id;
 }
 
-export const SYM_CHARACTER = getSymbolId("CHARACTER");
-export const SYM_HEX_PREFIX = getSymbolId("HEX_PREFIX");
-export const SYM_HEX_NUMBER = getSymbolId("HEX_NUMBER");
 export const SYM_ESCAPED_CHARACTER = getSymbolId("ESCAPED_CHARACTER");
 export const SYM_CARET = getSymbolId("CARET");
-export const SYM_DASH = getSymbolId("DASH");
 export const SYM_DOT = getSymbolId("DOT");
-export const SYM_UNION = getSymbolId("UNION");
-export const SYM_PAREN_OPEN = getSymbolId("PAREN_OPEN");
-export const SYM_PAREN_CLOSE = getSymbolId("PAREN_CLOSE");
 export const SYM_QUANTIFIER = getSymbolId("QUANTIFIER");
-export const SYM_BRACKET_OPEN = getSymbolId("BRACKET_OPEN");
-export const SYM_BRACKET_CLOSE = getSymbolId("BRACKET_CLOSE");
 export const SYM_REGEXP = getSymbolId("RegExp");
 export const SYM_EXPRESSION = getSymbolId("Expression");
 export const SYM_UNION_RULE = getSymbolId("Union");
@@ -59,7 +50,6 @@ export const CHILD_COUNT_SHIFT = 8;
 export const PTR_MASK = 0xfffff;
 export const LEAF_END_MASK = 0x3fffff;
 export const LEAF_LEN_SHIFT = 22;
-export const DELTA_START_MASK = 0x3ff;
 
 /**
  * @param {Uint32Array} rawTree
@@ -113,19 +103,6 @@ export function firstLeafPtr(rawTree, ptr) {
 /**
  * @param {Uint32Array} rawTree
  * @param {number} ptr
- * @returns {number}
- */
-export function lastLeafPtr(rawTree, ptr) {
-  let p = ptr;
-  while ((rawTree[p] >>> CHILD_COUNT_SHIFT) > 0) {
-    p -= 2;
-  }
-  return p;
-}
-
-/**
- * @param {Uint32Array} rawTree
- * @param {number} ptr
  * @returns {number[]}
  */
 export function getChildren(rawTree, ptr) {
@@ -155,40 +132,7 @@ export function leafStart(rawTree, leafPtr) {
   while (q >= 2 && (rawTree[q] >>> CHILD_COUNT_SHIFT) > 0) {
     q -= 2;
   }
-  const prevEnd = q >= 2 ? rawTree[q + 1] & LEAF_END_MASK : 0;
-  const span = rawTree[leafPtr + 1];
-  const end = span & LEAF_END_MASK;
-  return (
-    prevEnd +
-    (((end - prevEnd) - (span >>> LEAF_LEN_SHIFT)) & DELTA_START_MASK)
-  );
-}
-
-/**
- * @param {Uint32Array} rawTree
- * @param {number} leafPtr
- * @returns {number}
- */
-export function leafEnd(rawTree, leafPtr) {
-  return rawTree[leafPtr + 1] & LEAF_END_MASK;
-}
-
-/**
- * @param {Uint32Array} rawTree
- * @param {number} ptr
- * @returns {number}
- */
-export function nodeStart(rawTree, ptr) {
-  return leafStart(rawTree, firstLeafPtr(rawTree, ptr));
-}
-
-/**
- * @param {Uint32Array} rawTree
- * @param {number} ptr
- * @returns {number}
- */
-export function nodeEnd(rawTree, ptr) {
-  return leafEnd(rawTree, lastLeafPtr(rawTree, ptr));
+  return q >= 2 ? rawTree[q + 1] & LEAF_END_MASK : 0;
 }
 
 /**

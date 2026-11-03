@@ -45,7 +45,6 @@ const log = debug("par-gen:parser");
  * @property {Rule[]} rules
  * @property {Set<Item>[]} states
  * @property {string[]} parserSymbols
- * @property {number[]} parserSymbolIds
  * @property {string[]} grammarRuleNames
  * @property {Map<Set<Item>, Map<string, Shift | Reduce | Done>>} actions
  * @property {Map<Set<Item>, Map<string, Set<Item>>>} goto
@@ -698,10 +697,6 @@ export function generate(grammar, options) {
       }
     }
 
-    const allTokenNames = Object.values(lexers).flatMap(
-      (data) => data.tokenNames
-    );
-
     const preserveExtras = Boolean(
       /** @type {*} */ (effectiveOptions)?.preserveExtras
     );
@@ -751,14 +746,6 @@ export function generate(grammar, options) {
         return idx === -1 ? undefined : idx;
       });
     }
-
-    const parserSymbolIds = parserSymbols.map((symbol) => {
-      let index = allTokenNames.indexOf(symbol);
-      if (index === -1) {
-        // lookup from rules?
-      }
-      return index;
-    });
 
     /** @type {number | undefined} */
     let wordTokenId;
@@ -819,7 +806,6 @@ export function generate(grammar, options) {
       rules,
       states: Array.from(states),
       parserSymbols,
-      parserSymbolIds,
       grammarRuleNames: rules.map((rule) => rule.name),
       actions,
       goto,
@@ -1079,53 +1065,27 @@ function computeSequenceFirsts(
  * @param {Rule[]} rules
  * @param {Item[]} items
  * @param {Map<string, Set<Token>>} follows
- * @param {Map<string, Set<Token>>=} firsts
+ * @param {Map<string, Set<Token>>} firsts
  * @param {Set<string>=} nullable
  * @returns {Set<Item>}
  */
 export function firstItemSet(rule, rules, items, follows, firsts, nullable) {
   const effectiveNullable = nullable ?? calculateNullable(rules);
   const initialLookaheads = Array.from(follows.get(rule.name) ?? []);
-
-  if (firsts && initialLookaheads.length > 0) {
-    const itemSet = initialLookaheads.flatMap((token) =>
-      createItemClosure(
-        {
-          name: rule.name,
-          tokens: rule.symbols,
-          marker: 0,
-          lookahead: token.name,
-          semanticAction: rule.actions.find((action) => action.at === 0)?.code,
-        },
-        rules,
-        firsts,
-        effectiveNullable
-      )
-    );
-    return new Set(itemSet.map((item) => getItem(item, items)));
-  }
-
-  const closure = createItemClosure(
-    {
-      name: rule.name,
-      tokens: rule.symbols,
-      marker: 0,
-      lookahead: "dummy",
-      semanticAction: undefined,
-    },
-    rules
-  );
-
-  /** @type {Item[]} */
-  const itemSet = closure.flatMap((item) =>
-    Array.from(/** @type {Set<Token>} */ (follows.get(item.name))).map(
-      (token) => ({
-        ...item,
+  const itemSet = initialLookaheads.flatMap((token) =>
+    createItemClosure(
+      {
+        name: rule.name,
+        tokens: rule.symbols,
+        marker: 0,
         lookahead: token.name,
-      })
+        semanticAction: rule.actions.find((action) => action.at === 0)?.code,
+      },
+      rules,
+      firsts,
+      effectiveNullable
     )
   );
-
   return new Set(itemSet.map((item) => getItem(item, items)));
 }
 
@@ -1293,12 +1253,12 @@ function getNonTermLookaheadClosure(
  * @param {Set<Item>} itemSet
  * @param {Rule[]} rules
  * @param {Item[]} items
- * @param {Map<string, Set<Token>>} follows
- * @param {Map<string, Set<Token>>=} firsts
+ * @param {Map<string, Set<Token>>} _follows
+ * @param {Map<string, Set<Token>>} firsts
  * @param {Set<string>=} nullable
  * @returns {Map<String, Set<Item>>}
  */
-export function nextItemSets(itemSet, rules, items, follows, firsts, nullable) {
+export function nextItemSets(itemSet, rules, items, _follows, firsts, nullable) {
   const effectiveNullable = nullable ?? calculateNullable(rules);
   /** @type {Map<string, Set<Item>>} */
   const nextItemSets = new Map();
@@ -1313,157 +1273,70 @@ export function nextItemSets(itemSet, rules, items, follows, firsts, nullable) {
     nextItemSets.set(token, set);
   }
 
-  if (firsts) {
-    const { rulesNames, rulesByName } = getRulesMeta(rules);
-    return new Map(
-      Array.from(nextItemSets.entries()).map(([token, kernelItems]) => {
-        /** @type {Set<Item>} */
-        const resultSet = new Set();
-        /** @type {Set<string>} */
-        const expandedPairs = new Set();
-        for (const item of kernelItems) {
-          let shifted = /** @type {*} */ (item)._shifted;
-          if (!shifted) {
-            shifted = getItem(
-              {
-                ...item,
-                marker: Math.min(item.marker + 1, item.tokens.length),
-              },
-              items
+  const { rulesNames, rulesByName } = getRulesMeta(rules);
+  return new Map(
+    Array.from(nextItemSets.entries()).map(([token, kernelItems]) => {
+      /** @type {Set<Item>} */
+      const resultSet = new Set();
+      /** @type {Set<string>} */
+      const expandedPairs = new Set();
+      for (const item of kernelItems) {
+        let shifted = /** @type {*} */ (item)._shifted;
+        if (!shifted) {
+          shifted = getItem(
+            {
+              ...item,
+              marker: Math.min(item.marker + 1, item.tokens.length),
+            },
+            items
+          );
+          /** @type {*} */ (item)._shifted = shifted;
+        }
+        resultSet.add(shifted);
+        if (shifted.marker < shifted.tokens.length) {
+          const nextSym = shifted.tokens[shifted.marker];
+          if (rulesByName.has(nextSym)) {
+            const lookaheads = computeSequenceFirsts(
+              shifted.tokens,
+              shifted.marker + 1,
+              shifted.lookahead,
+              firsts,
+              effectiveNullable,
+              rulesNames
             );
-            /** @type {*} */ (item)._shifted = shifted;
-          }
-          resultSet.add(shifted);
-          if (shifted.marker < shifted.tokens.length) {
-            const nextSym = shifted.tokens[shifted.marker];
-            if (rulesByName.has(nextSym)) {
-              const lookaheads = computeSequenceFirsts(
-                shifted.tokens,
-                shifted.marker + 1,
-                shifted.lookahead,
-                firsts,
-                effectiveNullable,
-                rulesNames
-              );
-              for (const la of lookaheads) {
-                const pairKey = `${nextSym}\0${la}`;
-                if (!expandedPairs.has(pairKey)) {
-                  expandedPairs.add(pairKey);
-                  const subClosure = getNonTermLookaheadClosure(
-                    nextSym,
-                    la,
-                    rules,
-                    firsts,
-                    effectiveNullable,
-                    items
-                  );
-                  for (const subItem of subClosure) {
-                    resultSet.add(subItem);
-                  }
+            for (const la of lookaheads) {
+              const pairKey = `${nextSym}\0${la}`;
+              if (!expandedPairs.has(pairKey)) {
+                expandedPairs.add(pairKey);
+                const subClosure = getNonTermLookaheadClosure(
+                  nextSym,
+                  la,
+                  rules,
+                  firsts,
+                  effectiveNullable,
+                  items
+                );
+                for (const subItem of subClosure) {
+                  resultSet.add(subItem);
                 }
               }
             }
           }
         }
-        return [token, resultSet];
-      })
-    );
-  }
-
-  const closedMap = new Map(
-    Array.from(nextItemSets.entries()).map(([token, itemSet]) => [
-      token,
-      Array.from(itemSet.values()).flatMap((item) => {
-        return createItemClosure(
-          getItem(
-            { ...item, marker: Math.min(item.marker + 1, item.tokens.length) },
-            items
-          ),
-          rules
-        );
-      }),
-    ])
-  );
-
-  /** @type {Map<string, Item[]>} */
-  const lookaheadNextItemsSets = new Map(
-    Array.from(closedMap.entries()).map(([token, closure]) => [
-      token,
-      closure.flatMap((item) =>
-        Array.from(/** @type {Set<Token>} */ (follows.get(item.name))).map(
-          (token) => ({
-            ...item,
-            lookahead: token.name,
-          })
-        )
-      ),
-    ])
-  );
-
-  return new Map(
-    Array.from(lookaheadNextItemsSets.entries()).map(([token, itemSet]) => [
-      token,
-      new Set(itemSet.map((item) => getItem(item, items))),
-    ])
+      }
+      return [token, resultSet];
+    })
   );
 }
 
 /**
  * @param {Item} item
  * @param {Rule[]} rules
- * @param {Map<string, Set<Token>>=} firsts
+ * @param {Map<string, Set<Token>>} firsts
  * @param {Set<string>=} nullable
  * @returns {Item[]}
  */
 export function createItemClosure(item, rules, firsts, nullable) {
-  if (!firsts || item.lookahead === "dummy") {
-    /** @type {Item[]} */
-    const closure = [];
-
-    /** @type {Item[]} */
-    const open = [item];
-    while (open.length > 0) {
-      const item = open.shift();
-      if (!item) {
-        continue;
-      }
-      // add open item to closure
-      closure.push(item);
-
-      if (item.marker >= item.tokens.length) {
-        continue;
-      }
-
-      const token = item.tokens[item.marker];
-      if (open.some((item) => item.name === token)) {
-        // already processing this token? => stop
-        continue;
-      }
-
-      if (closure.some((item) => item.name === token && item.marker === 0)) {
-        // already processed this token? => stop
-        continue;
-      }
-
-      // is non-terminal?
-      const nextRules = rules.filter((rule) => rule.name === token);
-      if (nextRules.length === 0) {
-        continue;
-      }
-
-      open.push(
-        ...nextRules.map((rule) => ({
-          name: rule.name,
-          tokens: rule.symbols,
-          marker: 0,
-          lookahead: "dummy",
-        }))
-      );
-    }
-
-    return closure;
-  }
-
   const effectiveNullable = nullable ?? calculateNullable(rules);
   const { rulesNames, rulesByName } = getRulesMeta(rules);
   if (item.marker >= item.tokens.length) {
@@ -2207,7 +2080,6 @@ function calculateStatesAndTransitionTable(
   /** @type {Map<number, ItemState[]>} */
   const knownStatesBySize = new Map([[initialSet.size, [initialSet]]]);
   const useOnTheFlyCoreMerge = rules.length > 64;
-  const hasEmptyRule = rules.some((r) => r.symbols.length === 0);
   const { rulesNames: metaRulesNames, rulesByName: metaRulesByName } =
     getRulesMeta(rules);
   /** @type {Map<string, ItemState[]>} */
@@ -2263,6 +2135,40 @@ function calculateStatesAndTransitionTable(
     return resultSet;
   };
 
+  /**
+   * @param {ItemState} candidate
+   * @param {Item[]} shiftedKernel
+   * @param {ItemState} shiftedKernelSet
+   * @returns {boolean}
+   */
+  const tryMergeIntoCandidate = (
+    candidate,
+    shiftedKernel,
+    shiftedKernelSet
+  ) => {
+    /** @type {Item[]} */
+    const missing = [];
+    for (let i = 0; i < shiftedKernel.length; i++) {
+      if (!candidate.has(shiftedKernel[i])) {
+        missing.push(shiftedKernel[i]);
+      }
+    }
+    if (missing.length === 0) {
+      return true;
+    }
+    if (!canMergeCoreGroup([candidate, shiftedKernelSet], precContext)) {
+      return false;
+    }
+    for (const it of closeShiftedKernel(missing)) {
+      candidate.add(it);
+    }
+    if (!queuedSet.has(candidate)) {
+      queuedSet.add(candidate);
+      newItemSets.push(candidate);
+    }
+    return true;
+  };
+
   while (newItemSets.length > 0) {
     const fromItemSet = newItemSets.shift();
     if (!fromItemSet) {
@@ -2274,7 +2180,7 @@ function calculateStatesAndTransitionTable(
       itemSets.push(fromItemSet);
     }
 
-    if (useOnTheFlyCoreMerge && !hasEmptyRule) {
+    if (useOnTheFlyCoreMerge) {
       let stateTransitions = transitions.get(fromItemSet);
       if (!stateTransitions) {
         stateTransitions = new Map();
@@ -2308,34 +2214,13 @@ function calculateStatesAndTransitionTable(
       }
 
       for (const [token, shiftedKernel] of kernelByToken.entries()) {
+        const shiftedKernelSet = new Set(shiftedKernel);
         const existingTarget = stateTransitions.get(token);
-        if (existingTarget) {
-          /** @type {Item[]} */
-          const missingInExisting = [];
-          for (let i = 0; i < shiftedKernel.length; i++) {
-            if (!existingTarget.has(shiftedKernel[i])) {
-              missingInExisting.push(shiftedKernel[i]);
-            }
-          }
-          if (missingInExisting.length === 0) {
-            continue;
-          }
-          if (
-            canMergeCoreGroup(
-              [existingTarget, new Set(shiftedKernel)],
-              precContext
-            )
-          ) {
-            const deltaSet = closeShiftedKernel(missingInExisting);
-            for (const it of deltaSet) {
-              existingTarget.add(it);
-            }
-            if (!queuedSet.has(existingTarget)) {
-              queuedSet.add(existingTarget);
-              newItemSets.push(existingTarget);
-            }
-            continue;
-          }
+        if (
+          existingTarget &&
+          tryMergeIntoCandidate(existingTarget, shiftedKernel, shiftedKernelSet)
+        ) {
+          continue;
         }
 
         /** @type {Set<string>} */
@@ -2346,37 +2231,9 @@ function calculateStatesAndTransitionTable(
         const coreSig = Array.from(coreKeySet).sort().join("\n");
         let coreBucket = knownStatesByCore.get(coreSig);
 
-        /** @type {ItemState | undefined} */
-        let mergedTarget;
-        if (coreBucket) {
-          const shiftedKernelSet = new Set(shiftedKernel);
-          for (let c = 0; c < coreBucket.length; c++) {
-            const candidate = coreBucket[c];
-            /** @type {Item[]} */
-            const missingInCand = [];
-            for (let i = 0; i < shiftedKernel.length; i++) {
-              if (!candidate.has(shiftedKernel[i])) {
-                missingInCand.push(shiftedKernel[i]);
-              }
-            }
-            if (missingInCand.length === 0) {
-              mergedTarget = candidate;
-              break;
-            }
-            if (canMergeCoreGroup([candidate, shiftedKernelSet], precContext)) {
-              const deltaSet = closeShiftedKernel(missingInCand);
-              for (const it of deltaSet) {
-                candidate.add(it);
-              }
-              mergedTarget = candidate;
-              if (!queuedSet.has(candidate)) {
-                queuedSet.add(candidate);
-                newItemSets.push(candidate);
-              }
-              break;
-            }
-          }
-        }
+        const mergedTarget = coreBucket?.find((candidate) =>
+          tryMergeIntoCandidate(candidate, shiftedKernel, shiftedKernelSet)
+        );
         if (mergedTarget) {
           stateTransitions.set(token, mergedTarget);
         } else {
@@ -2410,78 +2267,6 @@ function calculateStatesAndTransitionTable(
       if (!stateTransitions) {
         stateTransitions = new Map();
         transitions.set(fromItemSet, stateTransitions);
-      }
-
-      if (useOnTheFlyCoreMerge) {
-        const existingTarget = stateTransitions.get(token);
-        if (existingTarget) {
-          let allPresent = true;
-          for (const it of toItemSet) {
-            if (!existingTarget.has(it)) {
-              allPresent = false;
-              break;
-            }
-          }
-          if (allPresent) {
-            continue;
-          }
-          if (canMergeCoreGroup([existingTarget, toItemSet], precContext)) {
-            for (const it of toItemSet) {
-              existingTarget.add(it);
-            }
-            if (!queuedSet.has(existingTarget)) {
-              queuedSet.add(existingTarget);
-              newItemSets.push(existingTarget);
-            }
-            continue;
-          }
-        }
-
-        const coreSig = getCoreSignature(toItemSet);
-        let coreBucket = knownStatesByCore.get(coreSig);
-        /** @type {ItemState | undefined} */
-        let mergedTarget;
-        if (coreBucket) {
-          for (const candidate of coreBucket) {
-            let isSubset = true;
-            for (const it of toItemSet) {
-              if (!candidate.has(it)) {
-                isSubset = false;
-                break;
-              }
-            }
-            if (isSubset) {
-              mergedTarget = candidate;
-              break;
-            }
-            if (canMergeCoreGroup([candidate, toItemSet], precContext)) {
-              for (const it of toItemSet) {
-                candidate.add(it);
-              }
-              mergedTarget = candidate;
-              if (!queuedSet.has(candidate)) {
-                queuedSet.add(candidate);
-                newItemSets.push(candidate);
-              }
-              break;
-            }
-          }
-        }
-        if (mergedTarget) {
-          stateTransitions.set(token, mergedTarget);
-        } else {
-          stateTransitions.set(token, toItemSet);
-          if (!coreBucket) {
-            coreBucket = [];
-            knownStatesByCore.set(coreSig, coreBucket);
-          }
-          coreBucket.push(toItemSet);
-          recordedSet.add(toItemSet);
-          itemSets.push(toItemSet);
-          queuedSet.add(toItemSet);
-          newItemSets.push(toItemSet);
-        }
-        continue;
       }
 
       const sameSizeBucket = knownStatesBySize.get(toItemSet.size);

@@ -212,7 +212,6 @@ describe("execute", () => {
         fromTreesitter: true,
         preserveExtras: true,
         scanner: scannerPath,
-        maxStates: 256,
       });
 
       const parse = await loadGeneratedEsmParser(dir);

@@ -20,7 +20,6 @@ import { pathToFileURL } from "url";
  *   fromTreesitter?: boolean,
  *   preserveExtras?: boolean,
  *   scanner?: string,
- *   maxStates?: number,
  *   externals?: Record<string, *>
  * }} ExecuteOptions
  */

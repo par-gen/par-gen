@@ -159,7 +159,7 @@ describe("cli", () => {
     });
   });
 
-  it("should pass --from-treesitter, --preserve-extras, --scanner, and --max-states options", async () => {
+  it("should pass --from-treesitter, --preserve-extras, and --scanner options", async () => {
     const codegen = {};
     const createGeneratorMock = jest.fn().mockReturnValue(codegen);
     const executeMock = jest.fn();
@@ -180,8 +180,6 @@ describe("cli", () => {
           "--preserve-extras",
           "--scanner",
           "./scanner.mjs",
-          "--max-states",
-          "512",
         ],
         exit: processExit,
       },
@@ -194,7 +192,6 @@ describe("cli", () => {
       fromTreesitter: true,
       preserveExtras: true,
       scanner: "./scanner.mjs",
-      maxStates: 512,
     });
   });
 });

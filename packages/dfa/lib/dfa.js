@@ -109,97 +109,57 @@ export class DFA {
   }
 
   /**
+   * @returns {STATE | undefined}
+   */
+  _findErrorState() {
+    const d = this.description;
+    for (const [from, transitions] of d.transitions.entries()) {
+      if (
+        transitions.size > 0 &&
+        Array.from(transitions.values()).every((to) => to === from) &&
+        !d.finals.includes(from)
+      ) {
+        return from;
+      }
+    }
+    return undefined;
+  }
+
+  /**
    * @param {(symbol: SYMBOL) => number} symbolMapper
    * @returns {(input: Uint8Array) => boolean}
    */
   compile(symbolMapper) {
     const d = this.description;
-
     const columns = 256;
+    const stateIndexMap = new Map(d.states.map((s, i) => [s, i * columns]));
+    const start = /** @type {number} */ (stateIndexMap.get(d.start));
+    const finals = new Set(
+      d.finals.map((f) => /** @type {number} */ (stateIndexMap.get(f)))
+    );
+    const errorState = this._findErrorState();
+    const error =
+      errorState !== undefined
+        ? /** @type {number} */ (stateIndexMap.get(errorState))
+        : 0xffff;
 
-    /** @type {Map<STATE, number>} */
-    const stateIndexMap = new Map();
-    for (let i = 0; i < d.states.length; i++) {
-      stateIndexMap.set(d.states[i], i);
+    const table = new Uint16Array(columns * d.states.length).fill(error);
+    for (const [from, transition] of d.transitions.entries()) {
+      const fromOffset = /** @type {number} */ (stateIndexMap.get(from));
+      for (const [symbol, to] of transition.entries()) {
+        table[fromOffset + symbolMapper(symbol)] = /** @type {number} */ (
+          stateIndexMap.get(to)
+        );
+      }
     }
 
-    const start = /** @type {number} */ (stateIndexMap.get(d.start)) * columns;
-
-    const finals = d.finals.map(
-      (final) => /** @type {number} */ (stateIndexMap.get(final)) * columns
-    );
-
-    const transitions = Array.from(d.transitions.entries()).map(
-      ([from, transition]) =>
-        /** @type {[number, [number, number][]]} */ ([
-          /** @type {number} */ (stateIndexMap.get(from)),
-          /** @type {[number, number][]} */ Array.from(
-            transition.entries()
-          ).map(([symbol, to]) => [
-            symbolMapper(symbol),
-            /** @type {number} */ (stateIndexMap.get(to)),
-          ]),
-        ])
-    );
-
-    const errorState = transitions
-      .filter(([from, transition]) => transition.every(([, to]) => from === to))
-      .map(([state]) => state)
-      .find((state) => !finals.includes(state));
-
-    const error = errorState ?? -1;
-
-    const tableEntries = transitions
-      .flatMap(([from, transition]) =>
-        transition.map(([symbol, to]) => ({
-          index: symbol + from * columns,
-          value: to * columns,
-        }))
-      )
-      .sort((a, b) => a.index - b.index);
-
-    /** @type {string[]} */
-    const tableLines = [];
-    for (let i = 0; i < tableEntries.length; ) {
-      const first = tableEntries[i];
-      let j = i + 1;
-      while (
-        j < tableEntries.length &&
-        tableEntries[j].index === tableEntries[j - 1].index + 1 &&
-        tableEntries[j].value === first.value
-      ) {
-        j++;
+    return (input) => {
+      let state = start;
+      for (let i = 0, l = input.length; i < l; i++) {
+        state = table[state + input[i]];
       }
-      const start = first.index;
-      const end = tableEntries[j - 1].index + 1;
-      if (end - start === 1) {
-        tableLines.push(`table[${start}] = ${first.value};`);
-      } else {
-        tableLines.push(`table.fill(${first.value}, ${start}, ${end});`);
-      }
-      i = j;
-    }
-
-    const code = `'use strict';
-      const table = new Uint16Array(${
-        columns * d.states.length
-      }).fill(${error});
-
-      ${tableLines.join("\n")}
-
-      return (input) => {
-        let state = ${start};
-        for (let i = 0, l = input.length; i < l; i++) {
-          state = table[state + input[i]];
-        }
-        return ${finals.map((final) => `${final} === state`).join(" || ")};
-      };
-    `;
-
-    const automata =
-      /** @type {() => (input: Uint8Array) => boolean} */
-      (new Function(code))();
-    return automata;
+      return finals.has(state);
+    };
   }
 
   /**
@@ -226,9 +186,9 @@ export class DFA {
         return this.description.finals.includes(current);
       }
 
-      let way = this.description.transitions.get(current)?.get(input[0]);
+      const way = this.description.transitions.get(current)?.get(input[0]);
       if (!way) {
-        return this.description.finals.includes(current);
+        return false;
       }
 
       return step(input.slice(1), way);
@@ -243,13 +203,7 @@ export class DFA {
    */
   toString(stateMapper = (s) => String(s)) {
     const d = this.description;
-
-    const errorState = (Array.from(d.transitions.entries()).find(
-      ([from, transitions]) =>
-        transitions.size > 0 &&
-        Array.from(transitions.values()).every((to) => to === from) &&
-        !d.finals.includes(from)
-    ) ?? [])[0];
+    const errorState = this._findErrorState();
 
     /**
      * @param {string} state

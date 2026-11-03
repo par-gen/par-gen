@@ -117,14 +117,30 @@ const SYMBOL_ID_MASK = 0xff;
 const CHILD_COUNT_SHIFT = 8;
 const PTR_MASK = 0xfffff;
 const LEAF_END_MASK = 0x3fffff;
-const LEAF_LEN_SHIFT = 22;
-const DELTA_START_MASK = 0x3ff;
 
 const sharedBuf = Buffer.allocUnsafe(65536);
-const stmtScratch = new Uint32Array(2048);
-const ruleStmtScratch = new Uint32Array(2048);
-const altScratch = new Uint32Array(512);
-const itemScratch = new Uint32Array(256);
+/** @type {Uint32Array} */
+let stmtScratch = new Uint32Array(2048);
+/** @type {Uint32Array} */
+let ruleStmtScratch = new Uint32Array(2048);
+/** @type {Uint32Array} */
+let altScratch = new Uint32Array(512);
+/** @type {Uint32Array} */
+let itemScratch = new Uint32Array(256);
+
+/**
+ * @param {Uint32Array} buf
+ * @param {number} idx
+ * @returns {Uint32Array}
+ */
+function ensureCapacity(buf, idx) {
+  if (idx < buf.length) {
+    return buf;
+  }
+  const next = new Uint32Array(buf.length * 2);
+  next.set(buf);
+  return next;
+}
 
 /**
  * @param {Uint32Array} tree
@@ -176,13 +192,7 @@ function getLeafStart(tree, p) {
   while (q >= 2 && (tree[q] >>> CHILD_COUNT_SHIFT) > 0) {
     q -= 2;
   }
-  const prevEnd = q >= 2 ? tree[q + 1] & LEAF_END_MASK : 0;
-  const span = tree[p + 1];
-  const end = span & LEAF_END_MASK;
-  return (
-    prevEnd +
-    (((end - prevEnd) - (span >>> LEAF_LEN_SHIFT)) & DELTA_START_MASK)
-  );
+  return q >= 2 ? tree[q + 1] & LEAF_END_MASK : 0;
 }
 
 /**
@@ -264,9 +274,11 @@ export function parse(grammar, options) {
   let stmtCount = 0;
   while (childCount(tree, stmts) === 2) {
     const stmt = stmts - 2;
+    stmtScratch = ensureCapacity(stmtScratch, stmtCount);
     stmtScratch[stmtCount++] = stmt;
     stmts = prevSibling(tree, stmt);
   }
+  stmtScratch = ensureCapacity(stmtScratch, stmtCount);
   stmtScratch[stmtCount++] = stmts - 2;
 
   /** @type {Token[]} */
@@ -394,6 +406,7 @@ export function parse(grammar, options) {
         });
       }
     } else {
+      ruleStmtScratch = ensureCapacity(ruleStmtScratch, ruleStmtCount);
       ruleStmtScratch[ruleStmtCount++] = stmtPtr;
     }
   }
@@ -474,10 +487,12 @@ export function parse(grammar, options) {
     let altCount = 0;
     while (childCount(tree, alts) === 3) {
       const alt = alts - 2;
+      altScratch = ensureCapacity(altScratch, altCount);
       altScratch[altCount++] = alt;
       const pipe = prevSibling(tree, alt);
       alts = prevSibling(tree, pipe);
     }
+    altScratch = ensureCapacity(altScratch, altCount);
     altScratch[altCount++] = alts - 2;
 
     for (let a = altCount - 1; a >= 0; a--) {
@@ -485,9 +500,11 @@ export function parse(grammar, options) {
       let itemCount = 0;
       while (childCount(tree, alt) === 2) {
         const item = alt - 2;
+        itemScratch = ensureCapacity(itemScratch, itemCount);
         itemScratch[itemCount++] = item;
         alt = prevSibling(tree, item);
       }
+      itemScratch = ensureCapacity(itemScratch, itemCount);
       itemScratch[itemCount++] = alt - 2;
 
       /** @type {string[]} */

@@ -171,6 +171,44 @@ function unicodePropertyClassRange(prop, isNegatedProp) {
 
 /**
  * @param {string} pattern
+ * @param {number} i
+ * @param {string} esc
+ * @returns {{ codePoint: number, isUnicode: boolean, nextIdx: number } | null}
+ */
+function parseHexOrUnicodeEscape(pattern, i, esc) {
+  const len = pattern.length;
+  if (esc === "x" && i + 2 <= len) {
+    const hex = pattern.slice(i, i + 2);
+    if (/^[0-9a-fA-F]{2}$/.test(hex)) {
+      return { codePoint: parseInt(hex, 16), isUnicode: false, nextIdx: i + 2 };
+    }
+  } else if (esc === "u") {
+    if (pattern[i] === "{") {
+      const closeBrace = pattern.indexOf("}", i + 1);
+      if (closeBrace !== -1) {
+        const cp = parseInt(pattern.slice(i + 1, closeBrace), 16);
+        return {
+          codePoint: Number.isNaN(cp) ? 0 : cp,
+          isUnicode: true,
+          nextIdx: closeBrace + 1,
+        };
+      }
+    } else if (i + 4 <= len) {
+      const hex = pattern.slice(i, i + 4);
+      if (/^[0-9a-fA-F]{4}$/.test(hex)) {
+        return {
+          codePoint: parseInt(hex, 16),
+          isUnicode: true,
+          nextIdx: i + 4,
+        };
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * @param {string} pattern
  * @param {number} startIdx
  * @returns {{ expr: string, nextIdx: number }}
  */
@@ -232,43 +270,17 @@ function normalizeCharClass(pattern, startIdx) {
         } else {
           items.push({ type: "byte", value: esc.charCodeAt(0) });
         }
-      } else if (esc === "x" && i + 2 <= len) {
-        const hex = pattern.slice(i, i + 2);
-        if (/^[0-9a-fA-F]{2}$/.test(hex)) {
-          items.push({ type: "byte", value: parseInt(hex, 16) });
-          i += 2;
+      } else if (esc === "x" || esc === "u") {
+        const parsedHex = parseHexOrUnicodeEscape(pattern, i, esc);
+        if (parsedHex) {
+          items.push({
+            type: "byte",
+            value: parsedHex.codePoint,
+            isUnicodeCp: parsedHex.isUnicode,
+          });
+          i = parsedHex.nextIdx;
         } else {
           items.push({ type: "byte", value: esc.charCodeAt(0) });
-        }
-      } else if (esc === "u") {
-        if (pattern[i] === "{") {
-          const closeBrace = pattern.indexOf("}", i + 1);
-          if (closeBrace !== -1) {
-            const hex = pattern.slice(i + 1, closeBrace);
-            const cp = parseInt(hex, 16);
-            items.push({
-              type: "byte",
-              value: Number.isNaN(cp) ? 0 : cp,
-              isUnicodeCp: true,
-            });
-            i = closeBrace + 1;
-          } else {
-            items.push({ type: "byte", value: 117 });
-          }
-        } else if (i + 4 <= len) {
-          const hex = pattern.slice(i, i + 4);
-          if (/^[0-9a-fA-F]{4}$/.test(hex)) {
-            items.push({
-              type: "byte",
-              value: parseInt(hex, 16),
-              isUnicodeCp: true,
-            });
-            i += 4;
-          } else {
-            items.push({ type: "byte", value: 117 });
-          }
-        } else {
-          items.push({ type: "byte", value: 117 });
         }
       } else if (esc === "n") {
         items.push({ type: "byte", value: 0x0a });
@@ -507,40 +519,22 @@ function parseSubPattern(pattern, startIdx, stopOnCloseParen) {
         } else {
           currentAlt.push(escapeStringToRegex(esc));
         }
-      } else if (esc === "x" && i + 2 <= len) {
-        const hex = pattern.slice(i, i + 2);
-        if (/^[0-9a-fA-F]{2}$/.test(hex)) {
-          currentAlt.push(`\\x${hex.toLowerCase()}`);
-          i += 2;
-        } else {
-          currentAlt.push(escapeStringToRegex(esc));
-        }
-      } else if (esc === "u") {
-        if (pattern[i] === "{") {
-          const closeBrace = pattern.indexOf("}", i + 1);
-          if (closeBrace !== -1) {
-            const hex = pattern.slice(i + 1, closeBrace);
-            const cp = parseInt(hex, 16);
+      } else if (esc === "x" || esc === "u") {
+        const parsedHex = parseHexOrUnicodeEscape(pattern, i, esc);
+        if (parsedHex) {
+          if (!parsedHex.isUnicode) {
+            currentAlt.push(
+              `\\x${parsedHex.codePoint.toString(16).padStart(2, "0")}`
+            );
+          } else {
             const encoded = escapeStringToRegex(
-              String.fromCodePoint(Number.isNaN(cp) ? 0 : cp)
+              String.fromCodePoint(parsedHex.codePoint)
             );
             currentAlt.push(encoded.length > 4 ? `(${encoded})` : encoded);
-            i = closeBrace + 1;
-          } else {
-            currentAlt.push("u");
           }
-        } else if (i + 4 <= len) {
-          const hex = pattern.slice(i, i + 4);
-          if (/^[0-9a-fA-F]{4}$/.test(hex)) {
-            const cp = parseInt(hex, 16);
-            const encoded = escapeStringToRegex(String.fromCodePoint(cp));
-            currentAlt.push(encoded.length > 4 ? `(${encoded})` : encoded);
-            i += 4;
-          } else {
-            currentAlt.push("u");
-          }
+          i = parsedHex.nextIdx;
         } else {
-          currentAlt.push("u");
+          currentAlt.push(escapeStringToRegex(esc));
         }
       } else if (
         esc === "n" ||
@@ -1359,64 +1353,39 @@ export function generate(input, options) {
       return { nonEmptyExpr: expr, isNullable: false };
     }
     const body = expr.slice(0, -1);
-    if (body.startsWith("[") && body.endsWith("]")) {
-      // Check that the opening `[` matches the closing `]` without closing early
+    const openChar = body[0];
+    const closeChar = body[body.length - 1];
+    if (
+      (openChar === "[" && closeChar === "]") ||
+      (openChar === "(" && closeChar === ")")
+    ) {
       let inEscape = false;
-      let closedEarly = false;
+      let inClass = openChar === "[";
+      let depth = openChar === "(" ? 1 : 0;
       for (let i = 1; i < body.length - 1; i++) {
-        if (inEscape) {
-          inEscape = false;
-          continue;
-        }
-        if (body[i] === "\\") {
-          inEscape = true;
-          continue;
-        }
-        if (body[i] === "]") {
-          closedEarly = true;
-          break;
-        }
-      }
-      if (!closedEarly) {
-        return { nonEmptyExpr: `${body}+`, isNullable: true };
-      }
-    }
-    if (body.startsWith("(") && body.endsWith(")")) {
-      let inEscape = false;
-      let inClass = false;
-      let depth = 0;
-      let closedEarly = false;
-      for (let i = 0; i < body.length; i++) {
         const ch = body[i];
         if (inEscape) {
           inEscape = false;
-          continue;
-        }
-        if (ch === "\\") {
+        } else if (ch === "\\") {
           inEscape = true;
-          continue;
-        }
-        if (inClass) {
+        } else if (inClass) {
           if (ch === "]") {
+            if (openChar === "[") {
+              return { nonEmptyExpr: expr, isNullable: false };
+            }
             inClass = false;
           }
-          continue;
-        }
-        if (ch === "[") {
+        } else if (ch === "[") {
           inClass = true;
-          continue;
-        }
-        if (ch === "(") {
-          depth++;
-        } else if (ch === ")") {
-          depth--;
-          if (depth === 0 && i < body.length - 1) {
-            closedEarly = true;
-            break;
+        } else if (openChar === "(") {
+          if (ch === "(") {
+            depth++;
+          } else if (ch === ")" && --depth === 0) {
+            return { nonEmptyExpr: expr, isNullable: false };
           }
         }
       }
-      if (!closedEarly && depth === 0) {
+      if (depth <= 1 && (!inClass || openChar === "[")) {
         return { nonEmptyExpr: `${body}+`, isNullable: true };
       }
     }

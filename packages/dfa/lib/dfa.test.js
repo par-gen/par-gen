@@ -114,6 +114,7 @@ describe("DFA", () => {
     });
 
     expect(dfa.test(["a", "b"])).toBe(true);
+    expect(dfa.test(["a", "b", "a"])).toBe(false);
   });
 
   describe("fromNFA", () => {

@@ -8,7 +8,6 @@
     "@par-gen/dfa": "0.1.0",
     "@par-gen/grammar": "0.1.0",
     "@par-gen/lexer": "0.1.0",
-    "@par-gen/nfa": "0.1.0",
     "debug": "^4.3.1"
   },
   "devDependencies": {

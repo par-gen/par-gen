@@ -23,6 +23,54 @@ const ONE = BigInt(1);
  */
 
 /**
+ * Partitions the `numCols` columns of a row-major `numRows x numCols` transition matrix
+ * into minimal equivalence classes of identical columns.
+ *
+ * @param {Int32Array} matrix
+ * @param {number} numRows
+ * @param {number} numCols
+ * @returns {{ colToClass: Int32Array, classCol: number[], classCount: Int32Array, numClasses: number }}
+ */
+export function partitionMatrixColumns(matrix, numRows, numCols) {
+  const colToClass = new Int32Array(numCols);
+  /** @type {number[]} */
+  const classCol = [];
+  const classCount = new Int32Array(numCols);
+  let numClasses = 0;
+  let lastMatchedC = 0;
+
+  for (let col = 0; col < numCols; col++) {
+    let matchedC = -1;
+    for (let step = 0; step < numClasses; step++) {
+      const c =
+        step === 0 ? lastMatchedC : step <= lastMatchedC ? step - 1 : step;
+      const repCol = classCol[c];
+      let same = true;
+      for (let r = 0; r < numRows; r++) {
+        const rowOffset = r * numCols;
+        if (matrix[rowOffset + col] !== matrix[rowOffset + repCol]) {
+          same = false;
+          break;
+        }
+      }
+      if (same) {
+        matchedC = c;
+        break;
+      }
+    }
+    if (matchedC === -1) {
+      matchedC = numClasses++;
+      classCol.push(col);
+    }
+    colToClass[col] = matchedC;
+    classCount[matchedC]++;
+    lastMatchedC = matchedC;
+  }
+
+  return { colToClass, classCol, classCount, numClasses };
+}
+
+/**
  * @template STATE, NEW_STATE, SYMBOL
  * @param {DFA<STATE, SYMBOL>} dfa
  * @param {{partitionizer?: () => STATE[][], stateMapper: StateMapper<STATE, NEW_STATE>}} options
@@ -165,54 +213,11 @@ export function minimize(dfa, { partitionizer, stateMapper }) {
       }
     }
 
-    const colToClass = new Int32Array(inNumClasses);
-    /** @type {number[]} */
-    const classCol = [];
-    let numClasses = 0;
-    let lastMatchedC = 0;
-
-    for (let col = 0; col < inNumClasses; col++) {
-      let matchedC = -1;
-      if (numClasses > 0) {
-        const repCol = classCol[lastMatchedC];
-        let eq = true;
-        for (let q = 0; q < numStates; q++) {
-          const rowOffset = q * inNumClasses;
-          if (inTrans[rowOffset + col] !== inTrans[rowOffset + repCol]) {
-            eq = false;
-            break;
-          }
-        }
-        if (eq) {
-          matchedC = lastMatchedC;
-        } else {
-          for (let c = 0; c < numClasses; c++) {
-            if (c === lastMatchedC) {
-              continue;
-            }
-            const rCol = classCol[c];
-            let same = true;
-            for (let q = 0; q < numStates; q++) {
-              const rowOffset = q * inNumClasses;
-              if (inTrans[rowOffset + col] !== inTrans[rowOffset + rCol]) {
-                same = false;
-                break;
-              }
-            }
-            if (same) {
-              matchedC = c;
-              break;
-            }
-          }
-        }
-      }
-      if (matchedC === -1) {
-        matchedC = numClasses++;
-        classCol.push(col);
-      }
-      colToClass[col] = matchedC;
-      lastMatchedC = matchedC;
-    }
+    const { colToClass, classCol, numClasses } = partitionMatrixColumns(
+      inTrans,
+      numStates,
+      inNumClasses
+    );
 
     /** @type {Int32Array} */
     let symClass;

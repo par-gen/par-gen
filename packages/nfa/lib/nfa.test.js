@@ -146,6 +146,7 @@ describe("NFA", () => {
     });
 
     expect(nfa.test(["a"])).toBe(true);
+    expect(nfa.test(["a", "a"])).toBe(false);
   });
 
   it("should allow epsilon transitions", () => {

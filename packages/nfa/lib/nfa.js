@@ -126,30 +126,21 @@ export class NFA {
      * @returns {boolean}
      */
     const step = (input, current) => {
-      let symbol = input[0];
-      let useEpsilon = false;
-
-      let ways = this.description.transitions.get(current)?.get(symbol);
-      if (!ways) {
-        const maybeEmptyWays = this.description.transitions
-          .get(current)
-          ?.get(Epsilon);
-        if (!maybeEmptyWays) {
-          return this.description.finals.includes(current);
+      const row = this.description.transitions.get(current);
+      if (input.length === 0) {
+        if (this.description.finals.includes(current)) {
+          return true;
         }
-        useEpsilon = true;
-        ways = maybeEmptyWays;
+        const epsWays = row?.get(Epsilon);
+        return Boolean(epsWays?.some((way) => step(input, way)));
       }
 
-      if (ways.length === 0) {
-        return this.description.finals.includes(current);
+      const symWays = row?.get(input[0]);
+      if (symWays?.some((way) => step(input.slice(1), way))) {
+        return true;
       }
-
-      if (!useEpsilon && input.length === 0) {
-        return this.description.finals.includes(current);
-      }
-
-      return ways.some((way) => step(useEpsilon ? input : input.slice(1), way));
+      const epsWays = row?.get(Epsilon);
+      return Boolean(epsWays?.some((way) => step(input, way)));
     };
 
     return step(input, this.description.start);
