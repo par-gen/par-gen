@@ -40,7 +40,6 @@ const next = (input, offset) => {
       if (state > 256) {
         while (i < l && (state = t[state + input[i++]]) > 256);
       }
-
       if (state <= 57) {
         break;
       }

@@ -69,14 +69,14 @@ const next = (input, offset) => {
 
   if (i < l && (state = t[input[i++] + 2560]) > 8) {
     while (true) {
-      if (state > 1280) {
-        while (i < l && (state = t[state + input[i++]]) > 1280);
-      }
       if (state === 1024) {
         while (i < l && (state = t[input[i++] + 1024]) === 1024);
       }
       if (state === 1280) {
         while (i < l && (state = t[input[i++] + 1280]) === 1280);
+      }
+      if (state > 1280) {
+        while (i < l && (state = t[state + input[i++]]) > 1280);
       }
       if (state <= 8) {
         break;

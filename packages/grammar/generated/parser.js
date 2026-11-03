@@ -183,47 +183,47 @@ actionsTable.fill(2077, 693, 696); // 'state 43' -> EXPR..IDENTIFIER -> reduce (
 const gotoTable = new Uint32Array(304);
 gotoTable[11] = 1275068416; // 'state 19'
 gotoTable[12] = 134217728; // 'state 2'
-gotoTable[13] = 1342177280; // 'state 20'
+gotoTable[13] = 134217996; // 'state 2' (fused reduce Statements)
 gotoTable[14] = 201326592; // 'state 3'
 gotoTable[19] = 268435456; // 'state 4'
-gotoTable[20] = 1409286144; // 'state 21'
+gotoTable[20] = 268435731; // 'state 4' (fused reduce StateList)
 gotoTable[28] = 335544320; // 'state 5'
-gotoTable[29] = 1342177280; // 'state 20'
+gotoTable[29] = 335544588; // 'state 5' (fused reduce Statements)
 gotoTable[30] = 201326592; // 'state 3'
 gotoTable[35] = 268435456; // 'state 4'
-gotoTable[36] = 1409286144; // 'state 21'
+gotoTable[36] = 268435731; // 'state 4' (fused reduce StateList)
 gotoTable[45] = 1476395008; // 'state 22'
 gotoTable[46] = 201326592; // 'state 3'
 gotoTable[51] = 268435456; // 'state 4'
-gotoTable[52] = 1409286144; // 'state 21'
+gotoTable[52] = 268435731; // 'state 4' (fused reduce StateList)
 gotoTable[63] = 402653184; // 'state 6'
 gotoTable[65] = 469762048; // 'state 7'
 gotoTable[69] = 536870912; // 'state 8'
 gotoTable[70] = 603979776; // 'state 9'
-gotoTable[71] = 1744830464; // 'state 26'
+gotoTable[71] = 603980054; // 'state 9' (fused reduce Alternative)
 gotoTable[80] = 1946157056; // 'state 29'
 gotoTable[84] = 2013265920; // 'state 30'
 gotoTable[93] = 1476395008; // 'state 22'
 gotoTable[94] = 201326592; // 'state 3'
 gotoTable[99] = 268435456; // 'state 4'
-gotoTable[100] = 1409286144; // 'state 21'
+gotoTable[100] = 268435731; // 'state 4' (fused reduce StateList)
 gotoTable[112] = 2214592512; // 'state 33'
 gotoTable[114] = 738197504; // 'state 11'
 gotoTable[133] = 872415232; // 'state 13'
 gotoTable[134] = 603979776; // 'state 9'
-gotoTable[135] = 1744830464; // 'state 26'
+gotoTable[135] = 603980054; // 'state 9' (fused reduce Alternative)
 gotoTable[144] = 2214592512; // 'state 33'
 gotoTable[145] = 805306368; // 'state 12'
 gotoTable[167] = 2348810240; // 'state 35'
 gotoTable[179] = 1006632960; // 'state 15'
-gotoTable[180] = 1409286144; // 'state 21'
+gotoTable[180] = 1006633235; // 'state 15' (fused reduce StateList)
 gotoTable[192] = 2818572288; // 'state 42'
 gotoTable[214] = 1073741824; // 'state 16'
-gotoTable[215] = 1744830464; // 'state 26'
+gotoTable[215] = 1073742102; // 'state 16' (fused reduce Alternative)
 gotoTable[224] = 2818572288; // 'state 42'
 gotoTable[225] = 805306368; // 'state 12'
 gotoTable[243] = 1140850688; // 'state 17'
-gotoTable[244] = 1409286144; // 'state 21'
+gotoTable[244] = 1140850963; // 'state 17' (fused reduce StateList)
 gotoTable[260] = 2013265920; // 'state 30'
 gotoTable[279] = 2348810240; // 'state 35'
 gotoTable[292] = 2013265920; // 'state 30'
@@ -898,12 +898,38 @@ function parseLarge(stream) {
         nextT.set(stackTps);
         stackTps = nextT;
       }
-      tree[tp] = lookahead;
-      tree[tp + 1] = lookaheadEnd;
-      sp += 1;
-      topState = actionLookup >>> 1;
-      stackStates[sp] = topState;
-      stackTps[sp] = tp;
+      if (actionLookup >= 0x8000) {
+        if (tp + 6 >= treeCap) {
+          treeCap <<= 1;
+          const nextTree = new Uint32Array(treeCap);
+          nextTree.set(tree);
+          tree = nextTree;
+        }
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        const word0 = (actionLookup & 0x7fff) >>> 1;
+        const rtopTp = stackTps[sp];
+        tp += 2;
+        tree[tp] = word0;
+        tree[tp + 1] = rtopTp;
+        const rawNextState = goto[currentState + (word0 & 0xff)];
+        if ((rawNextState & 0xffff) !== 0) {
+          tp += 2;
+          tree[tp] = rawNextState & 0xffff;
+          tree[tp + 1] = rtopTp;
+        }
+        topState = rawNextState >>> 22;
+        sp += 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+      } else {
+        tree[tp] = lookahead;
+        tree[tp + 1] = lookaheadEnd;
+        sp += 1;
+        topState = actionLookup >>> 1;
+        stackStates[sp] = topState;
+        stackTps[sp] = tp;
+      }
       const res = nextToken(stream, lookaheadEnd);
       lookahead = res.state;
       lookaheadStart = res.start;
@@ -926,6 +952,11 @@ function parseLarge(stream) {
       tree[tp] = word0;
       tree[tp + 1] = rtopTp;
       const rawNextState = goto[rtopState + (word0 & 0xff)];
+      if ((rawNextState & 0xffff) !== 0) {
+        tp += 2;
+        tree[tp] = rawNextState & 0xffff;
+        tree[tp + 1] = rtopTp;
+      }
       topState = rawNextState >>> 22;
       sp += 1;
       if (sp >= stackCap) {
@@ -941,7 +972,7 @@ function parseLarge(stream) {
       stackTps[sp] = tp;
     }
     tp += 2;
-    if (tp >= treeCap - 2) {
+    if (tp >= treeCap - 6) {
       treeCap <<= 1;
       const nextTree = new Uint32Array(treeCap);
       nextTree.set(tree);
@@ -992,17 +1023,35 @@ function parse(input) {
       const actionLookup = actions[currentState + lookahead];
       if ((actionLookup & 1) === 0) {
         // shift
-        if (actionLookup === 0xfffe) {
-          tree[1] = tp - 2;
-          return new CstNode(stream, tree, tp - 2);
+        if (actionLookup >= 0x8000) {
+          if (actionLookup === 0xfffe) {
+            tree[1] = tp - 2;
+            return new CstNode(stream, tree, tp - 2);
+          }
+          tree[tp] = lookahead;
+          tree[tp + 1] = lookaheadSpan;
+          const word0 = (actionLookup & 0x7fff) >>> 1;
+          tp += 2;
+          tree[tp] = word0;
+          tree[tp + 1] = top;
+          const nextState = goto[currentState + (word0 & 0xff)];
+          sp += 1;
+          if ((nextState & 0xffff) !== 0) {
+            tp += 2;
+            tree[tp] = nextState & 0xffff;
+            tree[tp + 1] = top;
+            top = tp | (nextState & -4194304);
+          } else {
+            top = tp | nextState;
+          }
+          stack[sp] = top;
+        } else {
+          tree[tp] = lookahead;
+          tree[tp + 1] = lookaheadSpan;
+          sp += 1;
+          top = tp | (actionLookup << 21);
+          stack[sp] = top;
         }
-
-        tree[tp] = lookahead; // name (and nChildren = 0)
-        tree[tp + 1] = lookaheadSpan;
-
-        sp += 1;
-        top = tp | (actionLookup << 21);
-        stack[sp] = top;
 
         const res = nextToken(stream, lookaheadSpan & 0x3fffff);
         lookahead = res.state;
@@ -1029,12 +1078,19 @@ function parse(input) {
         tree[tp + 1] = rtop; // prevSibling / subtreeStart - 2
 
         sp += 1;
-        top = tp | nextState;
+        if ((nextState & 0xffff) !== 0) {
+          tp += 2;
+          tree[tp] = nextState & 0xffff;
+          tree[tp + 1] = rtop;
+          top = tp | (nextState & -4194304);
+        } else {
+          top = tp | nextState;
+        }
         stack[sp] = top;
       }
 
       tp += 2;
-      if (tp >= tree.length - 1) {
+      if (tp >= tree.length - 6) {
         break;
       }
     }

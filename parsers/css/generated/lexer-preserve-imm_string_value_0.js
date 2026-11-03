@@ -79,7 +79,6 @@ const next = (input, offset) => {
         if (state > 1792) {
           while (i < l && (state = t[state + input[i++]]) > 1792);
         }
-
         if (state <= 64) {
           break;
         }

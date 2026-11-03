@@ -46,6 +46,14 @@ const PREC = {
   MEMBER: 21,
 };
 
+let templateStringPattern = "`([^`\\\\]|\\\\[\\s\\S])*`";
+for (let d = 0; d < 3; d++) {
+  templateStringPattern =
+    "`([^`\\\\]|\\\\[\\s\\S]|(=>|return|[a-zA-Z0-9_]:|[a-zA-Z0-9_)]\\s+\\?|\\n[ ]+[?:])\\s*" +
+    templateStringPattern +
+    ")*`";
+}
+
 const grammar = {
   name: "javascript",
   word: "identifier",
@@ -53,6 +61,13 @@ const grammar = {
   inline: [
     "_class_member",
     "_interface_member",
+    "_tuple_element",
+    "_enum_member",
+    "extends_type_clause",
+    "switch_body",
+    "finally_clause",
+    "shorthand_property_identifier",
+    "namespace_import",
   ],
   rules: {
     program: rep(sym("_statement")),
@@ -71,8 +86,12 @@ const grammar = {
       sym("switch_statement"),
       sym("break_statement"),
       sym("continue_statement"),
-      sym("expression_statement")
+      sym("labeled_statement"),
+      sym("expression_statement"),
+      str(";")
     ),
+
+    labeled_statement: seq(sym("identifier"), str(":"), sym("_statement")),
 
     statement_block: seq(str("{"), rep(sym("_statement")), str("}")),
 
@@ -122,16 +141,24 @@ const grammar = {
       ),
       opt(sym("_expression")),
       str(";"),
-      opt(sym("_expression")),
+      opt(
+        seq(sym("_expression"), rep(seq(str(","), sym("_expression"))))
+      ),
       str(")"),
       sym("_statement")
     ),
 
     for_in_statement: seq(
       str("for"),
+      opt(str("await")),
       str("("),
-      choice(str("const"), str("let"), str("var")),
-      sym("_binding_pattern"),
+      choice(
+        seq(
+          choice(str("const"), str("let"), str("var"), str("using")),
+          sym("_binding_pattern")
+        ),
+        sym("_lhs_expression")
+      ),
       choice(str("of"), str("in")),
       sym("_expression"),
       str(")"),
@@ -207,15 +234,20 @@ const grammar = {
       sym("export_statement"),
       sym("variable_declaration"),
       sym("function_declaration"),
-      sym("class_declaration"),
+      seq(opt(sym("member_modifiers")), sym("class_declaration")),
       sym("interface_declaration"),
-      sym("type_alias_declaration")
+      sym("type_alias_declaration"),
+      seq(opt(str("const")), sym("enum_declaration")),
+      sym("namespace_declaration"),
+      precRight(1, seq(str("declare"), sym("_declaration")))
     ),
 
     import_statement: seq(
       str("import"),
+      opt(str("type")),
       choice(
         seq(sym("import_clause"), str("from"), sym("string")),
+        seq(sym("identifier"), str("="), sym("_expression")),
         sym("string")
       ),
       opt(str(";"))
@@ -248,7 +280,7 @@ const grammar = {
 
     import_specifier: seq(
       opt(str("type")),
-      sym("identifier"),
+      choice(sym("identifier"), str("default")),
       opt(seq(str("as"), sym("identifier")))
     ),
 
@@ -257,27 +289,48 @@ const grammar = {
       seq(
         str("export"),
         str("default"),
-        choice(sym("_expression"), sym("function_declaration"), sym("class_declaration")),
+        choice(
+          sym("_expression"),
+          sym("function_declaration"),
+          sym("class_declaration"),
+          sym("interface_declaration")
+        ),
         opt(str(";"))
       ),
       seq(
         str("export"),
+        opt(str("type")),
         sym("named_imports"),
         opt(seq(str("from"), sym("string"))),
         opt(str(";"))
       ),
       seq(
         str("export"),
+        opt(str("type")),
         str("*"),
         opt(seq(str("as"), sym("identifier"))),
         str("from"),
         sym("string"),
         opt(str(";"))
-      )
+      ),
+      seq(
+        str("export"),
+        str("as"),
+        str("namespace"),
+        sym("identifier"),
+        opt(str(";"))
+      ),
+      seq(str("export"), str("="), sym("_expression"), opt(str(";")))
     ),
 
     variable_declaration: seq(
-      choice(str("const"), str("let"), str("var")),
+      choice(
+        str("const"),
+        str("let"),
+        str("var"),
+        str("using"),
+        seq(str("await"), str("using"))
+      ),
       sym("variable_declarator"),
       rep(seq(str(","), sym("variable_declarator"))),
       opt(str(";"))
@@ -352,54 +405,74 @@ const grammar = {
       str("("),
       opt(
         seq(
+          rep(
+            choice(
+              sym("accessibility_modifier"),
+              sym("decorator"),
+              str("readonly")
+            )
+          ),
           sym("formal_parameter"),
-          rep(seq(str(","), sym("formal_parameter"))),
+          rep(
+            seq(
+              str(","),
+              rep(
+                choice(
+                  sym("accessibility_modifier"),
+                  sym("decorator"),
+                  str("readonly")
+                )
+              ),
+              sym("formal_parameter")
+            )
+          ),
           opt(str(","))
         )
       ),
       str(")")
     ),
 
-    formal_parameter: choice(
-      seq(
-        opt(sym("member_modifiers")),
-        sym("_binding_pattern"),
-        opt(sym("type_annotation")),
-        opt(seq(str("="), sym("_expression")))
-      ),
-      seq(
-        str("..."),
-        sym("_binding_pattern"),
-        opt(sym("type_annotation"))
-      )
+    formal_parameter: seq(
+      opt(str("...")),
+      choice(sym("_binding_pattern"), sym("this")),
+      opt(sym("type_annotation")),
+      opt(seq(str("="), sym("_expression")))
     ),
 
     typed_parameters: seq(
       str("("),
       sym("typed_parameter"),
-      rep(
-        seq(
-          str(","),
-          choice(sym("typed_parameter"), sym("argument"))
-        )
-      ),
+      rep(seq(str(","), sym("formal_parameter"))),
       opt(str(",")),
       str(")")
     ),
 
     typed_parameter: seq(
       opt(str("...")),
-      choice(sym("identifier"), sym("object"), sym("array")),
+      choice(sym("identifier"), sym("this"), sym("object"), sym("array")),
       sym("type_annotation"),
       opt(seq(str("="), sym("_expression")))
+    ),
+
+    decorator: seq(
+      str("@"),
+      choice(
+        sym("identifier"),
+        sym("member_expression"),
+        sym("call_expression"),
+        sym("parenthesized_expression")
+      )
     ),
 
     member_modifiers: rep1(
       choice(
         sym("accessibility_modifier"),
+        sym("decorator"),
         str("static"),
         str("async"),
         str("readonly"),
+        str("abstract"),
+        str("declare"),
         str("get"),
         str("set")
       )
@@ -414,7 +487,12 @@ const grammar = {
     ),
 
     class_heritage: choice(
-      seq(str("extends"), sym("_expression"), opt(sym("implements_clause"))),
+      seq(
+        str("extends"),
+        sym("_expression"),
+        opt(sym("type_arguments")),
+        opt(sym("implements_clause"))
+      ),
       sym("implements_clause")
     ),
 
@@ -427,22 +505,22 @@ const grammar = {
     class_body: seq(str("{"), rep(sym("_class_member")), str("}")),
 
     _class_member: choice(
-      sym("method_definition"),
-      sym("field_definition"),
+      seq(opt(sym("member_modifiers")), sym("method_definition")),
+      seq(opt(sym("member_modifiers")), sym("field_definition")),
+      seq(sym("index_signature"), opt(str(";"))),
+      seq(str("static"), sym("statement_block")),
       str(";")
     ),
 
     method_definition: seq(
-      opt(sym("member_modifiers")),
       choice(sym("_property_name"), sym("private_property_identifier")),
       opt(sym("type_parameters")),
       sym("formal_parameters"),
       opt(sym("type_annotation")),
-      sym("statement_block")
+      choice(sym("statement_block"), str(";"))
     ),
 
     field_definition: seq(
-      opt(sym("member_modifiers")),
       choice(sym("_property_name"), sym("private_property_identifier")),
       opt(sym("type_annotation")),
       opt(seq(str("="), sym("_expression"))),
@@ -472,8 +550,42 @@ const grammar = {
       opt(str(";"))
     ),
 
+    enum_declaration: seq(
+      str("enum"),
+      sym("identifier"),
+      str("{"),
+      opt(
+        seq(
+          sym("_enum_member"),
+          rep(seq(str(","), sym("_enum_member"))),
+          opt(str(","))
+        )
+      ),
+      str("}")
+    ),
+
+    _enum_member: seq(
+      sym("_property_name"),
+      opt(seq(str("="), sym("_expression")))
+    ),
+
+    namespace_declaration: choice(
+      seq(
+        choice(str("namespace"), str("module")),
+        choice(
+          sym("string"),
+          seq(sym("identifier"), rep(seq(str("."), sym("identifier"))))
+        ),
+        sym("statement_block")
+      ),
+      seq(str("global"), sym("statement_block"))
+    ),
+
     // TypeScript Types
-    type_annotation: seq(choice(str(":"), str("?:")), sym("_type")),
+    type_annotation: seq(
+      choice(str(":"), sym("optional_colon")),
+      sym("_type")
+    ),
 
     type_parameters: seq(
       str("<"),
@@ -484,6 +596,7 @@ const grammar = {
     ),
 
     type_parameter: seq(
+      opt(choice(str("const"), str("in"), str("out"))),
       sym("identifier"),
       opt(seq(str("extends"), sym("_type"))),
       opt(seq(str("="), sym("_type")))
@@ -498,10 +611,24 @@ const grammar = {
     ),
 
     _type: choice(
+      sym("conditional_type"),
       sym("union_type"),
       sym("intersection_type"),
       sym("function_type"),
       sym("_primary_type")
+    ),
+
+    conditional_type: precRight(
+      0,
+      seq(
+        sym("_primary_type"),
+        str("extends"),
+        sym("_type"),
+        str("?"),
+        sym("_type"),
+        str(":"),
+        sym("_type")
+      )
     ),
 
     union_type: precLeft(
@@ -512,7 +639,13 @@ const grammar = {
       )
     ),
 
-    intersection_type: precLeft(2, seq(sym("_type"), str("&"), sym("_type"))),
+    intersection_type: precLeft(
+      2,
+      choice(
+        seq(sym("_type"), str("&"), sym("_type")),
+        seq(str("&"), sym("_type"))
+      )
+    ),
 
     function_type: precRight(
       3,
@@ -536,13 +669,24 @@ const grammar = {
           str("=>"),
           sym("_type")
         ),
-        seq(sym("parenthesized_type"), str("=>"), sym("_type"))
+        seq(sym("parenthesized_type"), str("=>"), sym("_type")),
+        seq(
+          opt(str("abstract")),
+          str("new"),
+          opt(sym("type_parameters")),
+          sym("formal_parameters"),
+          str("=>"),
+          sym("_type")
+        )
       )
     ),
 
     _primary_type: choice(
       sym("identifier"),
+      sym("this"),
+      str("const"),
       sym("generic_type"),
+      precLeft(5, seq(sym("_primary_type"), str("."), sym("identifier"))),
       sym("array_type"),
       sym("indexed_access_type"),
       sym("tuple_type"),
@@ -550,17 +694,32 @@ const grammar = {
       sym("typeof_type"),
       sym("type_predicate"),
       sym("parenthesized_type"),
+      precRight(
+        3,
+        seq(
+          choice(str("readonly"), str("keyof"), str("unique")),
+          sym("_primary_type")
+        )
+      ),
+      seq(
+        str("infer"),
+        sym("identifier"),
+        opt(seq(str("extends"), sym("_primary_type")))
+      ),
+      seq(str("import"), str("("), sym("_type"), str(")")),
       sym("string"),
+      sym("template_string"),
       sym("number"),
+      seq(choice(str("-"), str("+")), sym("number")),
       sym("true"),
       sym("false"),
       sym("null"),
       str("void")
     ),
 
-    generic_type: prec(
+    generic_type: precLeft(
       5,
-      seq(sym("identifier"), sym("type_arguments"))
+      seq(sym("_primary_type"), sym("type_arguments"))
     ),
 
     array_type: precLeft(4, seq(sym("_primary_type"), str("["), str("]"))),
@@ -574,24 +733,38 @@ const grammar = {
       str("["),
       opt(
         seq(
-          sym("_type"),
-          rep(seq(str(","), sym("_type"))),
+          sym("_tuple_element"),
+          rep(seq(str(","), sym("_tuple_element"))),
           opt(str(","))
         )
       ),
       str("]")
     ),
 
+    _tuple_element: choice(
+      seq(sym("_type"), opt(str("?"))),
+      seq(str("..."), sym("_type")),
+      seq(opt(str("...")), sym("identifier"), sym("type_annotation"))
+    ),
+
     parenthesized_type: seq(str("("), sym("_type"), str(")")),
 
-    typeof_type: seq(str("typeof"), sym("identifier")),
+    typeof_type: precRight(5, seq(str("typeof"), sym("_primary_type"))),
 
-    type_predicate: seq(sym("identifier"), str("is"), sym("_type")),
+    type_predicate: choice(
+      seq(choice(sym("identifier"), sym("this")), str("is"), sym("_type")),
+      seq(
+        str("asserts"),
+        choice(sym("identifier"), sym("this")),
+        opt(seq(str("is"), sym("_type")))
+      )
+    ),
 
     object_type: seq(
       str("{"),
       rep(
         seq(
+          opt(choice(str("+"), str("-"))),
           sym("_interface_member"),
           opt(choice(str(";"), str(",")))
         )
@@ -612,11 +785,20 @@ const grammar = {
       sym("type_annotation")
     ),
 
-    method_signature: seq(
-      sym("_property_name"),
-      opt(sym("type_parameters")),
-      sym("formal_parameters"),
-      opt(sym("type_annotation"))
+    method_signature: choice(
+      seq(
+        opt(choice(str("get"), str("set"))),
+        sym("_property_name"),
+        opt(str("?")),
+        opt(sym("type_parameters")),
+        sym("formal_parameters"),
+        opt(sym("type_annotation"))
+      ),
+      seq(
+        opt(sym("type_parameters")),
+        sym("formal_parameters"),
+        opt(sym("type_annotation"))
+      )
     ),
 
     construct_signature: seq(
@@ -632,6 +814,7 @@ const grammar = {
       sym("identifier"),
       choice(str(":"), str("in")),
       sym("_type"),
+      opt(seq(str("as"), sym("_type"))),
       str("]"),
       sym("type_annotation")
     ),
@@ -675,6 +858,8 @@ const grammar = {
       sym("null"),
       sym("this"),
       sym("super"),
+      seq(str("import"), str("."), sym("identifier")),
+      seq(str("import"), sym("arguments")),
       sym("array"),
       sym("object"),
       sym("function_expression"),
@@ -725,7 +910,6 @@ const grammar = {
         seq(
           opt(str("async")),
           sym("parenthesized_expression"),
-          opt(sym("type_annotation")),
           str("=>"),
           choice(sym("statement_block"), sym("_expression"))
         ),
@@ -793,21 +977,36 @@ const grammar = {
       ),
       precLeft(
         PREC.RELATIONAL,
-        seq(
-          sym("_expression"),
-          choice(
-            str("<"),
-            str(">"),
-            sym("relational_operator"),
-            str("in"),
-            str("instanceof")
+        choice(
+          seq(
+            sym("_expression"),
+            choice(
+              str("<"),
+              str(">"),
+              sym("relational_operator"),
+              str("in"),
+              str("instanceof")
+            ),
+            sym("_expression")
           ),
-          sym("_expression")
+          seq(
+            sym("private_property_identifier"),
+            str("in"),
+            sym("_expression")
+          )
         )
       ),
       precLeft(
         PREC.SHIFT,
-        seq(sym("_expression"), sym("shift_operator"), sym("_expression"))
+        seq(
+          sym("_expression"),
+          choice(
+            str("<<"),
+            seq(str(">"), str(">")),
+            seq(str(">"), str(">"), str(">"))
+          ),
+          sym("_expression")
+        )
       ),
       precLeft(
         PREC.ADD,
@@ -829,7 +1028,11 @@ const grammar = {
 
     as_expression: precLeft(
       PREC.AS,
-      seq(sym("_expression"), str("as"), sym("_type"))
+      seq(
+        sym("_expression"),
+        choice(str("as"), str("satisfies")),
+        sym("_type")
+      )
     ),
 
     unary_expression: precRight(
@@ -855,7 +1058,8 @@ const grammar = {
 
     update_expression: choice(
       precRight(PREC.UPDATE, seq(sym("update_operator"), sym("_expression"))),
-      precLeft(PREC.UPDATE, seq(sym("_expression"), sym("update_operator")))
+      precLeft(PREC.UPDATE, seq(sym("_expression"), sym("update_operator"))),
+      precLeft(PREC.MEMBER, seq(sym("_expression"), str("!")))
     ),
 
     new_expression: choice(
@@ -873,10 +1077,13 @@ const grammar = {
 
     call_expression: precLeft(
       PREC.CALL,
-      seq(
-        sym("_expression"),
-        opt(str("?.")),
-        sym("arguments")
+      choice(
+        seq(
+          sym("_expression"),
+          opt(str("?.")),
+          sym("arguments")
+        ),
+        seq(sym("_expression"), sym("template_string"))
       )
     ),
 
@@ -958,7 +1165,10 @@ const grammar = {
 
     pair: seq(sym("_property_name"), str(":"), sym("_expression")),
 
-    shorthand_property_identifier: choice(sym("identifier"), sym("_contextual_id")),
+    shorthand_property_identifier: choice(
+      sym("identifier"),
+      sym("_contextual_id")
+    ),
 
     _property_name: choice(
       sym("identifier"),
@@ -992,16 +1202,14 @@ const grammar = {
     identifier: pat("[a-zA-Z_$][a-zA-Z0-9_$]*"),
     private_property_identifier: pat("#[a-zA-Z_$][a-zA-Z0-9_$]*"),
     number: pat(
-      "0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|[0-9][0-9_]*(\\.[0-9_]+)?([eE][+-]?[0-9_]+)?n?"
+      "(0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|[0-9][0-9_]*(\\.[0-9_]*)?([eE][+-]?[0-9_]+)?|\\.[0-9][0-9_]*([eE][+-]?[0-9_]+)?)n?"
     ),
     string: pat('"([^"\\\\\\n]|\\\\[\\s\\S])*"|\'([^\'\\\\\\n]|\\\\[\\s\\S])*\''),
-    template_string: pat(
-      "`([^`\\\\]|\\\\[\\s\\S]|=>\\s*`([^`\\\\]|\\\\[\\s\\S])*`)*`"
-    ),
+    template_string: pat(templateStringPattern),
     regex: prec(
       -1,
       pat(
-        "\\/([^\\/\\\\\\n\\[*]|\\\\.|\\[([^\\]\\\\\\n]|\\\\.)*\\])([^\\/\\\\\\n\\[]|\\\\.|\\[([^\\]\\\\\\n]|\\\\.)*\\])*\\/[gimsuy]*"
+        "\\/([^\\/\\\\\\n\\[*=\\s]|\\\\.|\\[([^\\]\\\\\\n]|\\\\.)*\\])([^\\/\\\\\\n\\[]|\\\\.|\\[([^\\]\\\\\\n]|\\\\.)*\\])*\\/[dgimsuvy]*"
       )
     ),
     true: str("true"),
@@ -1009,16 +1217,25 @@ const grammar = {
     null: str("null"),
     this: str("this"),
     super: str("super"),
-    accessibility_modifier: tok(choice(str("public"), str("private"), str("protected"))),
+    accessibility_modifier: tok(
+      choice(
+        str("public"),
+        str("private"),
+        str("protected"),
+        str("override")
+      )
+    ),
+    optional_colon: pat("\\?:|!:|\\+\\?:|-\\?:"),
     compound_assignment_operator: pat(
-      "\\+=|-=|\\*=|\\/=|%=|\\|=|&=|\\^=|<<=|>>=|>>>=|&&=|\\|\\|=|\\?\\?="
+      "\\*\\*=|\\+=|-=|\\*=|\\/=|%=|\\|=|&=|\\^=|<<=|>>=|>>>=|&&=|\\|\\|=|\\?\\?="
     ),
     equality_operator: pat("===|!==|==|!="),
     relational_operator: pat("<=|>="),
-    shift_operator: pat("<<|>>>|>>"),
     multiplicative_operator: pat("\\/|%"),
     update_operator: pat("\\+\\+|--"),
-    comment: tok(pat("\\/\\/[^\\n]*|\\/\\*[^*]*\\*+([^/*][^*]*\\*+)*\\/")),
+    comment: tok(
+      pat("\\/\\/[^\\n]*|\\/\\*[^*]*\\*+([^/*][^*]*\\*+)*\\/|#![^\\n]*")
+    ),
   },
 };
 
@@ -1031,7 +1248,12 @@ console.time("generateFromTreesitter");
 const data = generateFromTreesitter(grammar);
 console.timeEnd("generateFromTreesitter");
 console.log("States:", data.states.length);
-console.log("ParserSymbols:", data.parserSymbols.length, "Non-null:", data.parserSymbols.filter(Boolean).length);
+console.log(
+  "ParserSymbols:",
+  data.parserSymbols.length,
+  "Non-null:",
+  data.parserSymbols.filter(Boolean).length
+);
 console.log("Contextual keywords:", data.contextualKeywordTokenNames);
 console.log("SkipBytes:", data.lexerData.initial.skipBytes);
 console.log("SkipTokenNames:", data.lexerData.initial.skipTokenNames);

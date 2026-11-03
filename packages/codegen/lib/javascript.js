@@ -663,13 +663,13 @@ export class JavaScriptBaseCodegen {
       ${Array.from(swarSelfLoopInfo.values())
         .map(({ s, minHex, exHexes }) => {
           const w0Expr = [
-            `(w0 - ${minHex})`,
-            ...exHexes.map((h) => `((w0 ^ ${h}) - 0x01010101)`),
+            "(w0 - " + minHex + ")",
+            ...exHexes.map((h) => "((w0 ^ " + h + ") - 0x01010101)"),
             "w0",
           ].join(" | ");
           const w1Expr = [
-            `(w1 - ${minHex})`,
-            ...exHexes.map((h) => `((w1 ^ ${h}) - 0x01010101)`),
+            "(w1 - " + minHex + ")",
+            ...exHexes.map((h) => "((w1 ^ " + h + ") - 0x01010101)"),
             "w1",
           ].join(" | ");
           return `const fast_${s} = new Uint8Array(256);
@@ -2893,6 +2893,39 @@ export class JavaScriptBaseCodegen {
               stackTps[sp] = tp;
               prevEnd = lookaheadEnd;
             }`
+                : canFuseShiftUnitReduce && canFuseGotoUnitReduce
+                ? `if (actionLookup >= 0x8000) {
+              if (tp + 6 >= treeCap) {
+                treeCap <<= 1;
+                const nextTree = new Uint32Array(treeCap);
+                nextTree.set(tree);
+                tree = nextTree;
+              }
+              tree[tp] = lookahead;
+              tree[tp + 1] = lookaheadEnd;
+              const word0 = (actionLookup & 0x7fff) >>> 1;
+              const rtopTp = stackTps[sp];
+              tp += 2;
+              tree[tp] = word0;
+              tree[tp + 1] = rtopTp;
+              const rawNextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
+              if ((rawNextState & 0xffff) !== 0) {
+                tp += 2;
+                tree[tp] = rawNextState & 0xffff;
+                tree[tp + 1] = rtopTp;
+              }
+              topState = rawNextState >>> ${tpBits};
+              sp += 1;
+              stackStates[sp] = topState;
+              stackTps[sp] = tp;
+            } else {
+              tree[tp] = lookahead;
+              tree[tp + 1] = lookaheadEnd;
+              sp += 1;
+              topState = actionLookup >>> 1;
+              stackStates[sp] = topState;
+              stackTps[sp] = tp;
+            }`
                 : canFuseShiftUnitReduce
                 ? `if (actionLookup >= 0x8000) {
               if (tp + 6 >= treeCap) {
@@ -2909,17 +2942,8 @@ export class JavaScriptBaseCodegen {
               tree[tp] = word0;
               tree[tp + 1] = rtopTp;
               const rawNextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
-              ${
-                canFuseGotoUnitReduce
-                  ? `if ((rawNextState & 0xffff) !== 0) {
-                tp += 2;
-                tree[tp] = rawNextState & 0xffff;
-                tree[tp + 1] = rtopTp;
-              }`
-                  : ""
-              }
               topState = ${
-                compactGoto ? "rawNextState" : `rawNextState >>> ${tpBits}`
+                compactGoto ? "rawNextState" : "rawNextState >>> " + tpBits
               };
               sp += 1;
               stackStates[sp] = topState;
@@ -3138,7 +3162,7 @@ export class JavaScriptBaseCodegen {
             if ((actionLookup & 1) === 0) {
               // shift
               ${
-                canFuseShiftUnitReduce
+                canFuseShiftUnitReduce && canFuseGotoUnitReduce
                   ? `if (actionLookup >= 0x8000) {
                 if (actionLookup === ${ACTION_DONE_HEX}) {
                   tree[1] = tp - 2;
@@ -3152,19 +3176,13 @@ export class JavaScriptBaseCodegen {
                 tree[tp + 1] = top;
                 const nextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
                 sp += 1;
-                ${
-                  canFuseGotoUnitReduce
-                    ? `if ((nextState & 0xffff) !== 0) {
+                if ((nextState & 0xffff) !== 0) {
                   tp += 2;
                   tree[tp] = nextState & 0xffff;
                   tree[tp + 1] = top;
                   top = tp | (nextState & ${~tpMask});
                 } else {
                   top = tp | nextState;
-                }`
-                    : `top = tp | ${
-                        compactGoto ? `(nextState << ${tpBits})` : "nextState"
-                      };`
                 }
                 stack[sp] = top;
               } else {
@@ -3174,10 +3192,34 @@ export class JavaScriptBaseCodegen {
                 top = tp | (actionLookup << ${tpBits - 1});
                 stack[sp] = top;
               }`
-                  : `if (actionLookup === ${ACTION_DONE_HEX}) {
-                ${
-                  preserveExtras
-                    ? `if (prevEnd < stream.length) {
+                  : canFuseShiftUnitReduce
+                  ? `if (actionLookup >= 0x8000) {
+                if (actionLookup === ${ACTION_DONE_HEX}) {
+                  tree[1] = tp - 2;
+                  return new CstNode(stream, tree, tp - 2);
+                }
+                tree[tp] = lookahead;
+                tree[tp + 1] = lookaheadSpan;
+                const word0 = (actionLookup & 0x7fff) >>> 1;
+                tp += 2;
+                tree[tp] = word0;
+                tree[tp + 1] = top;
+                const nextState = goto[${stateOffsetExpr} + (word0 & ${symMaskHex})];
+                sp += 1;
+                top = tp | ${
+                  compactGoto ? "(nextState << " + tpBits + ")" : "nextState"
+                };
+                stack[sp] = top;
+              } else {
+                tree[tp] = lookahead;
+                tree[tp + 1] = lookaheadSpan;
+                sp += 1;
+                top = tp | (actionLookup << ${tpBits - 1});
+                stack[sp] = top;
+              }`
+                  : preserveExtras
+                  ? `if (actionLookup === ${ACTION_DONE_HEX}) {
+                if (prevEnd < stream.length) {
                   const rootPtr = tp - 2;
                   let remStart = prevEnd;
                   const endPos = stream.length;
@@ -3199,22 +3241,20 @@ export class JavaScriptBaseCodegen {
                   tree[tp] = (tree[rootPtr] & ${symMaskHex}) | ((1 + chunks) << ${symBits});
                   tree[tp + 1] = 0;
                   tp += 2;
-                }`
-                    : ""
                 }
-                ${debug(() => `console.log('steps', steps);`)}
+                ${
+                  this.options.debug ? "console.log('steps', steps);" : ""
+                }
                 tree[1] = tp - 2;
                 return new CstNode(stream, tree, tp - 2);
               }
-              ${debug(
-                () =>
-                  `console.log('action: shift', lookahead, parserSymbols[lookahead]);`
-              )}
-              ${shiftActionDispatchCode}
-
               ${
-                preserveExtras
-                  ? `const tokEnd = lookaheadSpan & 0x3fffff;
+                this.options.debug
+                  ? "console.log('action: shift', lookahead, parserSymbols[lookahead]);"
+                  : ""
+              }
+              ${shiftActionDispatchCode}
+              const tokEnd = lookaheadSpan & 0x3fffff;
               const tokStart = lookaheadStart;
               if (tokStart === prevEnd && tokEnd - tokStart <= 1023) {
                 tree[tp] = lookahead;
@@ -3260,13 +3300,25 @@ export class JavaScriptBaseCodegen {
                 stack[sp] = top;
                 prevEnd = tokEnd;
               }`
-                  : `tree[tp] = lookahead; // name (and nChildren = 0)
+                  : `if (actionLookup === ${ACTION_DONE_HEX}) {
+                ${
+                  this.options.debug ? "console.log('steps', steps);" : ""
+                }
+                tree[1] = tp - 2;
+                return new CstNode(stream, tree, tp - 2);
+              }
+              ${
+                this.options.debug
+                  ? "console.log('action: shift', lookahead, parserSymbols[lookahead]);"
+                  : ""
+              }
+              ${shiftActionDispatchCode}
+              tree[tp] = lookahead; // name (and nChildren = 0)
               tree[tp + 1] = lookaheadSpan;
 
               sp += 1;
               top = tp | (actionLookup << ${tpBits - 1});
               stack[sp] = top;`
-              }`
               }
 
               ${

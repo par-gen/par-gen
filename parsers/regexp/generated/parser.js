@@ -1196,7 +1196,6 @@ function parse(input) {
               break;
           }
         }
-
         tree[tp] = lookahead; // name (and nChildren = 0)
         tree[tp + 1] = lookaheadSpan;
 

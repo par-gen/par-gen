@@ -161,7 +161,7 @@ describe("JavaScript / TypeScript Parser (@par-gen/javascript)", () => {
 
           export type Guard<T> = (val: unknown) => val is T;
           export type Pair<A, B> = [A, B];
-          export type ValueOf<T> = T[keyof];
+          export type ValueOf<T> = T[keyof T];
         `,
       },
       {
@@ -224,6 +224,113 @@ describe("JavaScript / TypeScript Parser (@par-gen/javascript)", () => {
           const cmp = a === b && c !== d && e <= f && g >= h && x instanceof Foo && "k" in obj;
           const chain = obj?.prop?.[0]?.method?.(a, ...rest) ?? ` + "`default-${calc}`" + `;
           const regexTest = /^[a-z0-9_-]+$/gi.test(str);
+        `,
+      },
+      {
+        name: "TypeScript 5.x type operators (readonly, keyof, typeof, indexed access, tuples, conditional infer, mapped, template literal, predicates, constructor, import, literal types)",
+        code: `
+          export declare const SymbolNames: readonly string[];
+          export type ReadonlyTuple = readonly [number, string?, ...boolean[]];
+          export type LabeledTuple = [id: string, count?: number, ...rest: readonly string[]];
+          export type Keys<T> = keyof T & keyof typeof globalThis;
+          export type QueryType = typeof foo.bar.baz;
+          export type Indexed<T, K extends keyof T> = T[K] | T["prop"] | T[number];
+          export type UnwrapPromise<T> = T extends Promise<infer R extends object> ? R : T;
+          export type ReadonlyOptional<T> = { +readonly [K in keyof T]+?: T[K] };
+          export type MutableRequired<T> = { -readonly [K in keyof T]-?: T[K] };
+          export type Getters<T> = { [K in keyof T as ` + "`get${Capitalize<string & K>}`" + `]: () => T[K] };
+          export type EventName<E extends string> = ` + "`on${Capitalize<E>}`" + `;
+          export function isString(x: unknown): x is string { return typeof x === "string"; }
+          export function assertIs<T>(x: unknown): asserts x is T {}
+          export function assertDefined(x: unknown): asserts x {}
+          export type Ctor<T> = new (...args: any[]) => T;
+          export type AbstractCtor<T> = abstract new (...args: any[]) => T;
+          export type ParenArray = (string | number)[];
+          export type ImportedBar = import("./foo").Bar<string>;
+          export type ImportedMod = typeof import("./foo");
+          export type LiteralUnion = true | false | null | -1 | +1 | "literal" | 123n | unique symbol;
+        `,
+      },
+      {
+        name: "TypeScript 5.x declarations (enum, const enum, namespace, declare module/global, abstract/override, import/export type)",
+        code: `
+          import type DefaultType from "mod-a";
+          import type * as TypeNS from "mod-b";
+          import type { Alpha, Beta as B } from "mod-c";
+          import { type InlineA, regularVal, type InlineB as IB } from "mod-d";
+
+          export enum Direction { Up = 1, Down, Left = "L", Right = "R" }
+          export const enum FastFlags { None = 0, Read = 1, Write = 2 }
+          declare enum AmbientEnum { X, Y }
+          declare const enum AmbientConstEnum { A = 10, B = 20 }
+
+          declare namespace NodeJS {
+            export interface ProcessEnv {
+              readonly NODE_ENV: "development" | "production" | "test";
+            }
+          }
+          declare module "virtual-mod" {
+            export const version: string;
+            export default function run(): void;
+          }
+          declare global {
+            interface Window {
+              readonly appVersion: string;
+            }
+          }
+          export as namespace MyUmdLib;
+
+          export abstract class BaseService {
+            abstract readonly serviceName: string;
+            abstract execute(input: string): Promise<void>;
+            protected status: number = 0;
+          }
+          export class ConcreteService extends BaseService {
+            override readonly serviceName: string = "concrete";
+            override async execute(input: string): Promise<void> {}
+          }
+
+          export type { Alpha, B };
+          export type { InlineA } from "mod-d";
+          export type * from "mod-e";
+          export type * as ReexportedNS from "mod-f";
+          export { type DefaultType, regularVal };
+        `,
+      },
+      {
+        name: "ES2025 & TypeScript 5.x expressions (satisfies, as const, <const T>, non-null !, definite assignment !:, decorators @, using/await using, import.meta, dynamic import(), BigInt, #private in, logical/exp assignment)",
+        code: `
+          const config = { host: "localhost", port: 8080 } satisfies Record<string, string | number>;
+          const tuple = [1, 2, 3] as const;
+          function identity<const T extends readonly string[]>(items: T): T {
+            return items;
+          }
+
+          let lateInit!: number;
+          @sealed
+          @logged("service")
+          class ResourceHolder {
+            @observable accessor!: string;
+            #secret: bigint = 100_000n + 0x10n;
+
+            @bound
+            check(@validated target: object): boolean {
+              return #secret in target && Boolean(this.accessor!.trim()!);
+            }
+          }
+
+          async function loadAndRun(specifier: string) {
+            using syncRes = acquireSync();
+            await using asyncRes = await acquireAsync();
+            const baseUrl = import.meta.url;
+            const mod = await import(specifier);
+            let a = 2;
+            a **= 3;
+            a &&= 10;
+            a ||= 20;
+            a ??= 30;
+            return { baseUrl, mod, a, syncRes, asyncRes };
+          }
         `,
       },
     ];
@@ -404,6 +511,76 @@ describe("JavaScript / TypeScript Parser (@par-gen/javascript)", () => {
       expect(Buffer.from(tplCst.reemitLossless()).toString("utf-8")).toBe(
         tplSrc
       );
+    });
+
+    it("parses every .js and .d.ts file across the entire @par-gen monorepo (packages/**/lib/*.js, packages/**/types/**/*.d.ts, parsers/**/*.d.ts) with 100% lossless re-emission", () => {
+      /**
+       * @param {string} dir
+       * @param {string[]} acc
+       */
+      function collectFiles(dir, acc = []) {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          if (entry.name === "node_modules" || entry.name === ".git") continue;
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            collectFiles(full, acc);
+          } else if (/\.(js|mjs|d\.ts)$/.test(entry.name)) {
+            acc.push(full);
+          }
+        }
+        return acc;
+      }
+
+      const monorepoFiles = collectFiles(repoRoot);
+      expect(monorepoFiles.length).toBeGreaterThanOrEqual(170);
+
+      for (const filePath of monorepoFiles) {
+        const buf = fs.readFileSync(filePath);
+        const cstSkip = parse(buf);
+        expect(cstSkip.name).toBe("program");
+
+        const cstPreserve = parsePreserveExtras(buf);
+        expect(cstPreserve.name).toBe("program");
+        expect(cstPreserve.start).toBe(0);
+        expect(cstPreserve.end).toBe(buf.length);
+
+        const reemitted = reemitLossless(cstPreserve, buf);
+        expect(Buffer.compare(reemitted, buf)).toBe(0);
+      }
+    });
+
+    it("parses real TypeScript 5.x standard library .d.ts files from node_modules/typescript/lib (including lib.es5.d.ts, lib.decorators.d.ts, etc.) with 100% lossless re-emission", () => {
+      const tsLibFiles = [
+        "node_modules/typescript/lib/lib.es5.d.ts",
+        "node_modules/typescript/lib/lib.decorators.d.ts",
+        "node_modules/typescript/lib/lib.decorators.legacy.d.ts",
+        "node_modules/typescript/lib/lib.es2015.core.d.ts",
+        "node_modules/typescript/lib/lib.es2015.collection.d.ts",
+        "node_modules/typescript/lib/lib.es2015.generator.d.ts",
+        "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+        "node_modules/typescript/lib/lib.es2015.promise.d.ts",
+        "node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+        "node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+        "node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+        "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+        "node_modules/typescript/lib/lib.es2020.bigint.d.ts",
+      ];
+
+      for (const relPath of tsLibFiles) {
+        const fullPath = path.join(repoRoot, relPath);
+        const buf = fs.readFileSync(fullPath);
+
+        const cstSkip = parse(buf);
+        expect(cstSkip.name).toBe("program");
+
+        const cstPreserve = parsePreserveExtras(buf);
+        expect(cstPreserve.name).toBe("program");
+        expect(cstPreserve.start).toBe(0);
+        expect(cstPreserve.end).toBe(buf.length);
+
+        const reemitted = reemitLossless(cstPreserve, buf);
+        expect(Buffer.compare(reemitted, buf)).toBe(0);
+      }
     });
   });
 });
